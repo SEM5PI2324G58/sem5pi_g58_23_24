@@ -1,0 +1,18 @@
+autonumber
+
+participant Sistema as sistema <<System (C4)>>
+participant SGBD as sgdb <<System>>
+
+[o-> sistema: criar piso e insere a informação (edifício, nPiso, descricao)
+activate sistema
+sistema	-> sgdb: save(piso)
+activate sgdb
+return sucesso
+alt
+<-- sistema: Ok
+else "Erro"
+<-- sistema: Erro
+end alt
+
+
+ 
