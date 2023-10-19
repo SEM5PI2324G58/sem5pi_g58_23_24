@@ -21,6 +21,12 @@ export default async ({ expressApp }) => {
     schema: '../persistence/schemas/roleSchema',
   };
 
+  const pisoSchema = {
+    // compare with the approach followed in repos and services
+    name: 'PisoSchema',
+    schema: '../persistence/schemas/PisoSchema',
+  };
+
   const roleController = {
     name: config.controllers.role.name,
     path: config.controllers.role.path
@@ -35,6 +41,10 @@ export default async ({ expressApp }) => {
     name: config.repos.user.name,
     path: config.repos.user.path
   }
+  const pisoRepo = {
+    name: config.repos.Piso.name,
+    path: config.repos.Piso.path
+  }
 
   const roleService = {
     name: config.services.role.name,
@@ -45,14 +55,16 @@ export default async ({ expressApp }) => {
     mongoConnection,
     schemas: [
       userSchema,
-      roleSchema
+      roleSchema,
+      pisoSchema
     ],
     controllers: [
       roleController
     ],
     repos: [
       roleRepo,
-      userRepo
+      userRepo,
+      pisoRepo
     ],
     services: [
       roleService
