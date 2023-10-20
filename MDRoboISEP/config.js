@@ -56,6 +56,10 @@ export default {
       name: "UserRepo",
       path: "../repos/userRepo"
     },
+    Edificio: {
+      name: "EdificioRepo",
+      path: "../repos/EdificioRepo"
+    },
     piso: {
       name: "PisoRepo",
       path: "../repos/PisoRepo"
