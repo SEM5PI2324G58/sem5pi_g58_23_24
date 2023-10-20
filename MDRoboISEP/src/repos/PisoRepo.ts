@@ -65,4 +65,21 @@ export default class PisoRepo implements IPisoRepo {
     else
       return null;
   }
+
+  public async getMaxId(): Promise<number> {
+    try {
+        const maxIdResult = await this.pisoSchema
+            .findOne({}, { id: 1 })
+            .sort({ id: -1 })
+            .limit(1);
+
+        if (maxIdResult) {
+            return maxIdResult.id;
+        } else {
+            return 0; // Return 0 if no records are found
+        }
+    } catch (err) {
+        throw err;
+    }
+}
 }

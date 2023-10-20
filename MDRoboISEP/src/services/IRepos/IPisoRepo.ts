@@ -5,5 +5,6 @@ import { IdPiso } from "../../domain/piso/IdPiso";
 export default interface IPisoRepo extends Repo<Piso> {
   save(piso: Piso): Promise<Piso>;
   findByDomainId (idPiso: IdPiso | string): Promise<Piso>;
+  getMaxId(): Promise<number>
     
 }
