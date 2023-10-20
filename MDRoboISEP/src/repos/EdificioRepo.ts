@@ -1,6 +1,6 @@
 import { Service, Inject } from 'typedi';
 
-import IEdifcioRepo from "../services/IRepos/IEdificioRepo";
+import IEdificioRepo from "../services/IRepos/IEdificioRepo";
 import { EdificioMap } from "../mappers/EdificioMap";
 
 import { Edificio } from "../domain/edificio/Edificio";
@@ -9,7 +9,7 @@ import { Document, FilterQuery, Model } from 'mongoose';
 import { IEdificioPersistence } from '../dataschema/IEdificioPersistence';
 
 @Service()
-export default class EdificioRepo implements IEdifcioRepo {
+export default class EdificioRepo implements IEdificioRepo {
   private models: any;
 
   constructor(
