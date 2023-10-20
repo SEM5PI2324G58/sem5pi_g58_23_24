@@ -27,6 +27,12 @@ export default async ({ expressApp }) => {
     schema: '../persistence/schemas/PisoSchema',
   };
 
+  const pontoSchema = {
+    // compare with the approach followed in repos and services
+    name: 'PontoSchema',
+    schema: '../persistence/schemas/PontoSchema',
+  };
+
   const roleController = {
     name: config.controllers.role.name,
     path: config.controllers.role.path
@@ -42,8 +48,13 @@ export default async ({ expressApp }) => {
     path: config.repos.user.path
   }
   const pisoRepo = {
-    name: config.repos.Piso.name,
-    path: config.repos.Piso.path
+    name: config.repos.piso.name,
+    path: config.repos.piso.path
+  }
+
+  const pontoRepo = {
+    name: config.repos.ponto.name,
+    path: config.repos.ponto.path
   }
 
   const roleService = {
@@ -56,7 +67,8 @@ export default async ({ expressApp }) => {
     schemas: [
       userSchema,
       roleSchema,
-      pisoSchema
+      pisoSchema,
+      pontoSchema
     ],
     controllers: [
       roleController
@@ -64,7 +76,8 @@ export default async ({ expressApp }) => {
     repos: [
       roleRepo,
       userRepo,
-      pisoRepo
+      pisoRepo,
+      pontoRepo
     ],
     services: [
       roleService

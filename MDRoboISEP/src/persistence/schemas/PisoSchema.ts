@@ -1,7 +1,7 @@
 import { IPisoPersistence } from '../../dataschema/IPisoPersistence';
 import mongoose from 'mongoose';
 
-const Piso = new mongoose.Schema(
+const PisoSchema = new mongoose.Schema(
   {
     domainId: { 
       type: Number,
@@ -23,4 +23,4 @@ const Piso = new mongoose.Schema(
   { timestamps: true },
 );
 
-export default mongoose.model<IPisoPersistence & mongoose.Document>('Piso', Piso);
+export default mongoose.model<IPisoPersistence & mongoose.Document>('Piso', PisoSchema);

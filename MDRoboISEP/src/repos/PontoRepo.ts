@@ -1,0 +1,68 @@
+import { Service, Inject } from 'typedi';
+
+import IPontoRepo from "../services/IRepos/IPontoRepo";
+import { Ponto } from "../domain/ponto/Ponto";
+import { IdPonto } from "../domain/ponto/IdPonto";
+import { PontoMap } from "../mappers/PontoMap";
+
+import { Document, FilterQuery, Model } from 'mongoose';
+import { IPontoPersistence } from '../dataschema/IPontoPersistence';
+
+@Service()
+export default class PisoRepo implements IPontoRepo {
+  private models: any;
+
+  constructor(
+    @Inject('PontoSchema') private pontoSchema : Model<IPontoPersistence & Document>,
+  ) {}
+
+  private createBaseQuery (): any {
+    return {
+      where: {},
+    }
+  }
+
+  public async exists(ponto: Ponto): Promise<boolean> {
+    
+    const idX = ponto.id instanceof IdPonto ? (<IdPonto>ponto.id).toValue() : ponto.id;
+
+    const query = { domainId: idX}; 
+    const roleDocument = await this.pontoSchema.findOne( query as FilterQuery<IPontoPersistence & Document>);
+
+    return !!roleDocument === true;
+  }
+
+  public async save (ponto: Ponto): Promise<Ponto> {
+    const query = { domainId: ponto.id.toString()}; 
+
+    const pontoDocument = await this.pontoSchema.findOne( query );
+
+    try {
+      if (pontoDocument === null ) {
+        const rawPonto: any = PontoMap.toPersistence(ponto);
+
+        const pontoCreated = await this.pontoSchema.create(rawPonto);
+
+        return PontoMap.toDomain(pontoCreated);
+      } else {
+        pontoDocument.id = ponto.id;
+        await pontoDocument.save();
+
+        return ponto;
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async findByDomainId (idPonto: IdPonto | string): Promise<Ponto> {
+    const query = { domainId: idPonto};
+    const pontoRecord = await this.pontoSchema.findOne( query as FilterQuery<IPontoPersistence & Document> );
+
+    if( pontoRecord != null) {
+      return PontoMap.toDomain(pontoRecord);
+    }
+    else
+      return null;
+  }
+}
