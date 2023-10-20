@@ -1,0 +1,38 @@
+autonumber
+
+participant RouteEdificio as route
+participant "dto: CriarEdificioDTO" as dto
+participant "controller: EdificioController" as ctrl
+participant "service: CriarEdificioService" as service
+participant "repository: Edificio Repository" as edRepo
+participant "Edificio" as ed
+
+[o-> route: POST(json)
+activate route
+route -> dto ** : create(json)
+route -> ctrl: criarEdificio(criarEdificioDTO)
+activate ctrl
+ctrl -> service: criarEdificio(criarEdificioDTO) 
+activate service
+service -> edRepo: verificarSeEdificioExiste(codigo)
+activate edRepo
+return false
+service -> ed** : create(nome, x, y, descricao, codigo)
+service -> edRepo: save(edificio)
+activate edRepo
+deactivate edRepo
+return resposta
+return resposta
+
+
+
+
+
+
+
+
+
+
+
+
+

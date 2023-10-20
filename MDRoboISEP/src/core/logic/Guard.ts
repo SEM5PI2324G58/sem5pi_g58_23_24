@@ -77,4 +77,20 @@ export class Guard {
       return { succeeded: true }
     }
   }
+
+  public static stringLengthLessOrEqualThan(inputString: string | null | undefined, max: number, argumentName: string): IGuardResult {
+    if (inputString === null || inputString === undefined || inputString.length <= max) {
+      return { succeeded: true };
+    } else {
+      return { succeeded: false, message: `${argumentName} must be null, empty, or have a length less than ${max}.` };
+    }
+  }
+
+  public static numberGreaterThanZero(num: number, argumentName: string): IGuardResult {
+    if (num > 0) {
+      return { succeeded: true };
+    } else {
+      return { succeeded: false, message: `${argumentName} must be greater than 0.` };
+    }
+  }
 }

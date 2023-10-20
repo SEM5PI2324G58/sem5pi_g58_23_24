@@ -1,0 +1,11 @@
+autonumber
+
+participant Sistema as sistema <<System (C4)>>
+
+[o-> sistema: criar edifício e insere a informação(descricao, nome, codigo,dimensao)
+activate sistema
+alt
+<-- sistema: OK
+else "Erro"
+<-- sistema: Erro
+end alt

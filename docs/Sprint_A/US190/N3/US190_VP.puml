@@ -1,0 +1,53 @@
+autonumber
+
+participant RoutePiso as route
+participant "dto: CriarPisoDTO" as dto
+participant "controller: PisoController" as ctrl
+participant "service: CriarPisoService" as service
+participant "EdificioRepo" as edRepo
+participant "Edificio" as edificio
+participant "PisoRepo" as pisoRepo
+participant "Piso" as piso
+
+
+[o-> route: POST(json)
+activate route
+route -> dto ** : create(json)
+route -> ctrl: criarPiso(criarPisoDTO)
+activate ctrl
+ctrl -> service: criarPiso(criarPisoDTO) 
+activate service
+service -> edRepo: findByDomain(codigo)
+activate edRepo
+return edificio
+service -> edificio :  verificaSePisoJaExiste(nPiso)
+activate edificio
+return flag
+service -> pisoRepo: maxID()
+activate pisoRepo
+return maxId
+service -> piso ** : create(idPiso, nPiso, descricao, comprimento, largura)
+service -> edificio: addPiso(piso)
+service -> pisoRepo: save(piso)
+service -> edRepo: save(edificio)
+return resposta
+return resposta
+alt
+<-- route: Ok
+else "Erro"
+<-- route: Erro
+end alt
+
+
+
+
+
+
+
+
+
+
+
+
+
+

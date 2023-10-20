@@ -1,10 +1,16 @@
 autonumber
 
-participant Sistema as sistema <<System (C4)>>
-participant SGBD as sgdb <<System>>
+participant MDRoboISEP as sistema <<Container (C4)>>
+participant SGBD as sgdb <<Container>>
 
 [o-> sistema: criar piso e insere a informação (edifício, nPiso, descricao)
 activate sistema
+sistema	-> sgdb: findByDomain(codigo)
+activate sgdb
+return edificio
+sistema	-> sgdb: save(edificio)
+activate sgdb
+return sucesso
 sistema	-> sgdb: save(piso)
 activate sgdb
 return sucesso
