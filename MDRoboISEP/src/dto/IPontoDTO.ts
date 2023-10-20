@@ -1,5 +1,5 @@
 export default interface IPisoDTO {
-    id: number;
+    id: string;
 	abscissa: number;
     ordenada: number
 	tipoPonto: string;

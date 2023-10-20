@@ -1,5 +1,5 @@
 export interface IPisoPersistence {
-	domainID: string;
+	domainID: number;
 	numeroPiso: number;
 	descricaoPiso: string;
 	pontos: number[][];

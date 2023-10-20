@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 const PontoSchema = new mongoose.Schema(
   {
     domainId: { 
-      type: Number,
+      type: String,
       unique: true
     },
 

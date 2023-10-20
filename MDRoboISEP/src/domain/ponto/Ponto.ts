@@ -13,8 +13,8 @@ interface pontoProps {
 
 export class Ponto extends AggregateRoot<pontoProps> {
 
-  public returnIdPiso() : number{
-    return Number(this._id.toValue());
+  public returnIdPiso() : string{
+    return this._id.toString();
   }
   
   public returnAbscissa() : number{

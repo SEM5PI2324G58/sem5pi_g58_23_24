@@ -118,4 +118,13 @@ export class Guard {
       return { succeeded: false, message: `${argumentName} deve ter um tamanho superior a ${length}.`};
     }
   }
+  
+  public static isPatternValidIdPonto(inputString: string, argumentName: string): IGuardResult {
+    const regex = /^-?[a-zA-Z0-9]*\.[0-9]*\.[0-9]*$/;
+    if (regex.test(inputString)) {
+        return { succeeded: true };
+    } else {
+        return { succeeded: false, message: `${argumentName} deve ter o formato XXX.aa.xxx.`};
+    }
+  }
 }
