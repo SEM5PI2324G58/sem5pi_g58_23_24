@@ -110,4 +110,12 @@ export class Guard {
       return { succeeded: false, message: `${argumentName} deve ser alfanumérico.`};
     }
   }
+
+  public static arrayHasGreaterLengthThan(inputArray: any[], length: number, argumentName: string): IGuardResult {
+    if(inputArray.length > length){
+      return { succeeded: true };
+    }else{
+      return { succeeded: false, message: `${argumentName} deve ter um tamanho superior a ${length}.`};
+    }
+  }
 }
