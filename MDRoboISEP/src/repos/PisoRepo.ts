@@ -13,7 +13,7 @@ export default class PisoRepo implements IPisoRepo {
   private models: any;
 
   constructor(
-    @Inject('roleSchema') private pisoSchema : Model<IPisoPersistence & Document>,
+    @Inject('PisoSchema') private pisoSchema : Model<IPisoPersistence & Document>,
   ) {}
 
   private createBaseQuery (): any {

@@ -19,6 +19,12 @@ const PisoSchema = new mongoose.Schema(
       index: true,
     },
 
+    pontos: {
+      type: [[Number]],
+      require: [true, 'Introduz os pontos'],
+      index: true,
+    },
+
   },
   { timestamps: true },
 );
