@@ -1,5 +1,4 @@
 import { IEdificioPersistence } from '../../dataschema/IEdificioPersistence';
-import {Piso} from '../../domain/piso/Piso';
 import mongoose from 'mongoose';
 
 const EdificioSchema = new mongoose.Schema(

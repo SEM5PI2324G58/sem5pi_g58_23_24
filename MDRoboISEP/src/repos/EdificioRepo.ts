@@ -13,7 +13,7 @@ export default class EdificioRepo implements IEdifcioRepo {
   private models: any;
 
   constructor(
-    @Inject('edificioSchema') private edificioSchema : Model<IEdificioPersistence & Document>,
+    @Inject('EdificioSchema') private edificioSchema : Model<IEdificioPersistence & Document>,
   ) {}
 
   private createBaseQuery (): any {
