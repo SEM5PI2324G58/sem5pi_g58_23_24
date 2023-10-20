@@ -7,6 +7,9 @@ import IPisoDTO from "../dto/IPisoDTO";
 import { Piso } from "../domain/piso/Piso";
 
 import { UniqueEntityID } from "../core/domain/UniqueEntityID";
+import { NumeroPiso } from "../domain/piso/NumeroPiso";
+import { DescricaoPiso } from "../domain/piso/DescricaoPiso";
+
 
 export class PisoMap extends Mapper<Piso> {
   
@@ -18,15 +21,20 @@ export class PisoMap extends Mapper<Piso> {
     } as IPisoDTO;
   }
 
-  public static toDomain (piso: any | Model<IPisoPersistence & Document> ): Piso {
-    const pisoOrError = piso.create(
-        piso,
-      new UniqueEntityID(piso.domainId)
-    );
+  public static toDomain (raw: any): Piso {
+    
+    const numeroPisoOrError = NumeroPiso.create(raw.numeroPiso);
+    const userPasswordOrError = DescricaoPiso.create(raw.descricaoPiso);
 
-    pisoOrError.isFailure ? console.log(pisoOrError.error) : '';
+    const userOrError = Piso.create({
+      numeroPiso: numeroPisoOrError.getValue(),
+      descricaoPiso: userPasswordOrError.getValue(),
+    }, new UniqueEntityID(raw.domainId))
 
-    return pisoOrError.isSuccess ? pisoOrError.getValue() : null;
+    userOrError.isFailure ? console.log(userOrError.error) : '';
+    
+    return userOrError.isSuccess ? userOrError.getValue() : null;
+    
   }
 
   public static toPersistence (piso: Piso): any {
