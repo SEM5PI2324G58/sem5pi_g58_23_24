@@ -21,6 +21,10 @@ export class Edificio extends AggregateRoot<EdificioProps> {
       super(props, id);
   }
 
+  public addPiso(piso: Piso){
+    this.props.listaPisos.push(piso);
+  }
+
   public static create (nomeString:string,dimensaoX: number,dimensaoY:number, descricaoString:string,codigoString: string, listaPisos?:Piso[]): Result<Edificio> {
     let nome = Nome.create(nomeString).getValue();
     let descricao = DescricaoEdificio.create(descricaoString).getValue();
