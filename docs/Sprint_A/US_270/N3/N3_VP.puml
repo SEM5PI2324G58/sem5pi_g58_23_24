@@ -8,6 +8,7 @@ participant "repo: \n EdificioRepo" as edRepo
 participant "domain: \n Edificio" as edificio
 participant "repo: \n ElevadorRepo" as eleRepo
 participant "domain: \n Elevador" as elevador
+participant "repo: \n PisoRepo" as pisoRepo
 
 
 [o-> route: POST(json)
@@ -26,10 +27,13 @@ return boolean
 service -> edificio : vericarPosicaoElevador(posicao)
 activate edificio
 return boolean
+service -> pisoRepo : findByDomain(listaPisos)
+activate pisoRepo
+return listaPisos
 service -> eleRepo: maxId()
 activate eleRepo
 return idElevador
-service -> elevador ** : create(idElevador, posicao)
+service -> elevador ** : create(idElevador, posicao, listaPisos, marca, modelo, nSerie, descricao)
 service -> edificio: adicionarElevador(elevador)
 activate edificio
 deactivate edificio
