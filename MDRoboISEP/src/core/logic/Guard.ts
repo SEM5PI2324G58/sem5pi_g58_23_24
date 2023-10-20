@@ -93,4 +93,21 @@ export class Guard {
       return { succeeded: false, message: `${argumentName} must be greater than 0.` };
     }
   }
+  public static isAlphanumericWithSpaces(inputString: string, argumentName: string): IGuardResult {
+    const regex = /^[a-zA-Z0-9 ]$/
+    if(regex.test(inputString)){
+      return { succeeded: true };
+    }else{
+      return { succeeded: false, message: `${argumentName} deve ser alfanumérico e pode conter espaços.`};
+    }
+  }
+
+  public static isAlphanumeric(inputString: string, argumentName: string): IGuardResult {
+    const regex = /^[a-zA-Z0-9]$/
+    if(regex.test(inputString)){
+      return { succeeded: true };
+    }else{
+      return { succeeded: false, message: `${argumentName} deve ser alfanumérico.`};
+    }
+  }
 }
