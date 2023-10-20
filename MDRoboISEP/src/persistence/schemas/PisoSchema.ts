@@ -21,7 +21,7 @@ const PisoSchema = new mongoose.Schema(
 
     pontos: {
       type: [[Number]],
-      require: [true, 'Introduz os pontos'],
+      required: [true, 'Introduz os pontos'],
       index: true,
     },
 
