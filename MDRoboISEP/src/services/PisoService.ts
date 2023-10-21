@@ -78,23 +78,25 @@ export default class PisoService implements IPisoService{
             return Result.fail<{criarPisoDTO: ICriarPisoDTO}>(finalResult.error);
         }
         
-        let ponto : Ponto[][];
+        let ponto : Ponto[][] = [];
         let x = edifDocument.props.dimensao.props.x;
         let y = edifDocument.props.dimensao.props.y;
         let contador = 1;
         for (let i = 0; i <= x; i++) {
+            ponto[i] = [];
             for (let j = 0; j <= y ; j++) {
                 let tipoPonto;
-                if(i == 0 && j ==0 ) {tipoPonto = TipoPonto.create("NorteOeste");}
-                if((1 <= i && i < x && (j == 0 || j == y)) || (i == 0 && j == y)) {TipoPonto.create("Norte");}
-                if((1 <= j && j < y && (i == 0 || i == x)) || (i == x && j == 0)) {TipoPonto.create("Oeste");}
+                if(i == 0 && j ==0 ) {tipoPonto = TipoPonto.create("NorteOeste").getValue();}
+                else if((1 <= i && i < x && (j == 0 || j == y)) || (i == 0 && j == y)) {tipoPonto = TipoPonto.create("Norte").getValue();}
+                else if((1 <= j && j < y && (i == 0 || i == x)) || (i == x && j == 0)) {tipoPonto = TipoPonto.create("Oeste").getValue();}
+                else{tipoPonto = TipoPonto.create("").getValue();}
                 let pontoOuErro = await Ponto.create({
                 coordenadas : Coordenadas.create({abscissa: x , ordenada: y }).getValue(),
                 tipoPonto: tipoPonto
                 }, await IdPonto.create(criarPisoDTO.codigo + "." + criarPisoDTO.numeroPiso + "." + contador).getValue());
                 contador++;
                 if(pontoOuErro.isFailure){return Result.fail<{criarPisoDTO: ICriarPisoDTO}>(finalResult.error);}
-                ponto[i][j] == pontoOuErro.getValue();
+                ponto[i][j] = pontoOuErro.getValue();
             }
         }  
 

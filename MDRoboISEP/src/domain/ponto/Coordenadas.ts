@@ -19,9 +19,10 @@ export class Coordenadas extends ValueObject<coordenadaProps> {
             { argument: props.abscissa, argumentName: 'abscissa' },
             { argument: props.ordenada, argumentName: 'ordenada' },
           ];
-      
-          const guardResult = Guard.againstNullOrUndefinedBulk(guardedProps);
-
+          let guard1 = Guard.againstNullOrUndefinedBulk(guardedProps);
+          let guard2 = Guard.numberGreaterOrEqualsZero(guardedProps[0].argument,'abscissa');
+          let guard3 = Guard.numberGreaterOrEqualsZero(guardedProps[1].argument,'ordenada');
+          const guardResult = Guard.combine([guard1,guard2,guard3]);
       
           if (!guardResult.succeeded) {
             return Result.fail<Coordenadas>(guardResult.message)
