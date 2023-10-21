@@ -10,7 +10,7 @@ export class Dimensao extends ValueObject<DimensaoProps> {
         super(props);
     }
     public static create (xNumber : number, yNumber : number): Result<Dimensao> {
-      let guardResults : any[];
+      let guardResults : any[] = [];
       guardResults.push(Guard.againstNullOrUndefined(xNumber,'Dimensão X'));
       guardResults.push(Guard.againstNullOrUndefined(yNumber,'Dimensão Y'));
       guardResults.push(Guard.numberGreaterThanZero(xNumber,'Dimensão X'));

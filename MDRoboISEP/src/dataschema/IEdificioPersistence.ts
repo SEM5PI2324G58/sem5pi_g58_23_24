@@ -5,4 +5,5 @@ export interface IEdificioPersistence {
 	dimensaoX: number;
 	dimensaoY: number;
 	piso: number[];
+	elevador: number;
   }

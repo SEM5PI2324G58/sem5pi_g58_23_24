@@ -9,7 +9,7 @@ export class Codigo extends UniqueEntityID{
   }
 
   public static create (codigoString: string): Result<Codigo> {
-    let guardResults: any[];
+    let guardResults: any[] = [];
     guardResults.push(Guard.isAlphanumericWithSpaces(codigoString,'Código do Edifício'));
     guardResults.push(Guard.stringLengthLessOrEqualThan(codigoString,5,'Código do Edifício'));
     guardResults.push(Guard.againstNullOrUndefined(codigoString,'Código do Edifício'));

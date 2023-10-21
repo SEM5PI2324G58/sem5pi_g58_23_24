@@ -7,14 +7,16 @@ import { Result } from "../../core/logic/Result";
 import { Codigo } from "./Codigo";
 import { Piso } from "../piso/Piso";
 import { Guard } from "../../core/logic/Guard";
+import { Elevador } from "../elevador/Elevador";
 
 
 
 interface EdificioProps{
-  nome: Nome;
+  nome?: Nome;
   dimensao: Dimensao;
-  descricao: DescricaoEdificio;
+  descricao?: DescricaoEdificio;
   listaPisos: Piso[];
+  elevador?: Elevador;
 }
 
 export class Edificio extends AggregateRoot<EdificioProps> {
@@ -26,17 +28,16 @@ export class Edificio extends AggregateRoot<EdificioProps> {
     this.props.listaPisos.push(piso);
   }
 
-  public static create (nomeString:string,dimensaoX: number,dimensaoY:number, descricaoString:string,codigoString: string, listaPisos?:Piso[]): Result<Edificio> {
-    let guardResults : any[];
-    guardResults.push(Nome.create(nomeString));
-    guardResults.push(Dimensao.create(dimensaoX,dimensaoY));
-    guardResults.push(DescricaoEdificio.create(descricaoString));
-    guardResults.push(Codigo.create(codigoString));
-    const guardFinal = Guard.combine(guardResults);
-    if(guardFinal.succeeded === false){
-      return Result.fail<Edificio>(guardFinal.message);
+  public static create (props:EdificioProps, codigo :UniqueEntityID): Result<Edificio> {
+    
+    const guardedProps = { argument: props.dimensao, argumentName: 'dimensão' };
+    const result = Guard.againstNullOrUndefined(guardedProps.argument,guardedProps.argumentName);
+
+    if(result.succeeded === false){
+      return Result.fail<Edificio>(result.message);
+    }else{
+      const edificio = new Edificio({...props}, codigo);
+      return Result.ok<Edificio>(edificio);
     }
-    const edificio = new Edificio({nome: guardResults[0].getValue(), dimensao:guardResults[1].getValue(), descricao:guardResults[2].getValue(), listaPisos : listaPisos || []}, guardResults[3].getValue());
-    return Result.ok<Edificio>(edificio);
   }
 }

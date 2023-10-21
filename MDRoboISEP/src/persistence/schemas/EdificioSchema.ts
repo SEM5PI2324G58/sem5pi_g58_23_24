@@ -3,17 +3,16 @@ import mongoose from 'mongoose';
 
 const EdificioSchema = new mongoose.Schema(
   {
-    codigo: { type: String, unique: true },
+    codigo: { type: String, unique: true, index: true},
     nome: { type: String},
     descricao: { type: String},
     dimensaoX: { type: Number,
-      index: true,
       required: [true, 'Introduz a dimensaoX do edificio'],},
     dimensaoY: { type: Number,
-      index: true,
       required: [true, 'Introduz a dimensaoY do edificio'],
       },
-    piso: { type: [Number], index : true},
+    piso: { type: [Number]},
+    elevador: { type: Number}
   },
   {
     timestamps: true
