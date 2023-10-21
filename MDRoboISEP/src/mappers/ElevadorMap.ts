@@ -31,7 +31,7 @@ export class ElevadorMap extends Mapper<Elevador>{
 
         const pisoRepo = Container.get(PisoRepo);
 
-        let pisosServido: Piso[];
+        let pisosServido: Piso[] = [];
         for (let i = 0; i< raw.pisosServidos.length; i++){
             pisosServido[i] = await pisoRepo.findByDomainId(raw.pisosServidos[i]);
         }
