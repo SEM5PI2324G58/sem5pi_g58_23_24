@@ -34,8 +34,9 @@ export class PisoMap extends Mapper<Piso> {
     const repo = Container.get(PontoRepo);
     
 
-    let ponto: Ponto [][];
+    let ponto: Ponto [][] = [];
     for (let i = 0; i < raw.pontos.length; i++) {
+      ponto[i]=[];
       for (let j = 0; j < raw.pontos[i].length; j++) {
         ponto[i][j] = await repo.findByDomainId(raw.pontos[i][j]);
       }
