@@ -48,6 +48,10 @@ export default {
     role: {
       name: "RoleController",
       path: "../controllers/roleController"
+    },
+    piso: {
+      name: "PisoController",
+      path: "../controllers/PisoController"
     }
   },
 
@@ -82,6 +86,10 @@ export default {
     role: {
       name: "RoleService",
       path: "../services/roleService"
+    },
+    piso: {
+      name: "PisoService",
+      path: "../services/PisoService"
     }
   },
 };
