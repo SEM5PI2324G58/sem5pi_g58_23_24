@@ -11,7 +11,6 @@ import { ModeloElvador } from "./ModeloElevador";
 import { NumeroSerieElevador } from "./NumeroSerieElevador";
 
 interface ElevadorProps{
-    edificio : Edificio;
     pisosServidos: Piso[];
     marca: MarcaElvador;
     modelo: ModeloElvador;
@@ -20,6 +19,28 @@ interface ElevadorProps{
 }
 
 export class Elevador extends AggregateRoot<ElevadorProps>{
+    public returnIdElevador() : number{
+        return Number(this._id.toValue());
+    }
+    returnPisosServidos() : number[]{
+        let ids: number[];
+        for (let i = 0; i < this.props.pisosServidos.length; i++){
+            ids[i] = Number(this.props.pisosServidos[i].id.toValue())
+        }
+        return ids;
+    }
+    returnMarca() : string{
+        return this.props.marca.props.marca;
+    }
+    returnModelo() : string{
+        return this.props.modelo.props.modelo;
+    }
+    returnNumeroSerie() : string{
+        return this.props.numeroSerie.props.numeroSerie;
+    }
+    returnDescricao(): string {
+        return this.props.descricao.props.descricao;
+    }
     private constructor (props: ElevadorProps, id: IdElevador){
         super(props,id);
     }
@@ -27,7 +48,6 @@ export class Elevador extends AggregateRoot<ElevadorProps>{
     public static create (props: ElevadorProps, id: IdElevador) : Result<Elevador> {
 
         const guardedProps = [
-            {argument: props.edificio, argumentName: 'Edifício' },
             {argument: props.pisosServidos, argumentName: 'Lista de pisos servidos' },
             {argument: props.marca, argumentName: 'Marca do elevador' },
             {argument: props.modelo, argumentName: 'Modelo do elevador' },

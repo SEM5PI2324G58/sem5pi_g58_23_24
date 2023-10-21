@@ -38,6 +38,12 @@ export default async ({ expressApp }) => {
     schema: '../persistence/schemas/EdificioSchema',
   }
 
+  const elevadorSchema = {
+    // compare with the approach followed in repos and services
+    name: 'ElevadorSchema',
+    schema: '../persistence/schemas/ElevadorSchema',
+  };
+
   const roleController = {
     name: config.controllers.role.name,
     path: config.controllers.role.path
@@ -78,6 +84,11 @@ export default async ({ expressApp }) => {
     path: config.repos.edificio.path
   }
 
+  const elevadorRepo = {
+    name: config.repos.elevador.name,
+    path: config.repos.elevador.path
+  }
+
   const roleService = {
     name: config.services.role.name,
     path: config.services.role.path
@@ -100,7 +111,8 @@ export default async ({ expressApp }) => {
       roleSchema,
       pisoSchema,
       pontoSchema,
-      EdificioSchema
+      EdificioSchema,
+      elevadorSchema
     ],
     controllers: [
       roleController,
@@ -112,7 +124,8 @@ export default async ({ expressApp }) => {
       userRepo,
       pisoRepo,
       pontoRepo,
-      edificioRepo
+      edificioRepo,
+      elevadorRepo
     ],
     services: [
       roleService,

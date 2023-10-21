@@ -75,6 +75,10 @@ export default {
     ponto: {
       name: "PontoRepo",
       path: "../repos/PontoRepo"
+    },
+    elevador: {
+      name: "ElevadorRepo",
+      path: "../repos/ElevadorRepo"
     }
   },
 
