@@ -94,7 +94,7 @@ export class Guard {
     }
   }
   public static isAlphanumericWithSpaces(inputString: string, argumentName: string): IGuardResult {
-    const regex = /^[a-zA-Z0-9 ]$/
+    const regex = /^[a-zA-Z0-9 ]+$/
     if(regex.test(inputString)){
       return { succeeded: true };
     }else{
@@ -103,7 +103,7 @@ export class Guard {
   }
 
   public static isAlphanumeric(inputString: string, argumentName: string): IGuardResult {
-    const regex = /^[a-zA-Z0-9]$/
+    const regex = /^[a-zA-Z0-9]+$/
     if(regex.test(inputString)){
       return { succeeded: true };
     }else{
