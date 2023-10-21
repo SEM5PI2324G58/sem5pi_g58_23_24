@@ -13,7 +13,7 @@ export class NumeroSerieElevador extends ValueObject<NumeroSerieElevadorProps>{
 
     public static create(numeroSerie : string): Result<NumeroSerieElevador>{
         
-        let guardResults : any[];
+        let guardResults : any[] = [];
         guardResults.push(Guard.stringLengthLessOrEqualThan(numeroSerie,50,"Número de série do elevador"));
         guardResults.push(Guard.isAlphanumeric(numeroSerie,"Número de série do elevador"));
         

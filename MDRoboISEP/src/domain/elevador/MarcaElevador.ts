@@ -13,7 +13,7 @@ export class MarcaElvador extends ValueObject<MarcaElvadorProps>{
 
     public static create(marca : string): Result<MarcaElvador>{
         
-        let guardResults : any[];
+        let guardResults : any[] = [];
         guardResults.push(Guard.stringLengthLessOrEqualThan(marca,50,"Marca do elevador"));
         guardResults.push(Guard.isAlphanumeric(marca,"Marca do elevador"));
         

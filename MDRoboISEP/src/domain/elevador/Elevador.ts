@@ -22,23 +22,23 @@ export class Elevador extends AggregateRoot<ElevadorProps>{
     public returnIdElevador() : number{
         return Number(this._id.toValue());
     }
-    returnPisosServidos() : number[]{
-        let ids: number[];
+    public returnPisosServidos() : number[]{
+        let ids: number[] = [];
         for (let i = 0; i < this.props.pisosServidos.length; i++){
             ids[i] = Number(this.props.pisosServidos[i].id.toValue())
         }
         return ids;
     }
-    returnMarca() : string{
+    public returnMarca() : string{
         return this.props.marca.props.marca;
     }
-    returnModelo() : string{
+    public returnModelo() : string{
         return this.props.modelo.props.modelo;
     }
-    returnNumeroSerie() : string{
+    public returnNumeroSerie() : string{
         return this.props.numeroSerie.props.numeroSerie;
     }
-    returnDescricao(): string {
+    public returnDescricao(): string {
         return this.props.descricao.props.descricao;
     }
     private constructor (props: ElevadorProps, id: IdElevador){
@@ -55,10 +55,10 @@ export class Elevador extends AggregateRoot<ElevadorProps>{
             {argument: props.descricao, argumentName: 'Descrição do elevador' },
         ]
 
-        let guardResults : any[];
+        let guardResults : any[] = [];
+        
         guardResults.push(Guard.againstNullOrUndefined(guardedProps[0].argument,guardedProps[0].argumentName));
-        guardResults.push(Guard.againstNullOrUndefined(guardedProps[1].argument,guardedProps[1].argumentName));
-        guardResults.push(Guard.arrayHasGreaterLengthThan(guardedProps[1].argument as any[],1,guardedProps[1].argumentName));
+        guardResults.push(Guard.arrayHasGreaterLengthThan(guardedProps[0].argument as any[],1,guardedProps[0].argumentName));
         
 
         const finalGuard = Guard.combine(guardResults);

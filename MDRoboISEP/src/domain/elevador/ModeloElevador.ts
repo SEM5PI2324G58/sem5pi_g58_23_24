@@ -13,7 +13,7 @@ export class ModeloElvador extends ValueObject<ModeloElvadorProps>{
 
     public static create(modelo : string): Result<ModeloElvador>{
         
-        let guardResults : any[];
+        let guardResults : any[] = [];
         guardResults.push(Guard.stringLengthLessOrEqualThan(modelo,50,"Modelo do elevador"));
         guardResults.push(Guard.isAlphanumeric(modelo,"Modelo do elevador"));
         

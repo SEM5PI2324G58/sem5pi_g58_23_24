@@ -13,7 +13,7 @@ export class DescricaoElvador extends ValueObject<DescricaoElevadorProps>{
 
     public static create(descricao : string): Result<DescricaoElvador>{
         
-        let guardResults : any[];
+        let guardResults : any[] = [];
         guardResults.push(Guard.stringLengthLessOrEqualThan(descricao,250,"Descrição do elevador"));
         guardResults.push(Guard.isAlphanumeric(descricao,"Descrição do elevador"));
         
