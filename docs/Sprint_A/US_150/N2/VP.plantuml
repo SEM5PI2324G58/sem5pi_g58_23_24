@@ -5,7 +5,7 @@ participant SGBD as sgbd <<Container (C4)>>
 
 [o-> md: criar edifício e insere a informação(descricao, nome, codigo,dimensao)
 activate md
-md -> sgbd: verifcarSeEdificioExiste(codigo)
+md -> sgbd: findByDomainId(codigo)
 activate sgbd
 return false
 md -> sgbd: save(edificio)
