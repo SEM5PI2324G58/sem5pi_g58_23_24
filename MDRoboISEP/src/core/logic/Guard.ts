@@ -120,11 +120,19 @@ export class Guard {
   }
   
   public static isPatternValidIdPonto(inputString: string, argumentName: string): IGuardResult {
-    const regex = /^-?[a-zA-Z0-9]*\.[0-9]*\.[0-9]*$/;
+    const regex = /^-?[a-zA-Z0-9 ]+\.[0-9]+\.[0-9]+$/;
     if (regex.test(inputString)) {
         return { succeeded: true };
     } else {
         return { succeeded: false, message: `${argumentName} deve ter o formato XXX.aa.xxx.`};
+    }
+  }
+
+  public static numberGreaterOrEqualsZero(num: number, argumentName: string): IGuardResult {
+    if (num >= 0) {
+      return { succeeded: true };
+    } else {
+      return { succeeded: false, message: `${argumentName} must be greater than 0.` };
     }
   }
 }
