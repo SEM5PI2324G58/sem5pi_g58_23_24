@@ -135,4 +135,20 @@ export class Guard {
       return { succeeded: false, message: `${argumentName} must be greater than 0.` };
     }
   }
+
+  public static valueRepeatedInArray(inputArray: any[], argumentName: string): IGuardResult {
+    let result = false;
+    for(let i = 0; i < inputArray.length; i++){
+      for(let j = i+1; j < inputArray.length; j++){
+        if(inputArray[i] === inputArray[j]){
+          result = true;
+        }
+      }
+    }
+    if(result){
+      return { succeeded: false, message: `${argumentName} não pode ter valores repetidos.` };
+    }else{
+      return { succeeded: true };
+    }
+  }
 }
