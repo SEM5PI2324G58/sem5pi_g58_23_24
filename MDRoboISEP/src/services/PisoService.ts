@@ -35,16 +35,15 @@ export default class PisoService implements IPisoService{
       @Inject(config.repos.piso.name) private pisoRepo : IPisoRepo,
       @Inject(config.repos.edificio.name) private edifRepo : IEdificioRepo,
       @Inject(config.repos.ponto.name) private pontoRepo : IPontoRepo,
-      @Inject('logger') private logger,
   ) {}
 
 
-  public async criarPiso(criarPisoDTO: ICriarPisoDTO): Promise<Result<{criarPisoDTO: ICriarPisoDTO}>> {
+  public async criarPiso(criarPisoDTO: ICriarPisoDTO): Promise<Result<ICriarPisoDTO>> {
     try {
         const edifDocument = await this.edifRepo.findByDomainId(criarPisoDTO.codigo);
         let found = !!edifDocument;
         if(!found){
-            Result.fail<{criarPisoDTO: ICriarPisoDTO}>("O edificio com o código " + criarPisoDTO.codigo +" não existe");
+            return Result.fail<ICriarPisoDTO>("O edificio com o código " + criarPisoDTO.codigo +" não existe");
         }
         
         let pisos = edifDocument.props.listaPisos;
@@ -56,7 +55,7 @@ export default class PisoService implements IPisoService{
             }
         }
         if(found){
-            Result.fail<{criarPisoDTO: ICriarPisoDTO}>("O piso numero " + criarPisoDTO.numeroPiso +" já existe");
+            return Result.fail<ICriarPisoDTO>("O piso numero " + criarPisoDTO.numeroPiso +" já existe");
         }
 
         let maxId = await this.pisoRepo.getMaxId();
@@ -66,16 +65,17 @@ export default class PisoService implements IPisoService{
 
         let descricaoOuErro;
         let finalResult;
-        if(criarPisoDTO.descricaoPiso.length == 0 || criarPisoDTO.descricaoPiso == null || criarPisoDTO.descricaoPiso == undefined){
+        if(criarPisoDTO.descricaoPiso == null || criarPisoDTO.descricaoPiso == undefined){
             descricaoOuErro = null;
             finalResult = Result.combine([numeroPisoOuErro,idPisoOuErro]) ;
         }else{
             descricaoOuErro = await DescricaoPiso.create(criarPisoDTO.descricaoPiso);
-            finalResult = Result.combine([numeroPisoOuErro,idPisoOuErro,descricaoOuErro]) ;
+            finalResult = Result.combine([numeroPisoOuErro,idPisoOuErro,descricaoOuErro]);
+            if(descricaoOuErro.isSuccess == true){descricaoOuErro = descricaoOuErro.getValue();}
         }
 
         if (finalResult.isFailure) {
-            return Result.fail<{criarPisoDTO: ICriarPisoDTO}>(finalResult.error);
+            return Result.fail<ICriarPisoDTO>(finalResult.error);
         }
         
         let ponto : Ponto[][] = [];
@@ -95,7 +95,7 @@ export default class PisoService implements IPisoService{
                 tipoPonto: tipoPonto
                 }, await IdPonto.create(criarPisoDTO.codigo + "." + criarPisoDTO.numeroPiso + "." + contador).getValue());
                 contador++;
-                if(pontoOuErro.isFailure){return Result.fail<{criarPisoDTO: ICriarPisoDTO}>(finalResult.error);}
+                if(pontoOuErro.isFailure){return Result.fail<ICriarPisoDTO>(finalResult.error);}
                 ponto[i][j] = pontoOuErro.getValue();
             }
         }  
@@ -103,12 +103,12 @@ export default class PisoService implements IPisoService{
 
         const pisoOuErro = await Piso.create({
             numeroPiso: numeroPisoOuErro.getValue(),
-            descricaoPiso: descricaoOuErro.getValue(),
+            descricaoPiso: descricaoOuErro,
             mapa: ponto,
         }, idPisoOuErro.getValue());
 
         if (pisoOuErro.isFailure) {
-            throw Result.fail<ICriarPisoDTO>(pisoOuErro.errorValue());
+            return Result.fail<ICriarPisoDTO>(pisoOuErro.errorValue());
         }
 
         edifDocument.addPiso(pisoOuErro.getValue());
@@ -124,9 +124,8 @@ export default class PisoService implements IPisoService{
         
         await this.edifRepo.save(edifDocument);
 
-        return Result.ok<{criarPisoDTO: ICriarPisoDTO}>( {criarPisoDTO: criarPisoDTO} );
+        return Result.ok<ICriarPisoDTO>(criarPisoDTO);
     } catch (e) {
-      this.logger.error(e);
       throw e;
     }
   }
