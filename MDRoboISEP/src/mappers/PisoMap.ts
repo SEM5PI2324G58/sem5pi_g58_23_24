@@ -29,11 +29,11 @@ export class PisoMap extends Mapper<Piso> {
     
     const numeroPisoOrError = NumeroPiso.create(raw.numeroPiso);
     const descricaoPisoOrError = DescricaoPiso.create(raw.descricaoPiso);
-    const IdPisoError = IdPiso.create(raw.domainId);
+    const IdPisoError = IdPiso.create(raw.domainID);
 
     const repo = Container.get(PontoRepo);
     
-
+    
     let ponto: Ponto [][] = [];
     for (let i = 0; i < raw.pontos.length; i++) {
       ponto[i]=[];

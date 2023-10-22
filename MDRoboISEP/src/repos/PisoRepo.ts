@@ -55,7 +55,7 @@ export default class PisoRepo implements IPisoRepo {
     }
   }
 
-  public async findByDomainId (idPiso: IdPiso | string): Promise<Piso> {
+  public async findByDomainId (idPiso: IdPiso | number): Promise<Piso> {
     const query = { domainId: idPiso};
     const pisoRecord = await this.pisoSchema.findOne( query as FilterQuery<IPisoPersistence & Document> );
 
@@ -69,14 +69,14 @@ export default class PisoRepo implements IPisoRepo {
   public async getMaxId(): Promise<number> {
     try {
         const maxIdResult = await this.pisoSchema
-            .findOne({}, { id: 1 })
+            .find({}, { id: 1 })
             .sort({ id: -1 })
             .limit(1);
 
-        if (maxIdResult) {
-            return maxIdResult.id;
+        if (maxIdResult && maxIdResult.length > 0) {
+            return maxIdResult[0].id;
         } else {
-            return 0; // Return 0 if no records are found
+            return 0; 
         }
     } catch (err) {
         throw err;
