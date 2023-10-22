@@ -67,10 +67,12 @@ export class EdificioMap extends Mapper<Edificio> {
   public static toPersistence (edificio: Edificio): any {
     return {
       codigo: edificio.id.toString(),
-      nome: edificio.props.nome.props.nome,
-      descricao: edificio.props.descricao.props.descricao,
-      dimensaoX: edificio.props.dimensao.props.x,
-      dimensaoY: edificio.props.dimensao.props.y,
+      nome: edificio.returnNome(),
+      descricao: edificio.returnDescricao(),
+      dimensaoX: edificio.returnDimensaoX(),
+      dimensaoY: edificio.returnDimensaoY(),
+      piso: edificio.returnListaPisosId(),
+      elevador: edificio.returnEdificioId()
     }
   }
 }

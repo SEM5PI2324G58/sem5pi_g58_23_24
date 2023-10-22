@@ -8,7 +8,9 @@ import { NumeroSerieElevador } from "../domain/elevador/NumeroSerieElevador";
 import { Piso } from "../domain/piso/Piso";
 import IElevadorDTO from "../dto/IElevadorDTO";
 import PisoRepo from "../repos/PisoRepo";
+import PontoRepo from "../repos/PontoRepo";
 import { IdElevador } from "../domain/elevador/IdElevador";
+import { Ponto } from "../domain/ponto/Ponto";
 
 export class ElevadorMap extends Mapper<Elevador>{
     public static toDTO(elevador: Elevador): IElevadorDTO {
@@ -23,21 +25,29 @@ export class ElevadorMap extends Mapper<Elevador>{
 
     public static async toDomain (raw: any): Promise<Elevador>{
         
+        
+        const pisoRepo = Container.get(PisoRepo);
+        const pontoRepo = Container.get(PontoRepo);
+        
+        let pisosServido: Piso[] = [];
+        for (let i = 0; i< raw.pisosServidos.length; i++){
+            pisosServido[i] = await pisoRepo.findByDomainId(raw.pisosServidos[i]);
+        }
+        let pontos: Ponto[] = [];
+        for (let i = 0; i< raw.pontos.length; i++){
+            pontos[i] = await pontoRepo.findByDomainId(raw.pontos[i]);
+        }
+        
+        
         const marcaOrError = MarcaElvador.create(raw.marca);
         const modeloOrError = ModeloElvador.create(raw.modelo);
         const numeroSerieOrError = NumeroSerieElevador.create(raw.numeroSerie);
         const descricaoOrError = DescricaoEdificio.create(raw.descricao);
         const idElevador = IdElevador.create(raw.domainId); 
-
-        const pisoRepo = Container.get(PisoRepo);
-
-        let pisosServido: Piso[] = [];
-        for (let i = 0; i< raw.pisosServidos.length; i++){
-            pisosServido[i] = await pisoRepo.findByDomainId(raw.pisosServidos[i]);
-        }
-
+        
         const elevadorOrError = Elevador.create({
             pisosServidos: pisosServido,
+            pontos: pontos,
             marca: marcaOrError.getValue(),
             modelo: modeloOrError.getValue(),
             numeroSerie: numeroSerieOrError.getValue(),
@@ -52,7 +62,8 @@ export class ElevadorMap extends Mapper<Elevador>{
     public static toPersistence (elevador: Elevador): any {
         return {
           domainId: elevador.returnIdElevador(),
-          pisosServidos: elevador.returnPisosServidos(),
+          pisosServidos: elevador.returnIdPisosServidos(),
+          pontos: elevador.returnIdPontos(),
           marca: elevador.returnMarca(),
           modelo: elevador.returnModelo(),
           numeroSerie: elevador.returnNumeroSerie(),

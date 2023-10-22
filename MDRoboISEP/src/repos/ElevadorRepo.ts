@@ -63,4 +63,21 @@ export default class ElevadorRepo implements IElevadorRepo{
             return null;
         }
     }
+
+    public async getMaxId(): Promise<number> {
+        try {
+            const maxIdResult = await this.elevadorSchema
+                .find({}, { id: 1 })
+                .sort({ id: -1 })
+                .limit(1);
+    
+            if (maxIdResult && maxIdResult.length > 0) {
+                return maxIdResult[0].id;
+            } else {
+                return 0; 
+            }
+        } catch (err) {
+            throw err;
+        }
+    }
 }
