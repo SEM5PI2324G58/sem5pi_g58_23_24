@@ -10,6 +10,7 @@ import IElevadorDTO from "../dto/IElevadorDTO";
 import PisoRepo from "../repos/PisoRepo";
 import PontoRepo from "../repos/PontoRepo";
 import { IdElevador } from "../domain/elevador/IdElevador";
+import { Ponto } from "../domain/ponto/Ponto";
 
 export class ElevadorMap extends Mapper<Elevador>{
     public static toDTO(elevador: Elevador): IElevadorDTO {
@@ -32,9 +33,11 @@ export class ElevadorMap extends Mapper<Elevador>{
         for (let i = 0; i< raw.pisosServidos.length; i++){
             pisosServido[i] = await pisoRepo.findByDomainId(raw.pisosServidos[i]);
         }
+        let pontos: Ponto[] = [];
+        for (let i = 0; i< raw.pontos.length; i++){
+            pontos[i] = await pontoRepo.findByDomainId(raw.pontos[i]);
+        }
         
-        let pontoSup = await pontoRepo.findByDomainId(raw.pontoSup);
-        let pontoInf = await pontoRepo.findByDomainId(raw.pontoInf);
         
         const marcaOrError = MarcaElvador.create(raw.marca);
         const modeloOrError = ModeloElvador.create(raw.modelo);
@@ -44,8 +47,7 @@ export class ElevadorMap extends Mapper<Elevador>{
         
         const elevadorOrError = Elevador.create({
             pisosServidos: pisosServido,
-            pontoSup : pontoSup,
-            pontoInf : pontoInf,
+            pontos: pontos,
             marca: marcaOrError.getValue(),
             modelo: modeloOrError.getValue(),
             numeroSerie: numeroSerieOrError.getValue(),
@@ -61,8 +63,7 @@ export class ElevadorMap extends Mapper<Elevador>{
         return {
           domainId: elevador.returnIdElevador(),
           pisosServidos: elevador.returnIdPisosServidos(),
-          pontoSup: elevador.returnIdPontoSup(),
-          pontoInf: elevador.returnIdPontoInf(),
+          pontos: elevador.returnIdPontos(),
           marca: elevador.returnMarca(),
           modelo: elevador.returnModelo(),
           numeroSerie: elevador.returnNumeroSerie(),

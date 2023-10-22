@@ -12,8 +12,7 @@ import { NumeroSerieElevador } from "./NumeroSerieElevador";
 
 interface ElevadorProps{
     pisosServidos: Piso[];
-    pontoSup : Ponto;
-    pontoInf : Ponto;
+    pontos : Ponto[];
     marca: MarcaElvador;
     modelo: ModeloElvador;
     numeroSerie: NumeroSerieElevador;
@@ -31,11 +30,12 @@ export class Elevador extends AggregateRoot<ElevadorProps>{
         }
         return ids;
     }
-    public returnIdPontoSup() : number{
-        return Number(this.props.pontoSup.id.toValue());
-    }
-    public returnIdPontoInf() : number{
-        return Number(this.props.pontoInf.id.toValue());
+    public returnIdPontos() : string[]{
+        let ids: string[] = [];
+        for (let i = 0; i < this.props.pontos.length; i++){
+            ids[i] = this.props.pontos[i].id.toString()
+        }
+        return ids;
     }
     public returnMarca() : string{
         return this.props.marca.props.marca;
@@ -57,16 +57,16 @@ export class Elevador extends AggregateRoot<ElevadorProps>{
 
         const guardedProps = [
             {argument: props.pisosServidos, argumentName: 'Lista de pisos servidos' },
-            {argument: props.pontoSup, argumentName: 'Ponto superior' },
-            {argument: props.pontoInf, argumentName: 'Ponto inferior' },
+            {argument: props.pontos, argumentName: 'Lista de pontos do elevador' },
+
         ]
 
         let guardResults : any[] = [];
         
         guardResults.push(Guard.againstNullOrUndefined(guardedProps[0].argument,guardedProps[0].argumentName));
-        guardResults.push(Guard.arrayHasGreaterLengthThan(guardedProps[0].argument as any[],1,guardedProps[0].argumentName));
+        guardResults.push(Guard.arrayHasGreaterLengthThan(guardedProps[0].argument,1,guardedProps[0].argumentName));
         guardResults.push(Guard.againstNullOrUndefined(guardedProps[1].argument,guardedProps[1].argumentName));
-        guardResults.push(Guard.againstNullOrUndefined(guardedProps[1].argument,guardedProps[1].argumentName));
+        guardResults.push(Guard.arrayHasGreaterLengthThan(guardedProps[1].argument,3,guardedProps[1].argumentName));
         
 
         const finalGuard = Guard.combine(guardResults);

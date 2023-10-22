@@ -13,13 +13,8 @@ const ElevadorSchema = new mongoose.Schema(
             required: true
         },
 
-        pontoSup: {
-            type: Number,
-            required: true
-        },
-
-        pontoInf: {
-            type: Number,
+        pontos: {
+            type: [String],
             required: true
         },
 

@@ -1,8 +1,7 @@
 export interface IElevadorPersistence{
     domainId: number;
     pisosServidos: number[];
-    pontoSup: number;
-    pontoInf: number;
+    pontos: string[];
     marca: string;
     modelo: string;
     numeroSerie: string;
