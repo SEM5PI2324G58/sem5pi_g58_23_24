@@ -1,0 +1,47 @@
+@startuml
+left to right direction
+actor "Ator" as ator
+actor "Gestor de Frota" as frota
+usecase "Criar Edificio" as UC1
+usecase "Editar Edifício" as UC2
+usecase "Criar Piso de um Edificio" as UC4
+usecase "Listar Edifícios com min e max de pisos" as UC20
+usecase "Listar todos os Edifícios" as UC3
+usecase "Listar todos os Pisos de um Edificio" as UC11
+usecase "Criar Elevador de um Edifício" as UC5
+usecase "Editar Elevador de um Edifício" as UC16
+usecase "Listar Elevadores de um Edifício" as UC17
+usecase "Criar Passagem entre Edifícios" as UC6
+usecase "Criar Sala de um Piso" as UC7
+usecase "Criar Tipo de Dispositivo" as UC8
+usecase "Adicionar Dispositivo à frota" as UC9
+usecase "Editar Piso" as UC10
+usecase "Listar Pisos de Edifício com passagens para outros edifícios"  as UC12
+usecase "Carregar Mapa de Piso" as UC13
+usecase "Editar passagem entre ediifícios" as UC14
+usecase "Listar passagens entre 2 edifícios" as UC15
+usecase "Inibir um robot" as UC18
+usecase "Consultar todos os robots de forta" as UC19
+
+ator --> UC1
+ator --> UC2
+ator --> UC3
+ator --> UC4
+ator --> UC5
+ator --> UC6
+frota --> UC7
+ator --> UC8
+ator --> UC9
+ator --> UC10
+ator --> UC11
+ator --> UC12
+ator --> UC13
+ator --> UC14
+ator --> UC15
+ator --> UC16
+ator --> UC17
+ator --> UC20
+frota --> UC18
+frota --> UC19
+
+@enduml

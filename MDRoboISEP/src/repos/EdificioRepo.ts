@@ -26,14 +26,14 @@ export default class EdificioRepo implements IEdificioRepo {
     
     const idX = edificio.id instanceof Codigo ? (<Codigo>edificio.id).toValue() : edificio.id;
 
-    const query = { domainId: idX}; 
+    const query = { codigo: idX}; 
     const roleDocument = await this.edificioSchema.findOne( query as FilterQuery<IEdificioPersistence & Document>);
 
     return !!roleDocument === true;
   }
 
   public async save (edificio: Edificio): Promise<Edificio> {
-    const query = { domainId: edificio.id.toString()}; 
+    const query = { codigo: edificio.id.toString()}; 
 
     const edificioDocument = await this.edificioSchema.findOne( query );
 
@@ -56,7 +56,7 @@ export default class EdificioRepo implements IEdificioRepo {
   }
 
   public async findByDomainId (codigo: Codigo | string): Promise<Edificio> {
-    const query = { domainId: codigo};
+    const query = { codigo: codigo};
     const edificioRecord = await this.edificioSchema.findOne( query as FilterQuery<IEdificioPersistence & Document> );
 
     if( edificioRecord != null) {

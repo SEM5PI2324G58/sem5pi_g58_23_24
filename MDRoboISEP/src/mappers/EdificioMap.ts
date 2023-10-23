@@ -65,14 +65,22 @@ export class EdificioMap extends Mapper<Edificio> {
   }
 
   public static toPersistence (edificio: Edificio): any {
-    return {
-      codigo: edificio.id.toString(),
-      nome: edificio.returnNome(),
-      descricao: edificio.returnDescricao(),
+    let dadosEdificio : any = {
+      codigo : edificio.returnEdificioId(),
       dimensaoX: edificio.returnDimensaoX(),
-      dimensaoY: edificio.returnDimensaoY(),
-      piso: edificio.returnListaPisosId(),
-      elevador: edificio.returnEdificioId()
+      dimensaoY:edificio.returnDimensaoY(),
+      piso : edificio.returnListaPisosId(),         
     }
+
+    if(edificio.props.elevador !== undefined){
+      dadosEdificio.elevador = edificio.returnElevadorId();
+    }
+    if(edificio.props.descricao !== undefined){
+      dadosEdificio.descricao = edificio.returnDescricao();
+    }
+    if(edificio.props.nome !== undefined){
+      dadosEdificio.nome = edificio.returnNome();
+    }
+    return dadosEdificio;
   }
 }
