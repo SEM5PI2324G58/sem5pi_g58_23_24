@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 const PisoSchema = new mongoose.Schema(
   {
-    domainId: { 
+    domainID: { 
       type: Number,
       unique: true
     },
@@ -20,7 +20,7 @@ const PisoSchema = new mongoose.Schema(
     },
 
     pontos: {
-      type: [[Number]],
+      type: [[String]],
       required: [true, 'Introduz os pontos'],
       index: true,
     },
