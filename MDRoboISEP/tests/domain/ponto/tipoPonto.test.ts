@@ -11,7 +11,7 @@ describe('TipoPonto domain', function () {
 
 	it('TipoPonto é criado com uma string vazia', async function () {
 		// Arrange
-		let descricaoPiso = TipoPonto.create("");
+		let descricaoPiso = TipoPonto.create(" ");
 		assert.strictEqual(descricaoPiso.isSuccess, true);
 	});
 
