@@ -52,6 +52,10 @@ export default {
     piso: {
       name: "PisoController",
       path: "../controllers/PisoController"
+    },
+    elevador: {
+      name: "ElevadorController",
+      path: "../controller/ElevadorController"
     }
   },
 
@@ -90,6 +94,10 @@ export default {
     role: {
       name: "RoleService",
       path: "../services/roleService"
+    },
+    elevador: {
+      name: "ElevadorService",
+      path: "../services/ElevadorService"
     },
     piso: {
       name: "PisoService",

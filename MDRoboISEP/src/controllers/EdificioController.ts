@@ -16,7 +16,7 @@ export default class EdificioController implements IEdificioController /* TODO: 
     try{
       const edificioOrError = await this.edificioServiceInstance.criarEdificio(req.body as IEdificioDTO) as Result<IEdificioDTO>;
       if (edificioOrError.isFailure) {
-        return res.status(402).send();
+        return res.json(edificioOrError.errorValue()).status(402).send();
       }
       const edificioDTO = edificioOrError.getValue();
       return res.json( edificioDTO ).status(201);

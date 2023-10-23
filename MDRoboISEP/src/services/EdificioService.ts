@@ -19,7 +19,8 @@ export default class EdificioService implements IEdificioService {
 
   public async criarEdificio(edificioDTO: IEdificioDTO): Promise<Result<IEdificioDTO>> {
       try{
-        if(this.edificioRepo.findByDomainId(edificioDTO.codigo) != null ){
+        const edificioDocument = await this.edificioRepo.findByDomainId(edificioDTO.codigo);
+        if(edificioDocument !== null ){
           return Result.fail<IEdificioDTO>("Edificio já existe")
         }else{
           let codigoOrError = Codigo.create(edificioDTO.codigo);

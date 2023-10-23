@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-10-19T13:16:25.403Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="-OM3Ru_cH8SsvbHd2sIg" version="22.0.5" type="device">
+<mxfile host="app.diagrams.net" modified="2023-10-23T14:55:06.095Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="y1h5K-IoYGivGk47oGZQ" version="22.0.6" type="device">
   <diagram name="Page-1" id="wal5_c3ND8b7d6j-piyN">
-    <mxGraphModel dx="1050" dy="566" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="910" dy="499" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -22,7 +22,7 @@
         <mxCell id="V9Nev0gOwY_i4Ct8wgDr-7" value="Controllers" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;verticalAlign=top;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
           <mxGeometry x="150" y="358" width="330" height="102" as="geometry" />
         </mxCell>
-        <mxCell id="V9Nev0gOwY_i4Ct8wgDr-8" value="Repositories" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#72C9F7;" parent="1" vertex="1">
+        <mxCell id="V9Nev0gOwY_i4Ct8wgDr-8" value="Repos" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#72C9F7;" parent="1" vertex="1">
           <mxGeometry x="510" y="389" width="140" height="60" as="geometry" />
         </mxCell>
         <mxCell id="V9Nev0gOwY_i4Ct8wgDr-9" value="IControllers" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#72C9F7;" parent="1" vertex="1">
@@ -31,16 +31,16 @@
         <mxCell id="V9Nev0gOwY_i4Ct8wgDr-10" value="ImplControllers" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#72C9F7;" parent="1" vertex="1">
           <mxGeometry x="330" y="389" width="140" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="V9Nev0gOwY_i4Ct8wgDr-11" value="AppServices" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;verticalAlign=top;fillColor=#ffafaf;" parent="1" vertex="1">
+        <mxCell id="V9Nev0gOwY_i4Ct8wgDr-11" value="Services" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;verticalAlign=top;fillColor=#ffafaf;" parent="1" vertex="1">
           <mxGeometry x="131.87" y="500" width="536.25" height="140" as="geometry" />
         </mxCell>
-        <mxCell id="V9Nev0gOwY_i4Ct8wgDr-13" value="IRepositories" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#72C9F7;" parent="1" vertex="1">
+        <mxCell id="V9Nev0gOwY_i4Ct8wgDr-13" value="IRepos" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#72C9F7;" parent="1" vertex="1">
           <mxGeometry x="510" y="559" width="140" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="V9Nev0gOwY_i4Ct8wgDr-14" value="IAppServices" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#72C9F7;" parent="1" vertex="1">
+        <mxCell id="V9Nev0gOwY_i4Ct8wgDr-14" value="IServices" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#72C9F7;" parent="1" vertex="1">
           <mxGeometry x="150" y="559" width="140" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="V9Nev0gOwY_i4Ct8wgDr-15" value="ImplAppServices" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#72C9F7;" parent="1" vertex="1">
+        <mxCell id="V9Nev0gOwY_i4Ct8wgDr-15" value="ImplServices" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#72C9F7;" parent="1" vertex="1">
           <mxGeometry x="329.99" y="559" width="140" height="60" as="geometry" />
         </mxCell>
         <mxCell id="V9Nev0gOwY_i4Ct8wgDr-16" value="Entities/Core/Domain" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;verticalAlign=top;fillColor=#ffe0c0;" parent="1" vertex="1">
