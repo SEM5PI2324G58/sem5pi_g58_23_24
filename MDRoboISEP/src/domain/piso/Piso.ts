@@ -66,4 +66,18 @@ export class Piso extends AggregateRoot<pisoProps> {
       return Result.ok<Piso>(piso);
     }
   }
+
+  public returnPontosParaElevador(xCoordSup: number, yCoordSup: number, orientacao : string) : Ponto[]{
+    let pontos: Ponto[] = [];
+
+    pontos.push(this.props.mapa[xCoordSup][yCoordSup]);
+
+    if (orientacao === 'norte'){  
+      pontos.push(this.props.mapa[xCoordSup][yCoordSup+1]);
+    }else if(orientacao === 'oeste'){
+      pontos.push(this.props.mapa[xCoordSup+1][yCoordSup]);
+    }
+
+    return pontos;
+  }
 }
