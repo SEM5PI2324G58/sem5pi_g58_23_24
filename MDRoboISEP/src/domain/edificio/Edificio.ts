@@ -108,4 +108,8 @@ export class Edificio extends AggregateRoot<EdificioProps> {
     }
     return true;
   }
+
+  public adicionarElevador(elevador : Elevador){
+    this.props.elevador = elevador;
+  }
 }
