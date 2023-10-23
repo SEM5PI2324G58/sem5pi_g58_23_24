@@ -104,6 +104,11 @@ export default async ({ expressApp }) => {
     path: config.services.piso.path
   }
 
+  const elevadorService = {
+    name: config.services.elevador.name,
+    path: config.services.elevador.path
+  }
+
   await dependencyInjectorLoader({
     mongoConnection,
     schemas: [
@@ -130,7 +135,8 @@ export default async ({ expressApp }) => {
     services: [
       roleService,
       edificioService,
-      pisoService
+      pisoService,
+      elevadorService
     ]
   });
   Logger.info('✌️ Schemas, Controllers, Repositories, Services, etc. loaded');

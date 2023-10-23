@@ -91,6 +91,10 @@ export default {
       name: "RoleService",
       path: "../services/roleService"
     },
+    elevador: {
+      name: "ElevadorService",
+      path: "../services/ElevadorService"
+    },
     piso: {
       name: "PisoService",
       path: "../services/PisoService"
