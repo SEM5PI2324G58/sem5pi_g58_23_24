@@ -59,13 +59,13 @@ export default class PisoService implements IPisoService{
         }
 
         let maxId = await this.pisoRepo.getMaxId();
-        
+        maxId = maxId + 1;
         const numeroPisoOuErro = await NumeroPiso.create(criarPisoDTO.numeroPiso);
-        const idPisoOuErro = await IdPiso.create(maxId + 1);
+        const idPisoOuErro = await IdPiso.create(maxId);
 
         let descricaoOuErro;
         let finalResult;
-        if(criarPisoDTO.descricaoPiso == null || criarPisoDTO.descricaoPiso == undefined){
+        if(criarPisoDTO.descricaoPiso == null || criarPisoDTO.descricaoPiso == undefined || criarPisoDTO.descricaoPiso == ""){
             descricaoOuErro = null;
             finalResult = Result.combine([numeroPisoOuErro,idPisoOuErro]) ;
         }else{
@@ -89,7 +89,7 @@ export default class PisoService implements IPisoService{
                 if(i == 0 && j ==0 ) {tipoPonto = TipoPonto.create("NorteOeste").getValue();}
                 else if((1 <= i && i < x && (j == 0 || j == y)) || (i == 0 && j == y)) {tipoPonto = TipoPonto.create("Norte").getValue();}
                 else if((1 <= j && j < y && (i == 0 || i == x)) || (i == x && j == 0)) {tipoPonto = TipoPonto.create("Oeste").getValue();}
-                else{tipoPonto = TipoPonto.create("").getValue();}
+                else{tipoPonto = TipoPonto.create(" ").getValue();}
                 let pontoOuErro = await Ponto.create({
                 coordenadas : Coordenadas.create({abscissa: x , ordenada: y }).getValue(),
                 tipoPonto: tipoPonto
@@ -115,7 +115,7 @@ export default class PisoService implements IPisoService{
 
         for (let i = 0; i <= x; i++) {
             for (let j = 0; j <= y ; j++) {
-                this.pontoRepo.save(ponto[i][j]);
+                await this.pontoRepo.save(ponto[i][j]);
             }
         }  
 
