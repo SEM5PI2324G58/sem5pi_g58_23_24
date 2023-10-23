@@ -59,6 +59,10 @@ export default async ({ expressApp }) => {
     path: config.controllers.piso.path
   }
 
+  const elevadorController = {
+    name: config.controllers.elevador.name,
+    path: config.controllers.elevador.path
+  }
 
   const roleRepo = {
     name: config.repos.role.name,
@@ -122,7 +126,8 @@ export default async ({ expressApp }) => {
     controllers: [
       roleController,
       edificioController,
-      pisoController
+      pisoController,
+      elevadorController
     ],
     repos: [
       roleRepo,

@@ -52,6 +52,10 @@ export default {
     piso: {
       name: "PisoController",
       path: "../controllers/PisoController"
+    },
+    elevador: {
+      name: "ElevadorController",
+      path: "../controller/ElevadorController"
     }
   },
 
