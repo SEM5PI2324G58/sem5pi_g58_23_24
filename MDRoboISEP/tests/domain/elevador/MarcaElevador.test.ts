@@ -26,4 +26,9 @@ describe('MarcaElevador', function(){
         assert.strictEqual(marcaElevador.isFailure, true);
     });
 
+    it('MarcaElevador é criada com string nula (é opcional)', async function () {
+        let marcaElevador = MarcaElevador.create(null);
+        assert.strictEqual(marcaElevador.isSuccess, true);
+    });
+
 });
