@@ -4,6 +4,7 @@ import user from './routes/userRoute';
 import role from './routes/roleRoute';
 import piso from './routes/pisoRoute'
 import edificio from './routes/edificioRoute'
+import elevador from './routes/elevadorRoute'
 
 export default () => {
 	const app = Router();
@@ -13,5 +14,6 @@ export default () => {
 	role(app);
 	piso(app);
 	edificio(app);
+	elevador(app);
 	return app
 }
