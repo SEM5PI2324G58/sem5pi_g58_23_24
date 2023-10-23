@@ -1,0 +1,27 @@
+import { Router } from 'express';
+import { celebrate, Joi } from 'celebrate';
+
+import { Container } from 'typedi';
+import IEdificioController from '../../controllers/IControllers/IEdificioController'; 
+
+import config from "../../../config";
+
+const route = Router();
+
+export default (app: Router) => {
+  app.use('/edificio', route);
+
+  const ctrl = Container.get(config.controllers.edificio.name) as IEdificioController;
+
+  route.post('',
+    celebrate({
+      body: Joi.object({
+        codigo: Joi.string().required(),
+        nome: Joi.string(),
+        descricao: Joi.string(),
+        dimensaoX: Joi.number().required(),
+        dimensaoY: Joi.number().required(),
+      })
+    }),
+    (req, res, next) => ctrl.criarEdificio(req, res, next));
+};
