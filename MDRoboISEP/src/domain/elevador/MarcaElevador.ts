@@ -2,16 +2,16 @@ import { ValueObject } from "../../core/domain/ValueObject";
 import { Guard } from "../../core/logic/Guard";
 import { Result } from "../../core/logic/Result";
 
-interface MarcaElvadorProps{
+interface MarcaElevadorProps{
     marca : string; 
 }
 
-export class MarcaElvador extends ValueObject<MarcaElvadorProps>{
-    private constructor (props : MarcaElvadorProps) {
+export class MarcaElevador extends ValueObject<MarcaElevadorProps>{
+    private constructor (props : MarcaElevadorProps) {
         super(props)
     }
 
-    public static create(marca : string): Result<MarcaElvador>{
+    public static create(marca : string): Result<MarcaElevador>{
         
         let guardResults : any[] = [];
         guardResults.push(Guard.stringLengthLessOrEqualThan(marca,50,"Marca do elevador"));
@@ -20,9 +20,9 @@ export class MarcaElvador extends ValueObject<MarcaElvadorProps>{
         const finalGuard = Guard.combine(guardResults);
 
         if (!finalGuard.succeeded) {
-            return Result.fail<MarcaElvador>(finalGuard.message);
+            return Result.fail<MarcaElevador>(finalGuard.message);
         } else {
-            return Result.ok<MarcaElvador>(new MarcaElvador({ marca : marca}))
+            return Result.ok<MarcaElevador>(new MarcaElevador({ marca : marca}))
         }
     }
 }

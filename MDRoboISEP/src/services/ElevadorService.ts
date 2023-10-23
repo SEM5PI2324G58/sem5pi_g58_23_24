@@ -8,10 +8,10 @@ import config from "../../config";
 import ICriarElevadorDTO from "../dto/ICriarElevadorDTO";
 import { Piso } from "../domain/piso/Piso";
 import { IdElevador } from "../domain/elevador/IdElevador";
-import { MarcaElvador } from "../domain/elevador/MarcaElevador";
-import { ModeloElvador } from "../domain/elevador/ModeloElevador";
+import { MarcaElevador } from "../domain/elevador/MarcaElevador";
+import { ModeloElevador } from "../domain/elevador/ModeloElevador";
 import { NumeroSerieElevador } from "../domain/elevador/NumeroSerieElevador";
-import { DescricaoElvador } from "../domain/elevador/DescricaoElevador";
+import { DescricaoElevador } from "../domain/elevador/DescricaoElevador";
 import { Ponto } from "../domain/ponto/Ponto";
 import { Elevador } from "../domain/elevador/Elevador";
 
@@ -79,10 +79,10 @@ export default class ElevadorService implements IElevadorService{
                 return Result.fail<ICriarElevadorDTO>('Marca e modelo têm de existir ou não simultâneamente');
             }
 
-            let marcaOrError = MarcaElvador.create(elevadorDTO.marca);
-            let modeloOrError = ModeloElvador.create(elevadorDTO.modelo);
+            let marcaOrError = MarcaElevador.create(elevadorDTO.marca);
+            let modeloOrError = ModeloElevador.create(elevadorDTO.modelo);
             let numeroSerieOrError = NumeroSerieElevador.create(elevadorDTO.numeroSerie);
-            let descricaoOrError = DescricaoElvador.create(elevadorDTO.descricao);
+            let descricaoOrError = DescricaoElevador.create(elevadorDTO.descricao);
 
             let finalResult = Result.combine([marcaOrError,modeloOrError,numeroSerieOrError,descricaoOrError]);
 

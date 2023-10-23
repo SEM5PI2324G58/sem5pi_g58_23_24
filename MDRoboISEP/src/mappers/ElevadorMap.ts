@@ -2,8 +2,8 @@ import Container from "typedi";
 import { Mapper } from "../core/infra/Mapper";
 import { DescricaoEdificio } from "../domain/edificio/DescricaoEdificio";
 import { Elevador } from "../domain/elevador/Elevador";
-import { MarcaElvador } from "../domain/elevador/MarcaElevador";
-import { ModeloElvador } from "../domain/elevador/ModeloElevador";
+import { MarcaElevador } from "../domain/elevador/MarcaElevador";
+import { ModeloElevador } from "../domain/elevador/ModeloElevador";
 import { NumeroSerieElevador } from "../domain/elevador/NumeroSerieElevador";
 import { Piso } from "../domain/piso/Piso";
 import IElevadorDTO from "../dto/IElevadorDTO";
@@ -39,8 +39,8 @@ export class ElevadorMap extends Mapper<Elevador>{
         }
         
         
-        const marcaOrError = MarcaElvador.create(raw.marca);
-        const modeloOrError = ModeloElvador.create(raw.modelo);
+        const marcaOrError = MarcaElevador.create(raw.marca);
+        const modeloOrError = ModeloElevador.create(raw.modelo);
         const numeroSerieOrError = NumeroSerieElevador.create(raw.numeroSerie);
         const descricaoOrError = DescricaoEdificio.create(raw.descricao);
         const idElevador = IdElevador.create(raw.domainId); 

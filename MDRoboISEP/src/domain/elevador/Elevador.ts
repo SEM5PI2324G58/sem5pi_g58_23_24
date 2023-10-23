@@ -4,19 +4,19 @@ import { Guard } from "../../core/logic/Guard";
 import { Result } from "../../core/logic/Result";
 import { Piso } from "../piso/Piso";
 import { Ponto } from "../ponto/Ponto";
-import { DescricaoElvador } from "./DescricaoElevador";
+import { DescricaoElevador } from "./DescricaoElevador";
 import { IdElevador } from "./IdElevador";
-import { MarcaElvador } from "./MarcaElevador";
-import { ModeloElvador } from "./ModeloElevador";
+import { MarcaElevador } from "./MarcaElevador";
+import { ModeloElevador } from "./ModeloElevador";
 import { NumeroSerieElevador } from "./NumeroSerieElevador";
 
 interface ElevadorProps{
     pisosServidos: Piso[];
     pontos : Ponto[];
-    marca: MarcaElvador;
-    modelo: ModeloElvador;
+    marca: MarcaElevador;
+    modelo: ModeloElevador;
     numeroSerie: NumeroSerieElevador;
-    descricao: DescricaoElvador;
+    descricao: DescricaoElevador;
 }
 
 export class Elevador extends AggregateRoot<ElevadorProps>{
