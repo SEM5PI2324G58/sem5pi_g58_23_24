@@ -33,7 +33,7 @@ export default class PisoRepo implements IPisoRepo {
   }
 
   public async save (piso: Piso): Promise<Piso> {
-    const query = { domainId: piso.id.toString()}; 
+    const query = { domainID: piso.id.toString()}; 
 
     const pisoDocument = await this.pisoSchema.findOne( query );
 
@@ -56,7 +56,7 @@ export default class PisoRepo implements IPisoRepo {
   }
 
   public async findByDomainId (idPiso: IdPiso | number): Promise<Piso> {
-    const query = { domainId: idPiso};
+    const query = { domainID: idPiso};
     const pisoRecord = await this.pisoSchema.findOne( query as FilterQuery<IPisoPersistence & Document> );
 
     if( pisoRecord != null) {
@@ -68,13 +68,12 @@ export default class PisoRepo implements IPisoRepo {
 
   public async getMaxId(): Promise<number> {
     try {
-        const maxIdResult = await this.pisoSchema
-            .find({}, { id: 1 })
-            .sort({ id: -1 })
-            .limit(1);
+        var maxIdResult = await this.pisoSchema
+            .find({}, { domainID: 1 })
+           ;
 
         if (maxIdResult && maxIdResult.length > 0) {
-            return maxIdResult[0].id;
+            return (maxIdResult.sort((a, b) => b.domainID - a.domainID))[0].domainID;
         } else {
             return 0; 
         }

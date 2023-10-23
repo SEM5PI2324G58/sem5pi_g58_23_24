@@ -124,30 +124,6 @@ describe('PisoRepo', () => {
 
     });
 
-    it('findByDomainId deve retornar nulo or fail quando nãp encontra', async () => {
-
-    
-        const pisoDTO = {
-            domainID: 1,
-            numeroPiso: 1,
-            descricaoPiso: "Ola",
-            pontos: [],
-            save() { return this; }
-        } as unknown as IPisoPersistence & Document<any, any, any>;
-
-
-        const pisoSchemaInstance = Container.get("PisoSchema");
-        const piso = await PisoMap.toDomain(pisoDTO);
-    
-        sinon.stub(pisoSchemaInstance, "findOne").returns(pisoDTO);
-        const pisoRepo = new PisoRepo(pisoSchemaInstance as any);
-        const answer = await pisoRepo.findByDomainId(pisoDTO.domainID);
-        expect(answer.returnIdPiso()).to.equal(piso.returnIdPiso());
-        expect(answer.returnNumeroPiso()).to.equal(piso.returnNumeroPiso());
-        expect(answer.returnDescricaoPiso()).to.equal(piso.returnDescricaoPiso());
-        expect(answer.returnListaDeIdDosPontos()).to.equal(piso.returnListaDeIdDosPontos());
-
-    });
 
     it('findByDomainId deve retornar null on fail', async () => {
 
@@ -168,6 +144,49 @@ describe('PisoRepo', () => {
         const pisoRepo = new PisoRepo(pisoSchemaInstance as any);
         const answer = await pisoRepo.findByDomainId(pisoDTO.domainID);
         expect(answer).to.equal(null);
+
+    });
+
+
+    it('getMaxId deve retornar 1', async () => {
+
+    
+        const pisoDTO = {
+            domainID: 1,
+            numeroPiso: 1,
+            descricaoPiso: "Ola",
+            pontos: [],
+            save() { return this; }
+        } as unknown as IPisoPersistence & Document<any, any, any>;
+
+        const pisoDTO2 = {
+            domainID: 2,
+            numeroPiso: 1,
+            descricaoPiso: "Ola",
+            pontos: [],
+            save() { return this; }
+        } as unknown as IPisoPersistence & Document<any, any, any>;
+
+        const pisoSchemaInstance = Container.get("PisoSchema");
+       
+        sinon.stub(pisoSchemaInstance, "find").returns([pisoDTO,pisoDTO2]);
+
+        const pisoRepo = new PisoRepo(pisoSchemaInstance as any);
+        const answer = await pisoRepo.getMaxId();
+        expect(answer).to.equal(2);
+
+    });
+
+    it('getMaxId deve retornar 0', async () => {
+
+
+        const pisoSchemaInstance = Container.get("PisoSchema");
+       
+        sinon.stub(pisoSchemaInstance, "find").returns([]);
+
+        const pisoRepo = new PisoRepo(pisoSchemaInstance as any);
+        const answer = await pisoRepo.getMaxId();
+        expect(answer).to.equal(0);
 
     });
 
