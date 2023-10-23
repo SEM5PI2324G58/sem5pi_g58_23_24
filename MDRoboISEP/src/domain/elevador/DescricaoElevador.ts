@@ -6,12 +6,12 @@ interface DescricaoElevadorProps{
     descricao : string;
 }
 
-export class DescricaoElvador extends ValueObject<DescricaoElevadorProps>{
+export class DescricaoElevador extends ValueObject<DescricaoElevadorProps>{
     private constructor (props : DescricaoElevadorProps) {
         super(props)
     }
 
-    public static create(descricao : string): Result<DescricaoElvador>{
+    public static create(descricao : string): Result<DescricaoElevador>{
         
         let guardResults : any[] = [];
         guardResults.push(Guard.stringLengthLessOrEqualThan(descricao,250,"Descrição do elevador"));
@@ -20,9 +20,9 @@ export class DescricaoElvador extends ValueObject<DescricaoElevadorProps>{
         const finalGuard = Guard.combine(guardResults);
 
         if (!finalGuard.succeeded) {
-            return Result.fail<DescricaoElvador>(finalGuard.message);
+            return Result.fail<DescricaoElevador>(finalGuard.message);
         } else {
-            return Result.ok<DescricaoElvador>(new DescricaoElvador({ descricao : descricao}))
+            return Result.ok<DescricaoElevador>(new DescricaoElevador({ descricao : descricao}))
         }
     }
 }
