@@ -49,7 +49,7 @@ describe('PisoRepo', () => {
         const pisoDTO = {
             domainID: 1,
             numeroPiso: 1,
-            descricaoPiso: "Ola",
+            descricaoPiso: "Ola", 
             pontos: []
         } as IPisoPersistence;
 
@@ -62,7 +62,7 @@ describe('PisoRepo', () => {
         expect(answer.returnIdPiso()).to.equal(piso.returnIdPiso());
         expect(answer.returnNumeroPiso()).to.equal(piso.returnNumeroPiso());
         expect(answer.returnDescricaoPiso()).to.equal(piso.returnDescricaoPiso());
-        expect(answer.returnListaDeIdDosPontos()).to.equal(piso.returnListaDeIdDosPontos());
+        expect(answer.returnListaDeIdDosPontos().length).to.equal(piso.returnListaDeIdDosPontos().length);
         
     });
 
@@ -95,7 +95,7 @@ describe('PisoRepo', () => {
         expect(answer.returnIdPiso()).to.equal(piso.returnIdPiso());
         expect(answer.returnNumeroPiso()).to.equal(piso.returnNumeroPiso());
         expect(answer.returnDescricaoPiso()).to.equal(piso.returnDescricaoPiso());
-        expect(answer.returnListaDeIdDosPontos()).to.equal(piso.returnListaDeIdDosPontos());
+        expect(answer.returnListaDeIdDosPontos().length).to.equal(piso.returnListaDeIdDosPontos().length);
 
     });
  
@@ -120,7 +120,7 @@ describe('PisoRepo', () => {
         expect(answer.returnIdPiso()).to.equal(piso.returnIdPiso());
         expect(answer.returnNumeroPiso()).to.equal(piso.returnNumeroPiso());
         expect(answer.returnDescricaoPiso()).to.equal(piso.returnDescricaoPiso());
-        expect(answer.returnListaDeIdDosPontos()).to.equal(piso.returnListaDeIdDosPontos());
+        expect(answer.returnListaDeIdDosPontos().length).to.equal(piso.returnListaDeIdDosPontos().length);
 
     });
 

@@ -17,7 +17,7 @@ describe('ponto domain', function () {
 	it('ponto é criado com sucesso', async function () {
 		// Arrange
 		let idPonto = IdPonto.create("b.1.1").getValue();
-		let tipoPonto = TipoPonto.create("").getValue();
+		let tipoPonto = TipoPonto.create(" ").getValue();
 		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
 		let ponto = Ponto.create({coordenadas:coordenadas,tipoPonto:tipoPonto},idPonto);
 
