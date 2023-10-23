@@ -17,12 +17,11 @@ import { Elevador } from "../domain/elevador/Elevador";
 
 
 @Service()
-export class ElevadorService implements IElevadorService{
+export default class ElevadorService implements IElevadorService{
     
     constructor(
-        @Inject(config.repos.elevador.name) private elevadorRepo : IElevadorRepo,
         @Inject(config.repos.edificio.name) private edificioRepo : IEdificioRepo,
-        @Inject(config.repos.piso.name) private pisoRepo : IPisoRepo
+        @Inject(config.repos.elevador.name) private elevadorRepo : IElevadorRepo
     ){}
     
     

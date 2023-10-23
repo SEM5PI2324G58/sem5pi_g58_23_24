@@ -55,7 +55,7 @@ export default {
     },
     elevador: {
       name: "ElevadorController",
-      path: "../controller/ElevadorController"
+      path: "../controllers/ElevadorController"
     }
   },
 
@@ -95,13 +95,13 @@ export default {
       name: "RoleService",
       path: "../services/roleService"
     },
+    piso: {
+      name: "PisoService",
+      path: "../services/PisoService"
+    },
     elevador: {
       name: "ElevadorService",
       path: "../services/ElevadorService"
     },
-    piso: {
-      name: "PisoService",
-      path: "../services/PisoService"
-    }
   },
 };
