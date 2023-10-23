@@ -16,7 +16,7 @@ export class PontoMap extends Mapper<Ponto> {
   
   public static toDTO(ponto: Ponto): IPontoDTO {
     return {
-      id: ponto.returnIdPiso(),
+      id: ponto.returnIdPonto(),
       abscissa: ponto.returnAbscissa(),
       ordenada: ponto.returnOrdenada(),
       tipoPonto: ponto.returnTipoPonto()
@@ -42,7 +42,7 @@ export class PontoMap extends Mapper<Ponto> {
 
   public static toPersistence (ponto: Ponto): any {
     return {
-        domainId: ponto.returnIdPiso(),
+        domainId: ponto.returnIdPonto(),
         abscissa: ponto.returnAbscissa(),
         ordenada: ponto.returnOrdenada(),
         tipoPonto: ponto.returnTipoPonto()

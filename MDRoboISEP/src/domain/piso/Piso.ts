@@ -11,7 +11,7 @@ import { Ponto } from "../ponto/Ponto";
 interface pisoProps {
   numeroPiso: NumeroPiso;
   descricaoPiso: DescricaoPiso;
-  mapa: Ponto[][]
+  mapa: Ponto[][];
 }
 
 export class Piso extends AggregateRoot<pisoProps> {
@@ -28,11 +28,12 @@ export class Piso extends AggregateRoot<pisoProps> {
     return this.props.descricaoPiso.props.descricao;
   }
 
-  public returnListaDeIdDosPontos() : number[][]{
-    let ids: number[][];
+  public returnListaDeIdDosPontos() : string[][]{
+    let ids: string[][] = [];
     for (let i = 0; i < this.props.mapa.length; i++) {
+      ids[i] = [];
       for (let j = 0; j < this.props.mapa[i].length; j++) {
-        ids[i][j] = Number(this.props.mapa[i][j].id.toValue());
+        ids[i][j] = this.props.mapa[i][j].id.toString();
       }
     }  
     return ids;
