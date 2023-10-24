@@ -57,10 +57,11 @@ describe('ElevadorService ', () => {
         
         for (let i = 0; i < 2; i++){
             //Criar o mapa
-            let pontoArray: Ponto[][] = [[]]
+            let pontoArray: Ponto[][] = []
 
 
             for(let j = 0 ; j<2 ; j++){
+                pontoArray[j] = []
                 for(let k = 0; k<2;k++){
                     
                     let idPonto = IdPonto.create("ED01."+(k+j)+".1").getValue();
