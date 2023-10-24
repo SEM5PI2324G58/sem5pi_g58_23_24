@@ -1,0 +1,18 @@
+autonumber
+
+participant MDRoboISEP as sistema <<Container (C4)>>
+participant SGBD as sgdb <<Container>>
+
+[o-> sistema: listar edificios com minimo e maximo pisos e insere a informação (min, max)
+activate sistema
+sistema	-> sgdb: getAllEdificios()
+activate sgdb   
+return listaEdificios
+alt
+<-- sistema: Ok
+else "Erro"
+<-- sistema: Erro
+end alt
+
+
+ 
