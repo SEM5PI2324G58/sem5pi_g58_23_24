@@ -1,4 +1,4 @@
-import { Edificio } from ;
+import { Edificio } from '../../../src/domain/edificio/Edificio';
 import {it} from 'mocha';
 
 import {expect} from 'chai';
