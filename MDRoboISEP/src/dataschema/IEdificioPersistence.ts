@@ -1,7 +1,7 @@
 export interface IEdificioPersistence {
 	codigo: string;
 	nome: string;
-	descricao: number;
+	descricao: string;
 	dimensaoX: number;
 	dimensaoY: number;
 	piso: number[];
