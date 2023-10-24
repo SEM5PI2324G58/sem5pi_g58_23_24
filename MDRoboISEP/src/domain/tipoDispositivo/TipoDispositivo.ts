@@ -36,11 +36,14 @@ export class TipoDispositivo extends AggregateRoot<TipoDispositivoProps>{
         {argument: props.marca, argumentName: 'Marca'},
         {argument: props.modelo, argumentName: 'Modelo'}];
         const guardResult = Guard.againstNullOrUndefinedBulk(guardedProps);
-        const guardResul2 = Guard.valueRepeatedInArray(props.tipoTarefa, 'Tipo de Tarefa');
-        if (!guardResult.succeeded) {
+        let guardResult2;
+        if(guardResult.succeeded){
+            guardResult2 = Guard.valueRepeatedInArray(props.tipoTarefa, 'Tipo de Tarefa');
+        }else{
             return Result.fail<TipoDispositivo>(guardResult.message);
-        }else if(!guardResul2.succeeded){
-            return Result.fail<TipoDispositivo>(guardResul2.message);
+        }
+        if(!guardResult2.succeeded){
+            return Result.fail<TipoDispositivo>(guardResult2.message);
         }else {
             const tipoDispositivo = new TipoDispositivo({
               ...props
