@@ -36,7 +36,8 @@ export default class ElevadorService implements IElevadorService{
             if (edificio.temElevador()){
                 return Result.fail<ICriarElevadorDTO>("Edificio já tem um elevador.")
             }
-            if (edificio.posicaoValidaNoMapa(elevadorDTO.xCoord,elevadorDTO.yCoord,elevadorDTO.orientacao)){
+
+            if (!edificio.posicaoValidaNoMapa(elevadorDTO.xCoord,elevadorDTO.yCoord,elevadorDTO.orientacao)){
                 return Result.fail<ICriarElevadorDTO>("A posição do elevador não é válida para o edifício")
             }
             
@@ -45,7 +46,7 @@ export default class ElevadorService implements IElevadorService{
             let pisosEdificio: Piso[] = edificio.props.listaPisos;
 
             for (let i = 0; i < pisosEdificio.length;i++ ){
-                for(let j = 0; i < elevadorDTO.pisosServidos.length; j++){
+                for(let j = 0; j < elevadorDTO.pisosServidos.length; j++){
                     if(pisosEdificio[i].returnNumeroPiso() === elevadorDTO.pisosServidos[j]){
                         pisosServidos.push(pisosEdificio[i]);
                     }
@@ -60,7 +61,7 @@ export default class ElevadorService implements IElevadorService{
             let pontos: Ponto[] = [];
             for (let i = 0; i < pisosServidos.length; i++){
                 let pisoPontos = pisosServidos[i].returnPontosParaElevador(elevadorDTO.xCoord,elevadorDTO.yCoord,elevadorDTO.orientacao);
-                for(let j = 0; i < pisoPontos.length; j++){
+                for(let j = 0; j < pisoPontos.length; j++){
                     pontos.push(pisoPontos[j]);
                 }
             }
@@ -73,11 +74,13 @@ export default class ElevadorService implements IElevadorService{
             if(idElevadorOrError.isFailure){
                 return Result.fail<ICriarElevadorDTO>(idElevadorOrError.errorValue());
             }
-            
+            /*
+            // TODO mudar para o domínio 
             if ((elevadorDTO.marca === null && elevadorDTO.modelo !== null) ||
             (elevadorDTO.marca !== null && elevadorDTO.modelo === null)){
                 return Result.fail<ICriarElevadorDTO>('Marca e modelo têm de existir ou não simultâneamente');
             }
+            */
 
             let marcaOrError = MarcaElevador.create(elevadorDTO.marca);
             let modeloOrError = ModeloElevador.create(elevadorDTO.modelo);
