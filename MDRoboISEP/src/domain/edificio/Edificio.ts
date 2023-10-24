@@ -29,8 +29,10 @@ export class Edificio extends AggregateRoot<EdificioProps> {
   
   public static create (props:EdificioProps, codigo :UniqueEntityID): Result<Edificio> {
     
-    const guardedProps = { argument: props.dimensao, argumentName: 'dimensão' };
-    const result = Guard.againstNullOrUndefined(guardedProps.argument,guardedProps.argumentName);
+    const guardedProps = [{argument: props.dimensao, argumentName: 'dimensão'},
+    {argument: props.listaPisos, argumentName: 'lista de pisos'}];
+
+    const result = Guard.againstNullOrUndefinedBulk(guardedProps);
     
     if(result.succeeded === false){
       return Result.fail<Edificio>(result.message);
@@ -40,11 +42,11 @@ export class Edificio extends AggregateRoot<EdificioProps> {
     }
   }
   
-  public returnNome(): String{
+  public returnNome(): string{
     return this.props.nome.props.nome;
   }
   
-  public returnDescricao(): String{
+  public returnDescricao(): string{
     return this.props.descricao.props.descricao;
   }
   
