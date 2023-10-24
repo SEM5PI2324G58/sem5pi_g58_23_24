@@ -67,6 +67,15 @@ export class Edificio extends AggregateRoot<EdificioProps> {
     }
     return listaPisos;
   }
+
+  public verificaSePisoJaExiste(nPiso : number): boolean{
+    for (let i = 0; i < this.props.listaPisos.length; i++) {
+      if(this.props.listaPisos[i].returnNumeroPiso() === nPiso){
+          return true;
+      }
+    }
+    return false;
+  }
   /**
    * Verifica se já existe um elevador no edifício
    * @returns true se existir um elevador, false caso contrário
