@@ -56,7 +56,11 @@ export default {
     elevador: {
       name: "ElevadorController",
       path: "../controllers/ElevadorController"
-    }
+    },
+    tipoDispositivo: {
+      name: "TipoDispositivoController",
+      path: "../controllers/TipoDispositivoController"
+    },
   },
 
   repos: {
@@ -83,7 +87,11 @@ export default {
     elevador: {
       name: "ElevadorRepo",
       path: "../repos/ElevadorRepo"
-    }
+    },
+    tipoDispositivo: {
+      name: "TipoDispositivoRepo",
+      path: "../repos/TipoDispositivoRepo"
+    },
   },
 
   services: {
@@ -102,6 +110,10 @@ export default {
     elevador: {
       name: "ElevadorService",
       path: "../services/ElevadorService"
+    },
+    tipoDispositivo: {
+      name: "TipoDispositivoService",
+      path: "../services/TipoDispositivoService"
     },
   },
 };

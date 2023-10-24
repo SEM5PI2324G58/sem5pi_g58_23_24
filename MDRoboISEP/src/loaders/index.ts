@@ -44,6 +44,12 @@ export default async ({ expressApp }) => {
     schema: '../persistence/schemas/ElevadorSchema',
   };
 
+  const tipoDispositivoSchema = {
+    // compare with the approach followed in repos and services
+    name: 'tipoDispositivoSchema',
+    schema: '../persistence/schemas/tipoDispositivoSchema',
+  };
+
   const roleController = {
     name: config.controllers.role.name,
     path: config.controllers.role.path
@@ -62,6 +68,11 @@ export default async ({ expressApp }) => {
   const elevadorController = {
     name: config.controllers.elevador.name,
     path: config.controllers.elevador.path
+  }
+
+  const tipoDispositivoController = {
+    name: config.controllers.tipoDispositivo.name,
+    path: config.controllers.tipoDispositivo.path
   }
 
   const roleRepo = {
@@ -92,6 +103,10 @@ export default async ({ expressApp }) => {
     name: config.repos.elevador.name,
     path: config.repos.elevador.path
   }
+  const tipoDispositivoRepo = {
+    name: config.repos.tipoDispositivo.name,
+    path: config.repos.tipoDispositivo.path
+  }
 
   const roleService = {
     name: config.services.role.name,
@@ -113,6 +128,11 @@ export default async ({ expressApp }) => {
     path: config.services.elevador.path
   }
 
+  const tipoDispositivoService = {
+    name: config.services.tipoDispositivo.name,
+    path: config.services.tipoDispositivo.path
+  }
+
   await dependencyInjectorLoader({
     mongoConnection,
     schemas: [
@@ -121,13 +141,15 @@ export default async ({ expressApp }) => {
       pisoSchema,
       pontoSchema,
       EdificioSchema,
-      elevadorSchema
+      elevadorSchema,
+      tipoDispositivoSchema
     ],
     controllers: [
       roleController,
       edificioController,
       pisoController,
-      elevadorController
+      elevadorController,
+      tipoDispositivoController
     ],
     repos: [
       roleRepo,
@@ -135,13 +157,15 @@ export default async ({ expressApp }) => {
       pisoRepo,
       pontoRepo,
       edificioRepo,
-      elevadorRepo
+      elevadorRepo,
+      tipoDispositivoRepo
     ],
     services: [
       roleService,
       edificioService,
       pisoService,
-      elevadorService
+      elevadorService,
+      tipoDispositivoService
     ]
   });
   Logger.info('✌️ Schemas, Controllers, Repositories, Services, etc. loaded');

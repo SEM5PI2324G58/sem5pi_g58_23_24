@@ -5,7 +5,7 @@ import role from './routes/roleRoute';
 import piso from './routes/pisoRoute'
 import edificio from './routes/edificioRoute'
 import elevador from './routes/elevadorRoute'
-
+import tipoDispositivo from './routes/tipoDispositivoRoute'
 export default () => {
 	const app = Router();
 
@@ -15,5 +15,6 @@ export default () => {
 	piso(app);
 	edificio(app);
 	elevador(app);
+	tipoDispositivo(app);
 	return app
 }
