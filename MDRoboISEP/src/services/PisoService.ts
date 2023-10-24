@@ -40,21 +40,16 @@ export default class PisoService implements IPisoService{
 
   public async criarPiso(criarPisoDTO: ICriarPisoDTO): Promise<Result<ICriarPisoDTO>> {
     try {
-        const edifDocument = await this.edifRepo.findByDomainId(criarPisoDTO.codigo);
-        let found = !!edifDocument;
-        if(!found){
+        const edificio = await this.edifRepo.findByDomainId(criarPisoDTO.codigo);
+        let flag = !!edificio;
+        if(!flag){
             return Result.fail<ICriarPisoDTO>("O edificio com o código " + criarPisoDTO.codigo +" não existe");
         }
         
-        let pisos = edifDocument.props.listaPisos;
+        edificio.props.listaPisos;
 
-        found = false;
-        for (let i = 0; i < pisos.length; i++) {
-            if(pisos[i].returnNumeroPiso() === criarPisoDTO.numeroPiso){
-                found = true;
-            }
-        }
-        if(found){
+        flag = edificio.verificaSePisoJaExiste(criarPisoDTO.numeroPiso)
+        if(flag){
             return Result.fail<ICriarPisoDTO>("O piso numero " + criarPisoDTO.numeroPiso +" já existe");
         }
 
@@ -79,8 +74,8 @@ export default class PisoService implements IPisoService{
         }
         
         let ponto : Ponto[][] = [];
-        let x = edifDocument.props.dimensao.props.x;
-        let y = edifDocument.props.dimensao.props.y;
+        let x = edificio.props.dimensao.props.x;
+        let y = edificio.props.dimensao.props.y;
         let contador = 1;
         for (let i = 0; i <= x; i++) {
             ponto[i] = [];
@@ -111,7 +106,7 @@ export default class PisoService implements IPisoService{
             return Result.fail<ICriarPisoDTO>(pisoOuErro.errorValue());
         }
 
-        edifDocument.addPiso(pisoOuErro.getValue());
+        edificio.addPiso(pisoOuErro.getValue());
 
         for (let i = 0; i <= x; i++) {
             for (let j = 0; j <= y ; j++) {
@@ -122,7 +117,7 @@ export default class PisoService implements IPisoService{
 
         await this.pisoRepo.save(pisoOuErro.getValue());
         
-        await this.edifRepo.save(edifDocument);
+        await this.edifRepo.save(edificio);
 
         return Result.ok<ICriarPisoDTO>(criarPisoDTO);
     } catch (e) {
