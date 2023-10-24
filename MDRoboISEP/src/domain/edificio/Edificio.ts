@@ -124,7 +124,7 @@ export class Edificio extends AggregateRoot<EdificioProps> {
     this.props.elevador = elevador;
   }
 
-  public returnElevadorId(): string{
-    return this.props.elevador.id.toString();
+  public returnElevadorId(): number{
+    return Number(this.props.elevador.id.toValue());
   }
 }
