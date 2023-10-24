@@ -5,6 +5,7 @@ import { Result } from "../core/logic/Result";
 import IEdificioController from './IControllers/IEdificioController';
 import IEdificioService from '../services/IServices/IEdificioService';
 import IEdificioDTO from '../dto/IEdificioDTO';
+import IListarEdMinEMaxPisosDTO from '../dto/IListarEdMinEMaxPisosDTO';
 
 @Service()
 export default class EdificioController implements IEdificioController /* TODO: extends ../core/infra/BaseController */ {
@@ -15,6 +16,20 @@ export default class EdificioController implements IEdificioController /* TODO: 
   public async criarEdificio(req: Request, res: Response, next: NextFunction) {
     try{
       const edificioOrError = await this.edificioServiceInstance.criarEdificio(req.body as IEdificioDTO) as Result<IEdificioDTO>;
+      if (edificioOrError.isFailure) {
+        return res.json(edificioOrError.errorValue()).status(402).send();
+      }
+      const edificioDTO = edificioOrError.getValue();
+      return res.json( edificioDTO ).status(201);
+    }catch(e){
+      return next(e);
+    }
+  }
+
+  
+  public async listarEdificioMinEMaxPisos(req: Request, res: Response, next: NextFunction) {
+    try{
+      const edificioOrError = await this.edificioServiceInstance.listarEdificioMinEMaxPisos(req.body as IListarEdMinEMaxPisosDTO) as Result<IEdificioDTO[]>;
       if (edificioOrError.isFailure) {
         return res.json(edificioOrError.errorValue()).status(402).send();
       }
