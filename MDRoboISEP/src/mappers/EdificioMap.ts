@@ -14,13 +14,20 @@ import ElevadorRepo from "../repos/ElevadorRepo";
 export class EdificioMap extends Mapper<Edificio> {
   
   public static toDTO(edificio: Edificio): IEdificioDTO {
-    return {
-      codigo: edificio.id.toString(),
-      nome: edificio.props.nome.props.nome,
-      descricao: edificio.props.descricao.props.descricao,
-      dimensaoX: edificio.props.dimensao.props.x,
-      dimensaoY: edificio.props.dimensao.props.y
-    } as IEdificioDTO;
+    let dadosEdificio : any = {
+      codigo : edificio.returnEdificioId().toString(),
+      dimensaoX: edificio.returnDimensaoX(),
+      dimensaoY:edificio.returnDimensaoY(),
+    }
+    
+    if(edificio.props.descricao !== undefined){
+      dadosEdificio.descricao = edificio.returnDescricao();
+    }
+    if(edificio.props.nome !== undefined){
+      dadosEdificio.nome = edificio.returnNome();
+    }
+    return dadosEdificio as IEdificioDTO;
+    
   }
 
   public static async toDomain (raw: any): Promise<Edificio> {
