@@ -126,5 +126,13 @@ export class Edificio extends AggregateRoot<EdificioProps> {
 
   public returnElevadorId(): number{
     return Number(this.props.elevador.id.toValue());
+
+  }
+
+  public verificaSeONumeroDePisosEstaDentroDosLimites(minPisos: number, maxPisos: number): boolean{
+    if(this.props.listaPisos.length >= minPisos && this.props.listaPisos.length <= maxPisos){
+      return true;
+    }
+    return false;
   }
 }
