@@ -24,4 +24,13 @@ export default (app: Router) => {
       })
     }),
     (req, res, next) => ctrl.criarEdificio(req, res, next));
+
+    route.get('/listarMinEMaxPisos',
+    celebrate({
+      body: Joi.object({
+        minPisos: Joi.number().required(),
+        maxPisos: Joi.number().required(),
+      })
+    }),
+    (req, res, next) => ctrl.listarEdificioMinEMaxPisos(req, res, next));
 };
