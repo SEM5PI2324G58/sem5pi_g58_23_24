@@ -45,6 +45,12 @@ export default class ElevadorRepo implements IElevadorRepo{
                 return ElevadorMap.toDomain(elevadorCreated);
             }else{
                 elevadorDocument.id = elevador.id;
+                elevadorDocument.pisosServidos = elevador.returnIdPisosServidos();
+                elevadorDocument.pontos = elevador.returnIdPontos();
+                elevadorDocument.marca = elevador.returnMarca();
+                elevadorDocument.modelo = elevador.returnModelo();
+                elevadorDocument.numeroSerie = elevador.returnNumeroSerie();
+                elevadorDocument.descricao = elevador.returnDescricao();
                 await elevadorDocument.save();
                 return elevador;
             }

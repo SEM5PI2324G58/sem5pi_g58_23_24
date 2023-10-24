@@ -25,34 +25,45 @@ export class ElevadorMap extends Mapper<Elevador>{
 
     public static async toDomain (raw: any): Promise<Elevador>{
         
+        let dadosElevador : any;
         
         const pisoRepo = Container.get(PisoRepo);
         const pontoRepo = Container.get(PontoRepo);
         
+        const idElevador = IdElevador.create(raw.domainId); 
         let pisosServido: Piso[] = [];
         for (let i = 0; i< raw.pisosServidos.length; i++){
             pisosServido[i] = await pisoRepo.findByDomainId(raw.pisosServidos[i]);
         }
+
+        dadosElevador.pisosServido = pisosServido;
+
         let pontos: Ponto[] = [];
         for (let i = 0; i< raw.pontos.length; i++){
             pontos[i] = await pontoRepo.findByDomainId(raw.pontos[i]);
         }
         
+        dadosElevador.pontos = pontos;
+
+        if(raw.marca !== null && raw.descricaoPiso !== undefined){
+            const marcaOrError = MarcaElevador.create(raw.marca);     
+            dadosElevador.marca = marcaOrError.getValue();
+        }
+        if(raw.modelo !== null && raw.modelo !== undefined){
+            const modeloOrError = ModeloElevador.create(raw.modelo);
+            dadosElevador.modelo = modeloOrError.getValue();
+        }
+        if(raw.numeroSerie !== null && raw.numeroSerie !== undefined){
+            const numeroSerieOrError = NumeroSerieElevador.create(raw.numeroSerie);
+            dadosElevador.numeroSerie = numeroSerieOrError.getValue();
+        }
+        if(raw.descricao !== null && raw.descricao !== undefined){
+            const descricaoOrError = DescricaoEdificio.create(raw.descricao);
+            dadosElevador.descricao = descricaoOrError.getValue();
+        }
         
-        const marcaOrError = MarcaElevador.create(raw.marca);
-        const modeloOrError = ModeloElevador.create(raw.modelo);
-        const numeroSerieOrError = NumeroSerieElevador.create(raw.numeroSerie);
-        const descricaoOrError = DescricaoEdificio.create(raw.descricao);
-        const idElevador = IdElevador.create(raw.domainId); 
         
-        const elevadorOrError = Elevador.create({
-            pisosServidos: pisosServido,
-            pontos: pontos,
-            marca: marcaOrError.getValue(),
-            modelo: modeloOrError.getValue(),
-            numeroSerie: numeroSerieOrError.getValue(),
-            descricao: descricaoOrError.getValue()
-        }, idElevador.getValue());
+        const elevadorOrError = Elevador.create(dadosElevador,idElevador.getValue());
 
         elevadorOrError.isFailure ? console.log(elevadorOrError.error) : '';
 
@@ -60,14 +71,28 @@ export class ElevadorMap extends Mapper<Elevador>{
     }
 
     public static toPersistence (elevador: Elevador): any {
-        return {
-          domainId: elevador.returnIdElevador(),
-          pisosServidos: elevador.returnIdPisosServidos(),
-          pontos: elevador.returnIdPontos(),
-          marca: elevador.returnMarca(),
-          modelo: elevador.returnModelo(),
-          numeroSerie: elevador.returnNumeroSerie(),
-          descricao: elevador.returnDescricao(),
+        
+        let dadosElevador : any ={
+            domainId: elevador.returnIdElevador(),
+            pisosServidos: elevador.returnIdPisosServidos(),
+            pontos: elevador.returnIdPontos(),
         }
-      }
+        
+        if(elevador.props.marca !== undefined && elevador.props.marca !== null){
+            dadosElevador.marca = elevador.returnMarca();
+        }
+        if(elevador.props.modelo !== undefined && elevador.props.modelo !== null){
+            dadosElevador.modelo = elevador.returnModelo();
+        }
+        if(elevador.props.numeroSerie !== undefined && elevador.props.numeroSerie !== null){
+            dadosElevador.numeroSerie = elevador.returnNumeroSerie();
+        }
+        if(elevador.props.descricao !== undefined && elevador.props.descricao !== null){
+            dadosElevador.descricao = elevador.returnDescricao();
+        }
+
+        return dadosElevador;
+
+        
+    }
 }
