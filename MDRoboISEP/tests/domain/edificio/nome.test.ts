@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import { Nome } from '../../../../src/domain/edificio/Nome';
+import { Nome } from '../../../src/domain/edificio/Nome';
 
 
 describe('teste do nome de edificio', () => {

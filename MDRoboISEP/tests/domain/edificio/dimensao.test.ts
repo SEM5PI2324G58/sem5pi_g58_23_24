@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import {it} from 'mocha';
-import { Dimensao } from '../../../../src/domain/edificio/Dimensao';
+import { Dimensao } from '../../../src/domain/edificio/Dimensao';
 
 describe('teste da dimensao edificio', () => {
     //Valores válidos para criação de Dimensão

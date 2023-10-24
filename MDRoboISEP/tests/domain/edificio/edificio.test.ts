@@ -1,13 +1,11 @@
-import { Edificio } from '../../../../src/domain/edificio/Edificio';
+import { Edificio } from ;
 import {it} from 'mocha';
 
 import {expect} from 'chai';
-import { Nome } from '../../../../src/domain/edificio/Nome';
-import { Codigo } from '../../../../src/domain/edificio/Codigo';
-import { Dimensao } from '../../../../src/domain/edificio/Dimensao';
-import { DescricaoEdificio } from '../../../../src/domain/edificio/DescricaoEdificio';
-import { Elevador } from '../../../../src/domain/elevador/Elevador';
-import { Piso } from '../../../../src/domain/piso/Piso';
+import { Nome } from '../../../src/domain/edificio/Nome';
+import { Codigo } from '../../../src/domain/edificio/Codigo'
+import { Dimensao } from '../../../src/domain/edificio/Dimensao';
+import { DescricaoEdificio } from '../../../src/domain/edificio/DescricaoEdificio';
 
 describe('teste de edificio', () => {
     //Valores válidos para criação de um edificio
