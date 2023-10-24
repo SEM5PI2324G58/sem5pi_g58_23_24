@@ -46,6 +46,10 @@ export default class EdificioRepo implements IEdificioRepo {
         return EdificioMap.toDomain(edificioCreated);
       } else {
         edificioDocument.id = edificio.id;
+        edificioDocument.nome = edificio.returnNome();
+        edificioDocument.descricao = edificio.returnDescricao();
+        edificioDocument.dimensaoX = edificio.returnDimensaoX();
+        edificioDocument.dimensaoY = edificio.returnDimensaoY();
         await edificioDocument.save();
 
         return edificio;

@@ -1,5 +1,6 @@
 import {expect} from 'chai';
-import { Codigo } from '../../../../src/domain/edificio/Codigo';
+import {it} from 'mocha';
+import { Codigo } from '../../../src/domain/edificio/Codigo';
 
 describe('teste do codigo edificio', () => {
     //Valores válidos para criação de um Código

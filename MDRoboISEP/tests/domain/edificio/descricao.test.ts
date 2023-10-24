@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import {it} from 'mocha';
-import { DescricaoEdificio} from '../../../../src/domain/edificio/DescricaoEdificio';
+import { DescricaoEdificio} from '../../../src/domain/edificio/DescricaoEdificio';
 
 describe('teste do descricao de edificio', () => {
     //Valores válidos para criação de uma descricao
