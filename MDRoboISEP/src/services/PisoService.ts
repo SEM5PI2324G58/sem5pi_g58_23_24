@@ -40,32 +40,27 @@ export default class PisoService implements IPisoService{
 
   public async criarPiso(criarPisoDTO: ICriarPisoDTO): Promise<Result<ICriarPisoDTO>> {
     try {
-        const edifDocument = await this.edifRepo.findByDomainId(criarPisoDTO.codigo);
-        let found = !!edifDocument;
-        if(!found){
+        const edificio = await this.edifRepo.findByDomainId(criarPisoDTO.codigo);
+        let flag = !!edificio;
+        if(!flag){
             return Result.fail<ICriarPisoDTO>("O edificio com o código " + criarPisoDTO.codigo +" não existe");
         }
         
-        let pisos = edifDocument.props.listaPisos;
+        edificio.props.listaPisos;
 
-        found = false;
-        for (let i = 0; i < pisos.length; i++) {
-            if(pisos[i].returnNumeroPiso() === criarPisoDTO.numeroPiso){
-                found = true;
-            }
-        }
-        if(found){
+        flag = edificio.verificaSePisoJaExiste(criarPisoDTO.numeroPiso)
+        if(flag){
             return Result.fail<ICriarPisoDTO>("O piso numero " + criarPisoDTO.numeroPiso +" já existe");
         }
 
         let maxId = await this.pisoRepo.getMaxId();
-        
+        maxId = maxId + 1;
         const numeroPisoOuErro = await NumeroPiso.create(criarPisoDTO.numeroPiso);
-        const idPisoOuErro = await IdPiso.create(maxId + 1);
+        const idPisoOuErro = await IdPiso.create(maxId);
 
         let descricaoOuErro;
         let finalResult;
-        if(criarPisoDTO.descricaoPiso == null || criarPisoDTO.descricaoPiso == undefined){
+        if(criarPisoDTO.descricaoPiso == null || criarPisoDTO.descricaoPiso == undefined || criarPisoDTO.descricaoPiso == ""){
             descricaoOuErro = null;
             finalResult = Result.combine([numeroPisoOuErro,idPisoOuErro]) ;
         }else{
@@ -79,8 +74,8 @@ export default class PisoService implements IPisoService{
         }
         
         let ponto : Ponto[][] = [];
-        let x = edifDocument.props.dimensao.props.x;
-        let y = edifDocument.props.dimensao.props.y;
+        let x = edificio.props.dimensao.props.x;
+        let y = edificio.props.dimensao.props.y;
         let contador = 1;
         for (let i = 0; i <= x; i++) {
             ponto[i] = [];
@@ -89,7 +84,7 @@ export default class PisoService implements IPisoService{
                 if(i == 0 && j ==0 ) {tipoPonto = TipoPonto.create("NorteOeste").getValue();}
                 else if((1 <= i && i < x && (j == 0 || j == y)) || (i == 0 && j == y)) {tipoPonto = TipoPonto.create("Norte").getValue();}
                 else if((1 <= j && j < y && (i == 0 || i == x)) || (i == x && j == 0)) {tipoPonto = TipoPonto.create("Oeste").getValue();}
-                else{tipoPonto = TipoPonto.create("").getValue();}
+                else{tipoPonto = TipoPonto.create(" ").getValue();}
                 let pontoOuErro = await Ponto.create({
                 coordenadas : Coordenadas.create({abscissa: x , ordenada: y }).getValue(),
                 tipoPonto: tipoPonto
@@ -111,18 +106,18 @@ export default class PisoService implements IPisoService{
             return Result.fail<ICriarPisoDTO>(pisoOuErro.errorValue());
         }
 
-        edifDocument.addPiso(pisoOuErro.getValue());
+        edificio.addPiso(pisoOuErro.getValue());
 
         for (let i = 0; i <= x; i++) {
             for (let j = 0; j <= y ; j++) {
-                this.pontoRepo.save(ponto[i][j]);
+                await this.pontoRepo.save(ponto[i][j]);
             }
         }  
 
 
         await this.pisoRepo.save(pisoOuErro.getValue());
         
-        await this.edifRepo.save(edifDocument);
+        await this.edifRepo.save(edificio);
 
         return Result.ok<ICriarPisoDTO>(criarPisoDTO);
     } catch (e) {

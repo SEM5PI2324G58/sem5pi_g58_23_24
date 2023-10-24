@@ -41,7 +41,7 @@ describe('PisoService ', () => {
 
 		let pontoArray  : Ponto[][] = [];
 		let idPonto = IdPonto.create("ED01.1.1").getValue();
-		let tipoPonto = TipoPonto.create("").getValue();
+		let tipoPonto = TipoPonto.create(" ").getValue();
 		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
 		let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
 		pontoArray[0] = []

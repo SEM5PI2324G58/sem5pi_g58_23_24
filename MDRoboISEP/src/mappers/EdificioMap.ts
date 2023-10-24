@@ -53,7 +53,6 @@ export class EdificioMap extends Mapper<Edificio> {
 
     for(let i= 0; i<raw.piso.length; i++){
       listaPiso[i] = await pisoRepo.findByDomainId(raw.piso[i]);
-      listaPiso.push(raw.piso[i]);
     }
     
     const edificioOrError = Edificio.create(dadosEdificio,codigoOrError.getValue());
@@ -69,7 +68,7 @@ export class EdificioMap extends Mapper<Edificio> {
       codigo : edificio.returnEdificioId(),
       dimensaoX: edificio.returnDimensaoX(),
       dimensaoY:edificio.returnDimensaoY(),
-      piso : edificio.returnListaPisosId(),         
+      piso : edificio.returnListaPisosId(),        
     }
 
     if(edificio.props.elevador !== undefined){

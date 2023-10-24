@@ -26,27 +26,31 @@ export class PisoMap extends Mapper<Piso> {
   }
 
   public static async toDomain (raw: any): Promise<Piso> {
+    let dadosPiso : any = {
+      numeroPiso: NumeroPiso.create(raw.numeroPiso).getValue()      
+    }
     
-    const numeroPisoOrError = NumeroPiso.create(raw.numeroPiso);
-    const descricaoPisoOrError = DescricaoPiso.create(raw.descricaoPiso);
-    const IdPisoError = IdPiso.create(raw.domainID);
+    if  (raw.descricaoPiso !== null){
+      const descricaoPisoOrError = DescricaoPiso.create(raw.descricaoPiso);
+      dadosPiso.descricaoPiso = descricaoPisoOrError.getValue();
+    }
+    const IdPisoError = IdPiso.create(Number(raw.domainID));
 
-    const repo = Container.get(PontoRepo);
     
     
+    if  (raw.pontos !== null){
     let ponto: Ponto [][] = [];
-    for (let i = 0; i < raw.pontos.length; i++) {
-      ponto[i]=[];
-      for (let j = 0; j < raw.pontos[i].length; j++) {
-        ponto[i][j] = await repo.findByDomainId(raw.pontos[i][j]);
-      }
-    }      
-
-    const userOrError = Piso.create({
-      numeroPiso: numeroPisoOrError.getValue(),
-      descricaoPiso: descricaoPisoOrError.getValue(),
-      mapa: ponto,
-      }, IdPisoError.getValue())
+    const repo = Container.get(PontoRepo);
+      for (let i = 0; i < raw.pontos.length; i++) {
+        ponto[i]=[];
+        for (let j = 0; j < raw.pontos[i].length; j++) {
+          ponto[i][j] = await repo.findByDomainId(raw.pontos[i][j]);
+        }
+      }   
+      dadosPiso.mapa = ponto;   
+    }
+    const userOrError = Piso.create(
+      dadosPiso, IdPisoError.getValue())
 
     userOrError.isFailure ? console.log(userOrError.error) : '';
     
@@ -55,11 +59,17 @@ export class PisoMap extends Mapper<Piso> {
   }
 
   public static toPersistence (piso: Piso): any {
-    return {
-      domainId: piso.returnIdPiso(),
+    let dadosPiso : any = {
+      domainID: piso.returnIdPiso(),
       numeroPiso: piso.returnNumeroPiso(),
-      descricaoPiso: piso.returnDescricaoPiso(),
-      pontos: piso.returnListaDeIdDosPontos(),
+      pontos: piso.returnListaDeIdDosPontos(),        
     }
+
+    
+    if(piso.props.descricaoPiso === undefined){
+      dadosPiso.descricaoPiso = piso.returnDescricaoPiso();
+    }
+
+    return dadosPiso;
   }
 }

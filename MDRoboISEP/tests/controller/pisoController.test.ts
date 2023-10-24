@@ -7,6 +7,9 @@ import PisoController from '../../src/controllers/PisoController';
 import IPisoService from '../../src/services/IServices/IPisoService';
 import  ICriarPisoDTO  from '../../src/dto/ICriarPisoDTO';
 import { IPisoPersistence } from "../../src/dataschema/IPisoPersistence";
+import { IEdificioPersistence } from "../../src/dataschema/IEdificioPersistence";
+import { IPontoPersistence } from "../../src/dataschema/IPontoPersistence";
+
 import 'mocha';
 import { Document } from 'mongoose';
 import { PisoMap } from "../../src/mappers/PisoMap";
@@ -133,7 +136,7 @@ describe('PisoController', () => {
 
 		let pontoArray  : Ponto[][] = [];
 		let idPonto = IdPonto.create("ED01.1.1").getValue();
-		let tipoPonto = TipoPonto.create("").getValue();
+		let tipoPonto = TipoPonto.create(" ").getValue();
 		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
 		let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
 		pontoArray[0] = []
@@ -165,5 +168,78 @@ describe('PisoController', () => {
         
 	});
     
+    it('PisoController + PisoService + PisoRepo integração test criar piso devolve piso', async function () {	
+		// Arrange	
+        let body = {
+            "codigo": "ED01",
+            "numeroPiso": 1,
+            "descricaoPiso": "ola",
+        };
+        let idPonto = IdPonto.create("ED01.1.1").getValue();
+		let tipoPonto = TipoPonto.create(" ").getValue();
+		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
+		let pontoArray  : Ponto[][] = [];
+        let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
+		pontoArray[0] = []
+		pontoArray[0][0] = ponto;
+        
+        let edificioDoc  = {
+            codigo: 'ED01',
+            nome: 'string',
+            dimensaoX: 1,
+            dimensaoY: 1,
+        } as IEdificioPersistence;
+        let pontoId  : String[][] = [[]];
+        pontoId[0][0] = pontoArray[0][0].id.toString()
+
+        const pisoDTO = {
+            domainID: 1,
+            numeroPiso: 1,
+            descricaoPiso: "Ola", 
+            pontos: pontoId,
+        } as IPisoPersistence;
+
+        const pontoDTO = {
+            domainID: "ED01.1.1",
+            tipoPonto: " ",
+            ordenada: 0,
+            abscissa: 0,
+        } as IPontoPersistence;
+
+
+
+        let req: Partial<Request> = {};
+        req.body = body;
+
+        let res: Partial<Response> = {
+            json: sinon.spy(),
+        };
+
+        let next: Partial<NextFunction> = () => {};
+
+        let pisoServiceInstance = Container.get("PisoService");
+        const pisoServiceSpy = sinon.spy(pisoServiceInstance,'criarPiso');
+
+        const pisoSchemaInstance = Container.get("PisoSchema");
+        const edificioSchemaInstance = Container.get("EdificioSchema");
+        const pontoSchemaInstance = Container.get("PontoSchema");
+
+        sinon.stub(edificioSchemaInstance, "findOne").returns(edificioDoc);
+        sinon.stub(pisoSchemaInstance, "find").returns(null);
+        sinon.stub(pisoSchemaInstance, "findOne").returns(null);
+        sinon.stub(pisoSchemaInstance, "create").returns(pisoDTO as IPisoPersistence);
+        sinon.stub(edificioSchemaInstance, "create").returns(edificioDoc as IEdificioPersistence);
+        sinon.stub(pontoSchemaInstance, "findOne").returns(null);
+        sinon.stub(pontoSchemaInstance, "create").returns(pontoDTO as IPontoPersistence);
+
+        const pisoController = new PisoController(pisoServiceInstance as IPisoService);
+
+        await pisoController.criarPiso(<Request>req, <Response>res, <NextFunction>next);
+
+
+        sinon.assert.calledOnce(pisoServiceSpy);
+        sinon.assert.calledWith(pisoServiceSpy,body as ICriarPisoDTO);
+
+	});
 
 });
