@@ -83,7 +83,7 @@ export class Edificio extends AggregateRoot<EdificioProps> {
    * @returns true se existir um elevador, false caso contrário
    */
   public temElevador() : boolean{
-    return this.props.elevador === null;
+    return this.props.elevador !== undefined;
   }
 
   /**
@@ -106,11 +106,11 @@ export class Edificio extends AggregateRoot<EdificioProps> {
     let yCoordInf;
 
     if(orientacao === 'norte'){
-      xCoordInf = xCoordSup+1;
-      yCoordInf = yCoordSup;
-    }else if (orientacao === 'oeste'){
       xCoordInf = xCoordSup;
       yCoordInf = yCoordSup+1;
+    }else if (orientacao === 'oeste'){
+      xCoordInf = xCoordSup+1;
+      yCoordInf = yCoordSup;
     }
 
     // Coordendas do ponto inferior têm de estar dentro das dimensões do edifício
