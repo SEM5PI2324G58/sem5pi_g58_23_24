@@ -47,4 +47,74 @@ describe('teste de edificio', () => {
         const edificioInvalido = Edificio.create(edificioProps,codigo.getValue());
         expect(false).to.equal(edificioInvalido.isSuccess);
     });
+    
+
+    it('Edifício não tem elevador', () => {
+        let edificioProps : any = {
+            dimensao:dimensao.getValue(),
+            listaPisos:[] = [],
+        };
+        const edificio = Edificio.create(edificioProps,codigo.getValue()).getValue();
+        expect(false).to.equal(edificio.temElevador());
+    });
+
+    it('Posição 2,2,N é válida para colocar elevador num Edifício 10x10', () => {
+        let edificioProps : any = {
+            dimensao:dimensao.getValue(),
+            listaPisos:[] = [],
+        };
+        const edificio = Edificio.create(edificioProps,codigo.getValue()).getValue();
+        const res = edificio.posicaoValidaNoMapa(2,2,'norte');
+        expect(true).to.equal(res);
+    });
+
+    it('Posição 2,10,N não é válida para colocar elevador num Edifício 10x10', () => {
+        let edificioProps : any = {
+            dimensao:dimensao.getValue(),
+            listaPisos:[] = [],
+        };
+        const edificio = Edificio.create(edificioProps,codigo.getValue()).getValue();
+        const res = edificio.posicaoValidaNoMapa(2,10,'norte');
+        expect(false).to.equal(res);
+    });
+
+    it('Posição 15,15,N não é válida para colocar elevador num Edifício 10x10', () => {
+        let edificioProps : any = {
+            dimensao:dimensao.getValue(),
+            listaPisos:[] = [],
+        };
+        const edificio = Edificio.create(edificioProps,codigo.getValue()).getValue();
+        const res = edificio.posicaoValidaNoMapa(15,15,'norte');
+        expect(false).to.equal(res);
+    });
+
+    it('Posição 3,3,O é válida para colocar elevador num Edifício 10x10', () => {
+        let edificioProps : any = {
+            dimensao:dimensao.getValue(),
+            listaPisos:[] = [],
+        };
+        const edificio = Edificio.create(edificioProps,codigo.getValue()).getValue();
+        const res = edificio.posicaoValidaNoMapa(3,3,'oeste');
+        expect(true).to.equal(res);
+    });
+
+    it('Posição 10,3,N não é válida para colocar elevador num Edifício 10x10', () => {
+        let edificioProps : any = {
+            dimensao:dimensao.getValue(),
+            listaPisos:[] = [],
+        };
+        const edificio = Edificio.create(edificioProps,codigo.getValue()).getValue();
+        const res = edificio.posicaoValidaNoMapa(10,3,'oeste');
+        expect(false).to.equal(res);
+    });
+
+    it('Posição 15,15,O não é válida para colocar elevador num Edifício 10x10', () => {
+        let edificioProps : any = {
+            dimensao:dimensao.getValue(),
+            listaPisos:[] = [],
+        };
+        const edificio = Edificio.create(edificioProps,codigo.getValue()).getValue();
+        const res = edificio.posicaoValidaNoMapa(15,15,'oeste');
+        expect(false).to.equal(res);
+    });
 });
