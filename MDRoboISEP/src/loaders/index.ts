@@ -46,8 +46,8 @@ export default async ({ expressApp }) => {
 
   const tipoDispositivoSchema = {
     // compare with the approach followed in repos and services
-    name: 'tipoDispositivoSchema',
-    schema: '../persistence/schemas/tipoDispositivoSchema',
+    name: 'TipoDispositivoSchema',
+    schema: '../persistence/schemas/TipoDispositivoSchema',
   };
 
   const roleController = {

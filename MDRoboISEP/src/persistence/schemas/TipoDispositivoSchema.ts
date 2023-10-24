@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 const TipoDispositivoSchema = new mongoose.Schema(
   {
-    id: { type: Number, unique: true, index: true},
+    idTipoDispositivo: { type: Number, unique: true, index: true},
     tipoTarefa: { type: [String], required: true},
     marca: { type: String, required: true},
     modelo: { type: String, required: true}

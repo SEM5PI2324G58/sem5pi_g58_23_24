@@ -1,5 +1,5 @@
 export default interface ITipoDispositivoDTO {
-    idTipoDispositivo: number;
+    idTipoDispositivo?: number;
     tipoTarefa: string[];
     marca: string;
     modelo: string;

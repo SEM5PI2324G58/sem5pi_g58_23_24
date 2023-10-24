@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { celebrate, Joi } from 'celebrate';
 
 import { Container } from 'typedi';
-import IEdificioController from '../../controllers/IControllers/IEdificioController'; 
+import ITipoDispositivoController from '../../controllers/IControllers/ITipoDispositivoController'; 
 
 import config from "../../../config";
 
@@ -11,7 +11,7 @@ const route = Router();
 export default (app: Router) => {
   app.use('/tipoDispositivo', route);
 
-  const ctrl = Container.get(config.controllers.edificio.name) as IEdificioController;
+  const ctrl = Container.get(config.controllers.tipoDispositivo.name) as ITipoDispositivoController;
 
   route.post('',
     celebrate({
@@ -21,5 +21,5 @@ export default (app: Router) => {
         modelo: Joi.string().required(),
       })
     }),
-    (req, res, next) => ctrl.criarEdificio(req, res, next));
+    (req, res, next) => ctrl.criarTipoDispositivo(req, res, next));
 };

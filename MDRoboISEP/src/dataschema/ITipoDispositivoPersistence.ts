@@ -1,5 +1,5 @@
 export interface ITipoDispositivoPersistence {
-    id?: number;
+    idTipoDispositivo: number;
     tipoTarefa: [string];
     marca: string;
     modelo: string;
