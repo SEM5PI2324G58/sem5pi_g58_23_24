@@ -9,6 +9,8 @@ import { Nome } from '../domain/edificio/Nome';
 import { Codigo } from '../domain/edificio/Codigo';
 import { Dimensao } from '../domain/edificio/Dimensao';
 import { Piso } from '../domain/piso/Piso';
+import IListarEdMinEMaxPisosDTO from '../dto/IListarEdMinEMaxPisosDTO';
+import { EdificioMap } from '../mappers/EdificioMap';
 
 @Service()
 
@@ -63,5 +65,31 @@ export default class EdificioService implements IEdificioService {
       }catch(e){
         throw e;
       }
+  }
+  public async listarEdificioMinEMaxPisos(listarEdificioMinEMaxPisosDTO: IListarEdMinEMaxPisosDTO): Promise<Result<IEdificioDTO[]>> {
+    try{
+
+      if(listarEdificioMinEMaxPisosDTO.minPisos > listarEdificioMinEMaxPisosDTO.maxPisos){
+        return Result.fail<IEdificioDTO[]>("O número mínimo de pisos não pode ser superior ao máximo");
+      }else if(listarEdificioMinEMaxPisosDTO.minPisos < 0 || listarEdificioMinEMaxPisosDTO.maxPisos < 0){
+        return Result.fail<IEdificioDTO[]>("O número mínimo e máximo de pisos não pode ser inferior a 0");
+      }else if(listarEdificioMinEMaxPisosDTO.minPisos === 0 && listarEdificioMinEMaxPisosDTO.maxPisos === 0){
+        return Result.fail<IEdificioDTO[]>("O número mínimo e máximo de pisos não pode ser 0");
+      }
+
+
+      const edificioDocument = await this.edificioRepo.getAllEdificios();
+      let listaEdificiosDTO: IEdificioDTO[] = [];
+      for (let edificio of edificioDocument) {
+        if(edificio.verificaSeONumeroDePisosEstaDentroDosLimites(listarEdificioMinEMaxPisosDTO.minPisos,listarEdificioMinEMaxPisosDTO.maxPisos)){
+          listaEdificiosDTO.push(EdificioMap.toDTO(edificio));
+        }
+      }
+      
+    }catch(e){
+      throw e;
+    }
+
+    return Result.fail<IEdificioDTO[]>("Não existem edificios com o número de pisos pretendido");
   }
 }
