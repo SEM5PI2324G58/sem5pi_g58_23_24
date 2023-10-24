@@ -85,7 +85,9 @@ export default class EdificioService implements IEdificioService {
           listaEdificiosDTO.push(EdificioMap.toDTO(edificio));
         }
       }
-      
+      if(listaEdificiosDTO.length > 0){
+        return Result.ok<IEdificioDTO[]>(listaEdificiosDTO);
+      }
     }catch(e){
       throw e;
     }
