@@ -1,15 +1,12 @@
 autonumber
 
-participant Sistema as sistema <<System (C4)>>
+actor ator 
+participant RobDroneGo as sistema <<System (C4)>>
 
 
-[o-> sistema: criar piso e insere a informação (edifício, nPiso, descricao)
+ator -> sistema: criar piso e insere a informação (edifício, nPiso, descricao)
 activate sistema
-alt
-<-- sistema: Ok
-else "Erro"
-<-- sistema: Erro
-end alt
+return resposta
 
 
  

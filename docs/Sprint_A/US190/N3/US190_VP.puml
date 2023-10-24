@@ -1,20 +1,21 @@
 autonumber
 
 participant RoutePiso as route
-participant "dto: CriarPisoDTO" as dto
 participant "controller: PisoController" as ctrl
-participant "service: CriarPisoService" as service
+participant "dto: CriarPisoDTO" as dto
+participant "service: PisoService" as service
 participant "EdificioRepo" as edRepo
 participant "Edificio" as edificio
-participant "PisoRepo" as pisoRepo
+participant "Ponto" as ponto
 participant "Piso" as piso
-
+participant "PontoRepo" as pontoRepo
+participant "PisoRepo" as pisoRepo
 
 [o-> route: POST(json)
 activate route
-route -> dto ** : create(json)
-route -> ctrl: criarPiso(criarPisoDTO)
+route -> ctrl: criarPiso(Request, Response, Next)
 activate ctrl
+ctrl -> dto ** : create(json)
 ctrl -> service: criarPiso(criarPisoDTO) 
 activate service
 service -> edRepo: findByDomain(codigo)
@@ -26,19 +27,22 @@ return flag
 service -> pisoRepo: maxID()
 activate pisoRepo
 return maxId
-service -> piso ** : create(idPiso, nPiso, descricao, comprimento, largura)
+service -> ponto ** : criar(tipoPonto, descricao, coordenadas, IdPonto)
+service -> piso ** : create(nPiso, descricao, listaPontos, maxId)
 service -> edificio: addPiso(piso)
+service -> pontoRepo: save(ponto)
 service -> pisoRepo: save(piso)
 service -> edRepo: save(edificio)
 return resposta
-return resposta
 alt
+route <-- ctrl: Ok
 <-- route: Ok
 else "Erro"
+route <-- ctrl: Erro
+deactivate ctrl
 <-- route: Erro
 end alt
-
-
+deactivate route
 
 
 

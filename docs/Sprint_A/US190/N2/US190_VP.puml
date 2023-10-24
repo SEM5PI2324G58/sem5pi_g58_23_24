@@ -1,24 +1,15 @@
 autonumber
 
-participant MDRoboISEP as sistema <<Container (C4)>>
-participant SGBD as sgdb <<Container>>
+participant Frontend as fe <<Container (C4)>>
+participant MDRoboISEP as md <<Container (C4)>>
 
-[o-> sistema: criar piso e insere a informação (edifício, nPiso, descricao)
-activate sistema
-sistema	-> sgdb: findByDomain(codigo)
-activate sgdb
-return edificio
-sistema	-> sgdb: save(edificio)
-activate sgdb
-return sucesso
-sistema	-> sgdb: save(piso)
-activate sgdb
-return sucesso
-alt
-<-- sistema: Ok
-else "Erro"
-<-- sistema: Erro
-end alt
+[o-> fe: criar piso e insere a informação (codigo, nPiso, descricao)
+activate fe
+fe	-> md: criarPiso(json)
+activate md
+return resposta
+return resposta
+
 
 
  
