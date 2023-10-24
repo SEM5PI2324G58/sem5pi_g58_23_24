@@ -25,14 +25,14 @@ export default class TipoDispositivoRepo implements ITipoDispositivoRepo {
     
     const idX = tipoDispositivo.id instanceof TipoDispositivo ? (<IdTipoDispositivo>tipoDispositivo.id).toValue() : tipoDispositivo.id;
 
-    const query = { id: idX}; 
+    const query = { idTipoDispositivo: idX}; 
     const roleDocument = await this.tipoDispositivoSchema.findOne( query as FilterQuery<ITipoDispositivoPersistence & Document>);
 
     return !!roleDocument === true;
   }
 
   public async save (tipoDispositivo: TipoDispositivo): Promise<TipoDispositivo> {
-    const query = { id: tipoDispositivo.id.toString()}; 
+    const query = { idTipoDispositivo: tipoDispositivo.id.toString()}; 
 
     const tipoDispositivoDocument = await this.tipoDispositivoSchema.findOne( query );
 
@@ -55,7 +55,7 @@ export default class TipoDispositivoRepo implements ITipoDispositivoRepo {
   }
 
   public async findByDomainId(idTipoDispositivo: IdTipoDispositivo | number): Promise<TipoDispositivo> {
-    const query = { id: idTipoDispositivo};
+    const query = { idTipoDispositivo: idTipoDispositivo};
     const tipoDispositivoRecord = await this.tipoDispositivoSchema.findOne( query as FilterQuery<ITipoDispositivoPersistence & Document> );
 
     if( tipoDispositivoRecord != null) {
@@ -68,11 +68,11 @@ export default class TipoDispositivoRepo implements ITipoDispositivoRepo {
   public async getMaxId(): Promise<number> {
     try {
         var maxIdResult = await this.tipoDispositivoSchema
-            .find({}, { id: 1 })
+            .find({}, { idTipoDispositivo: 1 })
            ;
 
         if (maxIdResult && maxIdResult.length > 0) {
-            return (maxIdResult.sort((a, b) => b.id - a.id))[0].id;
+            return (maxIdResult.sort((a, b) => b.idTipoDispositivo - a.idTipoDispositivo))[0].idTipoDispositivo;
         } else {
             return 0; 
         }
