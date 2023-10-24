@@ -26,14 +26,14 @@ export default class PisoRepo implements IPontoRepo {
     
     const idX = ponto.id instanceof IdPonto ? (<IdPonto>ponto.id).toValue() : ponto.id;
 
-    const query = { domainId: idX}; 
+    const query = { domainID: idX}; 
     const roleDocument = await this.pontoSchema.findOne( query as FilterQuery<IPontoPersistence & Document>);
 
     return !!roleDocument === true;
   }
 
   public async save (ponto: Ponto): Promise<Ponto> {
-    const query = { domainId: ponto.id.toString()}; 
+    const query = { domainID: ponto.id.toString()}; 
 
     const pontoDocument = await this.pontoSchema.findOne( query );
 
@@ -46,6 +46,9 @@ export default class PisoRepo implements IPontoRepo {
         return PontoMap.toDomain(pontoCreated);
       } else {
         pontoDocument.id = ponto.id;
+        pontoDocument.abscissa = ponto.returnAbscissa();
+        pontoDocument.ordenada = ponto.returnOrdenada();
+        pontoDocument.tipoPonto = ponto.returnTipoPonto();
         await pontoDocument.save();
 
         return ponto;
@@ -56,7 +59,7 @@ export default class PisoRepo implements IPontoRepo {
   }
 
   public async findByDomainId (idPonto: IdPonto | string): Promise<Ponto> {
-    const query = { domainId: idPonto};
+    const query = { domainID: idPonto};
     const pontoRecord = await this.pontoSchema.findOne( query as FilterQuery<IPontoPersistence & Document> );
 
     if( pontoRecord != null) {

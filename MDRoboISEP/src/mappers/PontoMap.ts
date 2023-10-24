@@ -27,7 +27,7 @@ export class PontoMap extends Mapper<Ponto> {
     
     const coordenadasPisoOrError = Coordenadas.create({abscissa: raw.abscissa , ordenada: raw.ordenada});
     const tipoPontoOrError = TipoPonto.create(raw.tipoPonto);
-    const idPontoError = IdPonto.create(raw.domainId);
+    const idPontoError = IdPonto.create(raw.domainID);
 
     const userOrError = Ponto.create({
         coordenadas: coordenadasPisoOrError.getValue(),
@@ -42,7 +42,7 @@ export class PontoMap extends Mapper<Ponto> {
 
   public static toPersistence (ponto: Ponto): any {
     return {
-        domainId: ponto.returnIdPonto(),
+        domainID: ponto.returnIdPonto(),
         abscissa: ponto.returnAbscissa(),
         ordenada: ponto.returnOrdenada(),
         tipoPonto: ponto.returnTipoPonto()
