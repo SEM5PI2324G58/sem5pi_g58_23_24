@@ -78,4 +78,16 @@ export default class EdificioRepo implements IEdificioRepo {
     else
       return null;
   }
+
+  public async getAllEdificios(): Promise<Edificio[]> {
+    const edificioDocuments = await this.edificioSchema.find();
+    const listaEdificioPromises: Promise<Edificio>[] = [];
+
+    for (let edificio of edificioDocuments) {
+      listaEdificioPromises.push(EdificioMap.toDomain(edificio));
+    }
+    const listaEdificio = await Promise.all(listaEdificioPromises);
+    return listaEdificio;
+  }
+
 }
