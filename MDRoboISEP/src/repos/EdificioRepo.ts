@@ -46,10 +46,19 @@ export default class EdificioRepo implements IEdificioRepo {
         return EdificioMap.toDomain(edificioCreated);
       } else {
         edificioDocument.id = edificio.id;
-        edificioDocument.nome = edificio.returnNome();
-        edificioDocument.descricao = edificio.returnDescricao();
         edificioDocument.dimensaoX = edificio.returnDimensaoX();
         edificioDocument.dimensaoY = edificio.returnDimensaoY();
+        edificioDocument.piso = edificio.returnListaPisosId();
+        
+        if(edificio.returnNome() !== undefined){
+          edificioDocument.nome = edificio.returnNome();
+        }
+        if(edificio.returnDescricao() !== undefined){
+          edificioDocument.descricao = edificio.returnDescricao();
+        }
+        if(edificio.returnElevadorId() !== undefined){
+          edificioDocument.elevador = edificio.returnElevadorId();
+        }
         await edificioDocument.save();
 
         return edificio;
