@@ -5,4 +5,5 @@ import { Codigo } from "../../domain/edificio/Codigo";
 export default interface IEdificioRepo extends Repo<Edificio> {
   save(edificio: Edificio): Promise<Edificio>;
   findByDomainId (codigo: Codigo | string): Promise<Edificio>;
+  getAllEdificios(): Promise<Edificio[]>;
 }
