@@ -11,6 +11,7 @@ import { Dimensao } from '../domain/edificio/Dimensao';
 import { Piso } from '../domain/piso/Piso';
 import IListarEdMinEMaxPisosDTO from '../dto/IListarEdMinEMaxPisosDTO';
 import { EdificioMap } from '../mappers/EdificioMap';
+import { DescricaoEdificio } from '../domain/edificio/DescricaoEdificio';
 
 @Service()
 
@@ -46,7 +47,7 @@ export default class EdificioService implements IEdificioService {
             }
           }
           if(edificioDTO.descricao){
-            let descricaoOrError = Nome.create(edificioDTO.descricao);
+            let descricaoOrError = DescricaoEdificio.create(edificioDTO.descricao);
             if(descricaoOrError.isSuccess){
               dadosEdificio.descricao = descricaoOrError.getValue();
             }else{
