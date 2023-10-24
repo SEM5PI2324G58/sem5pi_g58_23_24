@@ -17,6 +17,7 @@ describe('teste de edificio', () => {
     it('Criação de Edifício Válido com atributos não essenciais', () => {
         let edificioProps : any = {
             nome:nome.getValue(),
+            listaPisos:[] = [],
             dimensao:dimensao.getValue(),
             descricao:descricao.getValue(),
         };
@@ -27,6 +28,7 @@ describe('teste de edificio', () => {
     it('Criação de Edifício Válido apenas com atributos essenciais', () => {
         let edificioProps : any = {
             dimensao:dimensao.getValue(),
+            listaPisos:[] = [],
         };
         const edificio = Edificio.create(edificioProps,codigo.getValue());
         expect(true).to.equal(edificio.isSuccess);
