@@ -70,7 +70,7 @@ export default class ElevadorService implements IElevadorService{
 
             let id = await this.elevadorRepo.getMaxId();
 
-            let idElevadorOrError = IdElevador.create(id);
+            let idElevadorOrError = IdElevador.create(id+1);
             if(idElevadorOrError.isFailure){
                 return Result.fail<ICriarElevadorDTO>(idElevadorOrError.errorValue());
             }
