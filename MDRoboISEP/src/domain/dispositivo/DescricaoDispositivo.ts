@@ -13,7 +13,7 @@ export class DescricaoDispositivo extends ValueObject<descricaoDispositivoProps>
 
     public static create (descricao: string): Result<DescricaoDispositivo> {
         let guardResults: any[] = [];
-        guardResults.push(Guard.isAlphanumeric(descricao,'Descrição do Dispositivo'));
+        guardResults.push(Guard.isAlphanumericWithSpaces(descricao,'Descrição do Dispositivo'));
         guardResults.push(Guard.stringLengthLessOrEqualThan(descricao,250,'Descrição do Dispositivo'));
         guardResults.push(Guard.againstNullOrUndefined(descricao,'Descrição do Dispositivo'));
         let guardFinal = Guard.combine(guardResults);        
