@@ -151,4 +151,12 @@ export class Guard {
       return { succeeded: true };
     }
   }
+
+  public static booleanIsTrue(flag: boolean, argumentName : string): IGuardResult {
+    if(!flag){
+      return { succeeded: false, message: `${argumentName} must be true.` };
+    }else{
+      return { succeeded: true };
+    }
+  }
 }
