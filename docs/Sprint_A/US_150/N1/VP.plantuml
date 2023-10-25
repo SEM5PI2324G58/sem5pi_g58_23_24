@@ -1,8 +1,9 @@
 autonumber
+actor "Ator" as actor
+participant SistemaRobDroneGo as sistema <<System (C4)>>
 
-participant Sistema as sistema <<System (C4)>>
-
-[o-> sistema: criar edifício e insere a informação(descricao, nome, codigo,dimensao)
+activate actor
+actor -> sistema: criar edifício e insere a informação(descricao, nome, codigo,dimensao)
 activate sistema
 alt
 <-- sistema: OK
