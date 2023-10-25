@@ -17,7 +17,7 @@ export default class ElevadorController implements IElevadorController{
             const elevadorOrError = await this.elevadorServiceInstance.criarElevador(req.body as ICriarElevadorDTO);
               
             if (elevadorOrError.isFailure) {
-              return res.status(402).send();
+              return res.json(elevadorOrError.errorValue()).status(402).send();
             }
       
             const criarElevadorDTO = elevadorOrError.getValue();
