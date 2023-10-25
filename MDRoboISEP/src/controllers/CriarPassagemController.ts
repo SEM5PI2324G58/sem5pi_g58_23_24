@@ -1,0 +1,27 @@
+import { Request, Response, NextFunction } from 'express';
+import { Inject, Service } from 'typedi';
+import config from "../../config";
+import { Result } from "../core/logic/Result";
+import IPassagemController from './IControllers/IPassagemController';
+import IPassagemService from '../services/IServices/IPassagemService';
+import IPassagemDTO from '../dto/IPassagemDTO';
+
+@Service()
+export default class CriarPassagemController implements IPassagemController /* TODO: extends ../core/infra/BaseController */ {
+  constructor(
+      @Inject(config.services.passagem.name) private passagemServiceInstance : IPassagemService
+  ) {}
+
+  public async criarPassagem(req: Request, res: Response, next: NextFunction) {
+    try{
+      const passagemOrError = await this.passagemServiceInstance.criarPassagem(req.body as IPassagemDTO) as Result<IPassagemDTO>;
+      if (passagemOrError.isFailure) {
+        return res.json(passagemOrError.errorValue()).status(402).send();
+      }
+      const passagemDTO = passagemOrError.getValue();
+      return res.json( passagemDTO ).status(201);
+    }catch(e){
+      return next(e);
+    }
+  }
+}
