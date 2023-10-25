@@ -17,7 +17,7 @@ activate service
 service -> edRepo: findByDomainId(codigo)
 activate edRepo
 return null
-service -> ed** : create(nome, dimensaoX, dimensaoY, descricao, codigo)
+service -> ed** : create()
 service -> edRepo: save(edificio)
 activate edRepo
 deactivate edRepo
