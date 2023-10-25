@@ -7,6 +7,9 @@ import edificio from './routes/edificioRoute'
 import elevador from './routes/elevadorRoute'
 import tipoDispositivo from './routes/tipoDispositivoRoute'
 import passagem from './routes/passagemRoute'
+import dispositivo from './routes/dispositivoRoute'
+
+
 export default () => {
 	const app = Router();
 
@@ -18,5 +21,7 @@ export default () => {
 	elevador(app);
 	tipoDispositivo(app);
 	passagem(app);
+	dispositivo(app);
+
 	return app
 }
