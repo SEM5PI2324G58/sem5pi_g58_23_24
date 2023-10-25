@@ -1,18 +1,14 @@
 autonumber
 
-participant MDRoboISEP as sistema <<Container (C4)>>
-participant SGBD as sgdb <<Container>>
+participant Frontend as fe <<Container (C4)>>
+participant MDRoboISEP as md <<Container (C4)>>
 
-[o-> sistema: listar edificios com minimo e maximo pisos e insere a informação (min, max)
-activate sistema
-sistema	-> sgdb: getAllEdificios()
-activate sgdb   
-return listaEdificios
-alt
-<-- sistema: Ok
-else "Erro"
-<-- sistema: Erro
-end alt
+[o-> fe: listar edificios com minimo e maximo pisos e insere a informação (min, max)
+activate fe
+fe	-> md: listarEdificioMinEMaxPisos(json)
+activate md
+return resposta
+return resposta
 
 
  

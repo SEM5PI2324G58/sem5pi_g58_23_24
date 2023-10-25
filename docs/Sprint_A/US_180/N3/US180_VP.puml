@@ -1,8 +1,8 @@
 autonumber
 
 participant RouteEdificio as route
-participant "dto: ListarEdMinEMaxPisosDTO" as dto
 participant "controller: EdificioController" as ctrl
+participant "dto: ListarEdMinEMaxPisosDTO" as dto
 participant "service: EdificioService" as service
 participant "EdificioRepo" as edRepo
 participant "Edificio" as edificio
@@ -12,9 +12,9 @@ participant "EdificioMap" as edificioMap
 
 [o-> route: Get(json)
 activate route
-route -> dto ** : create(json)
-route -> ctrl: listarEdificioMinEMaxPisos(listarEdMinEMaxPisosDTO)
+route -> ctrl: listarEdificioMinEMaxPisos(Request, Response, Next)
 activate ctrl
+ctrl -> dto ** : create(json)
 ctrl -> service: listarEdificioMinEMaxPisos(listarEdMinEMaxPisosDTO) 
 activate service
 service -> edRepo: getAllEdificios()
