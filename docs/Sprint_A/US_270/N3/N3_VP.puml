@@ -8,7 +8,9 @@ participant "repo: \n EdificioRepo" as edRepo
 participant "domain: \n Edificio" as edificio
 participant "repo: \n ElevadorRepo" as eleRepo
 participant "domain: \n Elevador" as elevador
-participant "repo: \n PisoRepo" as pisoRepo
+participant "domain: \n Piso" as Piso
+participant "domain: \n Ponto" as ponto
+participant "repo: \n PontoRepo" as pRepo
 
 
 [o-> route: POST(json)
@@ -21,22 +23,32 @@ activate service
 service -> edRepo: findByDomain(codigoEd)
 activate edRepo
 return edificio
-service -> edificio : vericarExistenciaElevador()
+service -> edificio : temElevador()
 activate edificio
 return boolean
-service -> edificio : vericarPosicaoElevador(posicao)
+service -> edificio : posicaoValidaNoMapa(posicao)
 activate edificio
 return boolean
-service -> pisoRepo : findByDomain(listaPisos)
-activate pisoRepo
-return listaPisos
+loop para cada piso
+service -> Piso : pontosParaElevador(x,y,orientacao)
+activate Piso
+return listaPontos
+end loop para cada piso
 service -> eleRepo: maxId()
 activate eleRepo
 return idElevador
-service -> elevador ** : create(idElevador, posicao, listaPisos, marca, modelo, nSerie, descricao)
+service -> elevador ** : create(idElevador, pisosServidos, pontos, marca, modelo, nSerie, descricao)
 service -> edificio: adicionarElevador(elevador)
 activate edificio
 deactivate edificio
+loop para cada ponto 
+service -> ponto: toElevador()
+activate ponto
+deactivate ponto
+service -> pRepo: save(ponto)
+activate pRepo
+deactivate pRepo
+end loop
 service -> eleRepo: save(elevador)
 activate eleRepo
 deactivate eleRepo
