@@ -86,7 +86,7 @@ export default class PisoService implements IPisoService{
                 else if((1 <= j && j < y && (i == 0 || i == x)) || (i == x && j == 0)) {tipoPonto = TipoPonto.create("Oeste").getValue();}
                 else{tipoPonto = TipoPonto.create(" ").getValue();}
                 let pontoOuErro = await Ponto.create({
-                coordenadas : Coordenadas.create({abscissa: x , ordenada: y }).getValue(),
+                coordenadas : Coordenadas.create({abscissa: i , ordenada: j }).getValue(),
                 tipoPonto: tipoPonto
                 }, await IdPonto.create(criarPisoDTO.codigo + "." + criarPisoDTO.numeroPiso + "." + contador).getValue());
                 contador++;
