@@ -17,7 +17,7 @@ export class Marca extends ValueObject<MarcaProps> {
         guardResults.push(Guard.stringLengthLessOrEqualThan(marcaString,50,'Marca'));
         const guardFinal = Guard.combine(guardResults);
         if(guardFinal.succeeded === false || !marcaString){
-            return Result.fail<Marca>('Erro: A marca tem de ser válida e até 50 caratéres.')
+            return Result.fail<Marca>('Erro: A marca tem de ser válida e ter até 50 caratéres.')
         }else{
             const marca = new Marca({marca: marcaString});
             return Result.ok<Marca>(marca);

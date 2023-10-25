@@ -45,6 +45,12 @@ export default class ElevadorRepo implements IElevadorRepo{
                 return ElevadorMap.toDomain(elevadorCreated);
             }else{
                 elevadorDocument.id = elevador.id;
+                elevadorDocument.pisosServidos = elevador.returnIdPisosServidos();
+                elevadorDocument.pontos = elevador.returnIdPontos();
+                elevadorDocument.marca = elevador.returnMarca();
+                elevadorDocument.modelo = elevador.returnModelo();
+                elevadorDocument.numeroSerie = elevador.returnNumeroSerie();
+                elevadorDocument.descricao = elevador.returnDescricao();
                 await elevadorDocument.save();
                 return elevador;
             }
@@ -67,11 +73,11 @@ export default class ElevadorRepo implements IElevadorRepo{
     public async getMaxId(): Promise<number> {
         try {
             var maxIdResult = await this.elevadorSchema
-                .find({}, { domainID: 1 })
+                .find({}, { domainId: 1 })
                ;
     
             if (maxIdResult && maxIdResult.length > 0) {
-                return (maxIdResult.sort((a, b) => b.domainID - a.domainID))[0].domainID;
+                return (maxIdResult.sort((a, b) => b.domainId - a.domainId))[0].domainId;
             } else {
                 return 0; 
             }

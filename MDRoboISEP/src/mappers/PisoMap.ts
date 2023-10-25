@@ -30,7 +30,7 @@ export class PisoMap extends Mapper<Piso> {
       numeroPiso: NumeroPiso.create(raw.numeroPiso).getValue()      
     }
     
-    if  (raw.descricaoPiso !== null){
+    if  (raw.descricaoPiso !== null && raw.descricaoPiso !== undefined){
       const descricaoPisoOrError = DescricaoPiso.create(raw.descricaoPiso);
       dadosPiso.descricaoPiso = descricaoPisoOrError.getValue();
     }
@@ -38,7 +38,7 @@ export class PisoMap extends Mapper<Piso> {
 
     
     
-    if  (raw.pontos !== null){
+    if  (raw.pontos !== null && raw.pontos !== undefined){
     let ponto: Ponto [][] = [];
     const repo = Container.get(PontoRepo);
       for (let i = 0; i < raw.pontos.length; i++) {
@@ -66,7 +66,7 @@ export class PisoMap extends Mapper<Piso> {
     }
 
     
-    if(piso.props.descricaoPiso === undefined){
+    if(piso.props.descricaoPiso !== undefined && piso.props.descricaoPiso !== null){
       dadosPiso.descricaoPiso = piso.returnDescricaoPiso();
     }
 

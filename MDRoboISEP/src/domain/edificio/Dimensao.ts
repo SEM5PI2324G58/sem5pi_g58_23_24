@@ -17,7 +17,7 @@ export class Dimensao extends ValueObject<DimensaoProps> {
       guardResults.push(Guard.numberGreaterThanZero(yNumber,'Dimensão Y'));
       let guardFinal = Guard.combine(guardResults);
       if (guardFinal.succeeded === false) {
-        return Result.fail<Dimensao>('Erro: O Dimensão tem de ser válido e superior a 0')
+        return Result.fail<Dimensao>('Erro: A Dimensão tem de ser válida e superior a 0')
       } else {
         const dimensao = new Dimensao({ x: xNumber, y:yNumber});
         return Result.ok<Dimensao>( dimensao );
