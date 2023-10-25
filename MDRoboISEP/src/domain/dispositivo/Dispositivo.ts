@@ -37,6 +37,19 @@ export class Dispositivo extends AggregateRoot<dispositivoProps> {
     return this.id.toString();
   }
 
+  public numeroDeSerieIgual (numeroSerie: string): boolean {
+    return this.props.numeroSerie.props.numeroSerie === numeroSerie;
+  }
+
+  public returnTipoDispositivoModelo (): string {
+    return this.props.tipoDeDispositivo.returnModelo();
+  }
+
+  public returnTipoDispositivoMarca (): string {
+    return this.props.tipoDeDispositivo.returnMarca();
+  }
+
+
   private constructor (props : dispositivoProps, id?: CodigoDispositivo) {
       super(props,id);
   }
@@ -50,9 +63,9 @@ export class Dispositivo extends AggregateRoot<dispositivoProps> {
       { argument: props.numeroSerie, argumentName: 'numeroSerie' },
     ];
 
-    let guard1 = Guard.againstNullOrUndefined(guardedProps[2].argument,guardedProps[2].argumentName);
-    let guard2 = Guard.againstNullOrUndefined(guardedProps[3].argument,guardedProps[3].argumentName);
-    let guard3 = Guard.againstNullOrUndefined(guardedProps[4].argument,guardedProps[4].argumentName);
+    let guard1 = Guard.againstNullOrUndefined(guardedProps[1].argument,guardedProps[1].argumentName);
+    let guard2 = Guard.againstNullOrUndefined(guardedProps[2].argument,guardedProps[2].argumentName);
+    let guard3 = Guard.againstNullOrUndefined(guardedProps[3].argument,guardedProps[3].argumentName);
     let guard4 = Guard.againstNullOrUndefined(id, 'Codigo do Dispositivo');
 
     let guardResult = Guard.combine([guard1,guard2,guard3,guard4]);

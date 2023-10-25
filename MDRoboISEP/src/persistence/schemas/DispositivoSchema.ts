@@ -23,6 +23,7 @@ const DispositivoSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Introduz o nickname'],
       index: true,
+      unique: true,
     },
 
     numeroSerie: {
