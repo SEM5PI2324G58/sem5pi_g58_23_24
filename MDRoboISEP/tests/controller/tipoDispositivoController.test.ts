@@ -3,6 +3,8 @@ import Container from 'typedi';
 import { Request, Response, NextFunction } from 'express';
 import TipoDispositivoController from '../../src/controllers/TipoDispositivoController';
 import ITipoDispositivoService from '../../src/services/IServices/ITipoDispositivoService';
+import ITipoDispositivoDTO from '../../src/dto/ITipoDispositivoDTO';
+import { Result } from '../../src/core/logic/Result';
 
 describe('Tipo Dispositivo Controller', () => {
     const sandbox = sinon.createSandbox();
@@ -42,7 +44,7 @@ describe('Tipo Dispositivo Controller', () => {
 
         let next: Partial<NextFunction> = () => {};
         let tipoDispositivoService = Container.get("TipoDispositivoService");
-        sinon.stub(tipoDispositivoService, "criarTipoDispositivo").returns(Promise.resolve(body));
+        sinon.stub(tipoDispositivoService, "criarTipoDispositivo").returns(Promise.resolve(Result.ok<ITipoDispositivoDTO>(body as ITipoDispositivoDTO)));
 
         let tipoDispositivoController = new TipoDispositivoController(tipoDispositivoService as ITipoDispositivoService);
         // Act
