@@ -33,4 +33,7 @@ export default (app: Router) => {
       })
     }),
     (req, res, next) => ctrl.listarEdificioMinEMaxPisos(req, res, next));
+
+    route.get('/listar',
+    (req, res, next) => ctrl.listarEdificios(req, res, next));
 };

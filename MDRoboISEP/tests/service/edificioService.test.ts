@@ -129,4 +129,32 @@ describe('EdificioService ', () => {
         expect(answer.errorValue()).to.equal("Erro: A descrição tem de ser válida e até 255 caratéres.");
 
     });
+
+    it('Listar Edificios sem existirem edificios', async () => {
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        sinon.stub(edificioRepoInstance, "getAllEdificios").returns(Promise.resolve([]));
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        let answer = await edificioService.listarEdificios();
+        expect(answer.errorValue()).to.equal("Não existem edificios");
+    });
+
+    it('Listar Edificios com edificios existentes', async () => {
+        let edificioProps : any = {
+            nome: Nome.create('Edificio A').getValue(),
+            dimensao:Dimensao.create(1,1).getValue(),
+            descricao:DescricaoEdificio.create('Edificio A').getValue(),
+            listaPisos: [],
+        };
+
+
+        let edificio = Edificio.create(edificioProps,Codigo.create('ED01').getValue()).getValue();
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        sinon.stub(edificioRepoInstance, "getAllEdificios").returns(Promise.resolve([edificio]));
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        let answer = await edificioService.listarEdificios();
+        expect(answer.getValue()[0].nome).to.equal(edificioProps.nome.props.nome);
+        expect(answer.getValue()[0].dimensaoX).to.equal(edificioProps.dimensao.props.x);
+        expect(answer.getValue()[0].dimensaoY).to.equal(edificioProps.dimensao.props.y);
+        expect(answer.getValue()[0].descricao).to.equal(edificioProps.descricao.props.descricao);
+    });
 });

@@ -18,11 +18,17 @@ import PontoRepo from "../repos/PontoRepo";
 export class PisoMap extends Mapper<Piso> {
   
   public static toDTO(piso: Piso): IPisoDTO {
-    return {
+    let dadosPiso : any = {
       id: piso.returnIdPiso(),
-      numeroPiso: piso.returnNumeroPiso(),
-      descricaoPiso: piso.returnDescricaoPiso()
-    } as IPisoDTO;
+      numeroPiso: piso.returnNumeroPiso(), 
+    }
+
+    
+    if(piso.props.descricaoPiso !== undefined && piso.props.descricaoPiso !== null){
+      dadosPiso.descricaoPiso = piso.returnDescricaoPiso();
+    }
+
+    return dadosPiso as IPisoDTO;
   }
 
   public static async toDomain (raw: any): Promise<Piso> {
