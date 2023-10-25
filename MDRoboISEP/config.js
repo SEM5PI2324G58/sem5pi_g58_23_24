@@ -61,6 +61,10 @@ export default {
       name: "TipoDispositivoController",
       path: "../controllers/TipoDispositivoController"
     },
+    passagem: {
+      name: "PassagemController",
+      path: "../controllers/CriarPassagemController"
+    },
   },
 
   repos: {
@@ -92,6 +96,10 @@ export default {
       name: "TipoDispositivoRepo",
       path: "../repos/TipoDispositivoRepo"
     },
+    passagem: {
+      name: "PassagemRepo",
+      path: "../repos/PassagemRepo"
+    },
   },
 
   services: {
@@ -114,6 +122,10 @@ export default {
     tipoDispositivo: {
       name: "TipoDispositivoService",
       path: "../services/TipoDispositivoService"
+    },
+    passagem: {
+      name: "PassagemService",
+      path: "../services/CriarPassagemService"
     },
   },
 };

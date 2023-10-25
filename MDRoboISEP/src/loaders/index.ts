@@ -50,6 +50,13 @@ export default async ({ expressApp }) => {
     schema: '../persistence/schemas/TipoDispositivoSchema',
   };
 
+  const passagemSchema = {
+    // compare with the approach followed in repos and services
+    name: 'PassagemSchema',
+    schema: '../persistence/schemas/PassagemSchema',
+  };
+
+
   const roleController = {
     name: config.controllers.role.name,
     path: config.controllers.role.path
@@ -75,6 +82,11 @@ export default async ({ expressApp }) => {
     path: config.controllers.tipoDispositivo.path
   }
 
+  const passagemController = {
+    name: config.controllers.passagem.name,
+    path: config.controllers.passagem.path
+  }
+  
   const roleRepo = {
     name: config.repos.role.name,
     path: config.repos.role.path
@@ -108,6 +120,12 @@ export default async ({ expressApp }) => {
     path: config.repos.tipoDispositivo.path
   }
 
+  const passagemRepo = {
+    name: config.repos.passagem.name,
+    path: config.repos.passagem.path
+  }
+
+
   const roleService = {
     name: config.services.role.name,
     path: config.services.role.path
@@ -133,6 +151,11 @@ export default async ({ expressApp }) => {
     path: config.services.tipoDispositivo.path
   }
 
+  const passagemService = {
+    name: config.services.passagem.name,
+    path: config.services.passagem.path
+  }
+
   await dependencyInjectorLoader({
     mongoConnection,
     schemas: [
@@ -142,14 +165,16 @@ export default async ({ expressApp }) => {
       pontoSchema,
       EdificioSchema,
       elevadorSchema,
-      tipoDispositivoSchema
+      tipoDispositivoSchema,
+      passagemSchema
     ],
     controllers: [
       roleController,
       edificioController,
       pisoController,
       elevadorController,
-      tipoDispositivoController
+      tipoDispositivoController,
+      passagemController
     ],
     repos: [
       roleRepo,
@@ -158,14 +183,16 @@ export default async ({ expressApp }) => {
       pontoRepo,
       edificioRepo,
       elevadorRepo,
-      tipoDispositivoRepo
+      tipoDispositivoRepo,
+      passagemRepo
     ],
     services: [
       roleService,
       edificioService,
       pisoService,
       elevadorService,
-      tipoDispositivoService
+      tipoDispositivoService,
+      passagemService
     ]
   });
   Logger.info('✌️ Schemas, Controllers, Repositories, Services, etc. loaded');
