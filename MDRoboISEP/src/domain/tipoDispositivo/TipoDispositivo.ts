@@ -30,6 +30,9 @@ export class TipoDispositivo extends AggregateRoot<TipoDispositivoProps>{
         }
         return tipoTarefa;
     }
+    public returnIdTipoDispositivo(): number {
+        return Number(this.id.toValue());
+    }
 
     public static create(props: TipoDispositivoProps, id: UniqueEntityID): Result<TipoDispositivo> {
         const guardedProps = [{argument: props.tipoTarefa, argumentName: 'Tipo de Tarefa'},
