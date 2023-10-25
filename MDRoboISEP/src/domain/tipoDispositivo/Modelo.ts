@@ -16,7 +16,7 @@ export class Modelo extends ValueObject<ModeloProps>{
         guardResults.push(Guard.stringLengthLessOrEqualThan(modeloString,100,'Modelo'));
         const guardFinal = Guard.combine(guardResults);
         if(guardFinal.succeeded === false || !modeloString){
-            return Result.fail<Modelo>('Erro: O modelo tem de ser válido e até 100 caratéres.')
+            return Result.fail<Modelo>('Erro: O modelo tem de ser válido e ter até 100 caratéres.')
         }else{
             const modelo = new Modelo({modelo: modeloString});
             return Result.ok<Modelo>(modelo);
