@@ -158,7 +158,7 @@ describe('ElevadorRepo', () => {
         
     });
 
-    it('getMaxId deve retornar 1', async () => {
+    it('getMaxId deve retornar 2', async () => {
 
     
         const elevadorDTO ={
