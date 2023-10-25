@@ -14,6 +14,7 @@ import { NumeroSerieElevador } from "../domain/elevador/NumeroSerieElevador";
 import { DescricaoElevador } from "../domain/elevador/DescricaoElevador";
 import { Ponto } from "../domain/ponto/Ponto";
 import { Elevador } from "../domain/elevador/Elevador";
+import IPontoRepo from "./IRepos/IPontoRepo";
 
 
 @Service()
@@ -21,7 +22,8 @@ export default class ElevadorService implements IElevadorService{
     
     constructor(
         @Inject(config.repos.edificio.name) private edificioRepo : IEdificioRepo,
-        @Inject(config.repos.elevador.name) private elevadorRepo : IElevadorRepo
+        @Inject(config.repos.elevador.name) private elevadorRepo : IElevadorRepo,
+        @Inject(config.repos.ponto.name) private pontoRepo : IPontoRepo
     ){}
     
     
@@ -107,6 +109,11 @@ export default class ElevadorService implements IElevadorService{
             }
 
             edificio.adicionarElevador(elevadorOuErro.getValue());
+
+            for (let i = 0; i< pontos.length; i++){
+                pontos[i].toElevador();
+                await this.pontoRepo.save(pontos[i]);
+            }
 
             await this.elevadorRepo.save(elevadorOuErro.getValue());
             await this.edificioRepo.save(edificio)

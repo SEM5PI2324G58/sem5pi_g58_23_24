@@ -81,6 +81,9 @@ describe('ElevadorController', () => {
 
         let elevadorSchemaInstance = require('../../src/persistence/schemas/ElevadorSchema').default;
         Container.set("ElevadorSchema", elevadorSchemaInstance);
+
+        let pontoSchemaInstance = require('../../src/persistence/schemas/PontoSchema').default;
+        Container.set("PontoSchema", pontoSchemaInstance);
         
         //Repo
         let elevadorRepoClass = require('../../src/repos/ElevadorRepo').default;
@@ -90,6 +93,10 @@ describe('ElevadorController', () => {
         let edificioRepoClass = require('../../src/repos/EdificioRepo').default;
         let edificioRepoInstance = Container.get(edificioRepoClass);
         Container.set("EdificioRepo", edificioRepoInstance);
+
+        let pontoRepoClass = require('../../src/repos/pontoRepo').default;
+        let pontoRepoInstance = Container.get(pontoRepoClass);
+        Container.set("PontoRepo", pontoRepoInstance);
 
         //Service
         let elevadorServiceClass = require('../../src/services/ElevadorService').default;
@@ -175,10 +182,12 @@ describe('ElevadorController', () => {
 
         let elevadorRepoInstance = Container.get("ElevadorRepo");
         let edificioRepoInstance = Container.get("EdificioRepo");
-        let elevadorServiceInstance = Container.get("ElevadorService")
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let elevadorServiceInstance = Container.get("ElevadorService");
 
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioSemElevador")));
         sinon.stub(elevadorRepoInstance, "getMaxId").returns(Promise.resolve(1));
+        sinon.stub(pontoRepoInstance, "save").returns(Promise.resolve(null));
         sinon.stub(elevadorRepoInstance, "save").returns(Promise.resolve(null));
         sinon.stub(edificioRepoInstance, "save").returns(Promise.resolve(null));
         
