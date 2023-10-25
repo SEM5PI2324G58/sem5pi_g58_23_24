@@ -25,7 +25,7 @@ export class ElevadorMap extends Mapper<Elevador>{
 
     public static async toDomain (raw: any): Promise<Elevador>{
         
-        let dadosElevador : any;
+        let dadosElevador : any = {};
         
         const pisoRepo = Container.get(PisoRepo);
         const pontoRepo = Container.get(PontoRepo);
@@ -36,7 +36,7 @@ export class ElevadorMap extends Mapper<Elevador>{
             pisosServido[i] = await pisoRepo.findByDomainId(raw.pisosServidos[i]);
         }
 
-        dadosElevador.pisosServido = pisosServido;
+        dadosElevador.pisosServidos = pisosServido;
 
         let pontos: Ponto[] = [];
         for (let i = 0; i< raw.pontos.length; i++){
