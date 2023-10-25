@@ -159,4 +159,40 @@ describe('EdificioRepo', () => {
 
         expect(answer).to.be.equal(null);
     });
+
+    it('GetAllEdificios deve retornar lista vazia se não encontrar nada', async () => {
+        const edificioSchemaInstance = Container.get("EdificioSchema");
+        sinon.stub(edificioSchemaInstance, "find").returns([]);
+        const edificioRepo = new EdificioRepo(edificioSchemaInstance as any);
+
+        const answer = await edificioRepo.getAllEdificios();
+
+        expect(answer).to.be.deep.equal([]);
+    });
+
+    it('GetAllEdificios deve retornar lista de edificios', async () => {
+        let listaPiso : number [] = []; 
+        const edificioDTO = {
+            codigo : "ED01",
+            nome : "Edificio A",
+            descricao : "Edificio A",
+            dimensaoX: 1,
+            dimensaoY: 1,
+            piso : listaPiso,
+            save() { return this; }
+        } as IEdificioPersistence & Document<any, any, any>;
+
+        const edificioSchemaInstance = Container.get("EdificioSchema");
+        sinon.stub(edificioSchemaInstance, "find").returns([edificioDTO]);
+        const edificioRepo = new EdificioRepo(edificioSchemaInstance as any);
+
+        const answer = await edificioRepo.getAllEdificios();
+
+        expect(answer[0].returnEdificioId()).to.be.equal(edificioDTO.codigo);
+        expect(answer[0].returnNome()).to.be.equal(edificioDTO.nome);
+        expect(answer[0].returnDescricao()).to.be.equal(edificioDTO.descricao);
+        expect(answer[0].returnDimensaoX()).to.be.equal(edificioDTO.dimensaoX);
+        expect(answer[0].returnDimensaoY()).to.be.equal(edificioDTO.dimensaoY);
+        expect(answer[0].returnListaPisosId()).to.deep.equal(edificioDTO.piso);
+    });
 });

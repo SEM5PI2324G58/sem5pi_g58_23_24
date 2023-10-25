@@ -95,4 +95,20 @@ export default class EdificioService implements IEdificioService {
 
     return Result.fail<IEdificioDTO[]>("Não existem edificios com o número de pisos pretendido");
   }
+
+  public async listarEdificios(): Promise<Result<IEdificioDTO[]>>{
+    try{
+      const edificioDocument = await this.edificioRepo.getAllEdificios();
+      let listaEdificiosDTO: IEdificioDTO[] = [];
+      for (let edificio of edificioDocument) {
+        listaEdificiosDTO.push(EdificioMap.toDTO(edificio));
+      }
+      if(listaEdificiosDTO.length === 0){
+        return Result.fail<IEdificioDTO[]>("Não existem edificios");
+      }
+      return Result.ok<IEdificioDTO[]>(listaEdificiosDTO);
+    }catch(e){
+      throw e;
+    }
+  }
 }

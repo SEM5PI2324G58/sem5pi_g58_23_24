@@ -1,0 +1,33 @@
+autonumber
+
+participant RouteEdificio as route
+participant "dto: EdificioDTO" as dto
+participant "controller: EdificioController" as ctrl
+participant "service: EdificioService" as service
+participant "repository: EdificioRepo" as edRepo
+
+[o-> route: GET()
+activate route
+route -> ctrl: listarEdificios()
+activate ctrl
+ctrl -> service: listarEdificios()
+activate service
+service -> edRepo: getAllEdificios()
+activate edRepo
+return listaEdificios
+
+return listaEdificios
+return listaEdificios
+
+
+
+
+
+
+
+
+
+
+
+
+
