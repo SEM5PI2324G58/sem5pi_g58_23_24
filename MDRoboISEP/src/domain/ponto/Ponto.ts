@@ -55,4 +55,8 @@ export class Ponto extends AggregateRoot<pontoProps> {
       return Result.ok<Ponto>(piso);
     }
   }
+
+  public toElevador() {
+    this.props.tipoPonto = TipoPonto.create("Elevador").getValue();
+  }
 }
