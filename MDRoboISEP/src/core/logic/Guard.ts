@@ -118,6 +118,14 @@ export class Guard {
       return { succeeded: false, message: `${argumentName} deve ter um tamanho superior a ${length}.`};
     }
   }
+
+  public static arrayHasSpecificLength(inputArray: any[], length: number, argumentName: string): IGuardResult {
+    if(inputArray.length === length){
+      return { succeeded: true };
+    }else{
+      return { succeeded: false, message: `${argumentName} deve ter um tamanho igual a ${length}.`};
+    }
+  }
   
   public static isPatternValidIdPonto(inputString: string, argumentName: string): IGuardResult {
     const regex = /^-?[a-zA-Z0-9 ]+\.[0-9]+\.[0-9]+$/;
