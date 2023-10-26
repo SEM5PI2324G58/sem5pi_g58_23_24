@@ -3,10 +3,13 @@ import { Result } from "../../core/logic/Result";
 import { IdPassagem } from "./IdPassagem";
 import { Ponto } from "../ponto/Ponto";
 import { Guard } from "../../core/logic/Guard";
+import { Piso } from "../piso/Piso";
 
 
 interface PassagemProps {
   listaPontos: Ponto[];
+  pisoA: Piso;
+  pisoB: Piso;
 }
 
 export class Passagem extends AggregateRoot<PassagemProps> {

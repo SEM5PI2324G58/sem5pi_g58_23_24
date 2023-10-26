@@ -8,6 +8,8 @@ import IEdificioRepo from '../services/IRepos/IEdificioRepo';
 import { Passagem } from '../domain/passagem/Passagem';
 import IPontoRepo from '../services/IRepos/IPontoRepo';
 import { IdPassagem } from '../domain/passagem/IdPassagem';
+import PisoRepo from '../repos/PontoRepo';
+import IPisoRepo from './IRepos/IPisoRepo';
 
 @Service()
 
@@ -16,6 +18,7 @@ export default class PassagemService implements IPassagemService {
         @Inject(config.repos.passagem.name) private passagemRepo: IPassagemRepo,
         @Inject(config.repos.piso.name) private edificioRepo: IEdificioRepo,
         @Inject(config.repos.piso.name) private pontoRepo: IPontoRepo,
+        @Inject(config.repos.piso.name) private pisoRepo: IPisoRepo,
 
     ) { }
 
@@ -42,11 +45,11 @@ export default class PassagemService implements IPassagemService {
                 return Result.fail<IPassagemDTO>("O edificio com o id " + passagemDTO.idEdificioB + " não existe");
             }
 
-            let pontoA = await edificioDocumentA.getPonto(passagemDTO.abcissaA, passagemDTO.ordenadaA, passagemDTO.idPisoA);
+            let pontoA = edificioDocumentA.getPonto(passagemDTO.abcissaA, passagemDTO.ordenadaA, passagemDTO.idPisoA);
             if (pontoA == null || pontoA == undefined) {
                 return Result.fail<IPassagemDTO>("Não existem pontos na posição A");
             }
-            let pontoB = await edificioDocumentB.getPonto(passagemDTO.abcissaB, passagemDTO.ordenadaB, passagemDTO.idPisoB);
+            let pontoB = edificioDocumentB.getPonto(passagemDTO.abcissaB, passagemDTO.ordenadaB, passagemDTO.idPisoB);
             if (pontoB == null || pontoB == undefined) {
                 return Result.fail<IPassagemDTO>("Não existem pontos na posição B");
             }
@@ -60,20 +63,24 @@ export default class PassagemService implements IPassagemService {
 
             let maxId = await this.passagemRepo.getMaxId();
             maxId++;
-            const idPassagemOuErro = await IdPassagem.create(maxId);
+            const idPassagemOuErro = IdPassagem.create(maxId);
+            const pisoA = await this.pisoRepo.findByDomainId(Number(passagemDTO.idPisoA));
+            const pisoB = await this.pisoRepo.findByDomainId(Number(passagemDTO.idPisoB));
 
-            const passagemOurErro = await Passagem.create({
+            const passagemOrError = Passagem.create({
                 listaPontos: listaPontosOrErr,
+                pisoA: pisoA,
+                pisoB: pisoB
             }, idPassagemOuErro.getValue());
 
-            if (passagemOurErro.isFailure) {
-                return Result.fail<IPassagemDTO>(passagemOurErro.errorValue());
+            if (passagemOrError.isFailure) {
+                return Result.fail<IPassagemDTO>(passagemOrError.errorValue());
             }
-            
-            edificioDocumentA.alterarPontosPorPassagem(pontoA, passagemDTO.idPisoA);
-            edificioDocumentB.alterarPontosPorPassagem(pontoB, passagemDTO.idPisoB);
 
-            await this.passagemRepo.save(passagemOurErro.getValue());
+            edificioDocumentA.alterarPontosPorPassagem(pontoA, pisoA.returnIdPiso().toString());
+            edificioDocumentB.alterarPontosPorPassagem(pontoB, pisoB.returnIdPiso().toString());
+
+            await this.passagemRepo.save(passagemOrError.getValue());
             await this.edificioRepo.save(edificioDocumentA);
             await this.edificioRepo.save(edificioDocumentB);
 
