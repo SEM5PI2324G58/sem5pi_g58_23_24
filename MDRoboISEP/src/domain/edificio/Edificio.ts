@@ -7,6 +7,7 @@ import { Result } from "../../core/logic/Result";
 import { Piso } from "../piso/Piso";
 import { Guard } from "../../core/logic/Guard";
 import { Elevador } from "../elevador/Elevador";
+import { Ponto } from "../ponto/Ponto";
 
 
 
@@ -19,6 +20,54 @@ interface EdificioProps{
 }
 
 export class Edificio extends AggregateRoot<EdificioProps> {
+  
+  getPonto(abcissa: number, ordenada: number, idPiso): Ponto {
+    let listaPisos = this.props.listaPisos;
+    for (let index = 0; index < listaPisos.length; index++) {
+      let piso = listaPisos[index];
+      if (piso.id.toString() == idPiso) {
+        for (let i = 0; i < piso.props.mapa.length; i++) {
+          for (let j = 0; j < piso.props.mapa[i].length; j++){
+            let ponto = piso.props.mapa[i][j];
+            if (ponto.props.coordenadas.props.abscissa == abcissa && ponto.props.coordenadas.props.ordenada == ordenada){
+              return ponto;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+
+
+  verificarPontoExiste(idPiso: string, pontos: Ponto) {
+    let listaPisos = this.props.listaPisos;
+    for (let index = 0; index < listaPisos.length; index++) {
+      let piso = listaPisos[index];
+      if (piso.id.toString() == idPiso) {
+        for (let i = 0; i < piso.props.mapa.length; i++) {
+          for (let j = 0; j < piso.props.mapa[i].length; j++){
+            let ponto = piso.props.mapa[i][j];
+            if (ponto.props.coordenadas.props.abscissa == pontos.props.coordenadas.props.abscissa
+               && ponto.props.coordenadas.props.ordenada == pontos.props.coordenadas.props.ordenada){
+              return true;
+            }
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  verificarPisoExiste(idPiso: string) {
+    let listaPisos = this.props.listaPisos;
+    for (let index = 0; index < listaPisos.length; index++){
+      const piso = listaPisos[index];
+      if (piso.id.toString() == idPiso) {
+        return true;
+      }
+    }
+  }
   private constructor (props: EdificioProps, id: UniqueEntityID){
     super(props, id);
   }

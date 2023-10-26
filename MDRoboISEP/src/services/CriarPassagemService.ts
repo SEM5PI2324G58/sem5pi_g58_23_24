@@ -26,8 +26,6 @@ export default class PassagemService implements IPassagemService {
             if (found) {
                 return Result.fail<IPassagemDTO>("A passagem com o id " + passagemDTO.id + " já existe");
             }
-         
-            let pontos = passagemDTO.listaPontos;
 
             if (passagemDTO.idEdificioA == passagemDTO.idEdificioB) {
                 return Result.fail<IPassagemDTO>("Os edificios são iguais");
@@ -43,17 +41,22 @@ export default class PassagemService implements IPassagemService {
             if (!found) {
                 return Result.fail<IPassagemDTO>("O edificio com o id " + passagemDTO.idEdificioB + " não existe");
             }
-        
-            edificioDocumentA.verificarPisoExiste(passagemDTO.idPisoA);
-            edificioDocumentA.verificarPontoExiste(passagemDTO.idPisoA, passagemDTO.idPisoB, pontos);
-            edificioDocumentB.verificarPisoExiste(passagemDTO.idPisoB);
-            edificioDocumentB.verificarPontoExiste(passagemDTO.idPisoA, passagemDTO.idPisoB, pontos);
 
-            const listaPontosOrErr = [];
-            for (let index = 0; index < pontos.length; index++) {
-                const ponto = pontos[index];
-                listaPontosOrErr.push(await this.pontoRepo.findByDomainId(ponto.id));
+            let pontoA = await edificioDocumentA.getPonto(passagemDTO.abcissaA, passagemDTO.ordenadaA, passagemDTO.idPisoA);
+            if (pontoA == null || pontoA == undefined) {
+                return Result.fail<IPassagemDTO>("Não existem pontos na posição A");
             }
+            let pontoB = await edificioDocumentB.getPonto(passagemDTO.abcissaB, passagemDTO.ordenadaB, passagemDTO.idPisoB);
+            if (pontoB == null || pontoB == undefined) {
+                return Result.fail<IPassagemDTO>("Não existem pontos na posição B");
+            }
+
+            edificioDocumentA.verificarPisoExiste(passagemDTO.idPisoA);
+            edificioDocumentA.verificarPontoExiste(passagemDTO.idPisoA, pontoA);
+            edificioDocumentB.verificarPisoExiste(passagemDTO.idPisoB);
+            edificioDocumentB.verificarPontoExiste(passagemDTO.idPisoA, pontoB);
+
+            const listaPontosOrErr = [pontoA, pontoA, pontoB, pontoB]; //TODO: corrigir isto para obter os ponto seguinte ao pontoA e pontoB
 
             let maxId = await this.passagemRepo.getMaxId();
             maxId++;
