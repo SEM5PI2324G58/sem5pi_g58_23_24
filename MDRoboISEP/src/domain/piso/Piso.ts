@@ -6,7 +6,7 @@ import { DescricaoPiso } from "./DescricaoPiso";
 import { Guard } from "../../core/logic/Guard";
 import { IdPiso } from "./IdPiso";
 import { Ponto } from "../ponto/Ponto";
-import { map } from "lodash";
+
 
 
 interface pisoProps {
