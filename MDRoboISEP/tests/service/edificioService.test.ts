@@ -272,5 +272,41 @@ describe('EdificioService ', () => {
 
     });
 
+    
+    it('Editar edificio sem esse edificio existir', async () => {
+        
+        let body = {
+            "codigo": "*___*",
+            "nome" : "Edificio A",
+        };
+        
+        let edificioRepoInstance = Container.get("EdificioRepo");
 
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(null));
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        let answer = await edificioService.editarEdificio(body as IEdificioDTO);
+        expect(answer.errorValue()).to.equal("Edificio não existe");
+    });
+
+    it('Editar edificio sem nome nem descricao', async () => {
+            let body = {
+                "codigo": "as1",
+            };
+            
+            let edificioProps : any = {
+                nome: Nome.create('Edificio A').getValue(),
+                dimensao:Dimensao.create(1,1).getValue(),
+                descricao:DescricaoEdificio.create('Edificio A').getValue(),
+                listaPisos: [],
+            };
+            
+            let edificio = Edificio.create(edificioProps,Codigo.create('as1').getValue()).getValue();
+            
+            let edificioRepoInstance = Container.get("EdificioRepo");
+    
+            sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(edificio));
+            const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+            let answer = await edificioService.editarEdificio(body as IEdificioDTO);
+            expect(answer.errorValue()).to.equal("Nome e descrição são obrigatórios");
+    });
 });
