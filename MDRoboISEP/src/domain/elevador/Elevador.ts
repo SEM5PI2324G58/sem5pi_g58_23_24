@@ -82,4 +82,8 @@ export class Elevador extends AggregateRoot<ElevadorProps>{
             return Result.ok<Elevador>(elevador);
         }
     }
+
+    public pisosServidosAtuais() : Piso[]{
+        return this.props.pisosServidos;
+    }
 }
