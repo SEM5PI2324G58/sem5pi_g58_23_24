@@ -127,5 +127,31 @@ describe('EdificioController', () => {
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
         sinon.assert.calledWith(res.json as sinon.SinonSpy, listaDTO);
     });
+    
+    it('Editar edificio retorna edificio JSON', async function() {
+        let body = {
+            "codigo" : "ED01",
+            "nome" : "Edificio A",
+            "descricao" : "Edificio A",
+        }
+        
+        let req: Partial<Request> = {};
+        req.body = body;
+        let res: Partial<Response> = {
+            json: sinon.spy(),
+        };
+        let next: Partial<NextFunction> = () => {};
+        let edificioServiceInstance = Container.get("EdificioService");
+        sinon.stub(edificioServiceInstance, 'editarEdificio').returns(Promise.resolve(Result.ok<IEdificioDTO>(body as IEdificioDTO)));
+        let edificioController = new EdificioController(edificioServiceInstance as IEdificioService);
 
+        //Act
+        await edificioController.editarEdificio(<Request> req,<Response> res, <NextFunction> next);
+
+        //Assert
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, body);
+    });
+
+  
 });
