@@ -58,7 +58,7 @@ export default class PisoRepo implements IPontoRepo {
     }
   }
 
-  public async findByDomainId (idPonto: IdPonto | string): Promise<Ponto> {
+  public async findByDomainId (idPonto: IdPonto | number): Promise<Ponto> {
     const query = { domainID: idPonto};
     const pontoRecord = await this.pontoSchema.findOne( query as FilterQuery<IPontoPersistence & Document> );
 
@@ -68,4 +68,20 @@ export default class PisoRepo implements IPontoRepo {
     else
       return null;
   }
+
+  public async getMaxId(): Promise<number> {
+    try {
+      var maxIdResult = await this.pontoSchema
+          .find({}, { domainID: 1 })
+         ;
+
+      if (maxIdResult && maxIdResult.length > 0) {
+          return (maxIdResult.sort((a, b) => b.domainID - a.domainID))[0].domainID;
+      } else {
+          return 0; 
+      }
+  } catch (err) {
+      throw err;
+  }
+}
 }

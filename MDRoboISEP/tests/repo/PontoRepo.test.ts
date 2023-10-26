@@ -30,7 +30,7 @@ describe('PontoRepo', () => {
 
     
         const pontoDTO = {
-            domainID: "ABS.1.1",
+            domainID: 1,
             abscissa: 1,
             ordenada: 1,
             tipoPonto: " "
@@ -47,7 +47,7 @@ describe('PontoRepo', () => {
     it('Save deve retornar ponto', async () => {
 
         const pontoDTO = {
-            domainID: "ABS.1.1",
+            domainID: 1,
             abscissa: 1,
             ordenada: 1,
             tipoPonto: " "
@@ -67,11 +67,11 @@ describe('PontoRepo', () => {
     });
 
 
-    it('Save deve retornar piso ao editar', async () => {
+    it('Save deve retornar ponto ao editar', async () => {
 
     
         const pontoDTO1 = {
-            domainID: "ABS.1.1",
+            domainID: 1,
             abscissa: 1,
             ordenada: 1,
             tipoPonto: " ",
@@ -79,7 +79,7 @@ describe('PontoRepo', () => {
         } as unknown as IPontoPersistence & Document<any, any, any>;
 
         const pontoDTO2 = {
-            domainID: "ABS.1.1",
+            domainID: 1,
             abscissa: 1,
             ordenada: 1,
             tipoPonto: "Norte"
@@ -98,11 +98,11 @@ describe('PontoRepo', () => {
 
     });
 
-    it('findByDomainId deve retornar piso quando encontra', async () => {
+    it('findByDomainId deve retornar ponto quando encontra', async () => {
 
     
         const pontoDTO = {
-            domainID: "ABS.1.1",
+            domainID: 1,
             abscissa: 1,
             ordenada: 1,
             tipoPonto: " ",
@@ -128,7 +128,7 @@ describe('PontoRepo', () => {
 
     
         const pontoDTO = {
-            domainID: "ABS.1.1",
+            domainID: 1,
             abscissa: 1,
             ordenada: 1,
             tipoPonto: " ",

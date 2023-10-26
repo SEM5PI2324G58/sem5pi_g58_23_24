@@ -40,7 +40,7 @@ describe('PisoService ', () => {
         };
 
 		let pontoArray  : Ponto[][] = [];
-		let idPonto = IdPonto.create("ED01.1.1").getValue();
+		let idPonto = IdPonto.create(1).getValue();
 		let tipoPonto = TipoPonto.create(" ").getValue();
 		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
 		let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
@@ -124,6 +124,7 @@ describe('PisoService ', () => {
         let pontoRepoInstance = Container.get("PontoRepo");
 
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificio")));
+        sinon.stub(pontoRepoInstance, "getMaxId").returns(Promise.resolve(0));
         const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
         let answer = await pisoService.criarPiso(body as ICriarPisoDTO);
         expect(answer.errorValue()).to.equal("O piso numero 0 já existe");
@@ -141,6 +142,7 @@ describe('PisoService ', () => {
         let pisoRepoInstance = Container.get("PisoRepo");
         let edificioRepoInstance = Container.get("EdificioRepo");
         let pontoRepoInstance = Container.get("PontoRepo");
+        sinon.stub(pontoRepoInstance, "getMaxId").returns(Promise.resolve(0));
 
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificio")));
         const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
@@ -165,6 +167,7 @@ describe('PisoService ', () => {
         sinon.stub(edificioRepoInstance, "save").returns(Promise.resolve(null));
         sinon.stub(pisoRepoInstance, "getMaxId").returns(Promise.resolve(1));
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificio")));
+        sinon.stub(pontoRepoInstance, "getMaxId").returns(Promise.resolve(0));
         const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
         let answer = await pisoService.criarPiso(body as ICriarPisoDTO);
         expect(answer.getValue()).to.equal(body as ICriarPisoDTO);
@@ -187,6 +190,7 @@ describe('PisoService ', () => {
         sinon.stub(edificioRepoInstance, "save").returns(Promise.resolve(null));
         sinon.stub(pisoRepoInstance, "getMaxId").returns(Promise.resolve(1));
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificio")));
+        sinon.stub(pontoRepoInstance, "getMaxId").returns(Promise.resolve(0));
         const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
         let answer = await pisoService.criarPiso(body as ICriarPisoDTO);
         expect(answer.getValue()).to.equal(body as ICriarPisoDTO);
@@ -209,6 +213,7 @@ describe('PisoService ', () => {
         sinon.stub(edificioRepoInstance, "save").returns(Promise.resolve(null));
         sinon.stub(pisoRepoInstance, "getMaxId").returns(Promise.resolve(1));
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificio")));
+        sinon.stub(pontoRepoInstance, "getMaxId").returns(Promise.resolve(0));
         const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
         let answer = await pisoService.criarPiso(body as ICriarPisoDTO);
         expect(answer.getValue()).to.equal(body as ICriarPisoDTO);

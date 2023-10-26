@@ -9,28 +9,24 @@ import * as assert from 'assert';
 
 describe('IdPonto domain', function () {
 
-	it('IdPonto é criado com uma string no formato xx.nn.nn', async function () {
+	it('IdPonto é criado com um numero', async function () {
 		// Arrange
-		let descricaoPiso = IdPonto.create("Az1.1.12");
-		assert.strictEqual(descricaoPiso.isSuccess, true);
+		let idPonto = IdPonto.create(1);
+		assert.strictEqual(idPonto.isSuccess, true);
 	});
 
-    it('IdPonto é criado com uma string no formato x x.-nn.nn', async function () {
+    it('IdPonto não é criado com 0', async function () {
 		// Arrange
-		let descricaoPiso = IdPonto.create("A z1.1.12");
-		assert.strictEqual(descricaoPiso.isSuccess, true);
+		let idPonto = IdPonto.create(0);
+		assert.strictEqual(idPonto.isFailure, true);
 	});
 
-    it('IdPonto não é criado com uma string com o formato ..', async function () {
-		// Arrange
-		let descricaoPiso = IdPonto.create("..");
-		assert.strictEqual(descricaoPiso.isFailure, true);
-	});
 
-    it('IdPonto não é criado com uma string com o formato xx.xx.nn', async function () {
+    it('IdPonto não é criado com uma string com valor undefined', async function () {
 		// Arrange
-		let descricaoPiso = IdPonto.create("asd1.as1.1");
-		assert.strictEqual(descricaoPiso.isFailure, true);
+		let ponto;
+		let idPonto = IdPonto.create(ponto);
+		assert.strictEqual(idPonto.isFailure, true);
 	});
 
 });
