@@ -1,3 +1,4 @@
+import { Model } from "mongoose";
 import { AggregateRoot } from "../../core/domain/AggregateRoot";
 import { UniqueEntityID } from "../../core/domain/UniqueEntityID";
 import { Guard } from "../../core/logic/Guard";
@@ -99,5 +100,40 @@ export class Elevador extends AggregateRoot<ElevadorProps>{
         coords.push(this.props.pontos[1].returnOrdenada());
         
         return coords;
+    }
+
+    public orientacao(): string{
+        let coords = this.posicao()
+        //y2 > y1
+        if (coords[3] > coords[1]){
+            return "norte"
+        }else{
+            return "oeste"
+        }
+
+    }
+
+    public updatePisos(novosPisos: Piso[]){
+        this.props.pisosServidos = novosPisos;
+    }
+
+    public updatePontos(novosPontos: Ponto[]){
+        this.props.pontos = novosPontos;
+    }
+    
+    public updateMarca(novaMarca: MarcaElevador){
+        this.props.marca = novaMarca;
+    }
+
+    public updateModelo(novoModelo: ModeloElevador){
+        this.props.modelo = novoModelo;
+    }
+
+    public updateNumeroSerie(novoNumeroSerie: NumeroSerieElevador){
+        this.props.numeroSerie = novoNumeroSerie;
+    }
+
+    public updateDescricao(novoDescricao: DescricaoElevador){
+        this.props.descricao = novoDescricao;
     }
 }
