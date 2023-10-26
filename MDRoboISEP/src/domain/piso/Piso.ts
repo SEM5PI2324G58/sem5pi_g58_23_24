@@ -6,6 +6,7 @@ import { DescricaoPiso } from "./DescricaoPiso";
 import { Guard } from "../../core/logic/Guard";
 import { IdPiso } from "./IdPiso";
 import { Ponto } from "../ponto/Ponto";
+import { map } from "lodash";
 
 
 interface pisoProps {
@@ -80,5 +81,27 @@ export class Piso extends AggregateRoot<pisoProps> {
     }
 
     return pontos;
+  }
+  /**
+   * Elimina o elevador do mapa, mudando o tipo dos pontos para parede ou vazio
+   * @param coords array com as coordenadas dos ponto do elevador
+   */
+  public reverterElevadorNoMapa(coords: number[]){
+    let x = this.props.mapa.length;
+    let y = this.props.mapa[0].length;
+    
+    for (let i = 0; i < coords.length; i = i+2){
+      if(coords[i] == 0 && coords[i+1] ==0 ) {
+        this.props.mapa[coords[i]][coords[i+1]].toParedeNorteOeste(); //"NorteOeste"
+      } else if(coords[i] == x-1 && coords[i+1] == y-1 ) {
+       this.props.mapa[coords[i]][coords[i+1]].toVazio(); //" "
+      }else if((coords[i+1] == y-1) || (coords[i+1] == 0)) {
+        this.props.mapa[coords[i]][coords[i+1]].toParedeNorte(); //"Norte"
+      }else if ((coords[i] == x-1) || (coords[i] == 0)){
+        this.props.mapa[coords[i]][coords[i+1]].toParedeOeste();//"Oeste"
+      }else{
+        this.props.mapa[coords[i]][coords[i+1]].toVazio(); //" "
+      }
+    }
   }
 }
