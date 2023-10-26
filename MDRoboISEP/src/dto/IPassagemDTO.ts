@@ -1,7 +1,10 @@
 import { Ponto } from "../domain/ponto/Ponto";
 
 export default interface IPassagemDTO {
-    listaPontos: Ponto[];
+    abcissaA: number;
+    ordenadaA: number;
+    abcissaB: number;
+    ordenadaB: number;
     id: string;
     idEdificioA: string;
     idEdificioB: string;
