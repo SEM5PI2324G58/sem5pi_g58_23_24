@@ -52,9 +52,9 @@ export default class PassagemService implements IPassagemService {
             }
 
             edificioDocumentA.verificarPisoExiste(passagemDTO.idPisoA);
-            edificioDocumentA.verificarPontoExiste(passagemDTO.idPisoA, pontoA);
+            edificioDocumentA.existePontoNoLimite(passagemDTO.idPisoA, pontoA);
             edificioDocumentB.verificarPisoExiste(passagemDTO.idPisoB);
-            edificioDocumentB.verificarPontoExiste(passagemDTO.idPisoA, pontoB);
+            edificioDocumentB.existePontoNoLimite(passagemDTO.idPisoA, pontoB);
 
             const listaPontosOrErr = [pontoA, pontoA, pontoB, pontoB]; //TODO: corrigir isto para obter os ponto seguinte ao pontoA e pontoB
 
@@ -70,6 +70,13 @@ export default class PassagemService implements IPassagemService {
                 return Result.fail<IPassagemDTO>(passagemOurErro.errorValue());
             }
             
+            edificioDocumentA.alterarPontosPorPassagem(pontoA, passagemDTO.idPisoA);
+            edificioDocumentB.alterarPontosPorPassagem(pontoB, passagemDTO.idPisoB);
+
+            await this.passagemRepo.save(passagemOurErro.getValue());
+            await this.edificioRepo.save(edificioDocumentA);
+            await this.edificioRepo.save(edificioDocumentB);
+
             return Result.ok<IPassagemDTO>(passagemDTO);
         } catch (e) {
             throw e;
