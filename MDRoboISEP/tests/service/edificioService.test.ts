@@ -22,6 +22,8 @@ import { IdPonto } from "../../src/domain/ponto/IdPonto";
 import { TipoPonto } from "../../src/domain/ponto/TipoPonto";
 import { Coordenadas } from "../../src/domain/ponto/Coordenadas";
 import { IdPiso } from "../../src/domain/piso/IdPiso";
+import { IEdificioPersistence } from "../../src/dataschema/IEdificioPersistence";
+import EdificioRepo from "../../src/repos/EdificioRepo";
 
 
 describe('EdificioService ', () => {
@@ -308,5 +310,48 @@ describe('EdificioService ', () => {
             const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
             let answer = await edificioService.editarEdificio(body as IEdificioDTO);
             expect(answer.errorValue()).to.equal("Nome e descrição são obrigatórios");
+    });
+
+    it('EdificioService + EdificioRepo teste de integração ao método listarEdificioMinEMaxPisos', async function() {
+
+        let listaDTO : IEdificioDTO[] = [];
+        let edificioDTO = {
+            codigo : "ED01",
+            nome : "Edificio A",
+            descricao : "Edificio A",
+            dimensaoX: 1,
+            dimensaoY: 1,
+        } as IEdificioDTO
+        listaDTO.push(edificioDTO);
+        // Arrange
+        let body = {
+            "minPisos": 0,
+            "maxPisos": 1,
+        };
+
+
+        let listaPiso : number [] = []; 
+        
+        const edificioDTO2 = {
+            codigo : "ED01",
+            nome : "Edificio A",
+            descricao : "Edificio A",
+            dimensaoX: 1,
+            dimensaoY: 1,
+            piso : listaPiso,
+            save() { return this; }
+        } as IEdificioPersistence & Document<any, any, any>;
+
+        
+
+        const edificioSchemaInstance = Container.get("EdificioSchema");
+        sinon.stub(edificioSchemaInstance, "find").returns([edificioDTO2]);
+        
+        const answer = await new EdificioService(new EdificioRepo(edificioSchemaInstance as any)).listarEdificioMinEMaxPisos(body as IListarEdMinEMaxPisosDTO);
+        expect(answer.getValue()[0].nome).to.equal(edificioDTO.nome);
+        expect(answer.getValue()[0].dimensaoX).to.equal(edificioDTO.dimensaoX);
+        expect(answer.getValue()[0].dimensaoY).to.equal(edificioDTO.dimensaoY);
+        expect(answer.getValue()[0].descricao).to.equal(edificioDTO.descricao);
+        expect(answer.getValue()[0].codigo).to.equal(edificioDTO.codigo);
     });
 });
