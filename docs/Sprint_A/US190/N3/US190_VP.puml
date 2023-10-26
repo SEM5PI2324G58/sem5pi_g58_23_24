@@ -24,9 +24,12 @@ return edificio
 service -> edificio :  verificaSePisoJaExiste(nPiso)
 activate edificio
 return flag
-service -> pisoRepo: maxID()
+service -> pisoRepo: getMaxId()
 activate pisoRepo
 return maxId
+service -> pontoRepo: getMaxId()
+activate pontoRepo
+return pontoId
 service -> ponto ** : criar(tipoPonto, descricao, coordenadas, IdPonto)
 service -> piso ** : create(nPiso, descricao, listaPontos, maxId)
 service -> edificio: addPiso(piso)
