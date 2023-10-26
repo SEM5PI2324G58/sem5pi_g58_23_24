@@ -8,6 +8,7 @@ import { DispositivoMap } from "../mappers/DispositivoMap";
 import { Document, FilterQuery, Model } from 'mongoose';
 import { IDispositivoPersistence } from '../dataschema/IDispositivoPersistence';
 import { Nickname } from '../domain/dispositivo/Nickname';
+import { NumeroDeSerie } from '../domain/dispositivo/NumeroDeSerie';
 
 @Service()
 export default class DispositivoRepo implements IDispositivoRepo {
@@ -79,9 +80,24 @@ export default class DispositivoRepo implements IDispositivoRepo {
     
     const idX = dispositivo.id instanceof CodigoDispositivo ? (<CodigoDispositivo>dispositivo.id).toValue() : dispositivo.id;
 
-    const query = { domainId: idX}; 
-    const roleDocument = await this.dispositivoSchema.findOne( query as FilterQuery<IDispositivoPersistence & Document>);
+    const query = { codigo: idX}; 
+    const dispositivoDocument = await this.dispositivoSchema.findOne( query as FilterQuery<IDispositivoPersistence & Document>);
 
-    return !!roleDocument === true;
+    return !!dispositivoDocument === true;
+  }
+
+  public async findByNumeroSerie(numeroDeSerie: NumeroDeSerie | string): Promise<Dispositivo[]> {
+    const query = { numeroSerie: numeroDeSerie.toString()};
+    
+    const dispositivoRecords = await this.dispositivoSchema.find(query as FilterQuery<IDispositivoPersistence & Document>);
+
+    const listaDispositivosPromises: Promise<Dispositivo>[] = [];
+
+    for (const dispositivo of dispositivoRecords) {
+      listaDispositivosPromises.push(DispositivoMap.toDomain(dispositivo));
+    }
+
+    const listaDispositivos = await Promise.all(listaDispositivosPromises);
+    return listaDispositivos;
   }
 }

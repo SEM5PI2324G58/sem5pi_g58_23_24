@@ -59,4 +59,20 @@ export class Ponto extends AggregateRoot<pontoProps> {
   public toElevador() {
     this.props.tipoPonto = TipoPonto.create("Elevador").getValue();
   }
+
+  public toParedeNorteOeste() {
+    this.props.tipoPonto = TipoPonto.create("NorteOeste").getValue();
+  }
+
+  public toParedeNorte() {
+    this.props.tipoPonto = TipoPonto.create("Norte").getValue();
+  }
+
+  public toParedeOeste() {
+    this.props.tipoPonto = TipoPonto.create("Oeste").getValue();
+  }
+
+  public toVazio() {
+    this.props.tipoPonto = TipoPonto.create(" ").getValue();
+  }
 }

@@ -6,6 +6,14 @@ import { Nome } from '../../../src/domain/edificio/Nome';
 import { Codigo } from '../../../src/domain/edificio/Codigo'
 import { Dimensao } from '../../../src/domain/edificio/Dimensao';
 import { DescricaoEdificio } from '../../../src/domain/edificio/DescricaoEdificio';
+import { Piso } from '../../../src/domain/piso/Piso';
+import { DescricaoPiso } from '../../../src/domain/piso/DescricaoPiso';
+import { IdPiso } from '../../../src/domain/piso/IdPiso';
+import { NumeroPiso } from '../../../src/domain/piso/NumeroPiso';
+import { Coordenadas } from '../../../src/domain/ponto/Coordenadas';
+import { IdPonto } from '../../../src/domain/ponto/IdPonto';
+import { Ponto } from '../../../src/domain/ponto/Ponto';
+import { TipoPonto } from '../../../src/domain/ponto/TipoPonto';
 
 describe('teste de edificio', () => {
     //Valores válidos para criação de um edificio
@@ -117,4 +125,108 @@ describe('teste de edificio', () => {
         const res = edificio.posicaoValidaNoMapa(15,15,'oeste');
         expect(false).to.equal(res);
     });
+
+    it('Números de piso 1 e 2 retorna os pisos 1 e 2 (edificio tem pisos [1,2])',() =>{
+        
+        let edificioProps2 : any = {
+            nome: Nome.create('Edificio B').getValue(),
+            dimensao:Dimensao.create(2,2).getValue(),
+            descricao:DescricaoEdificio.create('Edificio B').getValue(),
+            listaPisos: [],
+        };
+
+        const edificioSemElevador = Edificio.create(edificioProps2,Codigo.create('ED02').getValue()).getValue();
+
+        // Criar 2 pisos
+        let pisos: Piso[] = [];
+        
+        for (let i = 0; i < 2; i++){
+            //Criar o mapa
+            let pontoArray: Ponto[][] = []
+
+            for(let j = 0 ; j<2 ; j++){
+                pontoArray[j] = []
+                for(let k = 0; k<2;k++){
+                    let idPonto = IdPonto.create("ED01."+(k+j)+".1").getValue();
+                    let tipoPonto = TipoPonto.create(" ").getValue();
+                    let coordenadas = Coordenadas.create({abscissa: j , ordenada: k }).getValue();
+                    let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
+                    pontoArray[j][k] = ponto;
+                }
+            }
+                
+            let piso = Piso.create({
+                numeroPiso:  NumeroPiso.create(i+1).getValue(),
+                descricaoPiso: DescricaoPiso.create("Ola").getValue(),
+                mapa: pontoArray,
+            }, IdPiso.create(i+1).getValue()).getValue();
+
+            // adicionar para a criação do elevador
+            pisos.push(piso);
+        }
+        
+        edificioSemElevador.addPiso(pisos[0]);
+        edificioSemElevador.addPiso(pisos[1]);
+
+        const res = edificioSemElevador.pisosCorrespondentes([1,2]);
+        const expected = pisos;
+
+        expect(expected.length).to.equal(res.length);
+        
+        for (let i = 0; i < res.length; i++ ){
+            expect(expected[i]).to.equal(res[i]);
+        }
+
+    });
+
+    it('Números de piso 1 e 4 retorna o pisos 1 (edificio tem pisos [1,2])',() =>{
+        
+        let edificioProps2 : any = {
+            nome: Nome.create('Edificio B').getValue(),
+            dimensao:Dimensao.create(2,2).getValue(),
+            descricao:DescricaoEdificio.create('Edificio B').getValue(),
+            listaPisos: [],
+        };
+
+        const edificioSemElevador = Edificio.create(edificioProps2,Codigo.create('ED02').getValue()).getValue();
+
+        // Criar 2 pisos
+        let pisos: Piso[] = [];
+        
+        for (let i = 0; i < 2; i++){
+            //Criar o mapa
+            let pontoArray: Ponto[][] = []
+
+            for(let j = 0 ; j<2 ; j++){
+                pontoArray[j] = []
+                for(let k = 0; k<2;k++){
+                    let idPonto = IdPonto.create("ED01."+(k+j)+".1").getValue();
+                    let tipoPonto = TipoPonto.create(" ").getValue();
+                    let coordenadas = Coordenadas.create({abscissa: j , ordenada: k }).getValue();
+                    let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
+                    pontoArray[j][k] = ponto;
+                }
+            }
+                
+            let piso = Piso.create({
+                numeroPiso:  NumeroPiso.create(i+1).getValue(),
+                descricaoPiso: DescricaoPiso.create("Ola").getValue(),
+                mapa: pontoArray,
+            }, IdPiso.create(i+1).getValue()).getValue();
+
+            // adicionar para a criação do elevador
+            pisos.push(piso);
+        }
+        
+        edificioSemElevador.addPiso(pisos[0]);
+        edificioSemElevador.addPiso(pisos[1]);
+
+        const res = edificioSemElevador.pisosCorrespondentes([1,4]);
+        const expected = pisos;
+
+        expect(expected.length).to.not.equal(res.length);
+        expect(expected[0]).to.equal(res[0]);
+
+    });
+
 });

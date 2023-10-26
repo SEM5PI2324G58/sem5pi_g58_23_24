@@ -184,4 +184,33 @@ export class Edificio extends AggregateRoot<EdificioProps> {
     }
     return false;
   }
+  /**
+   * Retorna o elevador do Edifício
+   * @returns instância do elevador se existir, null caso não existir
+   */
+  public returnElevador(): Elevador{
+    if(this.temElevador()){
+      return this.props.elevador;
+    }else{
+      return null;
+    }
+  }
+  /**
+   * Obter os pisos de um edifício a partir de um array de números de piso
+   * @param numerosDePiso números dos pisos para dar match
+   * @returns array de pisos que deram match
+   */
+  public pisosCorrespondentes(numerosDePiso: number[]): Piso[] {
+    let res: Piso[] = [];
+
+    for (let i = 0; i < this.props.listaPisos.length;i++ ){
+      for(let j = 0; j < numerosDePiso.length; j++){
+        if(this.props.listaPisos[i].returnNumeroPiso() === numerosDePiso[j]){
+          res.push(this.props.listaPisos[i]);
+        }
+      }
+    }
+
+    return res;
+  }
 }

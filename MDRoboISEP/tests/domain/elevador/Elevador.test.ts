@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import * as assert from 'assert';
+import {expect} from 'chai';
 import { DescricaoElevador } from '../../../src/domain/elevador/DescricaoElevador';
 import { ModeloElevador } from '../../../src/domain/elevador/ModeloElevador';
 import { MarcaElevador } from '../../../src/domain/elevador/MarcaElevador';
@@ -163,5 +164,60 @@ describe('Elevador domain', function () {
         }, idElevador)
 
 		assert.strictEqual(elevadorOrError.isFailure, true);
+	});
+
+    it('Posição do elevador é devolvida é correta', async function () {
+		let idElevador = IdElevador.create(1).getValue();
+        let marcaElevador = MarcaElevador.create('123').getValue();
+        let modeloElevador = ModeloElevador.create('123').getValue();
+        let numeroSerieElevador = NumeroSerieElevador.create('123').getValue();
+        let descricaoElevador = DescricaoElevador.create('123').getValue();
+		
+        //Criar 4 pontos
+        let pontos: Ponto[] = [];
+        for (let i = 0; i < 4 ; i++ ){
+            let idPonto = IdPonto.create("b.1."+ i).getValue();
+            let tipoPonto = TipoPonto.create(" ").getValue();
+            let coordenadas = Coordenadas.create({abscissa: i , ordenada: i }).getValue();
+            pontos.push(Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue()) 
+        }
+
+        // Criar 2 pisos
+        let pisosServidos: Piso[]=[];
+
+        for (let i = 1; i<= 2 ; i++){
+            let descricaoPiso = DescricaoPiso.create("Piso"+i).getValue();
+            let idPiso = IdPiso.create(i).getValue();
+            let numeroPiso = NumeroPiso.create(i).getValue();
+            let pontoArray  : Ponto[][] = [];
+            let idPonto = IdPonto.create("b."+i+".1").getValue();
+            let tipoPonto = TipoPonto.create(" ").getValue();
+            let coordenadas = Coordenadas.create({abscissa: i , ordenada: i }).getValue();
+            let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
+            pontoArray[0] = []
+            pontoArray[0][0] = ponto;
+
+            pisosServidos.push(await Piso.create({
+                numeroPiso: numeroPiso,
+                descricaoPiso: descricaoPiso,
+                mapa: pontoArray,
+            }, idPiso).getValue())
+        }
+
+        let elevadorOrError = await Elevador.create({
+            pisosServidos: pisosServidos,
+            pontos: pontos,
+            marca: marcaElevador,
+            modelo: modeloElevador,
+            numeroSerie: numeroSerieElevador,
+            descricao: descricaoElevador
+        }, idElevador)
+
+        const res = elevadorOrError.getValue().posicao();
+        const expected = [0,0,1,1] 
+
+		for (let i = 0; i < res.length; i++ ){
+            expect(expected[i]).to.equal(res[i]);
+        }
 	});
 });

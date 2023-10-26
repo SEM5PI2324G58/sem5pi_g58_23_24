@@ -82,4 +82,22 @@ export class Elevador extends AggregateRoot<ElevadorProps>{
             return Result.ok<Elevador>(elevador);
         }
     }
+
+    public pisosServidosAtuais() : Piso[]{
+        return this.props.pisosServidos;
+    }
+    /**
+     * Devolve a posição do elevador no edifício 
+     * @returns array de tamanho 4 com as coordenadas x e y dos dois pontos que representam o elevador([x1,y1,x2,y2])
+     */
+    public posicao() : number[]{
+        let coords: number[] = [];
+        
+        coords.push(this.props.pontos[0].returnAbscissa());
+        coords.push(this.props.pontos[0].returnOrdenada());
+        coords.push(this.props.pontos[1].returnAbscissa());
+        coords.push(this.props.pontos[1].returnOrdenada());
+        
+        return coords;
+    }
 }

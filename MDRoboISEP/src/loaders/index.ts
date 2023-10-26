@@ -55,6 +55,12 @@ export default async ({ expressApp }) => {
     name: 'PassagemSchema',
     schema: '../persistence/schemas/PassagemSchema',
   };
+  const dispositivoSchema = {
+    // compare with the approach followed in repos and services
+    name: 'DispositivoSchema',
+    schema: '../persistence/schemas/DispositivoSchema',
+  };
+
 
 
   const roleController = {
@@ -85,6 +91,11 @@ export default async ({ expressApp }) => {
   const passagemController = {
     name: config.controllers.passagem.name,
     path: config.controllers.passagem.path
+  }
+
+  const dispositivoController = {
+    name: config.controllers.dispositivo.name,
+    path: config.controllers.dispositivo.path
   }
   
   const roleRepo = {
@@ -125,6 +136,10 @@ export default async ({ expressApp }) => {
     path: config.repos.passagem.path
   }
 
+  const dispositivoRepo = {
+    name: config.repos.dispositivo.name,
+    path: config.repos.dispositivo.path
+  }
 
   const roleService = {
     name: config.services.role.name,
@@ -156,6 +171,11 @@ export default async ({ expressApp }) => {
     path: config.services.passagem.path
   }
 
+  const dispositivoService = {
+    name: config.services.dispositivo.name,
+    path: config.services.dispositivo.path
+  }
+
   await dependencyInjectorLoader({
     mongoConnection,
     schemas: [
@@ -166,7 +186,8 @@ export default async ({ expressApp }) => {
       EdificioSchema,
       elevadorSchema,
       tipoDispositivoSchema,
-      passagemSchema
+      passagemSchema,
+      dispositivoSchema
     ],
     controllers: [
       roleController,
@@ -174,7 +195,8 @@ export default async ({ expressApp }) => {
       pisoController,
       elevadorController,
       tipoDispositivoController,
-      passagemController
+      passagemController,
+      dispositivoController
     ],
     repos: [
       roleRepo,
@@ -184,7 +206,8 @@ export default async ({ expressApp }) => {
       edificioRepo,
       elevadorRepo,
       tipoDispositivoRepo,
-      passagemRepo
+      passagemRepo,
+      dispositivoRepo
     ],
     services: [
       roleService,
@@ -192,7 +215,8 @@ export default async ({ expressApp }) => {
       pisoService,
       elevadorService,
       tipoDispositivoService,
-      passagemService
+      passagemService,
+      dispositivoService
     ]
   });
   Logger.info('✌️ Schemas, Controllers, Repositories, Services, etc. loaded');
