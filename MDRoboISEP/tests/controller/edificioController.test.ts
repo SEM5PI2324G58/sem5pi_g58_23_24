@@ -91,4 +91,41 @@ describe('EdificioController', () => {
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
         sinon.assert.calledWith(res.json as sinon.SinonSpy, listaDTO);
     });
+
+    it('listarEdificioMinEMaxPisos retorna lista de edificios em JSON', async function() {
+
+        let listaDTO : IEdificioDTO[] = [];
+        let edificioDTO = {
+            codigo : "ED01",
+            nome : "Edificio A",
+            descricao : "Edificio A",
+            dimensaoX: 1,
+            dimensaoY: 1,
+            piso : [],
+        } as IEdificioDTO
+        listaDTO.push(edificioDTO);
+           // Arrange
+        let body = {
+            "minPisos": 0,
+            "maxPisos": 1,
+        };
+
+        let req: Partial<Request> = {};req.body = body;
+        let res: Partial<Response> = {
+            json: sinon.spy()
+        };
+        let next: Partial<NextFunction> = () => {};
+        let edificioServiceInstance = Container.get("EdificioService");
+        sinon.stub(edificioServiceInstance, 'listarEdificioMinEMaxPisos').returns(Promise.resolve(Result.ok<IEdificioDTO[]>(listaDTO)));
+
+        let edificioController = new EdificioController(edificioServiceInstance as IEdificioService);
+
+        // Act
+        await edificioController.listarEdificioMinEMaxPisos(<Request> req,<Response> res, <NextFunction> next);
+
+        // Assert
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, listaDTO);
+    });
+
 });

@@ -13,6 +13,15 @@ import { Dimensao } from '../../src/domain/edificio/Dimensao';
 import { DescricaoEdificio } from '../../src/domain/edificio/DescricaoEdificio';
 import { Nome } from '../../src/domain/edificio/Nome';
 import IEdificioDTO from "../../src/dto/IEdificioDTO";
+import IListarEdMinEMaxPisosDTO from "../../src/dto/IListarEdMinEMaxPisosDTO";
+import { Piso } from "../../src/domain/piso/Piso";
+import { NumeroPiso } from "../../src/domain/piso/NumeroPiso";
+import { DescricaoPiso } from "../../src/domain/piso/DescricaoPiso";
+import { Ponto } from "../../src/domain/ponto/Ponto";
+import { IdPonto } from "../../src/domain/ponto/IdPonto";
+import { TipoPonto } from "../../src/domain/ponto/TipoPonto";
+import { Coordenadas } from "../../src/domain/ponto/Coordenadas";
+import { IdPiso } from "../../src/domain/piso/IdPiso";
 
 
 describe('EdificioService ', () => {
@@ -157,4 +166,111 @@ describe('EdificioService ', () => {
         expect(answer.getValue()[0].dimensaoY).to.equal(edificioProps.dimensao.props.y);
         expect(answer.getValue()[0].descricao).to.equal(edificioProps.descricao.props.descricao);
     });
+
+    it('listarEdificioMinEMaxPisos com o numero minimo de pisos maior que o numero maximo', async () => {
+        let body = {
+            "minPisos": 2,
+            "maxPisos": 1,
+        };  
+        
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        sinon.stub(edificioRepoInstance, "getAllEdificios").returns(Promise.resolve([]));
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        let answer = await edificioService.listarEdificioMinEMaxPisos(body as IListarEdMinEMaxPisosDTO);
+        expect(answer.errorValue()).to.equal("O número mínimo de pisos não pode ser superior ao máximo");
+    });
+
+    
+    it('listarEdificioMinEMaxPisos com o numero minimo e maximo de pisos é igual a 0', async () => {
+        let body = {
+            "minPisos": 0,
+            "maxPisos": 0,
+        };  
+        
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        sinon.stub(edificioRepoInstance, "getAllEdificios").returns(Promise.resolve([]));
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        let answer = await edificioService.listarEdificioMinEMaxPisos(body as IListarEdMinEMaxPisosDTO);
+        expect(answer.errorValue()).to.equal("O número mínimo e máximo de pisos não pode ser 0");
+    });
+
+    it('listarEdificioMinEMaxPisos com o numero minimo negativo', async () => {
+        let body = {
+            "minPisos": -1,
+            "maxPisos": 0,
+        };  
+        
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        sinon.stub(edificioRepoInstance, "getAllEdificios").returns(Promise.resolve([]));
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        let answer = await edificioService.listarEdificioMinEMaxPisos(body as IListarEdMinEMaxPisosDTO);
+        expect(answer.errorValue()).to.equal("O número mínimo e máximo de pisos não pode ser inferior a 0");
+    });
+
+    it('listarEdificioMinEMaxPisos com o numero maximo negativo', async () => {
+        let body = {
+            "minPisos": -7,
+            "maxPisos": -5,
+        };  
+        
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        sinon.stub(edificioRepoInstance, "getAllEdificios").returns(Promise.resolve([]));
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        let answer = await edificioService.listarEdificioMinEMaxPisos(body as IListarEdMinEMaxPisosDTO);
+        expect(answer.errorValue()).to.equal("O número mínimo e máximo de pisos não pode ser inferior a 0");
+    });
+
+    it('listarEdificioMinEMaxPisos retorna edificio', async () => {
+        let body = {
+            "minPisos": 0,
+            "maxPisos": 5,
+        };  
+
+        let edificioProps : any = {
+            nome: Nome.create('Edificio A').getValue(),
+            dimensao:Dimensao.create(1,1).getValue(),
+            descricao:DescricaoEdificio.create('Edificio A').getValue(),
+            listaPisos: [Piso.create({numeroPiso: NumeroPiso.create(1).getValue(),
+                                    descricaoPiso: DescricaoPiso.create("ola").getValue(),
+                                    mapa: [[]]}, IdPiso.create(1).getValue()).getValue()],
+                                
+        };
+
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let edificio = Edificio.create(edificioProps,Codigo.create('ED01').getValue()).getValue();
+        sinon.stub(edificioRepoInstance, "getAllEdificios").returns(Promise.resolve([edificio]));        
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        let answer = await edificioService.listarEdificioMinEMaxPisos(body as IListarEdMinEMaxPisosDTO);
+        expect(answer.getValue()[0].nome).to.equal(edificioProps.nome.props.nome);
+        expect(answer.getValue()[0].dimensaoX).to.equal(edificioProps.dimensao.props.x);
+        expect(answer.getValue()[0].dimensaoY).to.equal(edificioProps.dimensao.props.y);
+        expect(answer.getValue()[0].descricao).to.equal(edificioProps.descricao.props.descricao);
+    });
+
+    it('listarEdificioMinEMaxPisos retorna não existe edificios', async () => {
+        let body = {
+            "minPisos": 3,
+            "maxPisos": 5,
+        };  
+
+        let edificioProps : any = {
+            nome: Nome.create('Edificio A').getValue(),
+            dimensao:Dimensao.create(1,1).getValue(),
+            descricao:DescricaoEdificio.create('Edificio A').getValue(),
+            listaPisos: [Piso.create({numeroPiso: NumeroPiso.create(1).getValue(),
+                                    descricaoPiso: DescricaoPiso.create("ola").getValue(),
+                                    mapa: [[]]}, IdPiso.create(1).getValue()).getValue()],
+                                
+        };
+
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let edificio = Edificio.create(edificioProps,Codigo.create('ED01').getValue()).getValue();
+        sinon.stub(edificioRepoInstance, "getAllEdificios").returns(Promise.resolve([edificio]));        
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        let answer = await edificioService.listarEdificioMinEMaxPisos(body as IListarEdMinEMaxPisosDTO);
+        expect(answer.errorValue()).to.equal("Não existem edificios com o número de pisos pretendido");
+
+    });
+
+
 });
