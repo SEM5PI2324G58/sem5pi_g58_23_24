@@ -135,4 +135,15 @@ export class Edificio extends AggregateRoot<EdificioProps> {
     }
     return false;
   }
+  /**
+   * Retorna o elevador do Edifício
+   * @returns instância do elevador se existir, null caso não existir
+   */
+  public returnElevador(): Elevador{
+    if(this.temElevador()){
+      return this.props.elevador;
+    }else{
+      return null;
+    }
+  }
 }
