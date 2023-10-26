@@ -6,4 +6,5 @@ export default interface IEdificioService  {
     criarEdificio(edificioDTO: IEdificioDTO): Promise<Result<IEdificioDTO>>;
     listarEdificioMinEMaxPisos(listarEdificioMinEMaxPisosDTO: IListarEdMinEMaxPisosDTO): Promise<Result<IEdificioDTO[]>>;
     listarEdificios(): Promise<Result<IEdificioDTO[]>>;
+    editarEdificio(edificioDTO: IEdificioDTO): Promise<Result<IEdificioDTO>>;
 }

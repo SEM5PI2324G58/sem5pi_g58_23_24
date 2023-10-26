@@ -1,5 +1,5 @@
 export interface IPontoPersistence {
-	domainID: string;
+	domainID: number;
 	abscissa: number;
     ordenada: number
 	tipoPonto: string;

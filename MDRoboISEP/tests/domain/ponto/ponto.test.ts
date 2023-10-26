@@ -16,7 +16,7 @@ describe('ponto domain', function () {
 
 	it('ponto é criado com sucesso', async function () {
 		// Arrange
-		let idPonto = IdPonto.create("b.1.1").getValue();
+		let idPonto = IdPonto.create(1).getValue();
 		let tipoPonto = TipoPonto.create(" ").getValue();
 		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
 		let ponto = Ponto.create({coordenadas:coordenadas,tipoPonto:tipoPonto},idPonto);
@@ -26,7 +26,7 @@ describe('ponto domain', function () {
 
 	it('toElevador muda o tipo de ponto para o tipo "Elevador"', async function () {
 		// Arrange
-		let idPonto = IdPonto.create("b.1.1").getValue();
+		let idPonto = IdPonto.create(1).getValue();
 		let tipoPonto = TipoPonto.create(" ").getValue();
 		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
 		let ponto = Ponto.create({coordenadas:coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
@@ -38,7 +38,7 @@ describe('ponto domain', function () {
 
 	it('toNorteOeste muda o tipo de ponto para o tipo "NorteOeste"', async function () {
 		// Arrange
-		let idPonto = IdPonto.create("b.1.1").getValue();
+		let idPonto = IdPonto.create(1).getValue();
 		let tipoPonto = TipoPonto.create(" ").getValue();
 		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
 		let ponto = Ponto.create({coordenadas:coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
@@ -50,7 +50,7 @@ describe('ponto domain', function () {
 
 	it('toNorte muda o tipo de ponto para o tipo "Norte"', async function () {
 		// Arrange
-		let idPonto = IdPonto.create("b.1.1").getValue();
+		let idPonto = IdPonto.create(1).getValue();
 		let tipoPonto = TipoPonto.create(" ").getValue();
 		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
 		let ponto = Ponto.create({coordenadas:coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
@@ -62,7 +62,7 @@ describe('ponto domain', function () {
 
 	it('toOeste muda o tipo de ponto para o tipo "Oeste"', async function () {
 		// Arrange
-		let idPonto = IdPonto.create("b.1.1").getValue();
+		let idPonto = IdPonto.create(1).getValue();
 		let tipoPonto = TipoPonto.create(" ").getValue();
 		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
 		let ponto = Ponto.create({coordenadas:coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
@@ -74,7 +74,7 @@ describe('ponto domain', function () {
 
 	it('toVazio muda o tipo de ponto para o tipo "Vazio"', async function () {
 		// Arrange
-		let idPonto = IdPonto.create("b.1.1").getValue();
+		let idPonto = IdPonto.create(1).getValue();
 		let tipoPonto = TipoPonto.create("Norte").getValue();
 		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
 		let ponto = Ponto.create({coordenadas:coordenadas,tipoPonto:tipoPonto},idPonto).getValue();

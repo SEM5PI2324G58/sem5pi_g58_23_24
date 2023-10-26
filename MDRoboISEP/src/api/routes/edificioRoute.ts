@@ -34,6 +34,16 @@ export default (app: Router) => {
     }),
     (req, res, next) => ctrl.listarEdificioMinEMaxPisos(req, res, next));
 
-    route.get('/listar',
+    route.get('',
     (req, res, next) => ctrl.listarEdificios(req, res, next));
+
+    route.put('',
+    celebrate({
+      body: Joi.object({
+        codigo: Joi.string().required(),
+        nome: Joi.string(),
+        descricao: Joi.string(),
+      })
+    }),
+    (req, res, next) => ctrl.editarEdificio(req, res, next));
 };

@@ -139,19 +139,20 @@ describe('teste de edificio', () => {
 
         // Criar 2 pisos
         let pisos: Piso[] = [];
-        
+        let contador = 1;
         for (let i = 0; i < 2; i++){
             //Criar o mapa
             let pontoArray: Ponto[][] = []
-
+            
             for(let j = 0 ; j<2 ; j++){
                 pontoArray[j] = []
                 for(let k = 0; k<2;k++){
-                    let idPonto = IdPonto.create("ED01."+(k+j)+".1").getValue();
+                    let idPonto = IdPonto.create(contador).getValue();
                     let tipoPonto = TipoPonto.create(" ").getValue();
                     let coordenadas = Coordenadas.create({abscissa: j , ordenada: k }).getValue();
                     let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
                     pontoArray[j][k] = ponto;
+                    contador++;
                 }
             }
                 
@@ -196,15 +197,16 @@ describe('teste de edificio', () => {
         for (let i = 0; i < 2; i++){
             //Criar o mapa
             let pontoArray: Ponto[][] = []
-
+            let contador = 1;
             for(let j = 0 ; j<2 ; j++){
                 pontoArray[j] = []
                 for(let k = 0; k<2;k++){
-                    let idPonto = IdPonto.create("ED01."+(k+j)+".1").getValue();
+                    let idPonto = IdPonto.create(contador).getValue();
                     let tipoPonto = TipoPonto.create(" ").getValue();
                     let coordenadas = Coordenadas.create({abscissa: j , ordenada: k }).getValue();
                     let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
                     pontoArray[j][k] = ponto;
+                    contador++;
                 }
             }
                 

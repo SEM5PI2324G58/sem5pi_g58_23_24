@@ -28,9 +28,10 @@ describe('Elevador domain', function () {
         let descricaoElevador = DescricaoElevador.create('123').getValue();
 		
         //Criar 4 pontos
+    
         let pontos: Ponto[] = [];
         for (let i = 0; i < 4 ; i++ ){
-            let idPonto = IdPonto.create("b.1."+ i).getValue();
+            let idPonto = IdPonto.create(i+1).getValue();
             let tipoPonto = TipoPonto.create(" ").getValue();
             let coordenadas = Coordenadas.create({abscissa: i , ordenada: i }).getValue();
             pontos.push(Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue()) 
@@ -44,7 +45,7 @@ describe('Elevador domain', function () {
             let idPiso = IdPiso.create(i).getValue();
             let numeroPiso = NumeroPiso.create(i).getValue();
             let pontoArray  : Ponto[][] = [];
-            let idPonto = IdPonto.create("b."+i+".1").getValue();
+            let idPonto = IdPonto.create(i).getValue();
             let tipoPonto = TipoPonto.create(" ").getValue();
             let coordenadas = Coordenadas.create({abscissa: i , ordenada: i }).getValue();
             let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
@@ -89,7 +90,7 @@ describe('Elevador domain', function () {
             let idPiso = IdPiso.create(i).getValue();
             let numeroPiso = NumeroPiso.create(i).getValue();
             let pontoArray  : Ponto[][] = [];
-            let idPonto = IdPonto.create("b."+i+".1").getValue();
+            let idPonto = IdPonto.create(i).getValue();
             let tipoPonto = TipoPonto.create(" ").getValue();
             let coordenadas = Coordenadas.create({abscissa: i , ordenada: i }).getValue();
             let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
@@ -126,7 +127,7 @@ describe('Elevador domain', function () {
         //Criar 4 pontos
         let pontos: Ponto[] = [];
         for (let i = 0; i < 4 ; i++ ){
-            let idPonto = IdPonto.create("b.1."+ i).getValue();
+            let idPonto = IdPonto.create(i+1).getValue();
             let tipoPonto = TipoPonto.create(" ").getValue();
             let coordenadas = Coordenadas.create({abscissa: i , ordenada: i }).getValue();
             pontos.push(Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue()) 
@@ -140,7 +141,7 @@ describe('Elevador domain', function () {
             let idPiso = IdPiso.create(i).getValue();
             let numeroPiso = NumeroPiso.create(i).getValue();
             let pontoArray  : Ponto[][] = [];
-            let idPonto = IdPonto.create("b."+i+".1").getValue();
+            let idPonto = IdPonto.create(i).getValue();
             let tipoPonto = TipoPonto.create(" ").getValue();
             let coordenadas = Coordenadas.create({abscissa: i , ordenada: i }).getValue();
             let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
@@ -176,7 +177,7 @@ describe('Elevador domain', function () {
         //Criar 4 pontos
         let pontos: Ponto[] = [];
         for (let i = 0; i < 4 ; i++ ){
-            let idPonto = IdPonto.create("b.1."+ i).getValue();
+            let idPonto = IdPonto.create(i+1).getValue();
             let tipoPonto = TipoPonto.create(" ").getValue();
             let coordenadas = Coordenadas.create({abscissa: i , ordenada: i }).getValue();
             pontos.push(Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue()) 
@@ -190,7 +191,7 @@ describe('Elevador domain', function () {
             let idPiso = IdPiso.create(i).getValue();
             let numeroPiso = NumeroPiso.create(i).getValue();
             let pontoArray  : Ponto[][] = [];
-            let idPonto = IdPonto.create("b."+i+".1").getValue();
+            let idPonto = IdPonto.create(i).getValue();
             let tipoPonto = TipoPonto.create(" ").getValue();
             let coordenadas = Coordenadas.create({abscissa: i , ordenada: i }).getValue();
             let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();

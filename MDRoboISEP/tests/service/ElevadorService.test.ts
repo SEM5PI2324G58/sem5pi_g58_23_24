@@ -65,7 +65,7 @@ describe('ElevadorService ', () => {
                 pontoArray[j] = []
                 for(let k = 0; k<2;k++){
                     
-                    let idPonto = IdPonto.create("ED01."+(k+j)+".1").getValue();
+                    let idPonto = IdPonto.create(1).getValue();
                     let tipoPonto = TipoPonto.create(" ").getValue();
                     let coordenadas = Coordenadas.create({abscissa: j , ordenada: k }).getValue();
                     let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
@@ -93,7 +93,7 @@ describe('ElevadorService ', () => {
         //Criar 4 pontos
         let pontos: Ponto[] = [];
         for (let i = 0; i < 4 ; i++ ){
-            let idPonto = IdPonto.create("a.1."+ i).getValue();
+            let idPonto = IdPonto.create(1+ i).getValue();
             let tipoPonto = TipoPonto.create(" ").getValue();
             let coordenadas = Coordenadas.create({abscissa: i , ordenada: i }).getValue();
             pontos.push(Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue()) 

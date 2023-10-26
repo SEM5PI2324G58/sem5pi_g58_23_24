@@ -254,4 +254,12 @@ export class Edificio extends AggregateRoot<EdificioProps> {
 
     return res;
   }
+
+  public alterarDescricao(descricao: DescricaoEdificio){
+    this.props.descricao = descricao;
+  }
+
+  public alterarNome(nome: Nome){
+    this.props.nome = nome;
+  }
 }

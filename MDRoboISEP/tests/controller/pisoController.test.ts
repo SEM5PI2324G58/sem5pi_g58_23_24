@@ -135,7 +135,7 @@ describe('PisoController', () => {
         };
 
 		let pontoArray  : Ponto[][] = [];
-		let idPonto = IdPonto.create("ED01.1.1").getValue();
+		let idPonto = IdPonto.create(1).getValue();
 		let tipoPonto = TipoPonto.create(" ").getValue();
 		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
 		let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
@@ -152,6 +152,8 @@ describe('PisoController', () => {
         sinon.stub(edificioRepoInstance, "save").returns(Promise.resolve(null));
         sinon.stub(pisoRepoInstance, "getMaxId").returns(Promise.resolve(1));
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(edificio));
+        sinon.stub(pontoRepoInstance, "getMaxId").returns(Promise.resolve(0));
+
 
         let pisoServiceInstance = Container.get("PisoService");
         const pisoServiceSpy = sinon.spy(pisoServiceInstance, 'criarPiso');
@@ -175,7 +177,7 @@ describe('PisoController', () => {
             "numeroPiso": 1,
             "descricaoPiso": "ola",
         };
-        let idPonto = IdPonto.create("ED01.1.1").getValue();
+        let idPonto = IdPonto.create(1).getValue();
 		let tipoPonto = TipoPonto.create(" ").getValue();
 		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
 		let pontoArray  : Ponto[][] = [];
@@ -200,7 +202,7 @@ describe('PisoController', () => {
         } as IPisoPersistence;
 
         const pontoDTO = {
-            domainID: "ED01.1.1",
+            domainID: 1,
             tipoPonto: " ",
             ordenada: 0,
             abscissa: 0,
@@ -231,6 +233,7 @@ describe('PisoController', () => {
         sinon.stub(edificioSchemaInstance, "create").returns(edificioDoc as IEdificioPersistence);
         sinon.stub(pontoSchemaInstance, "findOne").returns(null);
         sinon.stub(pontoSchemaInstance, "create").returns(pontoDTO as IPontoPersistence);
+        sinon.stub(pontoSchemaInstance, "find").returns(null);
 
         const pisoController = new PisoController(pisoServiceInstance as IPisoService);
 

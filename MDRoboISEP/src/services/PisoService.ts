@@ -76,6 +76,7 @@ export default class PisoService implements IPisoService{
         let ponto : Ponto[][] = [];
         let x = edificio.props.dimensao.props.x;
         let y = edificio.props.dimensao.props.y;
+        let pontoID = (await this.pontoRepo.getMaxId()) + 1;
         let contador = 1;
         for (let i = 0; i <= x; i++) {
             ponto[i] = [];
@@ -88,8 +89,9 @@ export default class PisoService implements IPisoService{
                 let pontoOuErro = await Ponto.create({
                 coordenadas : Coordenadas.create({abscissa: i , ordenada: j }).getValue(),
                 tipoPonto: tipoPonto
-                }, await IdPonto.create(criarPisoDTO.codigo + "." + criarPisoDTO.numeroPiso + "." + contador).getValue());
+                }, await IdPonto.create(pontoID).getValue());
                 contador++;
+                pontoID++;
                 if(pontoOuErro.isFailure){return Result.fail<ICriarPisoDTO>(finalResult.error);}
                 ponto[i][j] = pontoOuErro.getValue();
             }

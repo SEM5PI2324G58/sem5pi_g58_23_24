@@ -111,4 +111,36 @@ export default class EdificioService implements IEdificioService {
       throw e;
     }
   }
+
+  public async editarEdificio(edificioDTO:IEdificioDTO): Promise<Result<IEdificioDTO>>{                                                                                                                                                                                                                                                          
+    try{
+      const edificio = await this.edificioRepo.findByDomainId(edificioDTO.codigo);
+      if(edificio === null ){
+        return Result.fail<IEdificioDTO>("Edificio não existe")
+      }
+      if(!!edificioDTO.descricao === false || !!edificioDTO.nome === false){
+        return Result.fail<IEdificioDTO>("Nome e descrição são obrigatórios");
+      }
+      if(edificioDTO.descricao){
+        let descricaoOrError = DescricaoEdificio.create(edificioDTO.descricao);
+        if(descricaoOrError.isFailure){
+          return Result.fail<IEdificioDTO>(descricaoOrError.errorValue());
+        }else{
+          edificio.alterarDescricao(descricaoOrError.getValue());
+        }
+      }
+      if(edificioDTO.nome){
+        let nomeOrError = Nome.create(edificioDTO.nome);
+        if(nomeOrError.isFailure){
+          return Result.fail<IEdificioDTO>(nomeOrError.errorValue());
+        }else{
+          edificio.alterarNome(nomeOrError.getValue());
+        }
+      }
+      await this.edificioRepo.save(edificio);
+      return Result.ok<IEdificioDTO>(edificioDTO);
+    }catch(e){
+      throw e;
+    }
+  }
 }
