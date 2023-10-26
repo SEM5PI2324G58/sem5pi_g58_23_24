@@ -52,4 +52,17 @@ export default class EdificioController implements IEdificioController /* TODO: 
     return next(e);
     }
   }
+
+  public async editarEdificio(req: Request, res: Response, next: NextFunction){
+    try{
+      const edificioOrError = await this.edificioServiceInstance.editarEdificio(req.body as IEdificioDTO) as Result<IEdificioDTO>;
+      if (edificioOrError.isFailure) {
+        return res.json(edificioOrError.errorValue()).status(402).send();
+      }
+      const edificioDTO = edificioOrError.getValue();
+      return res.json( edificioDTO ).status(201);
+    }catch(e){
+      throw next(e);
+    }
+  }
 }
