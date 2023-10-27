@@ -247,6 +247,7 @@ export default class ElevadorService implements IElevadorService{
 
             this.elevadorRepo.save(elevador);
             
+            return Result.ok<ICriarElevadorDTO>(elevadorDTO)
         } catch (e) {
             throw e;
         }
