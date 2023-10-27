@@ -26,6 +26,8 @@ import {Ponto} from '../../src/domain/ponto/Ponto'
 import { Coordenadas } from '../../src/domain/ponto/Coordenadas';
 import { TipoPonto } from '../../src/domain/ponto/TipoPonto';
 import { IdPonto } from '../../src/domain/ponto/IdPonto';
+import IEdificioDTO from "../../src/dto/IEdificioDTO";
+import IPisoDTO from "../../src/dto/IPisoDTO";
 
 
 
@@ -244,5 +246,150 @@ describe('PisoController', () => {
         sinon.assert.calledWith(pisoServiceSpy,body as ICriarPisoDTO);
 
 	});
+
+    it('listarTodosOsPisosDeUmEdificio retorna piso JSON', async function() {
+        
+        // Arrange
+        let body = {
+            "codigo": "as1",
+        };
+
+        const pisoDTO = {
+            id: 1,
+            numeroPiso: 1,
+            descricaoPiso: "Ola",
+        } as IPisoDTO;
+
+        let req: Partial<Request> = {};
+        req.body = body;
+
+        let res: Partial<Response> = {
+            json: sinon.spy()
+        };
+
+        let next: Partial<NextFunction> = () => {};
+
+        let pisoServiceInstance = Container.get("PisoService");
+
+        sinon.stub(pisoServiceInstance, 'listarTodosOsPisosDeUmEdificio').returns(Promise.resolve(Result.ok<IPisoDTO>((pisoDTO))));
+
+        const pisoController = new PisoController(pisoServiceInstance as IPisoService);
+        
+        // Act
+        await pisoController.listarTodosOsPisosDeUmEdificio(<Request>req, <Response>res, <NextFunction>next);
+
+        //Assert
+        sinon.assert.calledOnce(res.json);
+        sinon.assert.calledWith(res.json, sinon.match({
+            id: 1,
+            numeroPiso: 1,
+            descricaoPiso: "Ola",
+        }));
+    });
+
+    it('PisoController + PisoService listarTodosOsPisosDeUmEdificio retorna piso json', async function() {
+        
+        // Arrange
+        let body = {
+            "codigo": "as1",
+        };
+        let req: Partial<Request> = {};
+        req.body = body;
+
+        let res: Partial<Response> = {
+            json: sinon.spy()
+        };
+        let next: Partial<NextFunction> = () => {};
+
+        let edificioProps : any = {
+            nome: Nome.create('Edificio A').getValue(),
+            dimensao:Dimensao.create(1,1).getValue(),
+            descricao:DescricaoEdificio.create('Edificio A').getValue(),
+            listaPisos: [],
+        };
+
+        let piso = Piso.create({
+            numeroPiso:  NumeroPiso.create(1).getValue(),
+            descricaoPiso: DescricaoPiso.create("Ola").getValue(),
+            mapa: [],
+        }, IdPiso.create(1).getValue()).getValue();
+
+        const edificio = Edificio.create(edificioProps,Codigo.create('as1').getValue()).getValue();
+        edificio.addPiso(piso);
+        
+        let pisoServiceInstance = Container.get("PisoService");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(edificio));
+
+        const pisoServiceSpy = sinon.spy(pisoServiceInstance, 'listarTodosOsPisosDeUmEdificio');
+        const pisoController = new PisoController(pisoServiceInstance as IPisoService);
+                
+        // Act
+        await pisoController.listarTodosOsPisosDeUmEdificio(<Request>req, <Response>res, <NextFunction>next);
+
+        sinon.assert.calledOnce(pisoServiceSpy);
+        sinon.assert.calledWith(pisoServiceSpy, "as1");
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, [{
+            id: 1,
+            numeroPiso: 1,
+            descricaoPiso: "Ola",
+        }]);
+
+    });
+
+    it('PisoController + PisoService + EdificioRepo listarTodosOsPisosDeUmEdificio retorna piso json', async function() {
+    
+        // Arrange
+        let body = {
+            "codigo": "as1",
+        };
+        let req: Partial<Request> = {};
+        req.body = body;
+    
+        let res: Partial<Response> = {
+            json: sinon.spy()
+        };
+        let next: Partial<NextFunction> = () => {};
+
+        const pisoPersistence = {
+            domainID: 1,
+            numeroPiso: 1,
+            descricaoPiso: "Ola",
+            pontos: []
+        } as IPisoPersistence;
+
+        const edificioPersistence = {
+            codigo : "as1",
+            nome : "Edificio A",
+            descricao : "Edificio A",
+            dimensaoX: 1,
+            dimensaoY: 1,
+            piso : [1],
+        } as IEdificioPersistence ;
+
+        const edificioSchemaInstance = Container.get("EdificioSchema");
+        const pisoSchemaInstance = Container.get("PisoSchema");
+        sinon.stub(edificioSchemaInstance, "findOne").returns(edificioPersistence);
+        sinon.stub(pisoSchemaInstance, "findOne").returns(pisoPersistence);
+
+            
+        let pisoServiceInstance = Container.get("PisoService");
+        const pisoServiceSpy = sinon.spy(pisoServiceInstance, 'listarTodosOsPisosDeUmEdificio');
+        const pisoController = new PisoController(pisoServiceInstance as IPisoService);
+                
+        // Act
+        await pisoController.listarTodosOsPisosDeUmEdificio(<Request>req, <Response>res, <NextFunction>next);
+    
+        sinon.assert.calledOnce(pisoServiceSpy);
+        sinon.assert.calledWith(pisoServiceSpy, "as1");
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, [{
+            id: 1,
+            numeroPiso: 1,
+            descricaoPiso: "Ola",
+        }]);
+        
+    });
 
 });
