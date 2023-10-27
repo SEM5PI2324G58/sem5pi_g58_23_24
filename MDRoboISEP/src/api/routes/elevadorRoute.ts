@@ -27,4 +27,20 @@ export default (app: Router) => {
             })
         }),
         (req, res, next) => ctrl.criarElevador(req, res, next));
+
+        route.put('',
+        celebrate({
+            body: Joi.object({
+                edificio: Joi.string().required(),
+                pisosServidos: Joi.array().items(Joi.number()).min(2),
+                xCoord: Joi.number(),
+                yCoord: Joi.number(),
+                orientacao: Joi.string(),
+                marca: Joi.string(),
+                modelo: Joi.string(),
+                numeroSerie: Joi.string(),
+                descricao: Joi.string()
+            })
+        }),
+        (req, res, next) => ctrl.editarElevador(req, res, next));
 };
