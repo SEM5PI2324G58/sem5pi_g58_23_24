@@ -15,6 +15,8 @@ import { DescricaoElevador } from "../domain/elevador/DescricaoElevador";
 import { Ponto } from "../domain/ponto/Ponto";
 import { Elevador } from "../domain/elevador/Elevador";
 import IPontoRepo from "./IRepos/IPontoRepo";
+import IElevadorDTO from "../dto/IElevadorDTO";
+import { ElevadorMap } from "../mappers/ElevadorMap";
 
 
 @Service()
@@ -261,6 +263,26 @@ export default class ElevadorService implements IElevadorService{
             this.elevadorRepo.save(elevador);
             
             return Result.ok<ICriarElevadorDTO>(elevadorDTO)
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    public async listarElevadoresDoEdificio(codigoEdificio: string): Promise<Result<IElevadorDTO>>{
+        try {
+            let edificio = await this.edificioRepo.findByDomainId(codigoEdificio);
+
+            if (edificio === null){
+                return Result.fail<IElevadorDTO>("Edificio não existe.")
+            }
+            
+            let elevador = edificio.returnElevador();
+
+            if (elevador === null){
+                return Result.fail<IElevadorDTO>("Edificio não tem elevador.")
+            }
+            
+            return Result.ok<IElevadorDTO>(ElevadorMap.toDTO(elevador))
         } catch (e) {
             throw e;
         }
