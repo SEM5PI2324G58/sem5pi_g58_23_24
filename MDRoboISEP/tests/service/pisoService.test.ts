@@ -24,6 +24,10 @@ import {Ponto} from '../../src/domain/ponto/Ponto'
 import { Coordenadas } from '../../src/domain/ponto/Coordenadas';
 import { TipoPonto } from '../../src/domain/ponto/TipoPonto';
 import { IdPonto } from '../../src/domain/ponto/IdPonto';
+import { IEdificioPersistence } from "../../src/dataschema/IEdificioPersistence";
+import PontoRepo from "../../src/repos/PontoRepo";
+import PisoRepo from "../../src/repos/PisoRepo";
+import EdificioRepo from "../../src/repos/EdificioRepo";
 
 
 describe('PisoService ', () => {
@@ -217,6 +221,94 @@ describe('PisoService ', () => {
         const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
         let answer = await pisoService.criarPiso(body as ICriarPisoDTO);
         expect(answer.getValue()).to.equal(body as ICriarPisoDTO);
+
+    });
+
+    it('listarTodosOsPisosDeUmEdificio sem existir o falha', async () => {
+        
+        let codigo = "as1";
+
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(null));
+        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
+        let answer = await pisoService.listarTodosOsPisosDeUmEdificio(codigo);
+        expect(answer.errorValue()).to.equal("O edificio com o código " + codigo +" não existe");
+
+    });
+
+    it('listarTodosOsPisosDeUmEdificio de um edificio sem pisos falha', async () => {
+        
+        let edificioProps : any = {
+            nome: Nome.create('Edificio A').getValue(),
+            dimensao:Dimensao.create(1,1).getValue(),
+            descricao:DescricaoEdificio.create('Edificio A').getValue(),
+            listaPisos: [],
+        };
+        let edificio = Edificio.create(edificioProps,Codigo.create('as1').getValue()).getValue();
+
+        let codigo = "as1";
+
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(edificio));
+        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
+        let answer = await pisoService.listarTodosOsPisosDeUmEdificio(codigo);
+        expect(answer.errorValue()).to.equal("Não existem pisos nesse Edificio");
+
+    });
+
+    it('listarTodosOsPisosDeUmEdificio tem sucesso', async () => {
+
+        let codigo = "ED01";
+
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificio")));
+        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
+        let answer = (await pisoService.listarTodosOsPisosDeUmEdificio(codigo)).getValue();
+        expect(answer[0].descricaoPiso).to.equal("Ola");
+        expect(answer[0].numeroPiso).to.equal(0);
+        expect(answer[0].id).to.equal(1);
+
+    });
+
+    it('PisoService + EdificioRepo listarTodosOsPisosDeUmEdificio', async () => {
+
+        let codigo = "ED01";
+        
+        
+        const pisoPersistence = {
+            domainID: 1,
+            numeroPiso: 1,
+            descricaoPiso: "Ola",
+            pontos: []
+        } as IPisoPersistence;
+
+        const edificioPersistence = {
+            codigo : "ED01",
+            nome : "Edificio A",
+            descricao : "Edificio A",
+            dimensaoX: 1,
+            dimensaoY: 1,
+            piso : [1],
+        } as IEdificioPersistence ;
+
+        const edificioSchemaInstance = Container.get("EdificioSchema");
+        const pisoSchemaInstance = Container.get("PisoSchema");
+        sinon.stub(edificioSchemaInstance, "findOne").returns(edificioPersistence);
+        sinon.stub(pisoSchemaInstance, "findOne").returns(pisoPersistence);
+
+        let pontoRepoInstance = Container.get("PontoRepo");
+
+        const pisoService = new PisoService(new PisoRepo(pisoSchemaInstance as any),new EdificioRepo(edificioSchemaInstance as any) ,pontoRepoInstance as IPontoRepo);
+        let answer = (await pisoService.listarTodosOsPisosDeUmEdificio(codigo)).getValue();
+        expect(answer[0].descricaoPiso).to.equal("Ola");
+        expect(answer[0].numeroPiso).to.equal(1);
+        expect(answer[0].id).to.equal(1);
 
     });
 
