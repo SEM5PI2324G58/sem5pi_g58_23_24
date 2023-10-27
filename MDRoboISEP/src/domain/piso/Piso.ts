@@ -104,4 +104,13 @@ export class Piso extends AggregateRoot<pisoProps> {
       }
     }
   }
+
+  public returnPontosComCoordenadas(coords: number[]): Ponto[]{
+    let pontos: Ponto[] = [];
+
+    for (let i = 0; i < coords.length; i = i+2){
+      pontos.push(this.props.mapa[coords[i]][coords[i+1]]);
+    }
+    return pontos;
+  }
 }

@@ -45,7 +45,7 @@ export class ElevadorMap extends Mapper<Elevador>{
         
         dadosElevador.pontos = pontos;
 
-        if(raw.marca !== null && raw.descricaoPiso !== undefined){
+        if(raw.marca !== null && raw.marca !== undefined){
             const marcaOrError = MarcaElevador.create(raw.marca);     
             dadosElevador.marca = marcaOrError.getValue();
         }
