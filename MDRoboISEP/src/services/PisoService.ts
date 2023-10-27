@@ -26,6 +26,8 @@ import { Role } from '../domain/role';
 
 import { Result } from "../core/logic/Result";
 import IPisoService from './IServices/IPisoService';
+import IPisoDTO from '../dto/IPisoDTO';
+import { PisoMap } from '../mappers/PisoMap';
 
 
 
@@ -125,6 +127,23 @@ export default class PisoService implements IPisoService{
     } catch (e) {
       throw e;
     }
+  }
+
+  public async listarTodosOsPisosDeUmEdificio(codigo: string): Promise<Result<IPisoDTO[]>>{
+    const edificio = await this.edifRepo.findByDomainId(codigo);
+    let flag = !!edificio;
+    if(!flag){
+        return Result.fail<IPisoDTO[]>("O edificio com o código " + codigo +" não existe");
+    }
+    let listaPisos = edificio.props.listaPisos;
+    let listaPisosDTO : IPisoDTO[] = [];
+    for(let elem of listaPisos){
+        listaPisosDTO.push(await PisoMap.toDTO(elem));
+    }
+    if(listaPisosDTO.length > 0){
+        return Result.ok<IPisoDTO[]>(listaPisosDTO);
+    }
+    return Result.fail<IPisoDTO[]>("Não existem pisos nesse Edificio");  
   }
 
 }
