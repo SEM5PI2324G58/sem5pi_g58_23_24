@@ -87,6 +87,10 @@ export class Elevador extends AggregateRoot<ElevadorProps>{
     public pisosServidosAtuais() : Piso[]{
         return this.props.pisosServidos;
     }
+
+    public pontosAtuais() : Ponto[]{
+        return this.props.pontos;
+    }
     /**
      * Devolve a posição do elevador no edifício 
      * @returns array de tamanho 4 com as coordenadas x e y dos dois pontos que representam o elevador([x1,y1,x2,y2])
