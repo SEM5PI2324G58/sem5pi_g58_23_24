@@ -142,7 +142,7 @@ export default class ElevadorService implements IElevadorService{
             var pisosServidosAnte = elevador.pisosServidosAtuais()
             var pisosServidos: Piso[] = [];
 
-            if (elevadorDTO.pisosServidos !== null){
+            if (elevadorDTO.pisosServidos !== undefined){
                 // Procurar os pisos do edifício com número correspondente aos passados por parâmetro
                 pisosServidos = edificio.pisosCorrespondentes(elevadorDTO.pisosServidos);
 
@@ -160,7 +160,7 @@ export default class ElevadorService implements IElevadorService{
             let coords = elevador.posicao();
 
             // se for para alterar os pisos ou a posição, eliminar o elevador dos mapas dos pisos antigos 
-            if (elevadorDTO.pisosServidos !== null && elevadorDTO.xCoord !== null && elevadorDTO.yCoord !== null && elevadorDTO.orientacao !== null ){
+            if (elevadorDTO.pisosServidos !== undefined && elevadorDTO.xCoord !== undefined && elevadorDTO.yCoord !== undefined && elevadorDTO.orientacao !== undefined ){
                 for (let i = 0; i < pisosServidosAnte.length; i++){
                     pisosServidosAnte[i].reverterElevadorNoMapa(coords);
                 }
@@ -168,7 +168,7 @@ export default class ElevadorService implements IElevadorService{
             
             let pontos: Ponto[] = [];
 
-            if (elevadorDTO.xCoord !== null && elevadorDTO.yCoord !== null && elevadorDTO.orientacao !== null){
+            if (elevadorDTO.xCoord !== undefined && elevadorDTO.yCoord !== undefined && elevadorDTO.orientacao !== undefined){
 
                 if (!edificio.posicaoValidaNoMapa(elevadorDTO.xCoord,elevadorDTO.yCoord,elevadorDTO.orientacao)){
                     return Result.fail<ICriarElevadorDTO>("A posição do elevador não é válida para o edifício")
@@ -183,7 +183,7 @@ export default class ElevadorService implements IElevadorService{
 
                 elevador.updatePontos(pontos)
 
-            }else if (elevadorDTO.xCoord === null && elevadorDTO.yCoord === null && elevadorDTO.orientacao === null && elevadorDTO.pisosServidos !== null ){
+            }else if (elevadorDTO.xCoord === undefined && elevadorDTO.yCoord === undefined && elevadorDTO.orientacao === undefined && elevadorDTO.pisosServidos !== undefined ){
 
                 if (!edificio.posicaoValidaNoMapa(coords[0],coords[1],elevador.orientacao())){
                     return Result.fail<ICriarElevadorDTO>("A posição do elevador não é válida para o edifício")
@@ -198,13 +198,13 @@ export default class ElevadorService implements IElevadorService{
 
                 elevador.updatePontos(pontos);
 
-            }else if (elevadorDTO.xCoord === null && elevadorDTO.yCoord === null && elevadorDTO.orientacao === null && elevadorDTO.pisosServidos === null){
+            }else if (elevadorDTO.xCoord === undefined && elevadorDTO.yCoord === undefined && elevadorDTO.orientacao === undefined && elevadorDTO.pisosServidos === undefined){
                 // Do nothing
             }else{
                 return Result.fail<ICriarElevadorDTO>("Para alterar a posição do elevador é necessário coordenadada x, coordenada y e a orientação")
             }
             
-            if (elevadorDTO.marca !== null){
+            if (elevadorDTO.marca !== undefined){
                 let marcaOrErro = MarcaElevador.create(elevadorDTO.marca);
                 if(marcaOrErro.isFailure){
                     return Result.fail<ICriarElevadorDTO>(marcaOrErro.errorValue());
@@ -213,7 +213,7 @@ export default class ElevadorService implements IElevadorService{
                 }
             }
 
-            if (elevadorDTO.modelo !== null){
+            if (elevadorDTO.modelo !== undefined){
                 let modeloOrErro = ModeloElevador.create(elevadorDTO.modelo);
                 if(modeloOrErro.isFailure){
                     return Result.fail<ICriarElevadorDTO>(modeloOrErro.errorValue());
@@ -222,7 +222,7 @@ export default class ElevadorService implements IElevadorService{
                 }
             }
 
-            if (elevadorDTO.numeroSerie !== null){
+            if (elevadorDTO.numeroSerie !== undefined){
                 let numeroSerieOrErro = NumeroSerieElevador.create(elevadorDTO.numeroSerie);
                 if(numeroSerieOrErro.isFailure){
                     return Result.fail<ICriarElevadorDTO>(numeroSerieOrErro.errorValue());
@@ -231,7 +231,7 @@ export default class ElevadorService implements IElevadorService{
                 }
             }
 
-            if (elevadorDTO.descricao !== null){
+            if (elevadorDTO.descricao !== undefined){
                 let descricaoOrErro = DescricaoElevador.create(elevadorDTO.descricao);
                 if(descricaoOrErro.isFailure){
                     return Result.fail<ICriarElevadorDTO>(descricaoOrErro.errorValue());
