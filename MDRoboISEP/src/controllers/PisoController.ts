@@ -5,11 +5,12 @@ import config from "../../config";
 import IPisoController from './IControllers/IPisoController';
 import IPisoService from '../services/IServices/IPisoService';
 import ICriarPisoDTO from '../dto/ICriarPisoDTO';
+import IPisoDTO from '../dto/IPisoDTO';
 
 import { Result } from "../core/logic/Result";
 
 @Service()
-export default class PisoController implements IPisoController /* TODO: extends ../core/infra/BaseController */ {
+export default class PisoController implements IPisoController {
   constructor(
       @Inject(config.services.piso.name) private pisoServiceInstance : IPisoService
   ) {}
@@ -29,4 +30,20 @@ export default class PisoController implements IPisoController /* TODO: extends 
       return next(e);
     }
   };
+
+  public async listarTodosOsPisosDeUmEdificio(req: Request, res: Response, next: NextFunction) {
+    try {
+      const pisoOrError = await this.pisoServiceInstance.listarTodosOsPisosDeUmEdificio(req.body.codigo);
+        
+      if (pisoOrError.isFailure) {
+        return res.json( pisoOrError.errorValue()).status(402).send();
+      }
+
+      const pisoDTO = pisoOrError.getValue();
+      return res.json( pisoDTO ).status(201);
+    }
+    catch (e) {
+      return next(e);
+    }
   };
+}

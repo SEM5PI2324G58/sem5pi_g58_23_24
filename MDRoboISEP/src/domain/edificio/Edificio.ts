@@ -152,6 +152,10 @@ export class Edificio extends AggregateRoot<EdificioProps> {
     return this.id.toString();
   }
 
+  public returnListaPisos(): Piso[] {
+    return this.props.listaPisos;
+  }
+
   public returnListaPisosId(): number[] {
     let listaPisos: number[] = [];
     for (let i = 0; i < this.props.listaPisos.length; i++) {

@@ -22,6 +22,13 @@ export default (app: Router) => {
       })
     }),
     (req, res, next) => ctrl.criarPiso(req, res, next) );
-
+  
+    route.get('',
+    celebrate({
+      body: Joi.object({
+        codigo: Joi.string().required()
+      })
+    }),
+    (req, res, next) => ctrl.listarTodosOsPisosDeUmEdificio(req, res, next) );
   
 };
