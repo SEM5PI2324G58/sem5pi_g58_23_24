@@ -19,17 +19,16 @@ activate service
 service -> tipoRepo: findByDomainId(tipoDispositivo)
 activate tipoRepo
 return tipoDispositivo
-service -> disRepo: findAllDispositivo()
+service -> disRepo: findByDomainId(codigo)
 activate disRepo
-return listaDispositivos
-
-service --> dispositivo: verificaSeNumeroDeSerieEIgual(numeroDeSerie)
-activate dispositivo
-return flag
-
-service -> dispositivo: create(numeroDeSerie, tipoDispositivo, descricaoDispositivo, nickname, codigo, estadoDispositivo)
-activate dispositivo
 return dispositivo
+service -> disRepo: findByNickname(nickname)
+activate disRepo
+return dispositivo
+service -> disRepo: findByNumeroSerie(nickname)
+activate disRepo
+return listaDispositivo
+service -> dispositivo**: create(numeroDeSerie, tipoDispositivo, descricaoDispositivo, nickname, codigo, estadoDispositivo)
 service -> disMap: toDTO(dispositivo)
 activate disMap
 return dispositivoDTO
