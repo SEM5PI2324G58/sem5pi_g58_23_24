@@ -43,4 +43,12 @@ export default (app: Router) => {
             })
         }),
         (req, res, next) => ctrl.editarElevador(req, res, next));
+
+        route.get('/elevadoresPorEdificio',
+        celebrate({
+            body: Joi.object({
+                edificio: Joi.string().required(),
+            })
+        }),
+        (req, res, next) => ctrl.listarElevadoresDoEdificio(req, res, next));
 };
