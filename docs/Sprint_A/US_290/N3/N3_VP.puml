@@ -1,0 +1,38 @@
+autonumber
+
+participant "route: \n ElevadorRoute" as route
+participant "dto: \n ElevadorDTO" as dto
+participant "controller: \n ElevadorController" as ctrl
+participant "service: \n ElevadorService" as service
+participant "repo: \n EdificioRepo" as edRepo
+participant "domain: \n Edificio" as edificio
+
+[o-> route: POST(json)
+activate route
+route -> dto ** : create(json)
+route -> ctrl: editarElevador(elevadorDTO)
+activate ctrl
+ctrl -> service: editarElevador(elevadorDTO) 
+activate service
+service -> edRepo: findByDomain(idEdificio)
+activate edRepo
+return edificio
+service -> edificio: returnElevador()
+activate edificio
+return elevador
+return elevador
+return elevador
+return elevador
+
+
+
+
+
+
+
+
+
+
+
+
+
