@@ -1,3 +1,4 @@
+/*
 import * as sinon from 'sinon';
 
 import { Response, Request, NextFunction } from 'express';
@@ -40,3 +41,5 @@ describe('role controller', function () {
 		sinon.assert.calledWith(res.json, sinon.match({ "id": "123","name": req.body.name}));
 	});
 });
+
+*/

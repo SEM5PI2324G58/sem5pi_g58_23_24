@@ -148,7 +148,7 @@ describe('ElevadorService ', () => {
         sandbox.restore();
     });
 
-    it('O edifício não existe', async () => {
+    it('(Criar piso) O edifício não existe', async () => {
         
         let body = {
             "edificio": "codNãoExiste",
@@ -174,7 +174,7 @@ describe('ElevadorService ', () => {
 
     });
 
-    it('O edifício já tem um elevador', async () => {
+    it('(Criar piso) O edifício já tem um elevador', async () => {
         
         let body = {
             "edificio": "Cod",
@@ -199,7 +199,7 @@ describe('ElevadorService ', () => {
 
     });
 
-    it('A posição inserida não se encontra dentro dos limites do edifício', async () => {
+    it('(Criar piso) A posição inserida não se encontra dentro dos limites do edifício', async () => {
         
         let body = {
             "edificio": "Cod",
@@ -224,7 +224,7 @@ describe('ElevadorService ', () => {
 
     });
 
-    it('Os pisos inseridos não exitem no edifício', async () => {
+    it('(Criar piso) Os pisos inseridos não exitem no edifício', async () => {
         
         let body = {
             "edificio": "Cod",
@@ -249,7 +249,7 @@ describe('ElevadorService ', () => {
 
     });
 
-    it('Elevador foi criado', async () => {
+    it('(Criar piso) Elevador foi criado', async () => {
         
         let body = {
             "edificio": "Cod",
@@ -279,4 +279,337 @@ describe('ElevadorService ', () => {
 
     });
 
+
+    it('(Editar piso) O edifício não existe', async () => {
+        
+        let body = {
+            "edificio": "codNãoExiste",
+            "pisosServidos": [1,2],
+            "xCoord" : 0,
+            "yCoord" : 0,
+            "orientacao": "norte",
+            "marca": "marca",
+            "modelo": "modelo",
+            "numeroSerie": "123",
+            "descricao": "desc"
+        };
+
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(null));
+        const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
+        let answer = await elevadorService.editarElevador(body as ICriarElevadorDTO);
+        expect(answer.errorValue()).to.equal("Edificio não existe.");
+
+    });
+
+    it('(Editar piso) O elevador não existe', async () => {
+        
+        let body = {
+            "edificio": "cod",
+            "pisosServidos": [1,2],
+            "xCoord" : 0,
+            "yCoord" : 0,
+            "orientacao": "norte",
+            "marca": "marca",
+            "modelo": "modelo",
+            "numeroSerie": "123",
+            "descricao": "desc"
+        };
+
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioSemElevador")));
+        const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
+        let answer = await elevadorService.editarElevador(body as ICriarElevadorDTO);
+        expect(answer.errorValue()).to.equal("Elevador não existe.");
+
+    });
+
+    it('(Editar piso) Os novos pisos são inválidos', async () => {
+        
+        let body = {
+            "edificio": "cod",
+            "pisosServidos": [10,20],
+            "xCoord" : 0,
+            "yCoord" : 0,
+            "orientacao": "norte",
+            "marca": "marca",
+            "modelo": "modelo",
+            "numeroSerie": "123",
+            "descricao": "desc"
+        };
+
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioComElevador")));
+        const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
+        let answer = await elevadorService.editarElevador(body as ICriarElevadorDTO);
+        expect(answer.errorValue()).to.equal("Foram inseridos pisos inválidos");
+
+    });
+
+
+    it('(Editar piso) A nova posição não é válida', async () => {
+        
+        let body = {
+            "edificio": "cod",
+            "pisosServidos": [1,2],
+            "xCoord" : 100,
+            "yCoord" : 100,
+            "orientacao": "norte",
+            "marca": "marca",
+            "modelo": "modelo",
+            "numeroSerie": "123",
+            "descricao": "desc"
+        };
+
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioComElevador")));
+        const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
+        let answer = await elevadorService.editarElevador(body as ICriarElevadorDTO);
+        expect(answer.errorValue()).to.equal("A posição do elevador não é válida para o edifício");
+
+    });
+
+    it('(Editar piso) Parâmetros insuficientes (tem x e y mas não orientação) ', async () => {
+        
+        let body = {
+            "edificio": "cod",
+            "pisosServidos": [1,2],
+            "xCoord" : 0,
+            "yCoord" : 0,
+            "marca": "marca",
+            "modelo": "modelo",
+            "numeroSerie": "123",
+            "descricao": "desc"
+        };
+
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioComElevador")));
+        const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
+        let answer = await elevadorService.editarElevador(body as ICriarElevadorDTO);
+        expect(answer.errorValue()).to.equal("Para alterar a posição do elevador é necessário coordenadada x, coordenada y e a orientação");
+
+    });
+
+    it('(Editar piso) Parâmetros insuficientes (tem x e orientaçáo mas não y) ', async () => {
+        
+        let body = {
+            "edificio": "cod",
+            "pisosServidos": [1,2],
+            "xCoord" : 0,
+            "orientacao": "norte",
+            "marca": "marca",
+            "modelo": "modelo",
+            "numeroSerie": "123",
+            "descricao": "desc"
+        };
+
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioComElevador")));
+        const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
+        let answer = await elevadorService.editarElevador(body as ICriarElevadorDTO);
+        expect(answer.errorValue()).to.equal("Para alterar a posição do elevador é necessário coordenadada x, coordenada y e a orientação");
+
+    });
+
+    it('(Editar piso) Parâmetros insuficientes (tem y e orientação mas não x) ', async () => {
+        
+        let body = {
+            "edificio": "cod",
+            "pisosServidos": [1,2],
+            "yCoord" : 0,
+            "orientacao": "norte",
+            "marca": "marca",
+            "modelo": "modelo",
+            "numeroSerie": "123",
+            "descricao": "desc"
+        };
+
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioComElevador")));
+        const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
+        let answer = await elevadorService.editarElevador(body as ICriarElevadorDTO);
+        expect(answer.errorValue()).to.equal("Para alterar a posição do elevador é necessário coordenadada x, coordenada y e a orientação");
+
+    });
+
+    it('(Editar piso) Alterar a marca de um elevador tem sucesso ', async () => {
+        
+        let body = {
+            "edificio": "cod",
+            "marca": "marca"
+        };
+
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioComElevador")));
+        sinon.stub(pontoRepoInstance, "save").returns(Promise.resolve(null))
+        sinon.stub(elevadorRepoInstance, "save").returns(Promise.resolve(null))
+
+        const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
+        let answer = await elevadorService.editarElevador(body as ICriarElevadorDTO);
+        expect(answer.getValue()).to.equal(body as ICriarElevadorDTO);
+    });
+
+    it('(Editar piso) Alterar o modelo de um elevador tem sucesso ', async () => {
+        
+        let body = {
+            "edificio": "cod",
+            "modelo": "modelo"
+        };
+
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioComElevador")));
+        sinon.stub(pontoRepoInstance, "save").returns(Promise.resolve(null))
+        sinon.stub(elevadorRepoInstance, "save").returns(Promise.resolve(null))
+
+        const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
+        let answer = await elevadorService.editarElevador(body as ICriarElevadorDTO);
+        expect(answer.getValue()).to.equal(body as ICriarElevadorDTO);
+    });
+
+
+    it('(Editar piso) Alterar o número de série de um elevador tem sucesso ', async () => {
+        
+        let body = {
+            "edificio": "cod",
+            "numeroSerie": "numeroSerie"
+        };
+
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioComElevador")));
+        sinon.stub(pontoRepoInstance, "save").returns(Promise.resolve(null))
+        sinon.stub(elevadorRepoInstance, "save").returns(Promise.resolve(null))
+
+        const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
+        let answer = await elevadorService.editarElevador(body as ICriarElevadorDTO);
+        expect(answer.getValue()).to.equal(body as ICriarElevadorDTO);
+    });
+
+    it('(Editar piso) Alterar a descrição de um elevador tem sucesso ', async () => {
+        
+        let body = {
+            "edificio": "cod",
+            "descricao": "descricao"
+        };
+
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioComElevador")));
+        sinon.stub(pontoRepoInstance, "save").returns(Promise.resolve(null))
+        sinon.stub(elevadorRepoInstance, "save").returns(Promise.resolve(null))
+
+        const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
+        let answer = await elevadorService.editarElevador(body as ICriarElevadorDTO);
+        expect(answer.getValue()).to.equal(body as ICriarElevadorDTO);
+    });
+
+    it('(Editar piso) Alterar os pisos de um elevador tem sucesso ', async () => {
+        
+        let body = {
+            "edificio": "cod",
+            "pisosServidos": [1,2]
+        };
+
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioComElevador")));
+        sinon.stub(pontoRepoInstance, "save").returns(Promise.resolve(null))
+        sinon.stub(elevadorRepoInstance, "save").returns(Promise.resolve(null))
+
+        const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
+        let answer = await elevadorService.editarElevador(body as ICriarElevadorDTO);
+        expect(answer.getValue()).to.equal(body as ICriarElevadorDTO);
+    });
+
+    it('(Editar piso) Alterar a posição de um elevador tem sucesso ', async () => {
+        
+        let body = {
+            "edificio": "cod",
+            "xCoord" : 0,
+            "yCoord" : 0,
+            "orientacao": "norte",
+        };
+
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioComElevador")));
+        sinon.stub(pontoRepoInstance, "save").returns(Promise.resolve(null))
+        sinon.stub(elevadorRepoInstance, "save").returns(Promise.resolve(null))
+
+        const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
+        let answer = await elevadorService.editarElevador(body as ICriarElevadorDTO);
+        expect(answer.getValue()).to.equal(body as ICriarElevadorDTO);
+    });
+
+    it('(Editar piso) Alterar os pisos e a posição de um elevador tem sucesso ', async () => {
+        
+        let body = {
+            "edificio": "cod",
+            "pisosServidos": [1,2],
+            "xCoord" : 0,
+            "yCoord" : 0,
+            "orientacao": "norte",
+        };
+
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioComElevador")));
+        sinon.stub(pontoRepoInstance, "save").returns(Promise.resolve(null))
+        sinon.stub(elevadorRepoInstance, "save").returns(Promise.resolve(null))
+
+        const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
+        let answer = await elevadorService.editarElevador(body as ICriarElevadorDTO);
+        expect(answer.getValue()).to.equal(body as ICriarElevadorDTO);
+    });
 });

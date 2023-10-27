@@ -160,7 +160,7 @@ export default class ElevadorService implements IElevadorService{
             let coords = elevador.posicao();
 
             // se for para alterar os pisos ou a posição, eliminar o elevador dos mapas dos pisos antigos 
-            if (elevadorDTO.pisosServidos !== undefined && elevadorDTO.xCoord !== undefined && elevadorDTO.yCoord !== undefined && elevadorDTO.orientacao !== undefined ){
+            if (elevadorDTO.pisosServidos !== undefined || (elevadorDTO.xCoord !== undefined && elevadorDTO.yCoord !== undefined && elevadorDTO.orientacao !== undefined) ){
                 for (let i = 0; i < pisosServidosAnte.length; i++){
                     pisosServidosAnte[i].reverterElevadorNoMapa(coords);
                 }
@@ -190,7 +190,7 @@ export default class ElevadorService implements IElevadorService{
                 }
                 
                 for (let i = 0; i < pisosServidos.length; i++){
-                    let pisoPontos = pisosServidos[i].returnPontosParaElevador(elevadorDTO.xCoord,elevadorDTO.yCoord,elevadorDTO.orientacao);
+                    let pisoPontos = pisosServidos[i].returnPontosParaElevador(coords[0],coords[1],elevador.orientacao());
                     for(let j = 0; j < pisoPontos.length; j++){
                         pontos.push(pisoPontos[j]);
                     }
