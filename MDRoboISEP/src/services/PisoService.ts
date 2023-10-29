@@ -28,6 +28,7 @@ import { Result } from "../core/logic/Result";
 import IPisoService from './IServices/IPisoService';
 import IPisoDTO from '../dto/IPisoDTO';
 import { PisoMap } from '../mappers/PisoMap';
+import IEditarPisoDTO from '../dto/IEditarPisoDTO';
 
 
 
@@ -144,6 +145,46 @@ export default class PisoService implements IPisoService{
         return Result.ok<IPisoDTO[]>(listaPisosDTO);
     }
     return Result.fail<IPisoDTO[]>("Não existem pisos nesse Edificio");  
+  }
+
+  public async editarPiso(editarPisoDTO: IEditarPisoDTO): Promise<Result<IPisoDTO>>{
+    const edificio = await this.edifRepo.findByDomainId(editarPisoDTO.codigoEdificio);
+    let flag = !!edificio;
+    if(!flag){
+        return Result.fail<IPisoDTO>("O edificio com o código " + editarPisoDTO.codigoEdificio +" não existe");
+    }
+    let piso = edificio.pisosCorrespondentes([editarPisoDTO.numeroPiso])[0];
+    if(piso == null || piso == undefined){
+        return Result.fail<IPisoDTO>("O piso com o numero " + editarPisoDTO.numeroPiso +" não existe");
+    }
+    let novoNumeroPisoOuErro;
+    let descricaoPisoOuErro;
+    if(editarPisoDTO.novoNumeroPiso != null && editarPisoDTO.novoNumeroPiso != undefined){
+        novoNumeroPisoOuErro = await NumeroPiso.create(editarPisoDTO.novoNumeroPiso);
+        if(novoNumeroPisoOuErro.isFailure){
+            return Result.fail<IPisoDTO>(novoNumeroPisoOuErro.errorValue());
+        }
+    }
+    if(editarPisoDTO.descricaoPiso != null && editarPisoDTO.descricaoPiso != undefined){
+        descricaoPisoOuErro = await DescricaoPiso.create(editarPisoDTO.descricaoPiso);
+        if(descricaoPisoOuErro.isFailure){
+            return Result.fail<IPisoDTO>(descricaoPisoOuErro.errorValue());
+        }
+    }
+    if(novoNumeroPisoOuErro != null && novoNumeroPisoOuErro != undefined){
+       let result = piso.atualizarNumeroPiso(novoNumeroPisoOuErro.getValue());
+       if(result.isFailure){
+           return Result.fail<IPisoDTO>(result.errorValue());
+       }
+    }
+    if(descricaoPisoOuErro != null && descricaoPisoOuErro != undefined){
+        let result = piso.atualizarDescricaoPiso(descricaoPisoOuErro.getValue());
+        if(result.isFailure){
+            return Result.fail<IPisoDTO>(result.errorValue());
+        }
+    }
+    await this.pisoRepo.save(piso);
+    Result.ok<IPisoDTO>(PisoMap.toDTO(piso));
   }
 
 }
