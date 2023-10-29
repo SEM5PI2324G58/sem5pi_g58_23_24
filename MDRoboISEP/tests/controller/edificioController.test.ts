@@ -23,7 +23,7 @@ import { Document } from 'mongoose';
 describe('EdificioController', () => {
     const sandbox = sinon.createSandbox();
     beforeEach(function() {
-        this.timeout(10000);
+        this.timeout(20000);
         Container.reset();
         
         let edificioSchemaInstance = require('../../src/persistence/schemas/EdificioSchema').default;
@@ -36,6 +36,12 @@ describe('EdificioController', () => {
         let edificioServiceClass = require('../../src/services/EdificioService').default;
         let edificioServiceInstance = Container.get(edificioServiceClass);
         Container.set("EdificioService", edificioServiceInstance);
+
+        let pisoSchemaInstance = require('../../src/persistence/schemas/PisoSchema').default;
+        Container.set("PisoSchema", pisoSchemaInstance);
+
+        let elevadorSchemaInstance = require('../../src/persistence/schemas/ElevadorSchema').default;
+        Container.set("ElevadorSchema", elevadorSchemaInstance);
     });
     afterEach(function() {
         sinon.restore();
@@ -72,6 +78,104 @@ describe('EdificioController', () => {
             sinon.assert.calledWith(res.json as sinon.SinonSpy, body);
     });
 
+    it('EdificioController + EdificioService criar edificio', async function() {
+        // Arrange
+        let body = {
+            "codigo": "as1",
+            "nome": "ola",
+            "descricao": "ola",
+            "dimensaoX": 1,
+            "dimensaoY": 1,
+        };
+        let edificioProps : any = {
+            nome : Nome.create(body.nome).getValue(),
+            dimensao : Dimensao.create(body.dimensaoX,body.dimensaoY).getValue(),
+            descricao : DescricaoEdificio.create(body.descricao).getValue(),
+            listaPisos : [],
+        }
+        let edificio = Edificio.create(edificioProps,Codigo.create(body.codigo).getValue()).getValue();
+        let req: Partial<Request> = {};
+        req.body = body;
+
+        let res: Partial<Response> = {
+            json: sinon.spy()
+        };
+
+        let next: Partial<NextFunction> = () => {};
+        
+        let edificioServiceInstance = Container.get("EdificioService");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        const edificioServiceSpy = sinon.spy(edificioServiceInstance, 'criarEdificio');
+        
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(null));
+        sinon.stub(edificioRepoInstance, "save").returns(Promise.resolve(edificio));
+        // Act
+        let edificioController = new EdificioController(edificioServiceInstance as IEdificioService);
+        await edificioController.criarEdificio(<Request> req,<Response> res, <NextFunction> next);
+
+        // Assert
+        sinon.assert.calledOnce(edificioServiceSpy);
+        sinon.assert.calledWith(edificioServiceSpy, body);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, body);
+});
+
+it('EdificioController + EdificioService + EdificioRepo criar edificio', async function() {
+    // Arrange
+    let body = {
+        "codigo": "as1",
+        "nome": "ola",
+        "descricao": "ola",
+        "dimensaoX": 1,
+        "dimensaoY": 1,
+    };
+    let edificioProps : any = {
+        nome : Nome.create(body.nome).getValue(),
+        dimensao : Dimensao.create(body.dimensaoX,body.dimensaoY).getValue(),
+        descricao : DescricaoEdificio.create(body.descricao).getValue(),
+        listaPisos : [],
+    }
+
+    let listaPiso : [] = [];
+    let elevador;
+    
+    const edificioPersistence = {
+        codigo : body.codigo,
+        nome : body.nome,
+        descricao : body.descricao,
+        dimensaoX: body.dimensaoX,
+        dimensaoY: body.dimensaoY,
+        piso : listaPiso,
+        elevador : elevador,
+    } as IEdificioPersistence
+
+    let edificio = Edificio.create(edificioProps,Codigo.create(body.codigo).getValue()).getValue();
+    let req: Partial<Request> = {};
+    req.body = body;
+
+    let res: Partial<Response> = {
+        json: sinon.spy()
+    };
+
+    let next: Partial<NextFunction> = () => {};
+    
+    let edificioServiceInstance = Container.get("EdificioService");
+    const edificioServiceSpy = sinon.spy(edificioServiceInstance, 'criarEdificio');
+    let edificioSchemaInstance = Container.get("EdificioSchema");
+
+    sinon.stub(edificioSchemaInstance, "findOne").returns(null);
+    sinon.stub(edificioSchemaInstance, "create").returns(edificioPersistence);
+    
+    // Act
+    let edificioController = new EdificioController(edificioServiceInstance as IEdificioService);
+    await edificioController.criarEdificio(<Request> req,<Response> res, <NextFunction> next);
+
+    // Assert
+    sinon.assert.calledOnce(edificioServiceSpy);
+    sinon.assert.calledWith(edificioServiceSpy, body);
+    sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+    sinon.assert.calledWith(res.json as sinon.SinonSpy, body);
+});
     it('Listar edificio retorna lista de edificios em JSON', async function() {
 
         let listaDTO : IEdificioDTO[] = [];
@@ -101,6 +205,88 @@ describe('EdificioController', () => {
         // Assert
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
         sinon.assert.calledWith(res.json as sinon.SinonSpy, listaDTO);
+    });
+
+    it('EdificioController + EdificioService teste de integração ao método listarEdificios', async function() {
+
+        let body = {
+            "codigo": "as1",
+            "nome": "ola",
+            "descricao": "ola",
+            "dimensaoX": 1,
+            "dimensaoY": 1,
+        };
+        
+        
+        let edificioProps : any ={
+            nome : Nome.create(body.nome).getValue(),
+            dimensao : Dimensao.create(body.dimensaoX,body.dimensaoY).getValue(),
+            descricao : DescricaoEdificio.create(body.descricao).getValue(),
+            listaPisos : [],
+        }
+        let edificio = Edificio.create(edificioProps,Codigo.create(body.codigo).getValue()).getValue();
+
+        let req: Partial<Request> = {};
+        let res: Partial<Response> = {
+            json: sinon.spy()
+        };
+        let next: Partial<NextFunction> = () => {};
+        let edificioServiceInstance = Container.get("EdificioService");
+        let edificioServiceSpy = sinon.spy(edificioServiceInstance, 'listarEdificios');
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        sinon.stub(edificioRepoInstance, "getAllEdificios").returns(Promise.resolve([edificio]));
+        let edificioController = new EdificioController(edificioServiceInstance as IEdificioService);
+        await edificioController.listarEdificios(<Request> req,<Response> res, <NextFunction> next);
+
+        sinon.assert.calledOnce(edificioServiceSpy);
+        sinon.assert.calledWith(edificioServiceSpy);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, [body]);
+    });
+
+    it('EdificioController + EdificioService + EdificioRepo teste de integração ao método listarEdificios', async function() {
+        let body = {
+            "codigo": "as1",
+            "nome": "ola",
+            "descricao": "ola",
+            "dimensaoX": 1,
+            "dimensaoY": 1,
+        };
+        let edificioProps : any ={
+            nome : Nome.create(body.nome).getValue(),
+            dimensao : Dimensao.create(body.dimensaoX,body.dimensaoY).getValue(),
+            descricao : DescricaoEdificio.create(body.descricao).getValue(),
+            listaPisos : [],
+        }
+        let listaPiso : number [] = []; 
+        const edificioPersistence = {
+            codigo : body.codigo,
+            nome : body.nome,
+            descricao : body.descricao,
+            dimensaoX: body.dimensaoX,
+            dimensaoY: body.dimensaoY,
+            piso : listaPiso,
+        } as IEdificioPersistence & Document<any, any, any>;
+
+        let req: Partial<Request> = {};
+        let res: Partial<Response> = {
+            json: sinon.spy()
+        };
+        let next: Partial<NextFunction> = () => {};
+
+        let edificioServiceInstance = Container.get("EdificioService");
+        let edificioServiceSpy = sinon.spy(edificioServiceInstance, 'listarEdificios');
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let edificioSchemaInstance = Container.get("EdificioSchema");
+
+        sinon.stub(edificioSchemaInstance, "find").returns([edificioPersistence]);
+        let edificioController = new EdificioController(edificioServiceInstance as IEdificioService);
+        await edificioController.listarEdificios(<Request> req,<Response> res, <NextFunction> next);
+
+        sinon.assert.calledOnce(edificioServiceSpy);
+        sinon.assert.calledWith(edificioServiceSpy);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, [body]);
     });
 
     it('listarEdificioMinEMaxPisos retorna lista de edificios em JSON', async function() {
@@ -270,6 +456,113 @@ describe('EdificioController', () => {
         sinon.assert.calledWith(res.json as sinon.SinonSpy, body);
     });
 
+    it('EdificioController + EdificioService teste de integração ao método editarEdificio', async function() {
+        let body = {
+            "codigo" : "ED01",
+            "nome" : "Edificio A",
+            "descricao" : "Edificio A",
+        }
+        let req: Partial<Request> = {};
+        req.body = body;
+        let res: Partial<Response> = {
+            json: sinon.spy(),
+        };
+        let next: Partial<NextFunction> = () => {};
+        let propsAnterior : any = {
+            nome : Nome.create("velho").getValue(),
+            dimensao : Dimensao.create(1,1).getValue(),
+            descricao : DescricaoEdificio.create("velho").getValue(),
+            listaPisos : [],
+        }
+        let propsNovo : any = {
+            nome : Nome.create(body.nome).getValue(),
+            dimensao : Dimensao.create(1,1).getValue(),
+            descricao : DescricaoEdificio.create(body.descricao).getValue(),
+            listaPisos : [],
+        }
 
-  
+        let edificioVelho = Edificio.create(propsAnterior,Codigo.create(body.codigo).getValue()).getValue();
+        let edificioNovo = Edificio.create(propsNovo,Codigo.create(body.codigo).getValue()).getValue();
+
+        let edificioServiceInstance = Container.get("EdificioService");
+        let edificioServiceSpy = sinon.spy(edificioServiceInstance, 'editarEdificio');
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(edificioVelho));
+        sinon.stub(edificioRepoInstance, "save").returns(Promise.resolve(edificioNovo));
+
+        let edificioController = new EdificioController(edificioServiceInstance as IEdificioService);
+        await edificioController.editarEdificio(<Request> req,<Response> res, <NextFunction> next);
+
+        sinon.assert.calledOnce(edificioServiceSpy);
+        sinon.assert.calledWith(edificioServiceSpy, body);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, body);
+    });
+
+    it('EdificioController + EdificioService + EdificioRepo teste de integração ao método editarEdificio', async function() {
+        let body = {
+            "codigo" : "ED01",
+            "nome" : "Edificio A",
+            "descricao" : "Edificio A",
+        };
+        let req: Partial<Request> = {};
+        req.body = body;
+        let res: Partial<Response> = {
+            json: sinon.spy(),
+        };
+        let next: Partial<NextFunction> = () => {};
+        let propsAnterior : any = {
+            nome : Nome.create("velho").getValue(),
+            dimensao : Dimensao.create(1,1).getValue(),
+            descricao : DescricaoEdificio.create("velho").getValue(),
+            listaPisos : [],
+        }
+        let propsNovo : any = {
+            nome : Nome.create(body.nome).getValue(),
+            dimensao : Dimensao.create(1,1).getValue(),
+            descricao : DescricaoEdificio.create(body.descricao).getValue(),
+            listaPisos : [],
+        }
+        let elevador;
+    
+        const edificioPersistenceVelho = {
+            codigo : "velho",
+            nome : "velho",
+            descricao : "velho",
+            dimensaoX: 1,
+            dimensaoY: 1,
+            piso : [],
+            elevador : elevador,
+            save() { return this; }
+        } as IEdificioPersistence
+
+        const edificioPersistenceNovo = {
+            codigo : body.codigo,
+            nome : body.nome,
+            descricao : body.descricao,
+            dimensaoX: 1,
+            dimensaoY: 1,
+            piso : [],
+            elevador : elevador,      
+        } as IEdificioPersistence
+
+
+
+        let edificioServiceInstance = Container.get("EdificioService");
+        let edificioServiceSpy = sinon.spy(edificioServiceInstance, 'editarEdificio');
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let edificioSchemaInstance = Container.get("EdificioSchema");
+
+        sinon.stub(edificioSchemaInstance, "findOne").returns(edificioPersistenceVelho);
+        sinon.stub(edificioSchemaInstance, "create").returns(edificioPersistenceNovo);
+
+        let edificioController = new EdificioController(edificioServiceInstance as IEdificioService);
+        await edificioController.editarEdificio(<Request> req,<Response> res, <NextFunction> next);
+
+        sinon.assert.calledOnce(edificioServiceSpy);
+        sinon.assert.calledWith(edificioServiceSpy, body);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, body);
+
+    });
 });
