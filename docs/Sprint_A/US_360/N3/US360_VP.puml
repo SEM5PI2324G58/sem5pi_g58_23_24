@@ -1,6 +1,6 @@
 autonumber
 
-participant RouteEdificio as route
+participant dispositivoRoute as route
 participant "controller: DispositivoController" as ctrl
 participant "dto: AdicionarRoboAFrota" as dto
 participant "service: DispositivoService" as service
