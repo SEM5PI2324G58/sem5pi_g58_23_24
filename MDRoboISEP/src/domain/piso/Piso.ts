@@ -113,4 +113,22 @@ export class Piso extends AggregateRoot<pisoProps> {
     }
     return pontos;
   }
+
+  public atualizarNumeroPiso(numeroPiso: NumeroPiso): Result<Piso>{
+    let guard = Guard.againstNullOrUndefined(numeroPiso,'numero do piso');
+    if (!guard.succeeded) {
+      return Result.fail<Piso>(guard.message)
+    }
+    this.props.numeroPiso = numeroPiso;
+    return Result.ok<Piso>(this);
+  }
+
+  public atualizarDescricaoPiso(descricaoPiso: DescricaoPiso): Result<Piso>{
+    let guard = Guard.againstNullOrUndefined(descricaoPiso,'descricao do piso');
+    if (!guard.succeeded) {
+      return Result.fail<Piso>(guard.message)
+    }
+    this.props.descricaoPiso = descricaoPiso;
+    return Result.ok<Piso>(this);
+  }
 }
