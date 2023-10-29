@@ -6,9 +6,7 @@ participant "dto: EditarPisoDTO" as dto
 participant "service: PisoService" as service
 participant "EdificioRepo" as edRepo
 participant "Edificio" as edificio
-participant "Ponto" as ponto
 participant "Piso" as piso
-participant "PontoRepo" as pontoRepo
 participant "PisoRepo" as pisoRepo
 participant "PisoMap" as pisoMap
 
@@ -20,14 +18,18 @@ activate ctrl
 ctrl -> dto ** : create(json)
 ctrl -> service: editarPiso(editarPisoDTO) 
 activate service
-service -> edRepo: findByDomain(codigo)
+service -> edRepo: findByDomain(codigoEdificio)
 activate edRepo
 return edificio
-service -> edificio : pisosCorrespondentes(nPiso)
+service -> edificio : pisosCorrespondentes(numeroPiso)
 activate edificio
 return piso
-service -> piso : atualizarNumeroPiso(nPiso)
-service -> piso : atualizarNumeroPiso(nPiso)
+service -> piso : atualizarNumeroPiso(novoNumeroPiso)
+activate piso
+return result
+service -> piso : atualizarDescricaoPiso(descricaoPiso)
+activate piso
+return result
 service -> pisoRepo: save(piso)
 service -> pisoMap: toDTO(piso)
 activate pisoMap
