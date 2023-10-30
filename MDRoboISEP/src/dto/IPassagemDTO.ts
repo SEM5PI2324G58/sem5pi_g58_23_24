@@ -5,9 +5,9 @@ export default interface IPassagemDTO {
     ordenadaA: number;
     abcissaB: number;
     ordenadaB: number;
-    id: string;
-    idEdificioA: string;
-    idEdificioB: string;
-    idPisoA: string;
-    idPisoB: string;
+    orientacao: string;
+    codigoEdificioA: string;
+    codigoEdificioB: string;
+    numeroPisoA: number;
+    numeroPisoB: number;
 }
