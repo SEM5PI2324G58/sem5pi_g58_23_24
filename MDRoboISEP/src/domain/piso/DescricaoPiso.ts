@@ -13,7 +13,9 @@ export class DescricaoPiso extends ValueObject<descricaoPisoProps> {
     }
 
     public static create (descricao: string): Result<DescricaoPiso> {
-        const guardResult = Guard.stringLengthLessOrEqualThan(descricao,255,'Descrição do piso');
+        const guard1 = Guard.againstNullOrUndefined(descricao,'Descrição do piso');
+        const guard2 = Guard.stringLengthLessOrEqualThan(descricao,255,'Descrição do piso');
+        const guardResult = Guard.combine([guard1, guard2]);
         if (!guardResult.succeeded) {
           return Result.fail<DescricaoPiso>(guardResult.message);
         } else {
