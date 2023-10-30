@@ -157,6 +157,9 @@ export default class PisoService implements IPisoService{
     if(piso == null || piso == undefined){
         return Result.fail<IPisoDTO>("O piso com o numero " + editarPisoDTO.numeroPiso +" não existe");
     }
+    if(edificio.verificaSePisoJaExiste(editarPisoDTO.novoNumeroPiso)){
+        return Result.fail<IPisoDTO>("Já existe o piso numero " + editarPisoDTO.novoNumeroPiso);
+    }
     let novoNumeroPisoOuErro;
     let descricaoPisoOuErro;
     if(editarPisoDTO.novoNumeroPiso != null && editarPisoDTO.novoNumeroPiso != undefined){
@@ -184,7 +187,7 @@ export default class PisoService implements IPisoService{
         }
     }
     await this.pisoRepo.save(piso);
-    Result.ok<IPisoDTO>(PisoMap.toDTO(piso));
+    return Result.ok<IPisoDTO>(PisoMap.toDTO(piso));
   }
 
 }
