@@ -11,7 +11,9 @@ export class IdPiso extends UniqueEntityID {
     }
 
     public static create (id: number): Result<IdPiso> {
-      const guardResult = Guard.numberGreaterThanZero(id,'Id Piso');
+      const guard1 = Guard.againstNullOrUndefined(id,'Id Piso');
+      const guard2 = Guard.numberGreaterThanZero(id,'Id Piso');
+      const guardResult = Guard.combine([guard1, guard2]);
       if (!guardResult.succeeded) {
         return Result.fail<IdPiso>(guardResult.message);
       } else {

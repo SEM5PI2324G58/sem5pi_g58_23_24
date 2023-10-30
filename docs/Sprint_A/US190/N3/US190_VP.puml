@@ -1,6 +1,6 @@
 autonumber
 
-participant RoutePiso as route
+participant PisoRoute as route
 participant "controller: PisoController" as ctrl
 participant "dto: CriarPisoDTO" as dto
 participant "service: PisoService" as service

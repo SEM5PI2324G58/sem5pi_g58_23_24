@@ -21,6 +21,12 @@ import { Coordenadas } from '../../src/domain/ponto/Coordenadas';
 import { IdPonto } from '../../src/domain/ponto/IdPonto';
 import { Ponto } from '../../src/domain/ponto/Ponto';
 import { TipoPonto } from '../../src/domain/ponto/TipoPonto';
+import { DescricaoElevador } from '../../src/domain/elevador/DescricaoElevador';
+import { Elevador } from '../../src/domain/elevador/Elevador';
+import { IdElevador } from '../../src/domain/elevador/IdElevador';
+import { MarcaElevador } from '../../src/domain/elevador/MarcaElevador';
+import { ModeloElevador } from '../../src/domain/elevador/ModeloElevador';
+import { NumeroSerieElevador } from '../../src/domain/elevador/NumeroSerieElevador';
 
 
 
@@ -29,6 +35,16 @@ describe('ElevadorController', () => {
     beforeEach(function() {
         
         Container.reset();
+
+        let edificioProps : any = {
+            nome: Nome.create('Edificio A').getValue(),
+            dimensao:Dimensao.create(2,2).getValue(),
+            descricao:DescricaoEdificio.create('Edificio A').getValue(),
+            listaPisos: [],
+        };
+        
+        const edificioComElevador = Edificio.create(edificioProps,Codigo.create('ED01').getValue()).getValue();
+
 
         let edificioProps2 : any = {
             nome: Nome.create('Edificio B').getValue(),
@@ -70,9 +86,39 @@ describe('ElevadorController', () => {
             pisosServidos.push(piso);
             // adiconar ao edifício
         }
+        edificioComElevador.addPiso(pisosServidos[0]);
+        edificioComElevador.addPiso(pisosServidos[1]);
         edificioSemElevador.addPiso(pisosServidos[0]);
         edificioSemElevador.addPiso(pisosServidos[1]);
         
+        //Criar 4 pontos
+        let pontos: Ponto[] = [];
+        for (let i = 0; i < 4 ; i++ ){
+            let idPonto = IdPonto.create(1+ i).getValue();
+            let tipoPonto = TipoPonto.create(" ").getValue();
+            let coordenadas = Coordenadas.create({abscissa: i , ordenada: i }).getValue();
+            pontos.push(Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue()) 
+        }
+        //Criar elevador
+        let idElevador = IdElevador.create(1).getValue();
+        let marcaElevador = MarcaElevador.create('123').getValue();
+        let modeloElevador = ModeloElevador.create('123').getValue();
+        let numeroSerieElevador = NumeroSerieElevador.create('123').getValue();
+        let descricaoElevador = DescricaoElevador.create('123').getValue();
+
+        let elevador =  Elevador.create({
+            pisosServidos: pisosServidos,
+            pontos: pontos,
+            marca: marcaElevador,
+            modelo: modeloElevador,
+            numeroSerie: numeroSerieElevador,
+            descricao: descricaoElevador
+        }, idElevador).getValue()
+        
+
+        edificioComElevador.adicionarElevador(elevador);
+
+        Container.set("edificioComElevador", edificioComElevador)
         Container.set("edificioSemElevador", edificioSemElevador)
 
         //Schema
@@ -207,6 +253,103 @@ describe('ElevadorController', () => {
             modelo: "modelo",
             numeroSerie: "123",
             descricao: "desc"
+        }));
+    });
+
+
+    it ('editarElevador retorna elevador JSON', async function(){
+
+        let body = {
+            "edificio": "cod",
+            "pisosServidos": [1,2],
+            "xCoord" : 0,
+            "yCoord" : 0,
+            "orientacao": "norte",
+            "marca": "marca1",
+            "modelo": "modelo1",
+            "numeroSerie": "1231",
+            "descricao": "desc1"
+        };
+
+        let req : Partial<Request> = {};
+        req.body = body;
+
+        let res:Partial<Response> =  {
+            json: sinon.spy()
+        };
+
+        let next: Partial<NextFunction> = () => {};
+
+        let elevadorServicoInstance = Container.get("ElevadorService");
+
+        sinon.stub(elevadorServicoInstance, 'editarElevador').returns(Promise.resolve(Result.ok<ICriarElevadorDTO>(body as ICriarElevadorDTO)))
+
+        const elevadorController = new ElevadorController(elevadorServicoInstance as IElevadorService)
+
+        await elevadorController.editarElevador(<Request>req, <Response>res, <NextFunction>next);
+
+        sinon.assert.calledOnce(res.json);
+        sinon.assert.calledWith(res.json, sinon.match({
+            edificio: "cod",
+            pisosServidos: [1,2],
+            xCoord : 0,
+            yCoord : 0,
+            orientacao: "norte",
+            marca: "marca1",
+            modelo: "modelo1",
+            numeroSerie: "1231",
+            descricao: "desc1"
+        }));
+    });
+
+    it ('Teste integração ElevadorController + ElevadorService editarElevador', async function(){
+
+        let body = {
+            "edificio": "cod",
+            "pisosServidos": [1,2],
+            "xCoord" : 0,
+            "yCoord" : 0,
+            "orientacao": "norte",
+            "marca": "marca1",
+            "modelo": "modelo1",
+            "numeroSerie": "1231",
+            "descricao": "desc1"
+        };
+
+        let req : Partial<Request> = {};
+        req.body = body;
+
+        let res:Partial<Response> =  {
+            json: sinon.spy()
+        };
+
+        let next: Partial<NextFunction> = () => {};
+
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let elevadorServiceInstance = Container.get("ElevadorService");
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioComElevador")));
+        sinon.stub(pontoRepoInstance, "save").returns(Promise.resolve(null))
+        sinon.stub(elevadorRepoInstance, "save").returns(Promise.resolve(null))
+        
+        const elevadorServiceSpy = sinon.spy(elevadorServiceInstance,"editarElevador")
+        const elevadorController = new ElevadorController(elevadorServiceInstance as IElevadorService)
+
+        await elevadorController.editarElevador(<Request>req, <Response>res, <NextFunction>next);
+        sinon.assert.calledOnce(elevadorServiceSpy)
+        sinon.assert.calledWith(elevadorServiceSpy, body);
+        sinon.assert.calledWith(res.json, sinon.match({
+            edificio: "cod",
+            pisosServidos: [1,2],
+            xCoord : 0,
+            yCoord : 0,
+            orientacao: "norte",
+            marca: "marca1",
+            modelo: "modelo1",
+            numeroSerie: "1231",
+            descricao: "desc1"
         }));
     });
 });

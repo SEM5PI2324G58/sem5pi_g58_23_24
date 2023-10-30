@@ -9,7 +9,7 @@ import { Document, FilterQuery, Model } from 'mongoose';
 import { IPontoPersistence } from '../dataschema/IPontoPersistence';
 
 @Service()
-export default class PisoRepo implements IPontoRepo {
+export default class PontoRepo implements IPontoRepo {
   private models: any;
 
   constructor(

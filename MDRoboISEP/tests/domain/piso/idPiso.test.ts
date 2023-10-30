@@ -27,6 +27,18 @@ describe('IdPiso domain', function () {
 		assert.strictEqual(idPiso.isFailure, true);
 	});
 
+	it('IdPiso não é criado com undefined', async function () {
+		// Arrange
+		let id;
+		let idPiso = IdPiso.create(id);
+		assert.strictEqual(idPiso.isFailure, true);
+	});
+
+	it('IdPiso não é criado com null', async function () {
+		// Arrange
+		let idPiso = IdPiso.create(null);
+		assert.strictEqual(idPiso.isFailure, true);
+	});
 
 });
 

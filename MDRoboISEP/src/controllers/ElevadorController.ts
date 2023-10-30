@@ -27,4 +27,36 @@ export default class ElevadorController implements IElevadorController{
             return next(e);
         }
     }
+
+    public async editarElevador(req: Request, res: Response, next: NextFunction) {
+        try {
+            const elevadorOrError = await this.elevadorServiceInstance.editarElevador(req.body as ICriarElevadorDTO);
+              
+            if (elevadorOrError.isFailure) {
+              return res.json(elevadorOrError.errorValue()).status(402).send();
+            }
+      
+            const criarElevadorDTO = elevadorOrError.getValue();
+            return res.json( criarElevadorDTO ).status(201);
+        }
+        catch (e) {
+            return next(e);
+        }
+    }
+
+    public async listarElevadoresDoEdificio(req: Request, res: Response, next: NextFunction) {
+        try {
+            const listaElevadoresOrErro = await this.elevadorServiceInstance.listarElevadoresDoEdificio(req.body.edificio);
+              
+            if (listaElevadoresOrErro.isFailure) {
+              return res.json(listaElevadoresOrErro.errorValue()).status(402).send();
+            }
+      
+            const listaElevadoresDTO = listaElevadoresOrErro.getValue();
+            return res.json( listaElevadoresDTO ).status(201);
+        }
+        catch (e) {
+            return next(e);
+        }
+    }
 }

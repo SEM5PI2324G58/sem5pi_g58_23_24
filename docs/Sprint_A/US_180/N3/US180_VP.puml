@@ -1,6 +1,6 @@
 autonumber
 
-participant RouteEdificio as route
+participant EdificioRoute as route
 participant "controller: EdificioController" as ctrl
 participant "dto: ListarEdMinEMaxPisosDTO" as dto
 participant "service: EdificioService" as service
@@ -10,7 +10,7 @@ participant "EdificioMap" as edificioMap
 
 
 
-[o-> route: Get(json)
+[o-> route: GET(json)
 activate route
 route -> ctrl: listarEdificioMinEMaxPisos(Request, Response, Next)
 activate ctrl

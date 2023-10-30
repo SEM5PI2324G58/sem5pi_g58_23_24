@@ -1,4 +1,4 @@
-export default interface IPisoDTO {
+export default interface IPontoDTO {
     id: number;
 	abscissa: number;
     ordenada: number

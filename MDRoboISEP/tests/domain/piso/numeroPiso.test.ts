@@ -20,6 +20,20 @@ describe('NumeroPiso domain', function () {
 		let numeroPiso = NumeroPiso.create(1);
 		assert.strictEqual(numeroPiso.isSuccess, true);
 	});
+
+	it('NumeroPiso não é criado com undefined', async function () {
+		// Arrange
+		let numero;
+		let numeroPiso = NumeroPiso.create(numero);
+		assert.strictEqual(numeroPiso.isFailure, true);
+	});
+
+	it('NumeroPiso não é criado com null', async function () {
+		// Arrange
+		let numero;
+		let numeroPiso = NumeroPiso.create(null);
+		assert.strictEqual(numeroPiso.isFailure, true);
+	});
     
 
 });
