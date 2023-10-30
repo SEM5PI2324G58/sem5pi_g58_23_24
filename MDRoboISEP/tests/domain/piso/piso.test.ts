@@ -101,7 +101,7 @@ describe('piso domain', function () {
 
     });
 
-	it('piso é criado com sucesso', async function () {
+	it('piso é criado com sucesso com descrição', async function () {
 		// Arrange
 		let descricaoPiso = DescricaoPiso.create("Ola").getValue();
 		let idPiso = IdPiso.create(1).getValue();
@@ -121,6 +121,48 @@ describe('piso domain', function () {
         }, idPiso);
 
 		assert.strictEqual(pisoOuErro.isSuccess, true);
+	});
+
+
+	it('piso é criado com sucesso sem descricao', async function () {
+		// Arrange
+		let idPiso = IdPiso.create(1).getValue();
+		let numeroPiso = NumeroPiso.create(1).getValue();
+		let pontoArray  : Ponto[][] = [];
+		let idPonto = IdPonto.create(1).getValue();
+		let tipoPonto = TipoPonto.create(" ").getValue();
+		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
+		let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
+		pontoArray[0] = []
+		pontoArray[0][0] = ponto;
+		let descricao = null;
+		let pisoOuErro = await Piso.create({
+            numeroPiso: numeroPiso,
+            descricaoPiso: null,
+            mapa: pontoArray,
+        }, idPiso);
+
+		assert.strictEqual(pisoOuErro.isSuccess, true);
+	});
+
+	it('piso não é criado sem numeroPiso', async function () {
+		// Arrange
+		let descricaoPiso = DescricaoPiso.create("Ola").getValue();
+		let idPiso = IdPiso.create(1).getValue();
+		let pontoArray  : Ponto[][] = [];
+		let idPonto = IdPonto.create(1).getValue();
+		let tipoPonto = TipoPonto.create(" ").getValue();
+		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
+		let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
+		pontoArray[0] = []
+		pontoArray[0][0] = ponto;
+		let pisoOuErro = await Piso.create({
+            numeroPiso: null,
+            descricaoPiso: descricaoPiso,
+            mapa: pontoArray,
+        }, idPiso);
+
+		assert.strictEqual(pisoOuErro.isFailure, true);
 	});
 
 	it('elevador removido 0,0 0,1 com sucesso', async function () {
