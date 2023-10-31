@@ -80,7 +80,7 @@ export default class PassagemRepo implements IPassagemRepo {
     }
   }
 
-  public async findByDomainId(idPassagem: IdPassagem | string): Promise<Passagem> {
+  public async findByDomainId(idPassagem: IdPassagem | number): Promise<Passagem> {
     const query = { idPassagem: idPassagem };
     const passagemRecord = await this.passagemSchema.findOne(query as FilterQuery<IPassagemPersistence & Document>);
 

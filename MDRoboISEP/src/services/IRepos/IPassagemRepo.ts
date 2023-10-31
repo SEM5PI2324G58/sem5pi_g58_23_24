@@ -3,6 +3,6 @@ import { Passagem } from "../../domain/passagem/Passagem";
 
 export default interface IPassagemRepo extends Repo<Passagem> {
   getMaxId(): Promise<number>;
-  findByDomainId(id: string): Promise<Passagem>;
+  findByDomainId(id: number): Promise<Passagem>;
   save(passagem: Passagem): Promise<Passagem>;
 }

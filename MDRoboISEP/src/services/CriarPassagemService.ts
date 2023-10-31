@@ -56,6 +56,12 @@ export default class PassagemService implements IPassagemService {
 
     private async validarDados(passagemDTO: IPassagemDTO): Promise<Result<any>> {
 
+        let passagemDocument = await this.passagemRepo.findByDomainId(passagemDTO.id)
+
+        if(passagemDocument!=null){
+            return Result.fail<IPassagemDTO>("A passagem com o id " + passagemDTO.id + " já existe");
+        }
+
         let edificioDocumentA = await this.edificioRepo.findByDomainId(passagemDTO.codigoEdificioA);
 
         if (edificioDocumentA == null) {
