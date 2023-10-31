@@ -8,6 +8,7 @@ import ICriarPisoDTO from '../dto/ICriarPisoDTO';
 import IPisoDTO from '../dto/IPisoDTO';
 
 import { Result } from "../core/logic/Result";
+import IEditarPisoDTO from '../dto/IEditarPisoDTO';
 
 @Service()
 export default class PisoController implements IPisoController {
@@ -46,4 +47,19 @@ export default class PisoController implements IPisoController {
       return next(e);
     }
   };
+
+  public async editarPiso(req: Request, res: Response, next: NextFunction) {
+    try {
+      const pisoOrError = await this.pisoServiceInstance.editarPiso(req.body as IEditarPisoDTO);
+        
+      if (pisoOrError.isFailure) {
+        return res.json( pisoOrError.errorValue()).status(402).send();
+      }
+
+      const pisoDTO = pisoOrError.getValue();
+      return res.json( pisoDTO ).status(201);
+  }catch (e) {
+      return next(e);
+  }
+  }
 }

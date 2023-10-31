@@ -24,6 +24,25 @@ describe('ponto domain', function () {
 		assert.strictEqual(ponto.isSuccess, true);
 	});
 
+	it('ponto não é criado sem tipoPonto', async function () {
+		// Arrange
+		let idPonto = IdPonto.create(1).getValue();
+		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
+		let ponto = Ponto.create({coordenadas:coordenadas,tipoPonto:null},idPonto);
+
+		assert.strictEqual(ponto.isFailure, true);
+	});
+
+	it('ponto não é criado sem coordenadas', async function () {
+		// Arrange
+		let idPonto = IdPonto.create(1).getValue();
+		let tipoPonto = TipoPonto.create(" ").getValue();
+		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
+		let ponto = Ponto.create({coordenadas:null,tipoPonto:tipoPonto},idPonto);
+
+		assert.strictEqual(ponto.isFailure, true);
+	});
+
 	it('toElevador muda o tipo de ponto para o tipo "Elevador"', async function () {
 		// Arrange
 		let idPonto = IdPonto.create(1).getValue();

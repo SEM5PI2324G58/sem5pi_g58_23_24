@@ -29,4 +29,18 @@ describe('DescricaoPiso domain', function () {
 		assert.strictEqual(descricaoPiso.isFailure, true);
 	});
 
+	it('DescricaoPiso não é criado com valor undefined ', async function () {
+		// Arrange
+		let descricao;
+		let descricaoPiso = DescricaoPiso.create(descricao);
+		assert.strictEqual(descricaoPiso.isFailure, true);
+	});
+
+	it('DescricaoPiso é criado com null', async function () {
+		// Arrange
+		let descricaoPiso = DescricaoPiso.create(null);
+		assert.strictEqual(descricaoPiso.isFailure, true);
+	});
+
+
 });

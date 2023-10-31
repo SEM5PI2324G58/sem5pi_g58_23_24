@@ -30,5 +30,16 @@ export default (app: Router) => {
       })
     }),
     (req, res, next) => ctrl.listarTodosOsPisosDeUmEdificio(req, res, next) );
+
+    route.put('',
+    celebrate({
+      body: Joi.object({
+        codigoEdificio: Joi.string().required(),
+        numeroPiso: Joi.number().required(),
+        novoNumeroPiso: Joi.number(),
+	      descricaoPiso: Joi.string()
+      })
+    }),
+    (req, res, next) => ctrl.editarPiso(req, res, next) );
   
 };

@@ -21,6 +21,9 @@ activate service
 service -> edRepo: findByDomain(codigoEdificio)
 activate edRepo
 return edificio
+service -> edificio : verificaSePisoJaExiste(novoNumeroPiso)
+activate edificio
+return boolean
 service -> edificio : pisosCorrespondentes(numeroPiso)
 activate edificio
 return piso

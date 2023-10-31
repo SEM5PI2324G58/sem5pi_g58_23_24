@@ -27,6 +27,7 @@ import { IdElevador } from '../../src/domain/elevador/IdElevador';
 import { MarcaElevador } from '../../src/domain/elevador/MarcaElevador';
 import { ModeloElevador } from '../../src/domain/elevador/ModeloElevador';
 import { NumeroSerieElevador } from '../../src/domain/elevador/NumeroSerieElevador';
+import IElevadorDTO from '../../src/dto/IElevadorDTO';
 
 
 
@@ -350,6 +351,47 @@ describe('ElevadorController', () => {
             modelo: "modelo1",
             numeroSerie: "1231",
             descricao: "desc1"
+        }));
+    });
+
+    it('listarElevadoresDoEdificio retorna elevador JSON', async function() {
+        
+        let body = {
+            "codigo": "COD",
+        };
+
+        const elevadorDTO = {
+            id: 1,
+            marca: 'marca1',
+            modelo: "modelo1",
+            numeroSerie: "numeroSerie1",
+            descricao: "descricao1",
+        } as IElevadorDTO;
+
+        let req: Partial<Request> = {};
+        req.body = body;
+
+        let res: Partial<Response> = {
+            json: sinon.spy()
+        };
+
+        let next: Partial<NextFunction> = () => {};
+
+        let elevadorServiceInstance = Container.get("ElevadorService");
+
+        sinon.stub(elevadorServiceInstance, 'listarElevadoresDoEdificio').returns(Promise.resolve(Result.ok<IElevadorDTO>(elevadorDTO)));
+
+        const elevadorController = new ElevadorController(elevadorServiceInstance as IElevadorService);
+        
+        await elevadorController.listarElevadoresDoEdificio(<Request>req, <Response>res, <NextFunction>next);
+
+        sinon.assert.calledOnce(res.json);
+        sinon.assert.calledWith(res.json, sinon.match({
+            id: 1,
+            marca: 'marca1',
+            modelo: "modelo1",
+            numeroSerie: "numeroSerie1",
+            descricao: "descricao1",
         }));
     });
 });

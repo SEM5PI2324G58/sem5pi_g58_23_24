@@ -119,6 +119,7 @@ describe('ElevadorService ', () => {
 
         Container.set("edificioComElevador", edificioComElevador)
         Container.set("edificioSemElevador", edificioSemElevador)
+        Container.set("elevador", elevador)
 
         let elevadorSchemaInstance = require('../../src/persistence/schemas/ElevadorSchema').default;
         Container.set("ElevadorSchema", elevadorSchemaInstance);
@@ -148,7 +149,7 @@ describe('ElevadorService ', () => {
         sandbox.restore();
     });
 
-    it('(Criar piso) O edifício não existe', async () => {
+    it('(Criar elevador) O edifício não existe', async () => {
         
         let body = {
             "edificio": "codNãoExiste",
@@ -174,7 +175,7 @@ describe('ElevadorService ', () => {
 
     });
 
-    it('(Criar piso) O edifício já tem um elevador', async () => {
+    it('(Criar elevador) O edifício já tem um elevador', async () => {
         
         let body = {
             "edificio": "Cod",
@@ -199,7 +200,7 @@ describe('ElevadorService ', () => {
 
     });
 
-    it('(Criar piso) A posição inserida não se encontra dentro dos limites do edifício', async () => {
+    it('(Criar elevador) A posição inserida não se encontra dentro dos limites do edifício', async () => {
         
         let body = {
             "edificio": "Cod",
@@ -224,7 +225,7 @@ describe('ElevadorService ', () => {
 
     });
 
-    it('(Criar piso) Os pisos inseridos não exitem no edifício', async () => {
+    it('(Criar elevador) Os pisos inseridos não exitem no edifício', async () => {
         
         let body = {
             "edificio": "Cod",
@@ -249,7 +250,7 @@ describe('ElevadorService ', () => {
 
     });
 
-    it('(Criar piso) Elevador foi criado', async () => {
+    it('(Criar elevador) Elevador foi criado', async () => {
         
         let body = {
             "edificio": "Cod",
@@ -280,7 +281,7 @@ describe('ElevadorService ', () => {
     });
 
 
-    it('(Editar piso) O edifício não existe', async () => {
+    it('(Editar elevador) O edifício não existe', async () => {
         
         let body = {
             "edificio": "codNãoExiste",
@@ -306,7 +307,7 @@ describe('ElevadorService ', () => {
 
     });
 
-    it('(Editar piso) O elevador não existe', async () => {
+    it('(Editar elevador) O elevador não existe', async () => {
         
         let body = {
             "edificio": "cod",
@@ -332,7 +333,7 @@ describe('ElevadorService ', () => {
 
     });
 
-    it('(Editar piso) Os novos pisos são inválidos', async () => {
+    it('(Editar elevador) Os novos pisos são inválidos', async () => {
         
         let body = {
             "edificio": "cod",
@@ -359,7 +360,7 @@ describe('ElevadorService ', () => {
     });
 
 
-    it('(Editar piso) A nova posição não é válida', async () => {
+    it('(Editar elevador) A nova posição não é válida', async () => {
         
         let body = {
             "edificio": "cod",
@@ -385,7 +386,7 @@ describe('ElevadorService ', () => {
 
     });
 
-    it('(Editar piso) Parâmetros insuficientes (tem x e y mas não orientação) ', async () => {
+    it('(Editar elevador) Parâmetros insuficientes (tem x e y mas não orientação) ', async () => {
         
         let body = {
             "edificio": "cod",
@@ -410,7 +411,7 @@ describe('ElevadorService ', () => {
 
     });
 
-    it('(Editar piso) Parâmetros insuficientes (tem x e orientaçáo mas não y) ', async () => {
+    it('(Editar elevador) Parâmetros insuficientes (tem x e orientaçáo mas não y) ', async () => {
         
         let body = {
             "edificio": "cod",
@@ -435,7 +436,7 @@ describe('ElevadorService ', () => {
 
     });
 
-    it('(Editar piso) Parâmetros insuficientes (tem y e orientação mas não x) ', async () => {
+    it('(Editar elevador) Parâmetros insuficientes (tem y e orientação mas não x) ', async () => {
         
         let body = {
             "edificio": "cod",
@@ -460,7 +461,7 @@ describe('ElevadorService ', () => {
 
     });
 
-    it('(Editar piso) Alterar a marca de um elevador tem sucesso ', async () => {
+    it('(Editar elevador) Alterar a marca de um elevador tem sucesso ', async () => {
         
         let body = {
             "edificio": "cod",
@@ -481,7 +482,7 @@ describe('ElevadorService ', () => {
         expect(answer.getValue()).to.equal(body as ICriarElevadorDTO);
     });
 
-    it('(Editar piso) Alterar o modelo de um elevador tem sucesso ', async () => {
+    it('(Editar elevador) Alterar o modelo de um elevador tem sucesso ', async () => {
         
         let body = {
             "edificio": "cod",
@@ -503,7 +504,7 @@ describe('ElevadorService ', () => {
     });
 
 
-    it('(Editar piso) Alterar o número de série de um elevador tem sucesso ', async () => {
+    it('(Editar elevador) Alterar o número de série de um elevador tem sucesso ', async () => {
         
         let body = {
             "edificio": "cod",
@@ -524,7 +525,7 @@ describe('ElevadorService ', () => {
         expect(answer.getValue()).to.equal(body as ICriarElevadorDTO);
     });
 
-    it('(Editar piso) Alterar a descrição de um elevador tem sucesso ', async () => {
+    it('(Editar elevador) Alterar a descrição de um elevador tem sucesso ', async () => {
         
         let body = {
             "edificio": "cod",
@@ -545,7 +546,7 @@ describe('ElevadorService ', () => {
         expect(answer.getValue()).to.equal(body as ICriarElevadorDTO);
     });
 
-    it('(Editar piso) Alterar os pisos de um elevador tem sucesso ', async () => {
+    it('(Editar elevador) Alterar os pisos de um elevador tem sucesso ', async () => {
         
         let body = {
             "edificio": "cod",
@@ -566,7 +567,7 @@ describe('ElevadorService ', () => {
         expect(answer.getValue()).to.equal(body as ICriarElevadorDTO);
     });
 
-    it('(Editar piso) Alterar a posição de um elevador tem sucesso ', async () => {
+    it('(Editar elevador) Alterar a posição de um elevador tem sucesso ', async () => {
         
         let body = {
             "edificio": "cod",
@@ -589,7 +590,7 @@ describe('ElevadorService ', () => {
         expect(answer.getValue()).to.equal(body as ICriarElevadorDTO);
     });
 
-    it('(Editar piso) Alterar os pisos e a posição de um elevador tem sucesso ', async () => {
+    it('(Editar elevador) Alterar os pisos e a posição de um elevador tem sucesso ', async () => {
         
         let body = {
             "edificio": "cod",
@@ -611,5 +612,60 @@ describe('ElevadorService ', () => {
         const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
         let answer = await elevadorService.editarElevador(body as ICriarElevadorDTO);
         expect(answer.getValue()).to.equal(body as ICriarElevadorDTO);
+    });
+
+    it('(Listar elevadores de um edifício) O edifício não existe', async () => {
+        
+        let edificio = "codNãoExiste";
+
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(null);
+
+        const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
+        let answer = await elevadorService.listarElevadoresDoEdificio(edificio);
+        expect(answer.errorValue()).to.equal("Edifício não existe.");
+    });
+
+    it('(Listar elevadores de um edifício) O edifício não tem elevadores ', async () => {
+        
+        let edificio = "COD";
+
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioSemElevador")));
+
+        const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
+        let answer = await elevadorService.listarElevadoresDoEdificio(edificio);
+        expect(answer.errorValue()).to.equal("O edifício não tem elevadores.");
+    });
+
+    it('(Listar elevadores de um edifício) Listar elevadores de um edifício tem sucesso ', async () => {
+        
+        let edificio = "COD";
+
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+
+    
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioComElevador")));
+        sinon.stub(pontoRepoInstance, "save").returns(Promise.resolve(null))
+        sinon.stub(elevadorRepoInstance, "save").returns(Promise.resolve(null))
+
+        const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
+        
+        let answer = (await elevadorService.listarElevadoresDoEdificio(edificio)).getValue();    
+        expect(answer.id).to.equal(1);
+        expect(answer.marca).to.equal('123');
+        expect(answer.modelo).to.equal('123');
+        expect(answer.numeroSerie).to.equal('123');
+        expect(answer.descricao).to.equal('123');
     });
 });

@@ -1,4 +1,5 @@
 import { ValueObject } from "../../core/domain/ValueObject"
+import { Guard } from "../../core/logic/Guard";
 import { Result } from "../../core/logic/Result";
 
 interface numeroPisoProps {
@@ -11,7 +12,12 @@ export class NumeroPiso extends ValueObject<numeroPisoProps> {
     }
 
     public static create (nPiso: number): Result<NumeroPiso> {
-        return Result.ok<NumeroPiso>(new NumeroPiso({ nPiso: nPiso}))
+        const guardResult = Guard.againstNullOrUndefined(nPiso,'Número do piso');
+        if (!guardResult.succeeded) {
+          return Result.fail<NumeroPiso>(guardResult.message);
+        } else {
+          return Result.ok<NumeroPiso>(new NumeroPiso({ nPiso: nPiso}))
+        }
     }
 
 }

@@ -8,6 +8,7 @@ import { Piso } from "../piso/Piso";
 import { Guard } from "../../core/logic/Guard";
 import { Elevador } from "../elevador/Elevador";
 import { Ponto } from "../ponto/Ponto";
+import { TipoPonto } from "../ponto/TipoPonto";
 
 
 
@@ -21,94 +22,175 @@ interface EdificioProps {
 
 export class Edificio extends AggregateRoot<EdificioProps> {
 
-  alterarPontosPorPassagem(pontoA: Ponto, idPisoA: string) {
-    
+  public obterPontoSeguinte(pontoProvided: Ponto, numeroPisoA: number, orientacao: string): Promise<Result<Ponto>> {
+
     let listaPisos = this.props.listaPisos;
     for (let index = 0; index < listaPisos.length; index++) {
       let piso = listaPisos[index];
-      if (piso.id.toString() == idPisoA) {
+      if (piso.returnNumeroPiso() === numeroPisoA) {
+
+        if (pontoProvided.props.coordenadas.props.ordenada + 1 == piso.props.mapa.length
+          && pontoProvided.props.coordenadas.props.abscissa + 1 == piso.props.mapa[piso.props.mapa.length - 1].length) {
+          return Promise.resolve(Result.fail<Ponto>("este ponto X="+pontoProvided.props.coordenadas.props.abscissa+
+           " Y="+pontoProvided.props.coordenadas.props.ordenada
+          +" está num limite do piso não aceitavel"));
+        }
+
+        if (pontoProvided.props.coordenadas.props.ordenada + 1 == piso.props.mapa.length
+          && pontoProvided.props.coordenadas.props.abscissa + 1 < piso.props.mapa[piso.props.mapa.length - 1].length
+          && orientacao == "Norte") {
+          return Promise.resolve(Result.ok<Ponto>(piso.props.mapa[piso.props.mapa.length - 1][pontoProvided.props.coordenadas.props.abscissa + 1]));
+        }
+
+        if (pontoProvided.props.coordenadas.props.ordenada == 0
+          && pontoProvided.props.coordenadas.props.abscissa + 1 < piso.props.mapa[piso.props.mapa.length - 1].length
+          && orientacao == "Norte") {
+          return Promise.resolve(Result.ok<Ponto>(piso.props.mapa[0][pontoProvided.props.coordenadas.props.abscissa + 1]));
+        }
+
+        for (let i = 1; i < piso.props.mapa.length - 1; i++) {
+
+          if (pontoProvided.props.coordenadas.props.abscissa + 1 == piso.props.mapa[piso.props.mapa.length - 1].length
+            && orientacao == "Oeste") {
+            return Promise.resolve(Result.ok<Ponto>(piso.props.mapa[i][pontoProvided.props.coordenadas.props.abscissa + 1]));
+          }
+
+          if (pontoProvided.props.coordenadas.props.abscissa == 0
+            && orientacao == "Oeste") {
+            return Promise.resolve(Result.ok<Ponto>(piso.props.mapa[i][0]));
+          }
+
+
+        }
+      }
+    }
+    return Promise.resolve(Result.fail<Ponto>("Não foi possível obter o ponto seguinte"));
+  }
+
+  public returnPisoPeloNumero(numeroPisoA: number): Piso {
+    let listaPisos = this.props.listaPisos;
+    for (let index = 0; index < listaPisos.length; index++) {
+      let piso = listaPisos[index];
+      if (piso.returnNumeroPiso() === numeroPisoA) {
+        return piso;
+      }
+    }
+    return null;
+  }
+
+
+  public alterarPontosPorPassagem(pontoProvided: Ponto, nPiso: number, orientacao: string): Promise<Result<boolean>> {
+
+    if (pontoProvided == null || pontoProvided == undefined) {
+      return Promise.resolve(Result.fail<boolean>("Ponto não pode ser null"));
+    }
+    if (orientacao == null || orientacao == undefined) {
+      return Promise.resolve(Result.fail<boolean>("Orientação não pode ser null ou undefined"));
+    }
+    if (nPiso == null || nPiso == undefined) {
+      return Promise.resolve(Result.fail<boolean>("Número de piso não pode ser null ou undefined"));
+    }
+    if (orientacao != "Norte" && orientacao != "Oeste" && orientacao != "NorteOeste") {
+      return Promise.resolve(Result.fail<boolean>("Orientação não é válida"));
+    }
+
+    let listaPisos = this.props.listaPisos;
+    for (let index = 0; index < listaPisos.length; index++) {
+      let piso = listaPisos[index];
+      if (piso == null || piso == undefined) {
+        return Promise.resolve(Result.fail<boolean>("Piso guardado no edifício não pode ser null ou undefined"));
+      }
+      if (piso.returnNumeroPiso() == nPiso) {
         for (let i = 0; i < piso.props.mapa.length; i++) {
           for (let j = 0; j < piso.props.mapa[i].length; j++) {
             let ponto = piso.props.mapa[i][j];
-            if (ponto.props.coordenadas.props.abscissa == pontoA.props.coordenadas.props.abscissa
-              && ponto.props.coordenadas.props.ordenada == pontoA.props.coordenadas.props.ordenada) {
-              ponto.props.tipoPonto.props.tipoPonto = "Passagem";
+            if (ponto == null || ponto == undefined) {
+              return Promise.resolve(Result.fail<boolean>("Ponto guardado no edifício não pode ser null ou undefined"));
+            }
+            if (ponto.props.coordenadas.props.abscissa == pontoProvided.props.coordenadas.props.abscissa
+              && ponto.props.coordenadas.props.ordenada == pontoProvided.props.coordenadas.props.ordenada) {
+              const tipoPonto = TipoPonto.create("Passagem" + orientacao)
+              if (tipoPonto.isFailure) {
+                return Promise.resolve(Result.fail<boolean>(tipoPonto.error.toString()));
+              }
+              ponto.props.tipoPonto = tipoPonto.getValue();
+              piso.props.mapa[i][j] = ponto;
+              return Promise.resolve(Result.ok<boolean>(true));
             }
           }
         }
       }
     }
-
+    return Promise.resolve(Result.ok<boolean>(false));
   }
 
-  getPonto(abcissa: number, ordenada: number, idPiso): Ponto {
+  public returnPontoDoPisoEspecifico(abcissa: number, ordenada: number, numeroPiso: number): Promise<Result<Ponto>> {
     let listaPisos = this.props.listaPisos;
     for (let index = 0; index < listaPisos.length; index++) {
       let piso = listaPisos[index];
-      if (piso.id.toString() == idPiso) {
+      if (piso == null || piso == undefined) {
+        return Promise.resolve(Result.fail<Ponto>("Piso guardado no edifício não pode ser null ou undefined"));
+      }
+      if (piso.returnNumeroPiso() === numeroPiso) {
         for (let i = 0; i < piso.props.mapa.length; i++) {
           for (let j = 0; j < piso.props.mapa[i].length; j++) {
             let ponto = piso.props.mapa[i][j];
+            if (ponto == null || ponto == undefined) {
+              return Promise.resolve(Result.fail<Ponto>("Ponto guardado no edifício não pode ser null ou undefined"));
+            }
             if (ponto.props.coordenadas.props.abscissa == abcissa && ponto.props.coordenadas.props.ordenada == ordenada) {
-              return ponto;
+              return Promise.resolve(Result.ok<Ponto>(ponto));
             }
           }
         }
       }
     }
+    return Promise.resolve(Result.fail<Ponto>("Não foi possível obter o ponto do piso específico"));
   }
 
 
+  /**
+   * Verifica se existe um ponto no limite do edifício
+   * @param numeroPiso 
+   * @param pontos 
+   * @returns true se existir um ponto no limite, false caso contrário
+   */
 
-  existePontoNoLimite(idPiso: string, pontos: Ponto) {
+  public existePontoNoLimite(numeroPiso: number, pontos: Ponto): Promise<Result<boolean>> {
+
+    if (pontos == null || pontos == undefined) {
+      return Promise.resolve(Result.fail<boolean>("Ponto não pode ser null"));
+    }
+    if (numeroPiso == null || numeroPiso == undefined) {
+      return Promise.resolve(Result.fail<boolean>("Número de piso não pode ser null ou undefined"));
+    }
 
     let listaPisos = this.props.listaPisos;
-
-    function validarÉIgualENoLimite(ponto: Ponto, pontos: Ponto, i: number, piso: Piso) {
-      if (ponto.props.coordenadas.props.abscissa == pontos.props.coordenadas.props.abscissa
-        && ponto.props.coordenadas.props.ordenada == pontos.props.coordenadas.props.ordenada) {
-        if (ponto.props.coordenadas.props.ordenada == piso.props.mapa.length ||
-          ponto.props.coordenadas.props.abscissa == piso.props.mapa[i].length ||
-          ponto.props.coordenadas.props.ordenada == 0 || ponto.props.coordenadas.props.abscissa == 0) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    function percorrerMapaDoPisoEValidarPonto(idPiso: string, pontos: Ponto, piso: Piso) {
-      if (piso.id.toString() == idPiso) {
-        for (let i = 0; i < piso.props.mapa.length; i++) {
-          for (let j = 0; j < piso.props.mapa[i].length; j++) {
-            let ponto = piso.props.mapa[i][j];
-            if (validarÉIgualENoLimite(ponto, pontos, i, piso)) {
-              return true;
-            }
-          }
-        }
-      }
-      return false;
-    }
 
     for (let index = 0; index < listaPisos.length; index++) {
       let piso = listaPisos[index];
-      if (percorrerMapaDoPisoEValidarPonto(idPiso, pontos, piso)) {
-        return true;
+      if (piso == null || piso == undefined) {
+        return Promise.resolve(Result.fail<boolean>("Piso guardado no edifício não pode ser null ou undefined"));
+      }
+      if (piso.returnNumeroPiso() === numeroPiso) {
+        for (let i = 0; i < piso.props.mapa.length; i++) {
+          for (let j = 0; j < piso.props.mapa[i].length; j++) {
+            let ponto = piso.props.mapa[i][j];
+            if (ponto == null || ponto == undefined) {
+              return Promise.resolve(Result.fail<boolean>("Ponto guardado no edifício não pode ser null ou undefined"));
+            }
+            if (ponto.props.coordenadas.props.abscissa == pontos.props.coordenadas.props.abscissa
+              && ponto.props.coordenadas.props.ordenada == pontos.props.coordenadas.props.ordenada) {
+              return Promise.resolve(Result.ok<boolean>(true));
+            }
+          }
+        }
       }
     }
 
-    return false;
+    return Promise.resolve(Result.ok<boolean>(false));
   }
 
-  verificarPisoExiste(idPiso: string) {
-    let listaPisos = this.props.listaPisos;
-    for (let index = 0; index < listaPisos.length; index++) {
-      const piso = listaPisos[index];
-      if (piso.id.toString() == idPiso) {
-        return true;
-      }
-    }
-  }
   private constructor(props: EdificioProps, id: UniqueEntityID) {
     super(props, id);
   }
@@ -259,11 +341,11 @@ export class Edificio extends AggregateRoot<EdificioProps> {
     return res;
   }
 
-  public alterarDescricao(descricao: DescricaoEdificio){
+  public alterarDescricao(descricao: DescricaoEdificio) {
     this.props.descricao = descricao;
   }
 
-  public alterarNome(nome: Nome){
+  public alterarNome(nome: Nome) {
     this.props.nome = nome;
   }
 }

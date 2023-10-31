@@ -65,4 +65,17 @@ describe('TipoPonto domain', function () {
 		assert.strictEqual(tipoPonto.isFailure, true);
 	});
 
+	it('TipoPonto não é criado com undefined', async function () {
+		// Arrange
+		let string;
+		let tipoPonto = TipoPonto.create(string);
+		assert.strictEqual(tipoPonto.isFailure, true);
+	});
+
+	it('TipoPonto não é criado com null', async function () {
+		// Arrange
+		let tipoPonto = TipoPonto.create(null);
+		assert.strictEqual(tipoPonto.isFailure, true);
+	});
+
 });

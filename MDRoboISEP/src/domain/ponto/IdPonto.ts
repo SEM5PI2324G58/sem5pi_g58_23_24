@@ -10,8 +10,9 @@ export class IdPonto extends UniqueEntityID {
     }
 
     public static create (id: number): Result<IdPonto> {
-      const guardResult = Guard.numberGreaterThanZero(id,'Id Ponto');
-      
+      const guard1 = Guard.againstNullOrUndefined(id,'Id Ponto');
+      const guard2 = Guard.numberGreaterThanZero(id,'Id Ponto');
+      const guardResult = Guard.combine([guard1, guard2]);
       if (!guardResult.succeeded) {
         return Result.fail<IdPonto>(guardResult.message);
       } else {
