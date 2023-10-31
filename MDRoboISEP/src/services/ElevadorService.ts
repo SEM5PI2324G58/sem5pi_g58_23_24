@@ -279,7 +279,7 @@ export default class ElevadorService implements IElevadorService{
             let elevador = edificio.returnElevador();
 
             if (elevador === null){
-                return Result.fail<IElevadorDTO>("Edificio não tem elevador.")
+                return Result.fail<IElevadorDTO>("O edificio não tem elevadores.")
             }
             
             return Result.ok<IElevadorDTO>(ElevadorMap.toDTO(elevador))
