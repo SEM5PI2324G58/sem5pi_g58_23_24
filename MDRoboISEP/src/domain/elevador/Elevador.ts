@@ -83,6 +83,34 @@ export class Elevador extends AggregateRoot<ElevadorProps>{
             return Result.ok<Elevador>(elevador);
         }
     }
+    /**
+     * Criação de um elevador quando está a ser carregado um mapa de um piso
+     * @param props 
+     * @param id 
+     * @returns Elevador
+     */
+    public static carregarElevadorPiso(props: ElevadorProps, id: IdElevador): Result<Elevador> {
+        const guardedProps = [
+            {argument: props.pisosServidos, argumentName: 'Lista de pisos servidos' },
+            {argument: props.pontos, argumentName: 'Lista de pontos do elevador' },
+
+        ]
+        let guardResults : any[] = [];
+        guardResults.push(Guard.againstNullOrUndefinedBulk(guardedProps));
+        guardResults.push(Guard.arrayHasGreaterLengthThan(guardedProps[1].argument,1,guardedProps[1].argumentName));
+
+        const finalGuard = Guard.combine(guardResults);
+
+        if(!finalGuard.succeeded){
+            return Result.fail<Elevador>(finalGuard.message)
+        }else{
+            const elevador = new Elevador({
+                ...props
+            }, id);
+
+            return Result.ok<Elevador>(elevador);
+        }
+    }
 
     public pisosServidosAtuais() : Piso[]{
         return this.props.pisosServidos;

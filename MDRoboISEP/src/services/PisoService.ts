@@ -1,13 +1,5 @@
 import { Container, Service, Inject } from 'typedi';
-
-import jwt from 'jsonwebtoken';
 import config from '../../config';
-import argon2 from 'argon2';
-import { randomBytes } from 'crypto';
-
-
-import { UserMap } from "../mappers/UserMap";
-import { IUserDTO } from '../dto/IUserDTO';
 
 import IEdificioRepo from './IRepos/IEdificioRepo';
 import IPisoRepo from './IRepos/IPisoRepo';
@@ -22,13 +14,14 @@ import { Coordenadas } from '../domain/ponto/Coordenadas';
 import { TipoPonto } from '../domain/ponto/TipoPonto';
 import { IdPonto } from '../domain/ponto/IdPonto';
 
-import { Role } from '../domain/role';
-
 import { Result } from "../core/logic/Result";
 import IPisoService from './IServices/IPisoService';
 import IPisoDTO from '../dto/IPisoDTO';
 import { PisoMap } from '../mappers/PisoMap';
 import IEditarPisoDTO from '../dto/IEditarPisoDTO';
+import IElevadorService from './IServices/IElevadorService';
+import { Edificio } from '../domain/edificio/Edificio';
+import { Elevador } from '../domain/elevador/Elevador';
 
 
 
@@ -38,7 +31,96 @@ export default class PisoService implements IPisoService{
       @Inject(config.repos.piso.name) private pisoRepo : IPisoRepo,
       @Inject(config.repos.edificio.name) private edifRepo : IEdificioRepo,
       @Inject(config.repos.ponto.name) private pontoRepo : IPontoRepo,
+      @Inject(config.repos.elevador.name) private elevadorRepo : IElevadorService,
+      // @Inject(config.repos.sala.name) private salaRepo : IElevadorService,
+      @Inject(config.services.elevador.name) private elevadorServiceInstance : IElevadorService
+      // @Inject(config.services.sala.name) private salaServiceInstance : ISalaService
+      
   ) {}
+    public async carregarPiso(json: string): Promise<Result<IPisoDTO>> {
+        const edificioOrError = await this.lerEdificioJson(json);
+        if(edificioOrError.isFailure){
+            return Result.fail<IPisoDTO>(edificioOrError.errorValue());
+        }
+        const pisoOrError = await this.obterPisoDeEdificio(edificioOrError.getValue(), json);    
+        if(pisoOrError.isFailure){
+            return Result.fail<IPisoDTO>(pisoOrError.errorValue());
+        }
+        const edificioComElevadorOrError = await this.carregarElevador(edificioOrError.getValue(), pisoOrError.getValue(), json);
+        if(edificioComElevadorOrError.isFailure){
+            return Result.fail<IPisoDTO>(edificioComElevadorOrError.errorValue());
+        }
+        const edificioComElevadorSalasOrError = await this.carregarSalas(edificioOrError.getValue(), pisoOrError.getValue(), json);
+        if(edificioComElevadorSalasOrError.isFailure){
+            return Result.fail<IPisoDTO>(edificioComElevadorSalasOrError.errorValue());
+        }
+        
+
+
+    }
+/*
+    private async savePiso(edificio : Edificio, piso : Piso, elevador : Elevador ,listaSalas : Sala[]){
+        return Result.fail<IPisoDTO>("Não implementado");
+    }
+*/
+    private async carregarElevador(edificio : Edificio, piso : Piso, json : string) : Promise<Result<Edificio>>{
+        let informacaoElevador : {
+            xCoord : number,
+            yCoord : number,
+            orientacao: string,
+            marca: string,
+            modelo: string,
+            numeroSerie: string,
+            descricao: string,
+        }
+        informacaoElevador = JSON.parse(json);
+
+        let elevadorDTO = {
+            edificio : null,
+            pisosServidos : null,
+            xCoord : informacaoElevador.xCoord,
+            yCoord : informacaoElevador.yCoord,
+            orientacao: informacaoElevador.orientacao,
+            marca: informacaoElevador.marca,
+            modelo: informacaoElevador.modelo,
+            numeroSerie: informacaoElevador.numeroSerie,
+            descricao: informacaoElevador.descricao,
+        }
+        let edificioComElevadorOrError = await this.elevadorServiceInstance.carregarElevadorPiso(elevadorDTO, edificio, piso);
+        if(edificioComElevadorOrError.isFailure){
+            return Result.fail<Edificio>(edificioComElevadorOrError.errorValue());
+        }
+        return Result.ok<Edificio>(edificioComElevadorOrError.getValue());
+    }
+
+    private async carregarSalas(edificio : Edificio, piso : Piso, json : string) : Promise<Result<Edificio>>{
+        return Result.fail<Edificio>("Não implementado");
+    }
+
+    private async lerEdificioJson(json:string): Promise<Result<Edificio>>{
+        let informacaoEdificio :{
+            codigoEdificio : string;
+        }
+        informacaoEdificio.codigoEdificio = JSON.parse(json);
+        let edificioOrError = await this.edifRepo.findByDomainId(informacaoEdificio.codigoEdificio);
+        if(edificioOrError === null){
+            return Result.fail<Edificio>("O Edifício que inseriu não existe.")
+        }
+        return Result.ok<Edificio>(edificioOrError);
+    }
+
+    private async obterPisoDeEdificio(edificio : Edificio, json : string): Promise<Result<Piso>> {
+        let pisoInserido : {
+            numeroPiso : number;
+        }
+        pisoInserido.numeroPiso = JSON.parse(json);
+        for(let piso of edificio.returnListaPisos()){
+            if(piso.returnNumeroPiso() === pisoInserido.numeroPiso){
+                return Result.ok<Piso>(piso);
+            }
+        }
+        return Result.fail<Piso>("O piso que inseriu não existe.")
+    }
 
 
   public async criarPiso(criarPisoDTO: ICriarPisoDTO): Promise<Result<ICriarPisoDTO>> {
