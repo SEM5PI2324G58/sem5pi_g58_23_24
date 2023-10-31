@@ -627,7 +627,7 @@ describe('ElevadorService ', () => {
 
         const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
         let answer = await elevadorService.listarElevadoresDoEdificio(edificio);
-        expect(answer.errorValue()).to.equal("Edificio não existe.");
+        expect(answer.errorValue()).to.equal("Edifício não existe.");
     });
 
     it('(Listar elevadores de um edifício) O edifício não tem elevadores ', async () => {

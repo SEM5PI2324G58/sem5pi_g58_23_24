@@ -273,13 +273,13 @@ export default class ElevadorService implements IElevadorService{
             let edificio = await this.edificioRepo.findByDomainId(codigoEdificio);
 
             if (edificio === null){
-                return Result.fail<IElevadorDTO>("Edificio não existe.")
+                return Result.fail<IElevadorDTO>("Edifício não existe.")
             }
             
             let elevador = edificio.returnElevador();
 
             if (elevador === null){
-                return Result.fail<IElevadorDTO>("O edificio não tem elevadores.")
+                return Result.fail<IElevadorDTO>("O edifício não tem elevadores.")
             }
             
             return Result.ok<IElevadorDTO>(ElevadorMap.toDTO(elevador))
