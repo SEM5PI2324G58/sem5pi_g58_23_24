@@ -205,8 +205,50 @@ describe('piso domain', function () {
 		assert.strictEqual(piso.props.mapa[2][2].returnTipoPonto(), " ");
 	});
 
+	it('atualizarNumeroPiso falha se for undefined', async function () {
+		// Arrange
+		let piso = Container.get("piso2x2") as Piso;
+		let numeroPiso;
+		let pisoOuErro = piso.atualizarNumeroPiso(numeroPiso);
+		assert.strictEqual(pisoOuErro.isFailure, true);
+	});
 
-	
+	it('atualizarNumeroPiso falha se for null', async function () {
+		// Arrange
+		let piso = Container.get("piso2x2") as Piso;
+		let pisoOuErro = piso.atualizarNumeroPiso(null);
+		assert.strictEqual(pisoOuErro.isFailure, true);
+	});
+
+	it('atualizarNumeroPiso tem sucesso', async function () {
+		// Arrange
+		let piso = Container.get("piso2x2") as Piso;
+		piso.atualizarNumeroPiso(NumeroPiso.create(2).getValue());
+		assert.strictEqual(piso.returnNumeroPiso(), 2);
+	});
+
+	it('atualizarDescricaoPiso falha se for undefined', async function () {
+		// Arrange
+		let piso = Container.get("piso2x2") as Piso;
+		let descricaoPiso;
+		let pisoOuErro = piso.atualizarDescricaoPiso(descricaoPiso);
+		assert.strictEqual(pisoOuErro.isFailure, true);
+	});
+
+	it('atualizarDescricaoPiso falha se for null', async function () {
+		// Arrange
+		let piso = Container.get("piso2x2") as Piso;
+		let pisoOuErro = piso.atualizarDescricaoPiso(null);
+		assert.strictEqual(pisoOuErro.isFailure, true);
+	});
+
+	it('atualizarDescricaoPiso tem sucesso', async function () {
+		// Arrange
+		let piso = Container.get("piso2x2") as Piso;
+		let pisoOuErro = piso.atualizarDescricaoPiso(DescricaoPiso.create("adeus").getValue());
+		assert.strictEqual(piso.returnDescricaoPiso(), "adeus");
+	});
+
 });
 
 
