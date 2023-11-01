@@ -1,10 +1,11 @@
 autonumber
 
 participant RouteEdificio as route
-participant "dto: EdificioDTO" as dto
 participant "controller: EdificioController" as ctrl
 participant "service: EdificioService" as service
 participant "repository: EdificioRepo" as edRepo
+participant "mapper: EdificioMapper" as mapper
+participant "dto: EdificioDTO" as dto
 
 [o-> route: GET()
 activate route
@@ -15,6 +16,10 @@ activate service
 service -> edRepo: getAllEdificios()
 activate edRepo
 return listaEdificios
+service -> mapper : toDTO(edificio)
+activate mapper
+mapper -> dto ** : edificio
+return edificioDTO
 
 return listaEdificios
 return listaEdificios
