@@ -106,4 +106,22 @@ export default class DispositivoService implements IDispositivoService{
     }
   }
 
+  public async listarDispositivosDaFrota(): Promise<Result<IDispositivoDTO[]>> {
+    try {
+        const dispositivos = await this.dispositivoRepo.findAll();
+
+        let listaDispositivosDTO: IDispositivoDTO[] = [];
+        
+        for (let dispositivo of dispositivos) {
+            listaDispositivosDTO.push(DispositivoMap.toDTO(dispositivo));
+        }
+        
+        if(listaDispositivosDTO.length === 0){
+            return Result.fail<IDispositivoDTO[]>("Não existem dispositivos na frota");
+        }
+        return Result.ok<IDispositivoDTO[]>(listaDispositivosDTO);
+    } catch (e) {
+      throw e;
+    }
+  }
 }
