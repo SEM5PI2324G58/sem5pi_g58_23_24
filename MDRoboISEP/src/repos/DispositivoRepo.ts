@@ -100,4 +100,17 @@ export default class DispositivoRepo implements IDispositivoRepo {
     const listaDispositivos = await Promise.all(listaDispositivosPromises);
     return listaDispositivos;
   }
+
+  public async findAll(): Promise<Dispositivo[]> {
+    const dispositivoRecords = await this.dispositivoSchema.find();
+
+    const listaDispositivosPromises: Promise<Dispositivo>[] = [];
+
+    for (const dispositivo of dispositivoRecords) {
+      listaDispositivosPromises.push(DispositivoMap.toDomain(dispositivo));
+    }
+
+    const listaDispositivos = await Promise.all(listaDispositivosPromises);
+    return listaDispositivos;
+  }
 }
