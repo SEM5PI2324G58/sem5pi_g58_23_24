@@ -70,7 +70,7 @@ export default class PassagemRepo implements IPassagemRepo {
           const element = passagem.props.listaPontos[index];
           listaPontos.push(element.id.toString());
         }
-        passagemDocument.listaPontosId = listaPontos;
+        passagemDocument.listaPontos = listaPontos;
         await passagemDocument.save();
 
         return passagem;
