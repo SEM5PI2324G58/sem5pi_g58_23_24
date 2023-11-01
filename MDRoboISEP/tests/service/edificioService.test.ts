@@ -46,6 +46,38 @@ describe('EdificioService ', () => {
         sandbox.restore();
     });
 
+    it('Criação normal de um edificio', async () => {
+        let body = {
+            "codigo": "as1",
+            "dimensaoX": 3,
+            "dimensaoY": 4,
+            "nome": "Edificio A",
+            "descricao": "Edificio A",
+        };
+
+        let edificioProps : any = {
+            nome: Nome.create('Edificio A').getValue(),
+            dimensao:Dimensao.create(3,4).getValue(),
+            descricao:DescricaoEdificio.create('Edificio A').getValue(),
+            listaPisos: [],
+        };
+
+        let edificio = Edificio.create(edificioProps,Codigo.create(body.codigo).getValue()).getValue();
+        let edificioRepoInstance = Container.get("EdificioRepo");
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(null));
+        sinon.stub(edificioRepoInstance, "save").returns(Promise.resolve(edificio));
+
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        let answer = await edificioService.criarEdificio(body as IEdificioDTO);
+
+        expect(answer.getValue().codigo).to.equal(body.codigo);
+        expect(answer.getValue().nome).to.equal(body.nome);
+        expect(answer.getValue().dimensaoX).to.equal(body.dimensaoX);
+        expect(answer.getValue().dimensaoY).to.equal(body.dimensaoY);
+        expect(answer.getValue().descricao).to.equal(body.descricao);
+    });
+
     it('Edifício já existe', async () => {
         
         let body = {
@@ -274,6 +306,42 @@ describe('EdificioService ', () => {
 
     });
 
+    it('Editar edificio com sucesso', async () => {
+        let bodyNovo = {
+            "codigo": "as1",
+            "nome" : "Edificio A",
+            "descricao" : "Edificio A",
+        };
+
+        let edificioRepoInstance = Container.get("EdificioRepo");
+
+        let edificioPropsAntigo : any = {
+            nome: Nome.create('Edificio Antigo').getValue(),
+            dimensao:Dimensao.create(1,1).getValue(),
+            descricao:DescricaoEdificio.create('Edificio Antigo').getValue(),
+            listaPisos: [],
+        };
+
+        let edificioPropsNovo : any = {
+            nome: Nome.create(bodyNovo.nome).getValue(),
+            dimensao:Dimensao.create(1,1).getValue(),
+            descricao:DescricaoEdificio.create(bodyNovo.descricao).getValue(),
+            listaPisos: [],
+        };
+
+        let edificioAntigo = Edificio.create(edificioPropsAntigo,Codigo.create(bodyNovo.codigo).getValue()).getValue();
+        let edificioNovo = Edificio.create(edificioPropsNovo,Codigo.create(bodyNovo.codigo).getValue()).getValue();
+
+        sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(edificioAntigo));
+        sinon.stub(edificioRepoInstance, "save").returns(Promise.resolve(edificioNovo));
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        let answer = await edificioService.editarEdificio(bodyNovo as IEdificioDTO);
+
+        expect(answer.getValue().codigo).to.equal(bodyNovo.codigo);
+        expect(answer.getValue().nome).to.equal(bodyNovo.nome);
+        expect(answer.getValue().descricao).to.equal(bodyNovo.descricao);
+
+    });
     
     it('Editar edificio sem esse edificio existir', async () => {
         
