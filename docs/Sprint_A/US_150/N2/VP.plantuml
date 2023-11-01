@@ -1,6 +1,6 @@
 autonumber
 
-participant MD as md <<Container (C4)>>
+participant MDRoboISEP as md <<Container (C4)>>
 
 [o-> md: criar edifício e insere a informação(descricao, nome, codigo,dimensao)
 activate md
