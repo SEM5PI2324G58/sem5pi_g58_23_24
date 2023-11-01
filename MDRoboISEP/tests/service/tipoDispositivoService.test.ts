@@ -5,38 +5,18 @@ import "reflect-metadata";
 import * as sinon from 'sinon';
 import { Container } from 'typedi';
 import EdificioService from '../../src/services/EdificioService';
-
-import IEdificioRepo from "../../src/services/IRepos/IEdificioRepo";
-import { Edificio } from "../../src/domain/edificio/Edificio";
-import { Codigo } from '../../src/domain/edificio/Codigo';
-import { Dimensao } from '../../src/domain/edificio/Dimensao';
-import { DescricaoEdificio } from '../../src/domain/edificio/DescricaoEdificio';
-import { Nome } from '../../src/domain/edificio/Nome';
-import IEdificioDTO from "../../src/dto/IEdificioDTO";
 import TipoDispositivoService from "../../src/services/TipoDispositivoService";
 import ITipoDispositivoDTO from "../../src/dto/ITipoDispositivoDTO";
 import ITipoDispositivoRepo from "../../src/services/IRepos/ITipoDispositivoRepo";
 
 import "reflect-metadata";
-import {Response, Request, NextFunction} from 'express';
-import { Result }  from '../../src/core/logic/Result';
-import PisoController from '../../src/controllers/PisoController';
-import IPisoService from '../../src/services/IServices/IPisoService';
-import  ICriarPisoDTO  from '../../src/dto/ICriarPisoDTO';
-import { IPisoPersistence } from "../../src/dataschema/IPisoPersistence";
-import { IEdificioPersistence } from "../../src/dataschema/IEdificioPersistence";
-import { IPontoPersistence } from "../../src/dataschema/IPontoPersistence";
 
 import 'mocha';
-import { PisoMap } from "../../src/mappers/PisoMap";
-import { Piso } from "../../src/domain/piso/Piso";
-import {DescricaoPiso} from '../../src/domain/piso/DescricaoPiso'
-import {NumeroPiso} from '../../src/domain/piso/NumeroPiso'
-import {IdPiso} from '../../src/domain/piso/IdPiso'
-import {Ponto} from '../../src/domain/ponto/Ponto'
-import { Coordenadas } from '../../src/domain/ponto/Coordenadas';
-import { TipoPonto } from '../../src/domain/ponto/TipoPonto';
-import { IdPonto } from '../../src/domain/ponto/IdPonto';
+import { TipoDispositivo } from "../../src/domain/tipoDispositivo/TipoDispositivo";
+import { TipoTarefa } from "../../src/domain/tipoDispositivo/TipoTarefa";
+import { Marca } from "../../src/domain/tipoDispositivo/Marca";
+import { Modelo } from "../../src/domain/tipoDispositivo/Modelo";
+import { IdTipoDispositivo } from "../../src/domain/tipoDispositivo/IdTipoDispositivo";
 
 describe('Tipo Dispositivo Service ', () => {
 
@@ -57,6 +37,36 @@ describe('Tipo Dispositivo Service ', () => {
     afterEach(() => {
         sinon.restore();
         sandbox.restore();
+    });
+
+
+    it('Criar tipo de dispositivo com sucesso', async () => {
+
+        let body = {
+            "tipoTarefa": ["Vigilancia"],
+            "marca": "as1",
+            "modelo": "as1",
+        };
+
+        let tipoDispositivoProps = {
+            tipoTarefa: [TipoTarefa.create(body.tipoTarefa[0]).getValue()],
+            marca: Marca.create(body.marca).getValue(),
+            modelo: Modelo.create(body.modelo).getValue(),
+        };
+
+        let tipoDispositivoRepoInstance = Container.get("TipoDispositivoRepo");
+        let tipoDispositivo = TipoDispositivo.create(tipoDispositivoProps, IdTipoDispositivo.create(3).getValue()).getValue();
+
+        sinon.stub(tipoDispositivoRepoInstance, "getMaxId").returns(Promise.resolve(2));
+        sinon.stub(tipoDispositivoRepoInstance, "save").returns(Promise.resolve(tipoDispositivo));
+
+        const tipoDispositivoService = new TipoDispositivoService(tipoDispositivoRepoInstance as ITipoDispositivoRepo);
+
+        let answer = await tipoDispositivoService.criarTipoDispositivo(body as ITipoDispositivoDTO);
+        expect(answer.getValue().tipoTarefa[0]).to.equal(body.tipoTarefa[0]);
+        expect(answer.getValue().marca).to.equal(body.marca);
+        expect(answer.getValue().modelo).to.equal(body.modelo);
+
     });
 
     it('Criar tipo de dispositivo com marca incorreta', async () => {
