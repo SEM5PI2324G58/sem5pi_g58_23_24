@@ -112,13 +112,13 @@ export default class DispositivoService implements IDispositivoService{
 
         let listaDispositivosDTO: IDispositivoDTO[] = [];
         
+        if(listaDispositivosDTO.length === 0){
+            return Result.fail<IDispositivoDTO[]>("Não existem dispositivos na frota");
+        }
         for (let dispositivo of dispositivos) {
             listaDispositivosDTO.push(DispositivoMap.toDTO(dispositivo));
         }
         
-        if(listaDispositivosDTO.length === 0){
-            return Result.fail<IDispositivoDTO[]>("Não existem dispositivos na frota");
-        }
         return Result.ok<IDispositivoDTO[]>(listaDispositivosDTO);
     } catch (e) {
       throw e;
