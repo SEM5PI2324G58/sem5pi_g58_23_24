@@ -2,7 +2,31 @@ import { IPassagemPersistence } from '../../dataschema/IPassagemPersistence';
 import mongoose from 'mongoose';
 
 const PassagemSchema = new mongoose.Schema(
-    // Schema to be used to persist the data of a Passagem
+    {
+        domainID: {
+            type: Number,
+            unique: true
+        },
+        listaPontos: {
+            type: [[Number]],
+            required: [true, 'Introduz os pontos'],
+            index: true,
+        },
+        pisoA: {
+            type: Number,
+            required: [true, 'Introduz o piso A'],
+            index: true,
+        },
+        pisoB: {
+            type: Number,
+            required: [true, 'Introduz o piso A'],
+            index: true,
+        },
+    },
+    {
+        timestamps: true,
+        collection: 'passagem',
+    },
 );
 
 export default mongoose.model<IPassagemPersistence & mongoose.Document>('Passagem', PassagemSchema);
