@@ -22,6 +22,7 @@ import IEditarPisoDTO from '../dto/IEditarPisoDTO';
 import IElevadorService from './IServices/IElevadorService';
 import { Edificio } from '../domain/edificio/Edificio';
 import { Elevador } from '../domain/elevador/Elevador';
+import IElevadorRepo from './IRepos/IElevadorRepo';
 
 
 
@@ -31,7 +32,7 @@ export default class PisoService implements IPisoService{
       @Inject(config.repos.piso.name) private pisoRepo : IPisoRepo,
       @Inject(config.repos.edificio.name) private edifRepo : IEdificioRepo,
       @Inject(config.repos.ponto.name) private pontoRepo : IPontoRepo,
-      @Inject(config.repos.elevador.name) private elevadorRepo : IElevadorService,
+      @Inject(config.repos.elevador.name) private elevadorRepo : IElevadorRepo,
       // @Inject(config.repos.sala.name) private salaRepo : IElevadorService,
       @Inject(config.services.elevador.name) private elevadorServiceInstance : IElevadorService
       // @Inject(config.services.sala.name) private salaServiceInstance : ISalaService
