@@ -212,8 +212,8 @@ export default async ({ expressApp }) => {
     services: [
       roleService,
       edificioService,
-      pisoService,
       elevadorService,
+      pisoService,
       tipoDispositivoService,
       passagemService,
       dispositivoService
