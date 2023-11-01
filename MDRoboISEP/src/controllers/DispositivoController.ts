@@ -25,4 +25,17 @@ export default class DispositivoController implements IDispositivoController {
       return next(e);
     }
   }
+
+  public async listarDispositivosDaFrota(req: Request, res: Response, next: NextFunction) {
+    try{
+      const dispositivoOrError = await this.dispositivoServiceInstance.listarDispositivosDaFrota() as Result<IDispositivoDTO[]>;
+      if (dispositivoOrError.isFailure) {
+        return res.json(dispositivoOrError.errorValue()).status(402).send();
+      }
+      const dispositivoDTO = dispositivoOrError.getValue();
+      return res.json( dispositivoDTO ).status(201);
+    }catch(e){
+      return next(e);
+    }
+  }
 }

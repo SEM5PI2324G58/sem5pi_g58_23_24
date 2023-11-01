@@ -265,5 +265,38 @@ describe('DispositivoService ', () => {
 
     });
 
+    it('Listar dispositivos da frota dá erro quando não exitem dispositivos', async () => {
+        
+        let dispositivoRepoInstance = Container.get("DispositivoRepo");
+        let tipoDispositivoRepoInstance = Container.get("TipoDispositivoRepo");
+        sinon.stub(dispositivoRepoInstance, "findAll").returns(Promise.resolve([]));
+
+        const dispositivoService = new DispositivoService(tipoDispositivoRepoInstance as ITipoDispositivoRepo,dispositivoRepoInstance as IDispositivoRepo);
+        const answer = await dispositivoService.listarDispositivosDaFrota();
+        expect(answer.errorValue()).to.equal('Não existem dispositivos na frota');
+
+    });
+
+    it('Listar dispositivos da frota tem sucesso', async () => {
+        
+        let dispositivoRepoInstance = Container.get("DispositivoRepo");
+        let tipoDispositivoRepoInstance = Container.get("TipoDispositivoRepo");
+
+        let dispositivos : Dispositivo[] = [];
+        dispositivos.push(Container.get("dispositivo"));
+
+        sinon.stub(dispositivoRepoInstance, "findAll").returns(Promise.resolve(dispositivos));
+
+
+
+        const dispositivoService = new DispositivoService(tipoDispositivoRepoInstance as ITipoDispositivoRepo,dispositivoRepoInstance as IDispositivoRepo);
+        const answer = (await dispositivoService.listarDispositivosDaFrota()).getValue();
+
+        expect(answer[0].codigo).to.equal('as1');
+        expect(answer[0].descricaoDispositivo).to.equal('asdasdqwe123');
+        expect(answer[0].nickname).to.equal('ola');
+        expect(answer[0].numeroSerie).to.equal('123456789');
+        expect(answer[0].estado).to.equal(true);        
+    });
 
 });

@@ -5,6 +5,7 @@ import { Nickname } from "../../domain/dispositivo/Nickname";
 import { NumeroDeSerie } from "../../domain/dispositivo/NumeroDeSerie";
 
 export default interface IDispositivoRepo extends Repo<Dispositivo> {
+  findAll(): Promise<Dispositivo[]>;
   save(dispositivo: Dispositivo): Promise<Dispositivo>;
   findByDomainId (codigo: CodigoDispositivo | string): Promise<Dispositivo>;
   findByNickname (nickname: Nickname | string): Promise<Dispositivo>;
