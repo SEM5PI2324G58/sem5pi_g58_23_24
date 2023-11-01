@@ -29,6 +29,8 @@ import PontoRepo from "../../src/repos/PontoRepo";
 import PisoRepo from "../../src/repos/PisoRepo";
 import EdificioRepo from "../../src/repos/EdificioRepo";
 import IEditarPisoDTO from "../../src/dto/IEditarPisoDTO";
+import IElevadorRepo from "../../src/services/IRepos/IElevadorRepo";
+import IElevadorService from "../../src/services/IServices/IElevadorService";
 
 
 describe('PisoService ', () => {
@@ -81,6 +83,14 @@ describe('PisoService ', () => {
         let pisoRepoInstance = Container.get(pisoRepoClass);
         Container.set("PisoRepo", pisoRepoInstance);
 
+        let elvadorRepo = require('../../src/repos/ElevadorRepo').default;
+        let elevadorRepoInstance = Container.get(elvadorRepo);
+        Container.set("ElevadorRepo", elevadorRepoInstance);
+
+        let elevadorService = require('../../src/services/ElevadorService').default;
+        let elevadorServiceInstance = Container.get(elevadorService);
+        Container.set("ElevadorService", elevadorServiceInstance);
+
         let edificioRepoClass = require('../../src/repos/EdificioRepo').default;
         let edificioRepoInstance = Container.get(edificioRepoClass);
         Container.set("EdificioRepo", edificioRepoInstance);
@@ -106,9 +116,11 @@ describe('PisoService ', () => {
         let pisoRepoInstance = Container.get("PisoRepo");
         let edificioRepoInstance = Container.get("EdificioRepo");
         let pontoRepoInstance = Container.get("PontoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let elevadorServiceInstance = Container.get("ElevadorService");
 
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(null));
-        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
+        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo,elevadorRepoInstance as IElevadorRepo, elevadorServiceInstance as IElevadorService);
         const answer = await pisoService.criarPiso(body as ICriarPisoDTO);
         expect(answer.errorValue()).to.equal("O edificio com o código as1 não existe");
 
@@ -126,10 +138,12 @@ describe('PisoService ', () => {
         let pisoRepoInstance = Container.get("PisoRepo");
         let edificioRepoInstance = Container.get("EdificioRepo");
         let pontoRepoInstance = Container.get("PontoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let elevadorServiceInstance = Container.get("ElevadorService");
 
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificio")));
         sinon.stub(pontoRepoInstance, "getMaxId").returns(Promise.resolve(0));
-        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
+        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo, elevadorRepoInstance as IElevadorRepo, elevadorServiceInstance as IElevadorService);
         let answer = await pisoService.criarPiso(body as ICriarPisoDTO);
         expect(answer.errorValue()).to.equal("O piso numero 0 já existe");
 
@@ -146,6 +160,8 @@ describe('PisoService ', () => {
         let edificioRepoInstance = Container.get("EdificioRepo");
         let pontoRepoInstance = Container.get("PontoRepo");
         let pisoRepoInstance = Container.get("PisoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let elevadorServiceInstance = Container.get("ElevadorService");
 
         sinon.stub(pisoRepoInstance, "save").returns(Promise.resolve(null));
         sinon.stub(pontoRepoInstance, "save").returns(Promise.resolve(null));
@@ -153,7 +169,7 @@ describe('PisoService ', () => {
         sinon.stub(pisoRepoInstance, "getMaxId").returns(Promise.resolve(1));
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificio")));
         sinon.stub(pontoRepoInstance, "getMaxId").returns(Promise.resolve(0));
-        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
+        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo, elevadorRepoInstance as IElevadorRepo, elevadorServiceInstance as IElevadorService);
         let answer = await pisoService.criarPiso(body as ICriarPisoDTO);
         expect(answer.getValue()).to.equal(body as ICriarPisoDTO);
 
@@ -170,13 +186,16 @@ describe('PisoService ', () => {
         let edificioRepoInstance = Container.get("EdificioRepo");
         let pontoRepoInstance = Container.get("PontoRepo");
         let pisoRepoInstance = Container.get("PisoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let elevadorServiceInstance = Container.get("ElevadorService");
+
         sinon.stub(pisoRepoInstance, "save").returns(Promise.resolve(null));
         sinon.stub(pontoRepoInstance, "save").returns(Promise.resolve(null));
         sinon.stub(edificioRepoInstance, "save").returns(Promise.resolve(null));
         sinon.stub(pisoRepoInstance, "getMaxId").returns(Promise.resolve(1));
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificio")));
         sinon.stub(pontoRepoInstance, "getMaxId").returns(Promise.resolve(0));
-        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
+        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo, elevadorRepoInstance as IElevadorRepo, elevadorServiceInstance as IElevadorService);
         let answer = await pisoService.criarPiso(body as ICriarPisoDTO);
         expect(answer.getValue()).to.equal(body as ICriarPisoDTO);
 
@@ -193,13 +212,16 @@ describe('PisoService ', () => {
         let edificioRepoInstance = Container.get("EdificioRepo");
         let pontoRepoInstance = Container.get("PontoRepo");
         let pisoRepoInstance = Container.get("PisoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let elevadorServiceInstance = Container.get("ElevadorService");
+        
         sinon.stub(pisoRepoInstance, "save").returns(Promise.resolve(null));
         sinon.stub(pontoRepoInstance, "save").returns(Promise.resolve(null));
         sinon.stub(edificioRepoInstance, "save").returns(Promise.resolve(null));
         sinon.stub(pisoRepoInstance, "getMaxId").returns(Promise.resolve(1));
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificio")));
         sinon.stub(pontoRepoInstance, "getMaxId").returns(Promise.resolve(0));
-        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
+        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo, elevadorRepoInstance as IElevadorRepo, elevadorServiceInstance as IElevadorService);
         let answer = await pisoService.criarPiso(body as ICriarPisoDTO);
         expect(answer.getValue()).to.equal(body as ICriarPisoDTO);
 
@@ -212,8 +234,12 @@ describe('PisoService ', () => {
         let edificioRepoInstance = Container.get("EdificioRepo");
         let pontoRepoInstance = Container.get("PontoRepo");
         let pisoRepoInstance = Container.get("PisoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let elevadorServiceInstance = Container.get("ElevadorService");
+
+
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(null));
-        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
+        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo, elevadorRepoInstance as IElevadorRepo, elevadorServiceInstance as IElevadorService);
         let answer = await pisoService.listarTodosOsPisosDeUmEdificio(codigo);
         expect(answer.errorValue()).to.equal("O edificio com o código " + codigo +" não existe");
 
@@ -234,8 +260,11 @@ describe('PisoService ', () => {
         let edificioRepoInstance = Container.get("EdificioRepo");
         let pontoRepoInstance = Container.get("PontoRepo");
         let pisoRepoInstance = Container.get("PisoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let elevadorServiceInstance = Container.get("ElevadorService");
+        
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(edificio));
-        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
+        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo, elevadorRepoInstance as IElevadorRepo, elevadorServiceInstance as IElevadorService);
         let answer = await pisoService.listarTodosOsPisosDeUmEdificio(codigo);
         expect(answer.errorValue()).to.equal("Não existem pisos nesse Edificio");
 
@@ -248,8 +277,11 @@ describe('PisoService ', () => {
         let edificioRepoInstance = Container.get("EdificioRepo");
         let pontoRepoInstance = Container.get("PontoRepo");
         let pisoRepoInstance = Container.get("PisoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let elevadorServiceInstance = Container.get("ElevadorService");
+
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificio")));
-        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
+        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo, elevadorRepoInstance as IElevadorRepo, elevadorServiceInstance as IElevadorService);
         let answer = (await pisoService.listarTodosOsPisosDeUmEdificio(codigo)).getValue();
         expect(answer[0].descricaoPiso).to.equal("Ola");
         expect(answer[0].numeroPiso).to.equal(0);
@@ -284,8 +316,10 @@ describe('PisoService ', () => {
         sinon.stub(pisoSchemaInstance, "findOne").returns(pisoPersistence);
 
         let pontoRepoInstance = Container.get("PontoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let elevadorServiceInstance = Container.get("ElevadorService");
 
-        const pisoService = new PisoService(new PisoRepo(pisoSchemaInstance as any),new EdificioRepo(edificioSchemaInstance as any) ,pontoRepoInstance as IPontoRepo);
+        const pisoService = new PisoService(new PisoRepo(pisoSchemaInstance as any),new EdificioRepo(edificioSchemaInstance as any) ,pontoRepoInstance as IPontoRepo, elevadorRepoInstance as IElevadorRepo, elevadorServiceInstance as IElevadorService);
         let answer = (await pisoService.listarTodosOsPisosDeUmEdificio(codigo)).getValue();
         expect(answer[0].descricaoPiso).to.equal("Ola");
         expect(answer[0].numeroPiso).to.equal(1);
@@ -305,8 +339,11 @@ describe('PisoService ', () => {
         let edificioRepoInstance = Container.get("EdificioRepo");
         let pontoRepoInstance = Container.get("PontoRepo");
         let pisoRepoInstance = Container.get("PisoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let elevadorServiceInstance = Container.get("ElevadorService");
+
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(null));
-        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
+        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo, elevadorRepoInstance as IElevadorRepo, elevadorServiceInstance as IElevadorService);
         let answer = (await pisoService.editarPiso(body as IEditarPisoDTO));
         expect(answer.isFailure).to.equal(true);
         expect(answer.errorValue()).to.equal("O edificio com o código " + body.codigoEdificio +" não existe");
@@ -325,8 +362,11 @@ describe('PisoService ', () => {
         let edificioRepoInstance = Container.get("EdificioRepo");
         let pontoRepoInstance = Container.get("PontoRepo");
         let pisoRepoInstance = Container.get("PisoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let elevadorServiceInstance = Container.get("ElevadorService");
+
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificio")));
-        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
+        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo, elevadorRepoInstance as IElevadorRepo, elevadorServiceInstance as IElevadorService);
         let answer = (await pisoService.editarPiso(body as IEditarPisoDTO));
         expect(answer.isFailure).to.equal(true);
         expect(answer.errorValue()).to.equal("O piso com o numero " + body.numeroPiso +" não existe");
@@ -344,8 +384,11 @@ describe('PisoService ', () => {
         let edificioRepoInstance = Container.get("EdificioRepo");
         let pontoRepoInstance = Container.get("PontoRepo");
         let pisoRepoInstance = Container.get("PisoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let elevadorServiceInstance = Container.get("ElevadorService");
+
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificio")));
-        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
+        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo, elevadorRepoInstance as IElevadorRepo, elevadorServiceInstance as IElevadorService);
         let answer = (await pisoService.editarPiso(body as IEditarPisoDTO));
         expect(answer.isFailure).to.equal(true);
         expect(answer.errorValue()).to.equal("Já existe o piso numero " + body.novoNumeroPiso);
@@ -375,9 +418,12 @@ describe('PisoService ', () => {
         let edificioRepoInstance = Container.get("EdificioRepo");
         let pontoRepoInstance = Container.get("PontoRepo");
         let pisoRepoInstance = Container.get("PisoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let elevadorServiceInstance = Container.get("ElevadorService");
+
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificio")));
         sinon.stub(pisoRepoInstance, "save").returns(Promise.resolve(piso));
-        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
+        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo, elevadorRepoInstance as IElevadorRepo, elevadorServiceInstance as IElevadorService);
         let answer = (await pisoService.editarPiso(body as IEditarPisoDTO));
         expect(answer.isSuccess).to.equal(true);
         expect(answer.getValue().descricaoPiso).to.equal(body.descricaoPiso);
@@ -408,9 +454,12 @@ describe('PisoService ', () => {
         let edificioRepoInstance = Container.get("EdificioRepo");
         let pontoRepoInstance = Container.get("PontoRepo");
         let pisoRepoInstance = Container.get("PisoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let elevadorServiceInstance = Container.get("ElevadorService");
+
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificio")));
         sinon.stub(pisoRepoInstance, "save").returns(Promise.resolve(piso));
-        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
+        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo, elevadorRepoInstance as IElevadorRepo, elevadorServiceInstance as IElevadorService);
         let answer = (await pisoService.editarPiso(body as IEditarPisoDTO));
         expect(answer.isSuccess).to.equal(true);
         expect(answer.getValue().descricaoPiso).to.equal("Ola");
@@ -441,9 +490,12 @@ describe('PisoService ', () => {
         let edificioRepoInstance = Container.get("EdificioRepo");
         let pontoRepoInstance = Container.get("PontoRepo");
         let pisoRepoInstance = Container.get("PisoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let elevadorServiceInstance = Container.get("ElevadorService");
+
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificio")));
         sinon.stub(pisoRepoInstance, "save").returns(Promise.resolve(piso));
-        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo);
+        const pisoService = new PisoService(pisoRepoInstance as IPisoRepo,edificioRepoInstance as IEdificioRepo,pontoRepoInstance as IPontoRepo, elevadorRepoInstance as IElevadorRepo, elevadorServiceInstance as IElevadorService);
         let answer = (await pisoService.editarPiso(body as IEditarPisoDTO));
         expect(answer.isSuccess).to.equal(true);
         expect(answer.getValue().descricaoPiso).to.equal(body.descricaoPiso);
@@ -479,12 +531,14 @@ describe('PisoService ', () => {
         const edificioSchemaInstance = Container.get("EdificioSchema");
         const pisoSchemaInstance = Container.get("PisoSchema");
         const pontoRepoInstance = Container.get("PontoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let elevadorServiceInstance = Container.get("ElevadorService");
 
         sinon.stub(edificioSchemaInstance, "findOne").returns(edificioPersistence);
         sinon.stub(pisoSchemaInstance, "findOne").returns(pisoPersistence);
 
 
-        const pisoService = new PisoService(new PisoRepo(pisoSchemaInstance as any),new EdificioRepo(edificioSchemaInstance as any) ,pontoRepoInstance as IPontoRepo);
+        const pisoService = new PisoService(new PisoRepo(pisoSchemaInstance as any),new EdificioRepo(edificioSchemaInstance as any) ,pontoRepoInstance as IPontoRepo, elevadorRepoInstance as IElevadorRepo, elevadorServiceInstance as IElevadorService);
         let answer = (await pisoService.editarPiso(body as IEditarPisoDTO));
         expect(answer.isSuccess).to.equal(true);
         expect(answer.getValue().descricaoPiso).to.equal(body.descricaoPiso);
