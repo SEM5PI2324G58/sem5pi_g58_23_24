@@ -1,12 +1,12 @@
 import { Service, Inject } from 'typedi';
 import config from "../../config";
 import { Result } from "../core/logic/Result";
-import IPassagemRepo from '../services/IRepos/IPassagemRepo';
+import IPassagemRepo from './IRepos/IPassagemRepo';
 import IPassagemDTO from '../dto/IPassagemDTO';
-import IPassagemService from '../services/IServices/IPassagemService';
-import IEdificioRepo from '../services/IRepos/IEdificioRepo';
+import IPassagemService from './IServices/IPassagemService';
+import IEdificioRepo from './IRepos/IEdificioRepo';
 import { Passagem } from '../domain/passagem/Passagem';
-import IPontoRepo from '../services/IRepos/IPontoRepo';
+import IPontoRepo from './IRepos/IPontoRepo';
 import { IdPassagem } from '../domain/passagem/IdPassagem';
 import { Ponto } from '../domain/ponto/Ponto';
 import { Piso } from '../domain/piso/Piso';
