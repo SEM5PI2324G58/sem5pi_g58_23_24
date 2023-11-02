@@ -100,11 +100,11 @@ export default class EdificioService implements IEdificioService {
     try{
       const edificioDocument = await this.edificioRepo.getAllEdificios();
       let listaEdificiosDTO: IEdificioDTO[] = [];
+      if(edificioDocument.length === 0){
+        return Result.fail<IEdificioDTO[]>("Não existem edificios");
+      }
       for (let edificio of edificioDocument) {
         listaEdificiosDTO.push(EdificioMap.toDTO(edificio));
-      }
-      if(listaEdificiosDTO.length === 0){
-        return Result.fail<IEdificioDTO[]>("Não existem edificios");
       }
       return Result.ok<IEdificioDTO[]>(listaEdificiosDTO);
     }catch(e){
