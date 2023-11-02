@@ -7,7 +7,7 @@ import IPassagemService from '../services/IServices/IPassagemService';
 import IPassagemDTO from '../dto/IPassagemDTO';
 
 @Service()
-export default class CriarPassagemController implements IPassagemController /* TODO: extends ../core/infra/BaseController */ {
+export default class PassagemController implements IPassagemController /* TODO: extends ../core/infra/BaseController */ {
   constructor(
       @Inject(config.services.passagem.name) private passagemServiceInstance : IPassagemService
   ) {}

@@ -63,7 +63,7 @@ export default {
     },
     passagem: {
       name: "PassagemController",
-      path: "../controllers/CriarPassagemController"
+      path: "../controllers/PassagemController"
     },
     dispositivo: {
       name: "DispositivoController",
@@ -71,7 +71,7 @@ export default {
     },
     sala : {
       name: "SalaController",
-      path: "../controllers/CriarSalaController"
+      path: "../controllers/SalaController"
     },
   },
 
@@ -141,7 +141,7 @@ export default {
     },
     passagem: {
       name: "PassagemService",
-      path: "../services/CriarPassagemService"
+      path: "../services/PassagemService"
     },
     dispositivo: {
       name: "DispositivoService",
@@ -149,7 +149,7 @@ export default {
     },
     sala: {
       name: "SalaService",
-      path: "../services/CriarSalaService"
+      path: "../services/SalaService"
     },
   },
 };
