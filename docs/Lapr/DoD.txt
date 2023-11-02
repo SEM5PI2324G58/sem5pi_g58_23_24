@@ -1,0 +1,5 @@
+Os testes estão desenvolvidos e a passar.
+O design e analise estão atualizados.
+O produto final é o esperado.
+Existe pelo um commit relacionado.
+
