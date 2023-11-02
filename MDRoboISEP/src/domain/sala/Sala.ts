@@ -28,7 +28,7 @@ export class Sala extends AggregateRoot<SalaProps> {
 
     const guard = Guard.againstNullOrUndefined(guardedProps[0].argument,guardedProps[0].argumentName);
     const guard2 = Guard.againstNullOrUndefined(guardedProps[2].argument,guardedProps[2].argumentName);
-    const guard3 = Guard.arrayHasSpecificLength(guardedProps[2].argument as any[], 4, guardedProps[2].argumentName);
+    const guard3 = Guard.arrayHasSpecificLength(guardedProps[2].argument as any[], 2, guardedProps[2].argumentName);
 
     let guardResult = Guard.combine([guard,guard2,guard3]);
     
