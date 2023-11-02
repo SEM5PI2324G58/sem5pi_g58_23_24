@@ -9,7 +9,7 @@ import config from "../../../config";
 const route = Router();
 
 export default (app: Router) => {
-  app.use('/piso', route);
+  app.use('/sala', route);
 
   const ctrl = Container.get(config.controllers.sala.name) as ISalaController;
 
