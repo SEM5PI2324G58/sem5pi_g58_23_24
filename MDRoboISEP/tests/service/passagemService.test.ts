@@ -3,7 +3,7 @@ import 'mocha';
 import "reflect-metadata";
 import * as sinon from 'sinon';
 import { Container } from 'typedi';
-import PassagemService from '../../src/services/CriarPassagemService';
+import PassagemService from '../../src/services/PassagemService';
 
 import { Edificio } from "../../src/domain/edificio/Edificio";
 import { Codigo } from '../../src/domain/edificio/Codigo';
