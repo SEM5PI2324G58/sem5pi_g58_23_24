@@ -36,9 +36,6 @@ describe('PassagemService ', () => {
         let edificioSchemaInstance = require('../../src/persistence/schemas/EdificioSchema').default;
         Container.set("EdificioSchema", edificioSchemaInstance);
 
-        let pontoSchemaInstance = require('../../src/persistence/schemas/PontoSchema').default;
-        Container.set("PontoSchema", pontoSchemaInstance);
-
         let passagemSchemaInstance = require('../../src/persistence/schemas/PassagemSchema').default;
         Container.set("PassagemSchema", passagemSchemaInstance);
 
@@ -49,10 +46,6 @@ describe('PassagemService ', () => {
         let edificioRepoClass = require('../../src/repos/EdificioRepo').default;
         let edificioRepoInstance = Container.get(edificioRepoClass);
         Container.set("EdificioRepo", edificioRepoInstance);
-
-        let pontoRepoClass = require('../../src/repos/PontoRepo').default;
-        let pontoRepoInstance = Container.get(pontoRepoClass);
-        Container.set("PontoRepo", pontoRepoInstance);
 
     });
 
@@ -93,17 +86,11 @@ describe('PassagemService ', () => {
         stubRepo2.onCall(0).returns(Promise.resolve(Passagem));
         stubRepo2 = sinon.stub(passagemRepo, 'getMaxId');
         stubRepo2.onCall(0).returns(Promise.resolve(1));
-        let pontoRepo = Container.get("PontoRepo") as IPontoRepo;
-        let stubRepo3 = sinon.stub(pontoRepo, 'save');
-        stubRepo3.onCall(0).returns(Promise.resolve(data.getValue().pontoA));
-        stubRepo3.onCall(1).returns(Promise.resolve(data.getValue().pontoB));
-        stubRepo3.onCall(2).returns(Promise.resolve(data.getValue().pontoC));
-        stubRepo3.onCall(3).returns(Promise.resolve(data.getValue().pontoD));
         let stubRepoo = sinon.stub(edificioRepo, 'save');
         stubRepoo.onCall(0).returns(Promise.resolve(edificioA));
         stubRepoo.onCall(1).returns(Promise.resolve(edificioB));
 
-        const passagemService = new PassagemService(passagemRepo, edificioRepo, pontoRepo);
+        const passagemService = new PassagemService(passagemRepo, edificioRepo);
 
         let answer = await passagemService.criarPassagem(body as IPassagemDTO);
         expect(answer.isSuccess).to.equal(true);
@@ -142,17 +129,11 @@ describe('PassagemService ', () => {
         stubRepo2.onCall(0).returns(Promise.resolve(Passagem));
         let stubRepo22 = sinon.stub(passagemRepo, 'getMaxId');
         stubRepo22.onCall(0).returns(Promise.resolve(1));
-        let pontoRepo = Container.get("PontoRepo") as IPontoRepo;
-        let stubRepo3 = sinon.stub(pontoRepo, 'save');
-        stubRepo3.onCall(0).returns(Promise.resolve(data.getValue().pontoA));
-        stubRepo3.onCall(1).returns(Promise.resolve(data.getValue().pontoB));
-        stubRepo3.onCall(2).returns(Promise.resolve(data.getValue().pontoC));
-        stubRepo3.onCall(3).returns(Promise.resolve(data.getValue().pontoD));
         let stubRepoo = sinon.stub(edificioRepo, 'save');
         stubRepoo.onCall(0).returns(Promise.resolve(edificioA));
         stubRepoo.onCall(1).returns(Promise.resolve(edificioB));
 
-        const passagemService = new PassagemService(passagemRepo, edificioRepo, pontoRepo);
+        const passagemService = new PassagemService(passagemRepo, edificioRepo);
 
         let answer = await passagemService.criarPassagem(body as IPassagemDTO);
 
