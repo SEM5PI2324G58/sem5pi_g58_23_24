@@ -5,6 +5,8 @@ export default interface ISalaDTO {
     abcissaB: number;
     ordenadaB: number;
     orientacao: string;
-    codigoEdificioA: string;
-    numeroPisoA: number;
+    codigoEdificio: string;
+    numeroPiso: number;
+    descricao: string;
+    categoria: string;
 }

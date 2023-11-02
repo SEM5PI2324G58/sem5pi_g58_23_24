@@ -15,7 +15,7 @@ export class TipoPonto extends ValueObject<tipoPontoProps> {
     public static create (tipoPonto: string): Result<TipoPonto> {
         
         const pontosValidos = ["Elevador", "Norte", "Oeste", " ", "NorteOeste", "PortaNorte", 
-        "PortaOeste", "PortaNorteOeste", "PassagemNorte", "PassagemOeste"];
+        "PortaOeste", "PortaNorteOeste", "PassagemNorte", "PassagemOeste","Sala"];
         const guardResult = Guard.isOneOf(tipoPonto, pontosValidos, "tipo de ponto");
 
         if (!guardResult.succeeded) {

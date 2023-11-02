@@ -78,6 +78,50 @@ export class Edificio extends AggregateRoot<EdificioProps> {
     return null;
   }
 
+  alterarPontosPorSala(pontoProvided: Ponto, nPiso: number, orientacao: string) {
+    if (pontoProvided == null || pontoProvided == undefined) {
+      return Promise.resolve(Result.fail<boolean>("Ponto não pode ser null"));
+    }
+    if (orientacao == null || orientacao == undefined) {
+      return Promise.resolve(Result.fail<boolean>("Orientação não pode ser null ou undefined"));
+    }
+    if (nPiso == null || nPiso == undefined) {
+      return Promise.resolve(Result.fail<boolean>("Número de piso não pode ser null ou undefined"));
+    }
+    if (orientacao != "Norte" && orientacao != "Oeste" && orientacao != "NorteOeste") {
+      return Promise.resolve(Result.fail<boolean>("Orientação não é válida"));
+    }
+
+    let listaPisos = this.props.listaPisos;
+    for (let index = 0; index < listaPisos.length; index++) {
+      let piso = listaPisos[index];
+      if (piso == null || piso == undefined) {
+        return Promise.resolve(Result.fail<boolean>("Piso guardado no edifício não pode ser null ou undefined"));
+      }
+      if (piso.returnNumeroPiso() == nPiso) {
+        for (let i = 0; i < piso.props.mapa.length; i++) {
+          for (let j = 0; j < piso.props.mapa[i].length; j++) {
+            let ponto = piso.props.mapa[i][j];
+            if (ponto == null || ponto == undefined) {
+              return Promise.resolve(Result.fail<boolean>("Ponto guardado no edifício não pode ser null ou undefined"));
+            }
+            if (ponto.props.coordenadas.props.abscissa == pontoProvided.props.coordenadas.props.abscissa
+              && ponto.props.coordenadas.props.ordenada == pontoProvided.props.coordenadas.props.ordenada) {
+              const tipoPonto = TipoPonto.create("Sala")
+              if (tipoPonto.isFailure) {
+                return Promise.resolve(Result.fail<boolean>(tipoPonto.error.toString()));
+              }
+              ponto.props.tipoPonto = tipoPonto.getValue();
+              piso.props.mapa[i][j] = ponto;
+              return Promise.resolve(Result.ok<boolean>(true));
+            }
+          }
+        }
+      }
+    }
+    return Promise.resolve(Result.ok<boolean>(false));
+  }
+
 
   public alterarPontosPorPassagem(pontoProvided: Ponto, nPiso: number, orientacao: string): Promise<Result<boolean>> {
 
