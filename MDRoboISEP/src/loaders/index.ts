@@ -4,6 +4,7 @@ import mongooseLoader from './mongoose';
 import Logger from './logger';
 
 import config from '../../config';
+import SalaRepo from '../repos/SalaRepo';
 
 export default async ({ expressApp }) => {
   const mongoConnection = await mongooseLoader();
@@ -60,6 +61,11 @@ export default async ({ expressApp }) => {
     name: 'DispositivoSchema',
     schema: '../persistence/schemas/DispositivoSchema',
   };
+  const salaSchema = {
+    // compare with the approach followed in repos and services
+    name: 'SalaSchema',
+    schema: '../persistence/schemas/SalaSchema',
+  };
 
 
 
@@ -96,6 +102,11 @@ export default async ({ expressApp }) => {
   const dispositivoController = {
     name: config.controllers.dispositivo.name,
     path: config.controllers.dispositivo.path
+  }
+
+  const salaController = {
+    name: config.controllers.sala.name,
+    path: config.controllers.sala.path
   }
   
   const roleRepo = {
@@ -141,6 +152,11 @@ export default async ({ expressApp }) => {
     path: config.repos.dispositivo.path
   }
 
+  const salaRepo = {
+    name: config.repos.sala.name,
+    path: config.repos.sala.path
+  }
+
   const roleService = {
     name: config.services.role.name,
     path: config.services.role.path
@@ -176,6 +192,11 @@ export default async ({ expressApp }) => {
     path: config.services.dispositivo.path
   }
 
+  const salaService = {
+    name: config.services.sala.name,
+    path: config.services.sala.path
+  }
+
   await dependencyInjectorLoader({
     mongoConnection,
     schemas: [
@@ -187,7 +208,8 @@ export default async ({ expressApp }) => {
       elevadorSchema,
       tipoDispositivoSchema,
       passagemSchema,
-      dispositivoSchema
+      dispositivoSchema,
+      salaSchema
     ],
     controllers: [
       roleController,
@@ -196,7 +218,8 @@ export default async ({ expressApp }) => {
       elevadorController,
       tipoDispositivoController,
       passagemController,
-      dispositivoController
+      dispositivoController,
+      salaController
     ],
     repos: [
       roleRepo,
@@ -207,7 +230,8 @@ export default async ({ expressApp }) => {
       elevadorRepo,
       tipoDispositivoRepo,
       passagemRepo,
-      dispositivoRepo
+      dispositivoRepo,
+      salaRepo
     ],
     services: [
       roleService,
@@ -216,7 +240,8 @@ export default async ({ expressApp }) => {
       pisoService,
       tipoDispositivoService,
       passagemService,
-      dispositivoService
+      dispositivoService,
+      salaService
     ]
   });
   Logger.info('✌️ Schemas, Controllers, Repositories, Services, etc. loaded');

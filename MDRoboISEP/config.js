@@ -69,6 +69,10 @@ export default {
       name: "DispositivoController",
       path: "../controllers/DispositivoController"
     },
+    sala : {
+      name: "SalaController",
+      path: "../controllers/CriarSalaController"
+    },
   },
 
   repos: {
@@ -108,6 +112,10 @@ export default {
       name: "DispositivoRepo",
       path: "../repos/DispositivoRepo"
     },
+    sala: {
+      name: "SalaRepo",
+      path: "../repos/SalaRepo"
+    },
   },
 
   services: {
@@ -138,6 +146,10 @@ export default {
     dispositivo: {
       name: "DispositivoService",
       path: "../services/DispositivoService"
+    },
+    sala: {
+      name: "SalaService",
+      path: "../services/CriarSalaService"
     },
   },
 };

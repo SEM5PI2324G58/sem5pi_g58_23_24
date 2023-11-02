@@ -8,6 +8,7 @@ import elevador from './routes/elevadorRoute'
 import tipoDispositivo from './routes/tipoDispositivoRoute'
 import passagem from './routes/passagemRoute'
 import dispositivo from './routes/dispositivoRoute'
+import sala from './routes/salaRoute'
 
 
 export default () => {
@@ -22,6 +23,7 @@ export default () => {
 	tipoDispositivo(app);
 	passagem(app);
 	dispositivo(app);
+	sala(app);
 
 	return app
 }

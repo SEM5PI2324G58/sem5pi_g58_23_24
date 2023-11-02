@@ -2,16 +2,16 @@ import { Router } from 'express';
 import { celebrate, Joi } from 'celebrate';
 
 import { Container } from 'typedi';
-import IPassagemController from '../../controllers/IControllers/IPassagemController'; 
+import ISalaController from '../../controllers/IControllers/ISalaController'; 
 
 import config from "../../../config";
 
 const route = Router();
 
 export default (app: Router) => {
-  app.use('/Passagem', route);
+  app.use('/piso', route);
 
-  const ctrl = Container.get(config.controllers.passagem.name) as IPassagemController;
+  const ctrl = Container.get(config.controllers.sala.name) as ISalaController;
 
   route.post('',
     celebrate({
@@ -22,11 +22,12 @@ export default (app: Router) => {
         abcissaB: Joi.number().required(),
         ordenadaB: Joi.number().required(),
         orientacao: Joi.string().required(),
-        codigoEdificioA: Joi.number().required(),
-        codigoEdificioB: Joi.number().required(),
-        numeroPisoA: Joi.number().required(),
-        numeroPisoB: Joi.number().required(),
+        codigoEdificio: Joi.number().required(),
+        numeroPiso: Joi.number().required(),
+        descricao: Joi.string().required(),
+        categoria: Joi.string().required(),
       })
     }),
-    (req, res, next) => ctrl.criarPassagem(req, res, next));
+    (req, res, next) => ctrl.criarSala(req, res, next) );
+  
 };
