@@ -25,7 +25,6 @@ import { Elevador } from '../domain/elevador/Elevador';
 import IElevadorRepo from './IRepos/IElevadorRepo';
 
 
-
 @Service()
 export default class PisoService implements IPisoService{
   constructor(
@@ -171,10 +170,7 @@ export default class PisoService implements IPisoService{
             ponto[i] = [];
             for (let j = 0; j <= y ; j++) {
                 let tipoPonto;
-                if(i == 0 && j ==0 ) {tipoPonto = TipoPonto.create("NorteOeste").getValue();}
-                else if((1 <= i && i < x && (j == 0 || j == y)) || (i == 0 && j == y)) {tipoPonto = TipoPonto.create("Norte").getValue();}
-                else if((1 <= j && j < y && (i == 0 || i == x)) || (i == x && j == 0)) {tipoPonto = TipoPonto.create("Oeste").getValue();}
-                else{tipoPonto = TipoPonto.create(" ").getValue();}
+                tipoPonto = TipoPonto.create(" ").getValue();
                 let pontoOuErro = await Ponto.create({
                 coordenadas : Coordenadas.create({abscissa: i , ordenada: j }).getValue(),
                 tipoPonto: tipoPonto

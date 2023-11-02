@@ -51,7 +51,7 @@ export default class SalaRepo implements ISalaRepo {
 
   public async save(sala: Sala): Promise<Sala> {
 
-    const id = 'some_id'; // replace with the actual id we need
+    const id = sala.id.toString();
     const query = { domainID: id };
 
     const salaDocument = await this.salaSchema.findOne(query);
@@ -89,6 +89,18 @@ export default class SalaRepo implements ISalaRepo {
     }
     else
       return null;
+  }
+
+  public async delete(sala: Sala): Promise<boolean> {
+    const query = { idSala: sala.id.toString() };
+    const salaRecord = await this.salaSchema.findOne(query as FilterQuery<ISalaPersistence & Document>);
+
+    if (salaRecord != null) {
+      await this.salaSchema.deleteOne(query as FilterQuery<ISalaPersistence & Document>);
+      return true;
+    }
+    else
+      return false;
   }
 
 }

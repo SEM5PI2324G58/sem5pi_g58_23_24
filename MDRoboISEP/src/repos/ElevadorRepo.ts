@@ -85,4 +85,15 @@ export default class ElevadorRepo implements IElevadorRepo{
             throw err;
         }
     }
+
+    public async delete(elevador: Elevador): Promise<boolean>{
+        const query = { domainId: elevador.returnIdElevador()};
+        const elevadorDocument = await this.elevadorSchema.findOne( query as FilterQuery<IElevadorPersistence & Document> );
+        if (elevadorDocument){
+            await this.elevadorSchema.deleteOne(query);
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
