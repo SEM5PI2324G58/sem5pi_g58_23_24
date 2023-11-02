@@ -90,4 +90,16 @@ export default class EdificioRepo implements IEdificioRepo {
     return listaEdificio;
   }
 
+  public async delete(edificio: Edificio): Promise<boolean> {
+    const query = { codigo: edificio.id.toString()};
+    const edificioDocument = await this.edificioSchema.findOne( query as FilterQuery<IEdificioPersistence & Document> );
+
+    if(edificioDocument != null){
+      await this.edificioSchema.deleteOne(query);
+      return true;
+    }
+    else
+      return false;
+  }
+
 }
