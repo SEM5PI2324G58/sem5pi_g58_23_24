@@ -51,7 +51,7 @@ export default class PassagemRepo implements IPassagemRepo {
 
   public async save(passagem: Passagem): Promise<Passagem> {
 
-    const id = 'some_id'; // replace with the actual id we need
+    const id = passagem.id.toString();
     const query = { domainID: id };
 
     const passagemDocument = await this.passagemSchema.findOne(query);

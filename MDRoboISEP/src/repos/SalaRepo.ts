@@ -51,7 +51,7 @@ export default class SalaRepo implements ISalaRepo {
 
   public async save(sala: Sala): Promise<Sala> {
 
-    const id = 'some_id'; // replace with the actual id we need
+    const id = sala.id.toString();
     const query = { domainID: id };
 
     const salaDocument = await this.salaSchema.findOne(query);
