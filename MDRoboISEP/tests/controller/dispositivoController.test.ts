@@ -251,5 +251,41 @@ describe('DispositivoController', () => {
         sinon.assert.calledWith(res.json, resultado as IDispositivoDTO)
     });
 
+    it('listarDispositivosDaFrota retorna lista de dispositivos em JSON', async function() {
 
+        let listaDTO : IDispositivoDTO[] = [];
+        let dispositivoDTO = {
+            codigo: "as1",
+            descricaoDispositivo: "asdasdqwe123",
+            nickname: "ola",
+            estado: true,
+            numeroSerie: "123456789"
+        } as IDispositivoDTO
+        listaDTO.push(dispositivoDTO);
+           // Arrange
+        let body = {
+            "codigo": "as1",
+            "descricaoDispositivo": "asdasdqwe123",
+            "nickname": "ola",
+            "estado": true,
+            "numeroSerie": "123456789"
+        };
+
+        let req: Partial<Request> = {};req.body = body;
+        let res: Partial<Response> = {
+            json: sinon.spy()
+        };
+        let next: Partial<NextFunction> = () => {};
+        let dispositivoServiceInstance = Container.get("DispositivoService");
+        sinon.stub(dispositivoServiceInstance, 'listarDispositivosDaFrota').returns(Promise.resolve(Result.ok<IDispositivoDTO[]>(listaDTO)));
+
+        let dispositivoController = new DispositivoController(dispositivoServiceInstance as IDispositivoService);
+
+        // Act
+        await dispositivoController.listarDispositivosDaFrota(<Request> req,<Response> res, <NextFunction> next);
+
+        // Assert
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, listaDTO);
+    });
 });
