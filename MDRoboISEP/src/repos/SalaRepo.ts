@@ -91,4 +91,16 @@ export default class SalaRepo implements ISalaRepo {
       return null;
   }
 
+  public async delete(sala: Sala): Promise<boolean> {
+    const query = { idSala: sala.id.toString() };
+    const salaRecord = await this.salaSchema.findOne(query as FilterQuery<ISalaPersistence & Document>);
+
+    if (salaRecord != null) {
+      await this.salaSchema.deleteOne(query as FilterQuery<ISalaPersistence & Document>);
+      return true;
+    }
+    else
+      return false;
+  }
+
 }
