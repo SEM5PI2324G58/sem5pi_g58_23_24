@@ -92,14 +92,9 @@ describe('ElevadorController', () => {
         edificioSemElevador.addPiso(pisosServidos[0]);
         edificioSemElevador.addPiso(pisosServidos[1]);
         
-        //Criar 4 pontos
+        //Criar array de pontos vazios
         let pontos: Ponto[] = [];
-        for (let i = 0; i < 4 ; i++ ){
-            let idPonto = IdPonto.create(1+ i).getValue();
-            let tipoPonto = TipoPonto.create(" ").getValue();
-            let coordenadas = Coordenadas.create({abscissa: i , ordenada: i }).getValue();
-            pontos.push(Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue()) 
-        }
+    
         //Criar elevador
         let idElevador = IdElevador.create(1).getValue();
         let marcaElevador = MarcaElevador.create('123').getValue();
@@ -163,9 +158,6 @@ describe('ElevadorController', () => {
         let body = {
             "edificio": "cod",
             "pisosServidos": [1,2],
-            "xCoord" : 0,
-            "yCoord" : 0,
-            "orientacao": "norte",
             "marca": "marca",
             "modelo": "modelo",
             "numeroSerie": "123",
@@ -193,9 +185,6 @@ describe('ElevadorController', () => {
         sinon.assert.calledWith(res.json, sinon.match({
             edificio: "cod",
             pisosServidos: [1,2],
-            xCoord : 0,
-            yCoord : 0,
-            orientacao: "norte",
             marca: "marca",
             modelo: "modelo",
             numeroSerie: "123",
@@ -209,9 +198,6 @@ describe('ElevadorController', () => {
         let body = {
             "edificio": "cod",
             "pisosServidos": [1,2],
-            "xCoord" : 0,
-            "yCoord" : 0,
-            "orientacao": "norte",
             "marca": "marca",
             "modelo": "modelo",
             "numeroSerie": "123",
@@ -247,9 +233,6 @@ describe('ElevadorController', () => {
         sinon.assert.calledWith(res.json, sinon.match({
             edificio: "cod",
             pisosServidos: [1,2],
-            xCoord : 0,
-            yCoord : 0,
-            orientacao: "norte",
             marca: "marca",
             modelo: "modelo",
             numeroSerie: "123",
@@ -263,9 +246,6 @@ describe('ElevadorController', () => {
         let body = {
             "edificio": "cod",
             "pisosServidos": [1,2],
-            "xCoord" : 0,
-            "yCoord" : 0,
-            "orientacao": "norte",
             "marca": "marca1",
             "modelo": "modelo1",
             "numeroSerie": "1231",
@@ -293,9 +273,6 @@ describe('ElevadorController', () => {
         sinon.assert.calledWith(res.json, sinon.match({
             edificio: "cod",
             pisosServidos: [1,2],
-            xCoord : 0,
-            yCoord : 0,
-            orientacao: "norte",
             marca: "marca1",
             modelo: "modelo1",
             numeroSerie: "1231",
@@ -308,9 +285,6 @@ describe('ElevadorController', () => {
         let body = {
             "edificio": "cod",
             "pisosServidos": [1,2],
-            "xCoord" : 0,
-            "yCoord" : 0,
-            "orientacao": "norte",
             "marca": "marca1",
             "modelo": "modelo1",
             "numeroSerie": "1231",
@@ -344,9 +318,6 @@ describe('ElevadorController', () => {
         sinon.assert.calledWith(res.json, sinon.match({
             edificio: "cod",
             pisosServidos: [1,2],
-            xCoord : 0,
-            yCoord : 0,
-            orientacao: "norte",
             marca: "marca1",
             modelo: "modelo1",
             numeroSerie: "1231",

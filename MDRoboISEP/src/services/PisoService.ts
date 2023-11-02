@@ -38,6 +38,7 @@ export default class PisoService implements IPisoService{
       // @Inject(config.services.sala.name) private salaServiceInstance : ISalaService
       
   ) {}
+    /*
     public async carregarPiso(json: string): Promise<Result<IPisoDTO>> {
         const edificioOrError = await this.lerEdificioJson(json);
         if(edificioOrError.isFailure){
@@ -59,11 +60,13 @@ export default class PisoService implements IPisoService{
 
 
     }
+    */
 /*
     private async savePiso(edificio : Edificio, piso : Piso, elevador : Elevador ,listaSalas : Sala[]){
         return Result.fail<IPisoDTO>("Não implementado");
     }
 */
+/*
     private async carregarElevador(edificio : Edificio, piso : Piso, json : string) : Promise<Result<Edificio>>{
         let informacaoElevador : {
             xCoord : number,
@@ -123,7 +126,7 @@ export default class PisoService implements IPisoService{
         return Result.fail<Piso>("O piso que inseriu não existe.")
     }
 
-
+    */
   public async criarPiso(criarPisoDTO: ICriarPisoDTO): Promise<Result<ICriarPisoDTO>> {
     try {
         const edificio = await this.edifRepo.findByDomainId(criarPisoDTO.codigo);

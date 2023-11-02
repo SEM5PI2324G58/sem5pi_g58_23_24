@@ -27,16 +27,9 @@ describe('Elevador domain', function () {
         let numeroSerieElevador = NumeroSerieElevador.create('123').getValue();
         let descricaoElevador = DescricaoElevador.create('123').getValue();
 		
-        //Criar 4 pontos
-    
+        //Criar array de pontos vazios
         let pontos: Ponto[] = [];
-        for (let i = 0; i < 4 ; i++ ){
-            let idPonto = IdPonto.create(i+1).getValue();
-            let tipoPonto = TipoPonto.create(" ").getValue();
-            let coordenadas = Coordenadas.create({abscissa: i , ordenada: i }).getValue();
-            pontos.push(Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue()) 
-        }
-
+    
         // Criar 2 pisos
         let pisosServidos: Piso[]=[];
 
@@ -72,16 +65,20 @@ describe('Elevador domain', function () {
 	});
 
 	
-    it('Elevador não é criado com menos de 4 pontos', async function () {
+    it('Elevador não é criado com 1 ou mais pontos', async function () {
 		let idElevador = IdElevador.create(1).getValue();
         let marcaElevador = MarcaElevador.create('123').getValue();
         let modeloElevador = ModeloElevador.create('123').getValue();
         let numeroSerieElevador = NumeroSerieElevador.create('123').getValue();
         let descricaoElevador = DescricaoElevador.create('123').getValue();
 		
-        //não cria pontos
+        //Cria 1 ponto
         let pontos: Ponto[] = [];
-        
+        let idPonto = IdPonto.create(1).getValue();
+        let tipoPonto = TipoPonto.create(" ").getValue();
+        let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
+        pontos.push(Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue())
+
         // Criar 2 pisos
         let pisosServidos: Piso[]=[];
 
@@ -124,15 +121,9 @@ describe('Elevador domain', function () {
         let numeroSerieElevador = NumeroSerieElevador.create('123').getValue();
         let descricaoElevador = DescricaoElevador.create('123').getValue();
 		
-        //Criar 4 pontos
+        //Criar array de pontos vazios
         let pontos: Ponto[] = [];
-        for (let i = 0; i < 4 ; i++ ){
-            let idPonto = IdPonto.create(i+1).getValue();
-            let tipoPonto = TipoPonto.create(" ").getValue();
-            let coordenadas = Coordenadas.create({abscissa: i , ordenada: i }).getValue();
-            pontos.push(Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue()) 
-        }
-
+        
         // Criar 1 pisos
         let pisosServidos: Piso[]=[];
 
@@ -166,7 +157,7 @@ describe('Elevador domain', function () {
 
 		assert.strictEqual(elevadorOrError.isFailure, true);
 	});
-
+    /*
     it('Posição do elevador é devolvida é correta', async function () {
 		let idElevador = IdElevador.create(1).getValue();
         let marcaElevador = MarcaElevador.create('123').getValue();
@@ -323,4 +314,5 @@ describe('Elevador domain', function () {
 
 		assert.strictEqual(elevador.orientacao(), "oeste" );
 	});
+    */
 });
