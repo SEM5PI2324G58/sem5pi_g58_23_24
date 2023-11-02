@@ -4,22 +4,24 @@ import { Guard } from "../../core/logic/Guard";
 import { Ponto } from "../ponto/Ponto";
 import DescricaoSala  from "./DescricaoSala";
 import CategorizacaoSala from "./CategorizacaoSala";
-import IdSala from "./IdSala";
+import NomeSala from "./NomeSala";
+import { Piso } from "../piso/Piso";
 
 
 
 interface SalaProps {
     categoria: CategorizacaoSala;
     descricao: DescricaoSala;
+    piso: Piso;
     listaPontos: Ponto[];
 }
 
 export class Sala extends AggregateRoot<SalaProps> {
-  private constructor(props: SalaProps, id: IdSala) {
+  private constructor(props: SalaProps, id: NomeSala) {
     super(props, id);
   }
 
-  public static create(props: SalaProps, idPassagem: IdSala): Result<Sala> {
+  public static create(props: SalaProps, idPassagem: NomeSala): Result<Sala> {
     const guardedProps = [
       { argument: props.categoria, argumentName: 'categoria' },
       { argument: props.descricao, argumentName: 'descricao' },

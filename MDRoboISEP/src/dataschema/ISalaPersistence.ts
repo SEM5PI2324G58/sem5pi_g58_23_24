@@ -3,4 +3,5 @@ export interface ISalaPersistence {
     categoria: string;
     descricao: string;
     listaPontos: number[];
+    piso: number;
 }

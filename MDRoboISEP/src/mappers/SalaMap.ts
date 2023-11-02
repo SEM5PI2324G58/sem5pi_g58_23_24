@@ -5,11 +5,12 @@ import PontoRepo from "../repos/PontoRepo";
 
 import { Sala } from "../domain/sala/Sala";
 import { ISalaPersistence } from "../dataschema/ISalaPersistence";
-import SalaRepo from "../repos/SalaRepo";
-import IdSala from "../domain/sala/IdSala";
+import NomeSala from "../domain/sala/NomeSala";
 import DescricaoSala from "../domain/sala/DescricaoSala";
 import CategorizacaoSala from "../domain/sala/CategorizacaoSala";
 import  ISalaDTO  from "../dto/ISalaDTO";
+import { Piso } from "../domain/piso/Piso";
+import PisoRepo from "../repos/PisoRepo";
 
 
 export class SalaMap extends Mapper<Sala> {
@@ -44,22 +45,24 @@ export class SalaMap extends Mapper<Sala> {
             }
         }
 
-        let salaRepo = Container.get(SalaRepo)
-        let maxiD = await salaRepo.getMaxId();
-        let id = IdSala.create(maxiD).getValue();
+        let maxiD = raw.domainID;
+        let id = NomeSala.create(maxiD).getValue();
         let categoria: CategorizacaoSala;
         let descricao: DescricaoSala;
+        let piso: Piso;
 
         if (raw.categoria === null || raw.categoria === undefined || raw.descricao === null || raw.descricao === undefined) {
             return null;
         }
-        if (raw.categoria instanceof CategorizacaoSala && raw.descricao instanceof DescricaoSala) {
+        if (raw.categoria instanceof CategorizacaoSala && raw.descricao instanceof DescricaoSala && raw.piso instanceof Piso) {
             categoria = raw.categoria;
             descricao = raw.descricao;
         } else {
             let categoriaSala = String(raw.categoria);
             let descricaoSala = String(raw.descricao);
+            let pisoSala = Number(raw.piso);
 
+            piso = await Container.get(PisoRepo).findByDomainId(pisoSala);
             categoria = CategorizacaoSala.create(categoriaSala).getValue();
             descricao = DescricaoSala.create(descricaoSala).getValue();
         }
@@ -67,6 +70,7 @@ export class SalaMap extends Mapper<Sala> {
             categoria: categoria,
             descricao: descricao,
             listaPontos: listaPonto,
+            piso: piso,
         }, id);
 
         return salaOrError.isSuccess ? salaOrError.getValue() : null;
@@ -92,6 +96,7 @@ export class SalaMap extends Mapper<Sala> {
             categoria: sala.props.categoria.props.categorizacao,
             descricao: sala.props.descricao.props.descricao,
             listaPontos: listaPontos,
+            piso: sala.props.piso.returnIdPiso()
         } as unknown as ISalaPersistence
 
         return dadosSala;

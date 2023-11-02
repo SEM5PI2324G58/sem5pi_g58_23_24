@@ -3,7 +3,7 @@ import { Service, Inject } from 'typedi';
 import { Document, FilterQuery, Model } from 'mongoose';
 
 import { forEach } from 'lodash';
-import IdSala from '../domain/sala/IdSala';
+import NomeSala from '../domain/sala/NomeSala';
 import { Sala } from '../domain/sala/Sala';
 import { ISalaPersistence } from '../dataschema/ISalaPersistence';
 import { SalaMap } from '../mappers/SalaMap';
@@ -17,22 +17,6 @@ export default class SalaRepo implements ISalaRepo {
     @Inject('SalaSchema') private salaSchema: Model<ISalaPersistence & Document>,
   ) { }
 
-    async getMaxId(): Promise<number> {
-    try {
-      var maxIdResult = await this.salaSchema
-        .find({}, { id: 1 })
-       ;
-
-      if (maxIdResult && maxIdResult.length > 0) {
-        return (maxIdResult.sort((a, b) => b.id - a.id))[0].id;
-      } else {
-        return 0; 
-      }
-    } catch (err) {
-      throw err;
-    }
-    }
-
   private createBaseQuery(): any {
     return {
       where: {},
@@ -41,7 +25,7 @@ export default class SalaRepo implements ISalaRepo {
 
   public async exists(sala: Sala): Promise<boolean> {
 
-    const idX = sala.id instanceof IdSala ? (<IdSala>sala.id).toValue() : sala.id;
+    const idX = sala.id instanceof NomeSala ? (<NomeSala>sala.id).toValue() : sala.id;
 
     const query = { codigo: idX };
     const roleDocument = await this.salaSchema.findOne(query as FilterQuery<ISalaPersistence & Document>);
@@ -80,7 +64,7 @@ export default class SalaRepo implements ISalaRepo {
     }
   }
 
-  public async findByDomainId(idSala: IdSala | number): Promise<Sala> {
+  public async findByDomainId(idSala: NomeSala | string): Promise<Sala> {
     const query = { idSala: idSala };
     const salaRecord = await this.salaSchema.findOne(query as FilterQuery<ISalaPersistence & Document>);
 

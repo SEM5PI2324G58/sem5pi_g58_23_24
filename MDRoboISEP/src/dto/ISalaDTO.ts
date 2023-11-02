@@ -1,5 +1,5 @@
 export default interface ISalaDTO {
-    id: number
+    id: string;
     abcissaA: number;
     ordenadaA: number;
     abcissaB: number;
