@@ -84,4 +84,21 @@ export default class PontoRepo implements IPontoRepo {
       throw err;
   }
 }
+
+  public async delete(ponto: Ponto): Promise<boolean> {
+    const query = { domainID: ponto.returnIdPonto()};
+    const pontoDocument = await this.pontoSchema.findOne( query as FilterQuery<IPontoPersistence & Document> );
+    try {
+        if(pontoDocument === null) {
+            return false;
+        }
+        else{
+            await this.pontoSchema.deleteOne( query as FilterQuery<IPontoPersistence & Document> );
+            return true;
+        }
+
+    } catch (error) {
+        throw error;
+    }
+  }
 }

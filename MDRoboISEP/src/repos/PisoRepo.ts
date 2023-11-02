@@ -85,5 +85,22 @@ export default class PisoRepo implements IPisoRepo {
     } catch (err) {
         throw err;
     }
-}
+  }
+
+  public async delete(piso: Piso): Promise<boolean> {
+    const query = { domainID: piso.returnIdPiso()};
+    const pisoDocument = await this.pisoSchema.findOne( query as FilterQuery<IPisoPersistence & Document> );
+    try {
+        if(pisoDocument === null) {
+            return false;
+        }
+        else{
+            await this.pisoSchema.deleteOne( query as FilterQuery<IPisoPersistence & Document> );
+            return true;
+        }
+
+    } catch (error) {
+        throw error;
+    }
+  }
 }

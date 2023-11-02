@@ -6,5 +6,5 @@ export default interface IPisoRepo extends Repo<Piso> {
   save(piso: Piso): Promise<Piso>;
   findByDomainId (idPiso: IdPiso | number): Promise<Piso>;
   getMaxId(): Promise<number>
-    
+  delete(piso: Piso): Promise<boolean>  
 }
