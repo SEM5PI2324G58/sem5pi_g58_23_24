@@ -17,9 +17,6 @@ export default (app: Router) => {
             body: Joi.object({
                 edificio: Joi.string().required(),
                 pisosServidos: Joi.array().items(Joi.number()).required().min(2),
-                xCoord: Joi.number().required(),
-                yCoord: Joi.number().required(),
-                orientacao: Joi.string().required(),
                 marca: Joi.string(),
                 modelo: Joi.string(),
                 numeroSerie: Joi.string(),
@@ -33,9 +30,6 @@ export default (app: Router) => {
             body: Joi.object({
                 edificio: Joi.string().required(),
                 pisosServidos: Joi.array().items(Joi.number()).min(2),
-                xCoord: Joi.number(),
-                yCoord: Joi.number(),
-                orientacao: Joi.string(),
                 marca: Joi.string(),
                 modelo: Joi.string(),
                 numeroSerie: Joi.string(),

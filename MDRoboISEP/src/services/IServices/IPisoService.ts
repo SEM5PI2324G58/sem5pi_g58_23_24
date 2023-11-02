@@ -7,5 +7,5 @@ export default interface IPisoService  {
   criarPiso(criarPisoDTO: ICriarPisoDTO): Promise<Result<ICriarPisoDTO>>;
   listarTodosOsPisosDeUmEdificio(codigo: string): Promise<Result<IPisoDTO[]>>;
   editarPiso(editarPisoDTO: IEditarPisoDTO): Promise<Result<IPisoDTO>>;
-  carregarPiso(json : string): Promise<Result<IPisoDTO>>;
+  //carregarPiso(json : string): Promise<Result<IPisoDTO>>;
 }

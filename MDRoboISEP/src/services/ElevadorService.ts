@@ -41,37 +41,18 @@ export default class ElevadorService implements IElevadorService{
             if (edificio.temElevador()){
                 return Result.fail<ICriarElevadorDTO>("Edificio já tem um elevador.")
             }
-
-            if (!edificio.posicaoValidaNoMapa(elevadorDTO.xCoord,elevadorDTO.yCoord,elevadorDTO.orientacao)){
-                return Result.fail<ICriarElevadorDTO>("A posição do elevador não é válida para o edifício")
-            }
             
             // Procurar os pisos do edifício com número correspondente aos passados por parâmetro
-            let pisosServidos: Piso[] = [];
-            let pisosEdificio: Piso[] = edificio.props.listaPisos;
 
-            for (let i = 0; i < pisosEdificio.length;i++ ){
-                for(let j = 0; j < elevadorDTO.pisosServidos.length; j++){
-                    if(pisosEdificio[i].returnNumeroPiso() === elevadorDTO.pisosServidos[j]){
-                        pisosServidos.push(pisosEdificio[i]);
-                    }
-                }
-            }
+            let pisosServidos = edificio.pisosCorrespondentes(elevadorDTO.pisosServidos);
             
             // Se náo forem encontrados todos os pisos, quer dizer que foram inseridos pisos inválidos
             if(pisosServidos.length !== elevadorDTO.pisosServidos.length){
                 return Result.fail<ICriarElevadorDTO>("Foram inseridos pisos inválidos")
             }
 
+            // array de pontos vazio ao criar elevador
             let pontos: Ponto[] = [];
-            for (let i = 0; i < pisosServidos.length; i++){
-                let pisoPontos = pisosServidos[i].returnPontosParaElevador(elevadorDTO.xCoord,elevadorDTO.yCoord,elevadorDTO.orientacao);
-                for(let j = 0; j < pisoPontos.length; j++){
-                    pontos.push(pisoPontos[j]);
-                }
-            }
-
-
 
             let id = await this.elevadorRepo.getMaxId();
 
@@ -79,14 +60,7 @@ export default class ElevadorService implements IElevadorService{
             if(idElevadorOrError.isFailure){
                 return Result.fail<ICriarElevadorDTO>(idElevadorOrError.errorValue());
             }
-            /*
-            // TODO mudar para o domínio 
-            if ((elevadorDTO.marca === null && elevadorDTO.modelo !== null) ||
-            (elevadorDTO.marca !== null && elevadorDTO.modelo === null)){
-                return Result.fail<ICriarElevadorDTO>('Marca e modelo têm de existir ou não simultâneamente');
-            }
-            */
-
+            
             let marcaOrError = MarcaElevador.create(elevadorDTO.marca);
             let modeloOrError = ModeloElevador.create(elevadorDTO.modelo);
             let numeroSerieOrError = NumeroSerieElevador.create(elevadorDTO.numeroSerie);
@@ -113,11 +87,6 @@ export default class ElevadorService implements IElevadorService{
 
             edificio.adicionarElevador(elevadorOuErro.getValue());
 
-            for (let i = 0; i< pontos.length; i++){
-                pontos[i].toElevador();
-                await this.pontoRepo.save(pontos[i]);
-            }
-
             await this.elevadorRepo.save(elevadorOuErro.getValue());
             await this.edificioRepo.save(edificio)
 
@@ -127,6 +96,8 @@ export default class ElevadorService implements IElevadorService{
             throw e;
         }
     }
+
+    
     /**
      * Este método serve para criar um elevador ou adicionar um piso a um elevador já existente
      * @param elevadorDTO ElevadorDTO
@@ -134,6 +105,7 @@ export default class ElevadorService implements IElevadorService{
      * @param piso Piso ao qual o elevador vai serivir
      * @returns Result<Edificio> Quando tem sucesso retorna o edifício com o elevador criado ou atualizado
      */
+    /*
     public async carregarElevadorPiso(elevadorDTO: ICriarElevadorDTO, edificio: Edificio,piso : Piso): Promise<Result<Edificio>>{
         try{
             if (!edificio.posicaoValidaNoMapa(elevadorDTO.xCoord,elevadorDTO.yCoord,elevadorDTO.orientacao)){
@@ -159,7 +131,7 @@ export default class ElevadorService implements IElevadorService{
             throw e;
         }
     }
-
+    */
     /**
      * Este método serve para criar um elevador ao qual serve um determinado piso de um edificio
      * @param elevadorDTO ElevadorDTO
@@ -167,6 +139,7 @@ export default class ElevadorService implements IElevadorService{
      * @param piso Piso ao qual o elevador vai servir
      * @returns Result <Elevador> Quando tem sucesso retorna o elevador criado
      */
+    /*
     private async criarElevadorPiso(elevadorDTO: ICriarElevadorDTO, edificio: Edificio,piso : Piso): Promise<Result<Elevador>>{
         let pontos = [];
         pontos = piso.returnPontosParaElevador(elevadorDTO.xCoord,elevadorDTO.yCoord,elevadorDTO.orientacao);
@@ -203,13 +176,15 @@ export default class ElevadorService implements IElevadorService{
         }
         return Result.ok<Elevador>(elevadorOuErro.getValue());
     }
-/**
- * Este método retorna o elevador atualizado com o novo piso servido
- * @param elevadorDTO ElevadorDTO
- * @param edificio Edifício ao qual o elevador pertence
- * @param piso Piso ao qual o elevador vai servir
- * @returns Result <Elevador> Quando tem sucesso retorna o elevador atualizado
- */
+    */
+    /**
+     * Este método retorna o elevador atualizado com o novo piso servido
+     * @param elevadorDTO ElevadorDTO
+     * @param edificio Edifício ao qual o elevador pertence
+     * @param piso Piso ao qual o elevador vai servir
+     * @returns Result <Elevador> Quando tem sucesso retorna o elevador atualizado
+     */
+    /*
     private adicionarPisoServido(elevadorDTO: ICriarElevadorDTO, edificio: Edificio,piso : Piso): Result<Elevador>{
         let elevador = edificio.returnElevador();
         if(elevador.pisosServidosAtuais().includes(piso)){
@@ -249,6 +224,7 @@ export default class ElevadorService implements IElevadorService{
             }
         }
     }
+    */
         
     public async editarElevador(elevadorDTO: ICriarElevadorDTO): Promise<Result<ICriarElevadorDTO>>{
         try {
@@ -264,7 +240,6 @@ export default class ElevadorService implements IElevadorService{
                 return Result.fail<ICriarElevadorDTO>("Elevador não existe.")
             }
 
-            var pisosServidosAnte = elevador.pisosServidosAtuais()
             var pisosServidos: Piso[] = [];
 
             if (elevadorDTO.pisosServidos !== undefined){
@@ -277,63 +252,6 @@ export default class ElevadorService implements IElevadorService{
                 }
 
                 elevador.updatePisos(pisosServidos);
-            }else{
-                pisosServidos = elevador.pisosServidosAtuais();
-            }
-
-            
-            let coords = elevador.posicao();
-
-            let pontosAntigos: Ponto[] = [];
-            // se for para alterar os pisos ou a posição, eliminar o elevador dos mapas dos pisos antigos 
-            if (elevadorDTO.pisosServidos !== undefined || (elevadorDTO.xCoord !== undefined && elevadorDTO.yCoord !== undefined && elevadorDTO.orientacao !== undefined) ){
-                
-                for (let i = 0; i < pisosServidosAnte.length; i++){
-                    pisosServidosAnte[i].reverterElevadorNoMapa(coords);
-                    let pontosPiso = pisosServidosAnte[i].returnPontosComCoordenadas(coords);
-                    for(let j = 0; j < pontosPiso.length; j++){
-                        pontosAntigos.push(pontosPiso[j]);
-                    }
-                }
-                
-            }
-            
-            let pontos: Ponto[] = [];
-
-            if (elevadorDTO.xCoord !== undefined && elevadorDTO.yCoord !== undefined && elevadorDTO.orientacao !== undefined){
-
-                if (!edificio.posicaoValidaNoMapa(elevadorDTO.xCoord,elevadorDTO.yCoord,elevadorDTO.orientacao)){
-                    return Result.fail<ICriarElevadorDTO>("A posição do elevador não é válida para o edifício")
-                }
-                
-                for (let i = 0; i < pisosServidos.length; i++){
-                    let pisoPontos = pisosServidos[i].returnPontosParaElevador(elevadorDTO.xCoord,elevadorDTO.yCoord,elevadorDTO.orientacao);
-                    for(let j = 0; j < pisoPontos.length; j++){
-                        pontos.push(pisoPontos[j]);
-                    }
-                }
-
-                elevador.updatePontos(pontos)
-
-            }else if (elevadorDTO.xCoord === undefined && elevadorDTO.yCoord === undefined && elevadorDTO.orientacao === undefined && elevadorDTO.pisosServidos !== undefined ){
-
-                if (!edificio.posicaoValidaNoMapa(coords[0],coords[1],elevador.orientacao())){
-                    return Result.fail<ICriarElevadorDTO>("A posição do elevador não é válida para o edifício")
-                }
-                
-                for (let i = 0; i < pisosServidos.length; i++){
-                    let pisoPontos = pisosServidos[i].returnPontosParaElevador(coords[0],coords[1],elevador.orientacao());
-                    for(let j = 0; j < pisoPontos.length; j++){
-                        pontos.push(pisoPontos[j]);
-                    }
-                }
-
-                elevador.updatePontos(pontos);
-
-            }else if (elevadorDTO.xCoord === undefined && elevadorDTO.yCoord === undefined && elevadorDTO.orientacao === undefined && elevadorDTO.pisosServidos === undefined){
-                // Do nothing
-            }else{
-                return Result.fail<ICriarElevadorDTO>("Para alterar a posição do elevador é necessário coordenadada x, coordenada y e a orientação")
             }
             
             if (elevadorDTO.marca !== undefined){
@@ -370,17 +288,6 @@ export default class ElevadorService implements IElevadorService{
                 }else{
                     elevador.updateDescricao(descricaoOrErro.getValue());
                 }
-            }
-            
-            // Guardar os pontosAntigos se necessário
-            for (let i = 0; i< pontosAntigos.length; i++){
-                await this.pontoRepo.save(pontosAntigos[i]);
-            }
-
-            // Guardar os pontos se necessário
-            for (let i = 0; i< pontos.length; i++){
-                pontos[i].toElevador();
-                await this.pontoRepo.save(pontos[i]);
             }
 
             this.elevadorRepo.save(elevador);

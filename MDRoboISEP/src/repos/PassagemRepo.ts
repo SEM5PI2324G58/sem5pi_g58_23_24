@@ -91,4 +91,16 @@ export default class PassagemRepo implements IPassagemRepo {
       return null;
   }
 
+  public async delete(passagem: Passagem): Promise<boolean> {
+    const query = { idSala: passagem.id.toString() };
+    const salaRecord = await this.passagemSchema.findOne(query as FilterQuery<IPassagemPersistence & Document>);
+
+    if (salaRecord != null) {
+      await this.passagemSchema.deleteOne(query as FilterQuery<IPassagemPersistence & Document>);
+      return true;
+    }else{
+      return false;
+    }
+  }
+
 }

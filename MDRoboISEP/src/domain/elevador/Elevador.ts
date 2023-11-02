@@ -63,11 +63,14 @@ export class Elevador extends AggregateRoot<ElevadorProps>{
         ]
 
         let guardResults : any[] = [];
-        
+        // Tem de ter o array pisos servidos
         guardResults.push(Guard.againstNullOrUndefined(guardedProps[0].argument,guardedProps[0].argumentName));
+        // Tem de ter mais que um piso servido
         guardResults.push(Guard.arrayHasGreaterLengthThan(guardedProps[0].argument,1,guardedProps[0].argumentName));
+        // Tem de ter o array pontos
         guardResults.push(Guard.againstNullOrUndefined(guardedProps[1].argument,guardedProps[1].argumentName));
-        guardResults.push(Guard.arrayHasGreaterLengthThan(guardedProps[1].argument,3,guardedProps[1].argumentName));
+        // Tem de ter o array de pontos vazio
+        guardResults.push(Guard.arrayHasSpecificLength(guardedProps[1].argument,0,guardedProps[1].argumentName));
         
 
         const finalGuard = Guard.combine(guardResults);

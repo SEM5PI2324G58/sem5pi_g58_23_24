@@ -36,14 +36,8 @@ describe('ElevadorRepo', () => {
         let numeroSerieElevador = NumeroSerieElevador.create('123').getValue();
         let descricaoElevador = DescricaoElevador.create('123').getValue();
 		
-        //Criar 4 pontos
+        //Criar array de pontos vazios
         let pontos: Ponto[] = [];
-        for (let i = 0; i < 4 ; i++ ){
-            let idPonto = IdPonto.create(i+1).getValue();
-            let tipoPonto = TipoPonto.create(" ").getValue();
-            let coordenadas = Coordenadas.create({abscissa: i , ordenada: i }).getValue();
-            pontos.push(Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue()) 
-        }
 
         // Criar 2 pisos
         let pisosServidos: Piso[]=[];
