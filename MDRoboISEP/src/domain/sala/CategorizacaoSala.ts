@@ -14,7 +14,7 @@ export default class Categorizacao extends ValueObject<categorizacaoProps> {
 
     public static create (titulo: string): Result<Categorizacao> {
         
-        const categorizacao = ["Gabinete", "Anfiteatro", "Laboratório", "Outro"];
+        const categorizacao = ["Gabinete", "Anfiteatro", "Laboratorio", "Outro"];
         const guardResult = Guard.isOneOf(titulo, categorizacao, "categorizacao");
 
         if (!guardResult.succeeded) {
