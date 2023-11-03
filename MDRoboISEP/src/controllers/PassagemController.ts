@@ -27,7 +27,7 @@ export default class PassagemController implements IPassagemController /* TODO: 
     }
   }
 
-  public async listarPassagensPorParDeEdifícios(req: Request, res: Response, next: NextFunction) {
+  public async listarPassagensPorParDeEdificios(req: Request, res: Response, next: NextFunction) {
     try{
       const passagemOrError = await this.passagemServiceInstance.listarPassagensPorParDeEdificios(req.body as IListarPassagensPorParDeEdificioDTO) as Result<IListarPassagemDTO[]>;
       if (passagemOrError.isFailure) {

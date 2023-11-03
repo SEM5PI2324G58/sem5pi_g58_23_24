@@ -24,4 +24,13 @@ export default (app: Router) => {
       })
     }),
     (req, res, next) => ctrl.criarPassagem(req, res, next));
+
+  route.get('/listarPassagensPorParDeEdificios',
+    celebrate({
+      body: Joi.object({
+        codigoEdificioA: Joi.string(),
+        codigoEdificioB: Joi.string(),
+      })
+    }),
+    (req, res, next) => ctrl.listarPassagensPorParDeEdificios(req, res, next));
 };
