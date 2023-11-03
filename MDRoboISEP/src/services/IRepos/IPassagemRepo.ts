@@ -6,4 +6,5 @@ export default interface IPassagemRepo extends Repo<Passagem> {
   findByDomainId(id: number): Promise<Passagem>;
   save(passagem: Passagem): Promise<Passagem>;
   delete(passagem: Passagem): Promise<boolean>;
+  findAll(): Promise<Passagem[]>;
 }
