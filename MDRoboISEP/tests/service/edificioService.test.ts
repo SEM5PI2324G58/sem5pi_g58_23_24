@@ -24,20 +24,60 @@ import { Coordenadas } from "../../src/domain/ponto/Coordenadas";
 import { IdPiso } from "../../src/domain/piso/IdPiso";
 import { IEdificioPersistence } from "../../src/dataschema/IEdificioPersistence";
 import EdificioRepo from "../../src/repos/EdificioRepo";
+import IPisoRepo from "../../src/services/IRepos/IPisoRepo";
+import IElevadorRepo from "../../src/services/IRepos/IElevadorRepo";
+import ISalaRepo from "../../src/services/IRepos/ISalaRepo";
+import IPassagemRepo from "../../src/services/IRepos/IPassagemRepo";
+import IPontoRepo from "../../src/services/IRepos/IPontoRepo";
 
 
 describe('EdificioService ', () => {
 
     const sandbox = sinon.createSandbox();
-    beforeEach(() => {
+    beforeEach(function() {
+        this.timeout(10000);
         Container.reset();
-    
         let edificioSchemaInstance = require('../../src/persistence/schemas/EdificioSchema').default;
         Container.set("EdificioSchema", edificioSchemaInstance);
 
         let edificioRepoClass = require('../../src/repos/EdificioRepo').default;
         let edificioRepoInstance = Container.get(edificioRepoClass);
         Container.set("EdificioRepo", edificioRepoInstance);
+
+        let elevadorSchemaInstance = require('../../src/persistence/schemas/ElevadorSchema').default;
+        Container.set("ElevadorSchema", elevadorSchemaInstance);
+
+        let elevadorRepoClass = require('../../src/repos/ElevadorRepo').default;
+        let elevadorRepoInstance = Container.get(elevadorRepoClass);
+        Container.set("ElevadorRepo", elevadorRepoInstance);
+
+        let pisoSchemaInstance = require('../../src/persistence/schemas/PisoSchema').default;
+        Container.set("PisoSchema", pisoSchemaInstance);
+
+        let pisoRepoClass = require('../../src/repos/PisoRepo').default;
+        let pisoRepoInstance = Container.get(pisoRepoClass);
+        Container.set("PisoRepo", pisoRepoInstance);
+
+        let pontoSchemaInstance = require('../../src/persistence/schemas/PontoSchema').default;
+        Container.set("PontoSchema", pontoSchemaInstance);
+
+        let pontoRepoClass = require('../../src/repos/PontoRepo').default;
+        let pontoRepoInstance = Container.get(pontoRepoClass);
+        Container.set("PontoRepo", pontoRepoInstance);
+
+        let salaSchemaInstance = require('../../src/persistence/schemas/SalaSchema').default;
+        Container.set("SalaSchema", salaSchemaInstance);
+
+        let salaRepoClass = require('../../src/repos/SalaRepo').default;
+        let salaRepoInstance = Container.get(salaRepoClass);
+        Container.set("SalaRepo", salaRepoInstance);
+
+        let passagemSchemaInstance = require('../../src/persistence/schemas/PassagemSchema').default;
+        Container.set("PassagemSchema", passagemSchemaInstance);
+
+        let passagemRepoClass = require('../../src/repos/PassagemRepo').default;
+        let passagemRepoInstance = Container.get(passagemRepoClass);
+        Container.set("PassagemRepo", passagemRepoInstance);
 
     });
     
@@ -64,11 +104,16 @@ describe('EdificioService ', () => {
 
         let edificio = Edificio.create(edificioProps,Codigo.create(body.codigo).getValue()).getValue();
         let edificioRepoInstance = Container.get("EdificioRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
 
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(null));
         sinon.stub(edificioRepoInstance, "save").returns(Promise.resolve(edificio));
 
-        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo,pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo);
         let answer = await edificioService.criarEdificio(body as IEdificioDTO);
 
         expect(answer.getValue().codigo).to.equal(body.codigo);
@@ -96,9 +141,14 @@ describe('EdificioService ', () => {
         let edificio = Edificio.create(edificioProps,Codigo.create('ED01').getValue()).getValue();
 
         let edificioRepoInstance = Container.get("EdificioRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
 
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(edificio));
-        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo,pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo);
         let answer = await edificioService.criarEdificio(body as IEdificioDTO);
         expect(answer.errorValue()).to.equal("Edificio já existe");
     });
@@ -112,9 +162,14 @@ describe('EdificioService ', () => {
         };
         
         let edificioRepoInstance = Container.get("EdificioRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
 
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(null));
-        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo,pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo);
         let answer = await edificioService.criarEdificio(body as IEdificioDTO);
         expect(answer.errorValue()).to.equal("Erro: A Dimensão tem de ser válida e superior a 0");
 
@@ -129,9 +184,14 @@ describe('EdificioService ', () => {
         };
         
         let edificioRepoInstance = Container.get("EdificioRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
 
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(null));
-        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo,pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo);
         let answer = await edificioService.criarEdificio(body as IEdificioDTO);
         expect(answer.errorValue()).to.equal("Código do Edifício deve ser alfanumérico e pode conter espaços.");
 
@@ -147,9 +207,14 @@ describe('EdificioService ', () => {
         };
         
         let edificioRepoInstance = Container.get("EdificioRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
 
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(null));
-        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo,pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo);
         let answer = await edificioService.criarEdificio(body as IEdificioDTO);
         expect(answer.errorValue()).to.equal("Erro: O nome tem de ser válido, alfanumérico e ter até 50 caratéres.");
 
@@ -165,9 +230,14 @@ describe('EdificioService ', () => {
         };
         
         let edificioRepoInstance = Container.get("EdificioRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
 
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(null));
-        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo,pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo);
         let answer = await edificioService.criarEdificio(body as IEdificioDTO);
         expect(answer.errorValue()).to.equal("Erro: A descrição tem de ser válida e até 255 caratéres.");
 
@@ -175,8 +245,14 @@ describe('EdificioService ', () => {
 
     it('Listar Edificios sem existirem edificios', async () => {
         let edificioRepoInstance = Container.get("EdificioRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
+
         sinon.stub(edificioRepoInstance, "getAllEdificios").returns(Promise.resolve([]));
-        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo,pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo);
         let answer = await edificioService.listarEdificios();
         expect(answer.errorValue()).to.equal("Não existem edificios");
     });
@@ -192,8 +268,14 @@ describe('EdificioService ', () => {
 
         let edificio = Edificio.create(edificioProps,Codigo.create('ED01').getValue()).getValue();
         let edificioRepoInstance = Container.get("EdificioRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
+
         sinon.stub(edificioRepoInstance, "getAllEdificios").returns(Promise.resolve([edificio]));
-        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo,pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo);
         let answer = await edificioService.listarEdificios();
         expect(answer.getValue()[0].nome).to.equal(edificioProps.nome.props.nome);
         expect(answer.getValue()[0].dimensaoX).to.equal(edificioProps.dimensao.props.x);
@@ -208,8 +290,14 @@ describe('EdificioService ', () => {
         };  
         
         let edificioRepoInstance = Container.get("EdificioRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
+        
         sinon.stub(edificioRepoInstance, "getAllEdificios").returns(Promise.resolve([]));
-        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo,pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo);
         let answer = await edificioService.listarEdificioMinEMaxPisos(body as IListarEdMinEMaxPisosDTO);
         expect(answer.errorValue()).to.equal("O número mínimo de pisos não pode ser superior ao máximo");
     });
@@ -222,8 +310,14 @@ describe('EdificioService ', () => {
         };  
         
         let edificioRepoInstance = Container.get("EdificioRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
+
         sinon.stub(edificioRepoInstance, "getAllEdificios").returns(Promise.resolve([]));
-        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo,pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo);
         let answer = await edificioService.listarEdificioMinEMaxPisos(body as IListarEdMinEMaxPisosDTO);
         expect(answer.errorValue()).to.equal("O número mínimo e máximo de pisos não pode ser 0");
     });
@@ -235,8 +329,14 @@ describe('EdificioService ', () => {
         };  
         
         let edificioRepoInstance = Container.get("EdificioRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
+
         sinon.stub(edificioRepoInstance, "getAllEdificios").returns(Promise.resolve([]));
-        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo,pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo);
         let answer = await edificioService.listarEdificioMinEMaxPisos(body as IListarEdMinEMaxPisosDTO);
         expect(answer.errorValue()).to.equal("O número mínimo e máximo de pisos não pode ser inferior a 0");
     });
@@ -248,8 +348,14 @@ describe('EdificioService ', () => {
         };  
         
         let edificioRepoInstance = Container.get("EdificioRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
+
         sinon.stub(edificioRepoInstance, "getAllEdificios").returns(Promise.resolve([]));
-        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo,pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo);
         let answer = await edificioService.listarEdificioMinEMaxPisos(body as IListarEdMinEMaxPisosDTO);
         expect(answer.errorValue()).to.equal("O número mínimo e máximo de pisos não pode ser inferior a 0");
     });
@@ -271,9 +377,15 @@ describe('EdificioService ', () => {
         };
 
         let edificioRepoInstance = Container.get("EdificioRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
+
         let edificio = Edificio.create(edificioProps,Codigo.create('ED01').getValue()).getValue();
         sinon.stub(edificioRepoInstance, "getAllEdificios").returns(Promise.resolve([edificio]));        
-        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo,pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo);
         let answer = await edificioService.listarEdificioMinEMaxPisos(body as IListarEdMinEMaxPisosDTO);
         expect(answer.getValue()[0].nome).to.equal(edificioProps.nome.props.nome);
         expect(answer.getValue()[0].dimensaoX).to.equal(edificioProps.dimensao.props.x);
@@ -298,9 +410,15 @@ describe('EdificioService ', () => {
         };
 
         let edificioRepoInstance = Container.get("EdificioRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
+
         let edificio = Edificio.create(edificioProps,Codigo.create('ED01').getValue()).getValue();
         sinon.stub(edificioRepoInstance, "getAllEdificios").returns(Promise.resolve([edificio]));        
-        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo,pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo);
         let answer = await edificioService.listarEdificioMinEMaxPisos(body as IListarEdMinEMaxPisosDTO);
         expect(answer.errorValue()).to.equal("Não existem edificios com o número de pisos pretendido");
 
@@ -314,6 +432,11 @@ describe('EdificioService ', () => {
         };
 
         let edificioRepoInstance = Container.get("EdificioRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
 
         let edificioPropsAntigo : any = {
             nome: Nome.create('Edificio Antigo').getValue(),
@@ -334,7 +457,7 @@ describe('EdificioService ', () => {
 
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(edificioAntigo));
         sinon.stub(edificioRepoInstance, "save").returns(Promise.resolve(edificioNovo));
-        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo,pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo);
         let answer = await edificioService.editarEdificio(bodyNovo as IEdificioDTO);
 
         expect(answer.getValue().codigo).to.equal(bodyNovo.codigo);
@@ -351,9 +474,14 @@ describe('EdificioService ', () => {
         };
         
         let edificioRepoInstance = Container.get("EdificioRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
 
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(null));
-        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+        const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo,pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo);
         let answer = await edificioService.editarEdificio(body as IEdificioDTO);
         expect(answer.errorValue()).to.equal("Edificio não existe");
     });
@@ -373,9 +501,14 @@ describe('EdificioService ', () => {
             let edificio = Edificio.create(edificioProps,Codigo.create('as1').getValue()).getValue();
             
             let edificioRepoInstance = Container.get("EdificioRepo");
+            let elevadorRepoInstance = Container.get("ElevadorRepo");
+            let pisoRepoInstance = Container.get("PisoRepo");
+            let pontoRepoInstance = Container.get("PontoRepo");
+            let salaRepoInstance = Container.get("SalaRepo");
+            let passagemRepoInstance = Container.get("PassagemRepo");
     
             sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(edificio));
-            const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo);
+            const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo,pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo);
             let answer = await edificioService.editarEdificio(body as IEdificioDTO);
             expect(answer.errorValue()).to.equal("Nome e descrição são obrigatórios");
     });
@@ -411,11 +544,15 @@ describe('EdificioService ', () => {
         } as IEdificioPersistence & Document<any, any, any>;
 
         
-
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+        let pisoRepoInstance = Container.get("PisoRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
         const edificioSchemaInstance = Container.get("EdificioSchema");
         sinon.stub(edificioSchemaInstance, "find").returns([edificioDTO2]);
         
-        const answer = await new EdificioService(new EdificioRepo(edificioSchemaInstance as any)).listarEdificioMinEMaxPisos(body as IListarEdMinEMaxPisosDTO);
+        const answer = await new EdificioService(new EdificioRepo(edificioSchemaInstance as any),pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo).listarEdificioMinEMaxPisos(body as IListarEdMinEMaxPisosDTO);
         expect(answer.getValue()[0].nome).to.equal(edificioDTO.nome);
         expect(answer.getValue()[0].dimensaoX).to.equal(edificioDTO.dimensaoX);
         expect(answer.getValue()[0].dimensaoY).to.equal(edificioDTO.dimensaoY);

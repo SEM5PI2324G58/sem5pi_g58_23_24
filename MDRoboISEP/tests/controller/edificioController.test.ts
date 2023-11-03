@@ -33,16 +33,47 @@ describe('EdificioController', () => {
         let edificioRepoRepoInstance = Container.get(edificioRepoClass);
         Container.set("EdificioRepo", edificioRepoRepoInstance);
 
+        let pisoSchemaInstance = require('../../src/persistence/schemas/PisoSchema').default;
+        Container.set("PisoSchema", pisoSchemaInstance);
+
+        let pisoRepoClass = require('../../src/repos/PisoRepo').default;
+        let pisoRepoInstance = Container.get(pisoRepoClass);
+        Container.set("PisoRepo", pisoRepoInstance);
+
+        let pontoSchemaInstance = require('../../src/persistence/schemas/PontoSchema').default;
+        Container.set("PontoSchema", pontoSchemaInstance);
+
+        let pontoRepoClass = require('../../src/repos/PontoRepo').default;
+        let pontoRepoInstance = Container.get(pontoRepoClass);
+        Container.set("PontoRepo", pontoRepoInstance);
+
+        let salaSchemaInstance = require('../../src/persistence/schemas/SalaSchema').default;
+        Container.set("SalaSchema", salaSchemaInstance);
+
+        let salaRepoClass = require('../../src/repos/SalaRepo').default;
+        let salaRepoInstance = Container.get(salaRepoClass);
+        Container.set("SalaRepo", salaRepoInstance);
+
+        let passagemSchemaInstance = require('../../src/persistence/schemas/PassagemSchema').default;
+        Container.set("PassagemSchema", passagemSchemaInstance);
+
+        let passagemRepoClass = require('../../src/repos/PassagemRepo').default;
+        let passagemRepoInstance = Container.get(passagemRepoClass);
+        Container.set("PassagemRepo", passagemRepoInstance);
+
+        let elevadorSchemaInstance = require('../../src/persistence/schemas/ElevadorSchema').default;
+        Container.set("ElevadorSchema", elevadorSchemaInstance);
+
+        let elevadorRepoClass = require('../../src/repos/ElevadorRepo').default;
+        let elevadorRepoInstance = Container.get(elevadorRepoClass);
+        Container.set("ElevadorRepo", elevadorRepoInstance);
+
         let edificioServiceClass = require('../../src/services/EdificioService').default;
         let edificioServiceInstance = Container.get(edificioServiceClass);
         Container.set("EdificioService", edificioServiceInstance);
 
-        let pisoSchemaInstance = require('../../src/persistence/schemas/PisoSchema').default;
-        Container.set("PisoSchema", pisoSchemaInstance);
-
-        let elevadorSchemaInstance = require('../../src/persistence/schemas/ElevadorSchema').default;
-        Container.set("ElevadorSchema", elevadorSchemaInstance);
     });
+
     afterEach(function() {
         sinon.restore();
         sandbox.restore();

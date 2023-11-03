@@ -5,4 +5,5 @@ export default interface IEdificioController  {
     listarEdificioMinEMaxPisos(req: Request, res: Response, next: NextFunction)
     listarEdificios(req: Request, res: Response, next: NextFunction);
     editarEdificio(req: Request, res: Response, next: NextFunction);
+    deleteEdificio(req: Request, res: Response, next: NextFunction);
 }

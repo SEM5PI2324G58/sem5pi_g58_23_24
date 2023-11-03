@@ -12,12 +12,22 @@ import { Piso } from '../domain/piso/Piso';
 import IListarEdMinEMaxPisosDTO from '../dto/IListarEdMinEMaxPisosDTO';
 import { EdificioMap } from '../mappers/EdificioMap';
 import { DescricaoEdificio } from '../domain/edificio/DescricaoEdificio';
+import IPisoRepo from './IRepos/IPisoRepo';
+import IElevadorRepo from './IRepos/IElevadorRepo';
+import ISalaRepo from './IRepos/ISalaRepo';
+import IPassagemRepo from './IRepos/IPassagemRepo';
+import IPontoRepo from './IRepos/IPontoRepo';
 
 @Service()
 
 export default class EdificioService implements IEdificioService {
   constructor(
-      @Inject(config.repos.edificio.name) private edificioRepo : IEdificioRepo
+      @Inject(config.repos.edificio.name) private edificioRepo : IEdificioRepo,
+      @Inject(config.repos.piso.name) private  pisoRepo: IPisoRepo,
+      @Inject(config.repos.elevador.name) private elevadorRepo : IElevadorRepo,
+      @Inject(config.repos.sala.name) private salaRepo : ISalaRepo,
+      @Inject(config.repos.passagem.name) private passagemRepo : IPassagemRepo,
+      @Inject(config.repos.ponto.name) private pontoRepo : IPontoRepo
   ) {}
 
   public async criarEdificio(edificioDTO: IEdificioDTO): Promise<Result<IEdificioDTO>> {
@@ -142,5 +152,37 @@ export default class EdificioService implements IEdificioService {
     }catch(e){
       throw e;
     }
+  }
+
+  public async deleteEdificio(codigo: string): Promise<Result<IEdificioDTO>>{
+    
+    const edificio = await this.edificioRepo.findByDomainId(codigo);
+    if(edificio === null ){
+      return Result.fail<IEdificioDTO>("Edificio não existe")
+    }
+    await this.edificioRepo.delete(edificio);
+    let elevador = edificio.returnElevador();
+    if(elevador){
+      await this.elevadorRepo.delete(elevador);
+    }
+    let listaPisos = edificio.returnListaPisos();
+    for(let pisos of listaPisos){
+      let listaSalas = await this.salaRepo.findSalasByPiso(pisos.returnIdPiso());
+      for (let sala of listaSalas) {
+        await this.salaRepo.delete(await sala);
+      }
+      let listaPassagens = await this.passagemRepo.listarPassagensComUmPiso(pisos.returnIdPiso());
+      for (let passagem of listaPassagens) {
+        await this.passagemRepo.delete(await passagem);
+      }
+      let listaPontos = pisos.props.mapa;      
+      for(let i = 0; i < listaPontos.length; i++){
+        for(let j = 0; j < listaPontos[i].length; j++){
+          await this.pontoRepo.delete(listaPontos[i][j]);
+        }
+      }  
+      await this.pisoRepo.delete(pisos);
+    }
+    return Result.ok<IEdificioDTO>(EdificioMap.toDTO(edificio));
   }
 }

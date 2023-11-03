@@ -46,4 +46,12 @@ export default (app: Router) => {
       })
     }),
     (req, res, next) => ctrl.editarEdificio(req, res, next));
+
+    route.delete('',
+    celebrate({
+      body: Joi.object({
+        codigo: Joi.string().required(),
+      })
+    }),
+    (req, res, next) => ctrl.deleteEdificio(req, res, next));
 };
