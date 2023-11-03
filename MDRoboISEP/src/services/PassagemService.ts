@@ -150,8 +150,10 @@ export default class PassagemService implements IPassagemService {
                         passagens = passagens.concat(passagensTemp);
                     }
                 }
-            }else{
+            }else if (edificiosDTO.edificioACod === undefined && edificiosDTO.edificioBCod === undefined){
                 passagens = await this.passagemRepo.findAll();
+            }else{
+                return Result.fail<IListarPassagemDTO[]>("Não é possível listar passagens apenas para um edificio");
             }
 
             if (passagens.length === 0) {
@@ -161,7 +163,7 @@ export default class PassagemService implements IPassagemService {
             const passagensDTO: IListarPassagemDTO[] = [];
             
             for (let passagem of passagens) {
-                passagensDTO.push(PassagemMap.toListarPassagemDTO(passagem));
+                passagensDTO.push(PassagemMap.toListarPassagemDTO(await passagem));
             }
 
             return Result.ok<IListarPassagemDTO[]>(passagensDTO);
