@@ -43,5 +43,15 @@ export class Sala extends AggregateRoot<SalaProps> {
     }
   }
 
+  public returnNomeSala() : string{
+    return this._id.toString();
+  }
 
+  public returnCategoriaSala() : string{
+    return this.props.categoria.toString();
+  }
+
+  public returnDescricaoSala() : string{
+    return this.props.descricao.toString();
+  }
 }
