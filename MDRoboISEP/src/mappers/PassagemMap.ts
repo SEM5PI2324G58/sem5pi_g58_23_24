@@ -10,6 +10,7 @@ import PisoRepo from "../repos/PisoRepo";
 import { IdPassagem } from "../domain/passagem/IdPassagem";
 import PassagemRepo from "../repos/PassagemRepo";
 import { Piso } from "../domain/piso/Piso";
+import IListarPassagemDTO from "../dto/IListarPassagemDTO";
 
 
 export class PassagemMap extends Mapper<Passagem> {
@@ -18,6 +19,17 @@ export class PassagemMap extends Mapper<Passagem> {
     //Not implemented yet
     //return error
     return null;
+  }
+
+  public static toListarPassagemDTO(passagem: Passagem): IListarPassagemDTO {
+    let dadosPassagem: any = {
+      id: passagem.id.toValue(),
+      idPisoA: passagem.props.pisoA.returnIdPiso(),
+      numeroPisoA: passagem.props.pisoA.returnNumeroPiso(),
+      idPisoB: passagem.props.pisoB.returnIdPiso(),
+      numeroPisoB: passagem.props.pisoB.returnNumeroPiso(),
+    }
+    return dadosPassagem as IListarPassagemDTO;
   }
 
   public static async toDomain(raw: any): Promise<Passagem> {
