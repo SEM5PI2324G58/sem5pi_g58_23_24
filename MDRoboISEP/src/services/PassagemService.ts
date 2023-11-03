@@ -19,7 +19,7 @@ export default class PassagemService implements IPassagemService {
 
     constructor(
         @Inject(config.repos.passagem.name) private passagemRepo: IPassagemRepo,
-        @Inject(config.repos.piso.name) private edificioRepo: IEdificioRepo,
+        @Inject(config.repos.edificio.name) private edificioRepo: IEdificioRepo,
     ) { }
 
     public async criarPassagem(passagemDTO: IPassagemDTO): Promise<Result<IPassagemDTO>> {
@@ -30,12 +30,12 @@ export default class PassagemService implements IPassagemService {
                 return Result.fail<IPassagemDTO>(validacaoResultado.errorValue());
             }
 
-            const {pontoA, pontoB, pontoA1, pontoB1, pisoA, pisoB } 
+            const {pontoA, pontoB, pontoA1, pontoB1, pisoA, pisoB, edificioA, edificioB } 
             = validacaoResultado.getValue();
 
             const listaPontosOrErr = [pontoA, pontoA1, pontoB, pontoB1]
 
-            const passagemOrError = await this.criarObjetoPassagem(listaPontosOrErr, pisoA, pisoB);
+            const passagemOrError = await this.criarObjetoPassagem(listaPontosOrErr, pisoA, pisoB, edificioA, edificioB);
             if (passagemOrError.isFailure) {
                 return Result.fail<IPassagemDTO>(passagemOrError.errorValue());
             }
@@ -91,11 +91,13 @@ export default class PassagemService implements IPassagemService {
             "pontoA1": pontoA1,
             "pontoB1": pontoB1,
             "pisoA": pisoA,
-            "pisoB": pisoB
+            "pisoB": pisoB,
+            "edificioA": edificioDocumentA,
+            "edificioB": edificioDocumentB,
         });
     }
 
-    private async criarObjetoPassagem(listaPontos: Ponto[], pisoA: Piso, pisoB: Piso): Promise<Result<Passagem>> {
+    private async criarObjetoPassagem(listaPontos: Ponto[], pisoA: Piso, pisoB: Piso, edificioA: Edificio, edificioB: Edificio ): Promise<Result<Passagem>> {
 
         let maxId = await this.passagemRepo.getMaxId();
         maxId = maxId + 1;
@@ -105,6 +107,8 @@ export default class PassagemService implements IPassagemService {
             listaPontos: listaPontos,
             pisoA: pisoA,
             pisoB: pisoB,
+            edificioA: edificioA,
+            edificioB: edificioB,
         }, idPassagemOuErro.getValue());
 
         return passagemOuErro;

@@ -17,13 +17,8 @@ export default (app: Router) => {
     celebrate({
       body: Joi.object({
         id: Joi.number().required(),
-        abcissaA: Joi.number().required(),
-        ordenadaA: Joi.number().required(),
-        abcissaB: Joi.number().required(),
-        ordenadaB: Joi.number().required(),
-        orientacao: Joi.string().required(),
-        codigoEdificioA: Joi.number().required(),
-        codigoEdificioB: Joi.number().required(),
+        codigoEdificioA: Joi.string().required(),
+        codigoEdificioB: Joi.string().required(),
         numeroPisoA: Joi.number().required(),
         numeroPisoB: Joi.number().required(),
       })

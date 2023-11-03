@@ -4,12 +4,15 @@ import { IdPassagem } from "./IdPassagem";
 import { Ponto } from "../ponto/Ponto";
 import { Guard } from "../../core/logic/Guard";
 import { Piso } from "../piso/Piso";
+import { Edificio } from "../edificio/Edificio";
 
 
 interface PassagemProps {
   listaPontos: Ponto[];
   pisoA: Piso;
   pisoB: Piso;
+  edificioA: Edificio
+  edificioB: Edificio
 }
 
 export class Passagem extends AggregateRoot<PassagemProps> {

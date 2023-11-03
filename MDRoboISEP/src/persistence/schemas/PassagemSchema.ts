@@ -8,7 +8,7 @@ const PassagemSchema = new mongoose.Schema(
             unique: true
         },
         listaPontos: {
-            type: [[Number]],
+            type: [Number],
             required: [true, 'Introduz os pontos'],
             index: true,
         },
@@ -20,6 +20,16 @@ const PassagemSchema = new mongoose.Schema(
         pisoB: {
             type: Number,
             required: [true, 'Introduz o piso A'],
+            index: true,
+        },
+        edificioA: {
+            type: String,
+            required: [true, 'Introduz o edificio A'],
+            index: true,
+        },
+        edificioB: {
+            type: String,
+            required: [true, 'Introduz o edificio B'],
             index: true,
         },
     },

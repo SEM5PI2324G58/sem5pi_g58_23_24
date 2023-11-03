@@ -6,4 +6,6 @@ export interface IPassagemPersistence {
   listaPontos: number[];
   pisoA: number;
   pisoB: number;
+  edificioA: number;
+  edificioB: number;
   }
