@@ -5,6 +5,8 @@ import { Result } from "../core/logic/Result";
 import IPassagemController from './IControllers/IPassagemController';
 import IPassagemService from '../services/IServices/IPassagemService';
 import IPassagemDTO from '../dto/IPassagemDTO';
+import IListarPassagensPorParDeEdificioDTO from '../dto/IListarPassagensPorParDeEdificioDTO';
+import IListarPassagemDTO from '../dto/IListarPassagemDTO';
 
 @Service()
 export default class PassagemController implements IPassagemController /* TODO: extends ../core/infra/BaseController */ {
@@ -15,6 +17,19 @@ export default class PassagemController implements IPassagemController /* TODO: 
   public async criarPassagem(req: Request, res: Response, next: NextFunction) {
     try{
       const passagemOrError = await this.passagemServiceInstance.criarPassagem(req.body as IPassagemDTO) as Result<IPassagemDTO>;
+      if (passagemOrError.isFailure) {
+        return res.json(passagemOrError.errorValue()).status(402).send();
+      }
+      const passagemDTO = passagemOrError.getValue();
+      return res.json( passagemDTO ).status(201);
+    }catch(e){
+      return next(e);
+    }
+  }
+
+  public async listarPassagensPorParDeEdifícios(req: Request, res: Response, next: NextFunction) {
+    try{
+      const passagemOrError = await this.passagemServiceInstance.listarPassagensPorParDeEdificios(req.body as IListarPassagensPorParDeEdificioDTO) as Result<IListarPassagemDTO[]>;
       if (passagemOrError.isFailure) {
         return res.json(passagemOrError.errorValue()).status(402).send();
       }
