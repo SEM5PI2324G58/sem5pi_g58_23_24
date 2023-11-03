@@ -2,5 +2,5 @@ import { NextFunction, Request, Response } from "express";
 
 export default interface IPassagemController{
     criarPassagem(req: Request, res: Response, next:NextFunction)
-    listarPassagensPorParDeEdifícios(req: Request, res: Response, next:NextFunction)
+    listarPassagensPorParDeEdificios(req: Request, res: Response, next:NextFunction)
 }
