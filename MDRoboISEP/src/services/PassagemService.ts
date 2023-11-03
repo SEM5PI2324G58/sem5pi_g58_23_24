@@ -14,6 +14,8 @@ import { Edificio } from '../domain/edificio/Edificio';
 import IListarPassagemDTO from '../dto/IListarPassagemDTO';
 import { PassagemMap } from '../mappers/PassagemMap';
 import IListarPassagensPorParDeEdificioDTO from '../dto/IListarPassagensPorParDeEdificioDTO';
+import e from 'express';
+import PisoSchema from '../persistence/schemas/PisoSchema';
 @Service()
 
 @Service()
@@ -127,7 +129,28 @@ export default class PassagemService implements IPassagemService {
             var passagens: Passagem[] = [];
 
             if (edificiosDTO.edificioACod !== undefined && edificiosDTO.edificioBCod !== undefined) {
-                passagens = await this.passagemRepo.listarPassagensPorParDeEdificios(edificiosDTO.edificioACod, edificiosDTO.edificioBCod);
+
+                let edificioAPisos = await this.edificioRepo.findByDomainId(edificiosDTO.edificioACod);
+
+                if (edificioAPisos == null) {
+                    return Result.fail<IListarPassagemDTO[]>("Edificio A não existe");                    
+                }
+
+                let edificioBPisos = await this.edificioRepo.findByDomainId(edificiosDTO.edificioBCod);
+
+                if (edificioBPisos == null) {
+                    return Result.fail<IListarPassagemDTO[]>("Edificio B não existe");                    
+                }
+
+                let pisosEdificioA = edificioAPisos.returnListaPisos();
+                let pisosEdificioB = edificioBPisos.returnListaPisos();
+
+                for (let pisoA of pisosEdificioA) {
+                    for (let pisoB of pisosEdificioB) {
+                        let passagensTemp = await this.passagemRepo.listarPassagensPorParDePisos(pisoB.returnIdPiso(), pisoA.returnIdPiso());
+                        passagens = passagens.concat(passagensTemp);
+                    }
+                }
             }else{
                 passagens = await this.passagemRepo.findAll();
             }
