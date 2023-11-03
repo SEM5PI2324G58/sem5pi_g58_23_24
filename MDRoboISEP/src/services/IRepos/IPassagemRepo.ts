@@ -8,4 +8,5 @@ export default interface IPassagemRepo extends Repo<Passagem> {
   delete(passagem: Passagem): Promise<boolean>;
   findAll(): Promise<Passagem[]>;
   listarPassagensComUmPiso(id: number): Promise<Passagem[]>;
+  listarPassagensPorParDeEdificios(edificioA: string, edificioB: string): Promise<Passagem[]>
 }

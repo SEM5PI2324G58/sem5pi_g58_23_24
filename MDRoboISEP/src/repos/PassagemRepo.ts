@@ -132,5 +132,24 @@ export default class PassagemRepo implements IPassagemRepo {
   
     return listaPassagens;
   }
+  
+  public async listarPassagensPorParDeEdificios(edificioA: string, edificioB: string): Promise<Passagem[]> {
+    var listaPassagens = [];
     
+    const query = { edificioA: edificioA, edificioB: edificioB };
+    const passagemRecord1 = await this.passagemSchema.find(query as FilterQuery<IPassagemPersistence & Document>);
+
+    for (let passagem of passagemRecord1) {
+      listaPassagens.push(PassagemMap.toDomain(passagem));
+    }
+    
+    const query2 = { edificioA: edificioB, edificioB: edificioA };
+    const passagemRecord2 = await this.passagemSchema.find(query2 as FilterQuery<IPassagemPersistence & Document>);
+
+    for (let passagem of passagemRecord2) {
+      listaPassagens.push(PassagemMap.toDomain(passagem));
+    }
+  
+    return listaPassagens;
+  }
 }
