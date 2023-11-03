@@ -162,7 +162,7 @@ export default class ElevadorService implements IElevadorService{
             return Result.fail<Elevador>('O elevador não pode estar à frente de uma passagem');
         }
 
-        if(this.verificaSeElevadorAFrenteDePorta()){
+        if(this.verificaSeElevadorAFrenteDePorta(informacaoPiso, xCoordSup, yCoordSup, xCoordInf, yCoordInf)){
             return Result.fail<Elevador>('O elevador não pode estar à frente de uma porta');
         }
     }
@@ -232,9 +232,19 @@ export default class ElevadorService implements IElevadorService{
         return true;
     }
 
-    //////////////////TODO////////////////////////
-    private verificaSeElevadorAFrenteDePorta(): boolean{
-        // por implementar
+    private verificaSeElevadorAFrenteDePorta(informacaoPiso : ICarregarPisoDTO, xCoordSup : number, yCoordSup : number, xCoordInf : number, yCoordInf : number): boolean{
+        for(let sala of informacaoPiso.salas){
+            let porta = [sala.abcissaPorta, sala.ordenadaPorta];
+            if(porta[0] === xCoordSup + 1 || porta[0] === xCoordInf + 1 || porta[0] === xCoordSup - 1 || porta[0] === xCoordInf - 1){
+                if(porta[1] === yCoordSup || porta[1] === yCoordInf){
+                    return false;
+                }
+            }else if(porta[1] === yCoordSup + 1 || porta[1] === yCoordInf + 1 || porta[1] === yCoordSup - 1 || porta[1] === yCoordInf - 1){
+                if(porta[0] === xCoordSup || porta[0] === xCoordInf){
+                    return false;
+                }
+            }
+        }
         return false;
     }
 
