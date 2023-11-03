@@ -18,6 +18,7 @@ import IPontoRepo from "./IRepos/IPontoRepo";
 import IElevadorDTO from "../dto/IElevadorDTO";
 import { ElevadorMap } from "../mappers/ElevadorMap";
 import {Edificio} from "../domain/edificio/Edificio";
+import ICarregarPisoDTO from "../dto/ICarregarPisoDTO";
 
 
 @Service()
@@ -98,133 +99,167 @@ export default class ElevadorService implements IElevadorService{
     }
 
     
-    /**
+/**
      * Este método serve para criar um elevador ou adicionar um piso a um elevador já existente
      * @param elevadorDTO ElevadorDTO
      * @param edificio Edifício ao qual o elevador pertence
      * @param piso Piso ao qual o elevador vai serivir
      * @returns Result<Edificio> Quando tem sucesso retorna o edifício com o elevador criado ou atualizado
      */
-    /*
-    public async carregarElevadorPiso(elevadorDTO: ICriarElevadorDTO, edificio: Edificio,piso : Piso): Promise<Result<Edificio>>{
+    public async carregarElevadorPiso(edificio: Edificio,piso : Piso, informacaoPiso : ICarregarPisoDTO): Promise<Result<Elevador>>{
         try{
-            if (!edificio.posicaoValidaNoMapa(elevadorDTO.xCoord,elevadorDTO.yCoord,elevadorDTO.orientacao)){
-                return Result.fail<Edificio>("A posição do elevador não é válida para o edifício")
-            }
             if (edificio.temElevador()){
-                const elevadorAtualizadoOrError = this.adicionarPisoServido(elevadorDTO,edificio,piso);
-                if(elevadorAtualizadoOrError.isFailure){
-                    return Result.fail<Edificio>(elevadorAtualizadoOrError.errorValue());
-                }else{
-                    return Result.ok<Edificio>(edificio);
+                let elevador = edificio.returnElevador();
+                if(elevador.returnDescricao() === informacaoPiso.elevador.descricao &&
+                elevador.returnMarca() === informacaoPiso.elevador.marca &&
+                elevador.returnModelo() === informacaoPiso.elevador.modelo &&
+                elevador.returnNumeroSerie() === informacaoPiso.elevador.numeroSerie){
+
+                    if(elevador.returnIdPontos().length === 0){
+                        let verif= await this.verificarSeElevadorEstaNumaPosicaoValida(informacaoPiso, edificio.returnDimensaoX(), edificio.returnDimensaoY());
+                        if(verif.isFailure){
+                            return Result.fail<Elevador>(verif.errorValue());
+                        }
+                        const listaPontos = this.criarListaPontos(informacaoPiso, piso);
+
+                        let listaPontosFinal = elevador.pontosAtuais().concat(listaPontos);
+                        elevador.updatePontos(listaPontosFinal);
+                        return Result.ok<Elevador>(elevador);
+                    }
                 }
             }else{
-                const elevadorCriadoOrError = await this.criarElevadorPiso(elevadorDTO,edificio,piso);
-                if(elevadorCriadoOrError.isFailure){
-                    return Result.fail<Edificio>(elevadorCriadoOrError.errorValue());
-                }else{
-                    edificio.adicionarElevador(elevadorCriadoOrError.getValue());
-                    return Result.ok<Edificio>(edificio);
-                }
+                return Result.fail<Elevador>("O edifício não tem elevador.");
             }
         }catch(e){
             throw e;
         }
     }
-    */
-    /**
-     * Este método serve para criar um elevador ao qual serve um determinado piso de um edificio
-     * @param elevadorDTO ElevadorDTO
-     * @param edificio Edificio ao qual o elevador pertence
-     * @param piso Piso ao qual o elevador vai servir
-     * @returns Result <Elevador> Quando tem sucesso retorna o elevador criado
-     */
-    /*
-    private async criarElevadorPiso(elevadorDTO: ICriarElevadorDTO, edificio: Edificio,piso : Piso): Promise<Result<Elevador>>{
-        let pontos = [];
-        pontos = piso.returnPontosParaElevador(elevadorDTO.xCoord,elevadorDTO.yCoord,elevadorDTO.orientacao);
 
-        let id = await this.elevadorRepo.getMaxId();
-
-        let idElevadorOrError = IdElevador.create(id+1);
-        if(idElevadorOrError.isFailure){
-            return Result.fail<Elevador>(idElevadorOrError.errorValue());
+    private async verificarSeElevadorEstaNumaPosicaoValida(informacaoPiso : ICarregarPisoDTO, edificioDimensaoX : number, edificioDimensaoY:number): Promise<Result<Elevador>>{
+        let xCoordSup = informacaoPiso.elevador.xCoord;
+        let yCoordSup = informacaoPiso.elevador.yCoord;
+        let xCoordInf : number;
+        let yCoordInf : number;
+    
+        if (informacaoPiso.elevador.orientacao === 'norte') {
+          xCoordInf = xCoordSup;
+          yCoordInf = yCoordSup + 1;
+        } else if (informacaoPiso.elevador.orientacao === 'oeste') {
+          xCoordInf = xCoordSup + 1;
+          yCoordInf = yCoordSup;
+        }
+    
+        // Coordendas do ponto inferior têm de estar dentro das dimensões do edifício
+        if (xCoordInf >= edificioDimensaoX || yCoordInf >= edificioDimensaoY || xCoordSup < 0 || yCoordSup < 0) {
+          return Result.fail<Elevador>('O elevador tem de estar integralmente dentro do edifício');
         }
 
-        let marcaOrError = MarcaElevador.create(elevadorDTO.marca);
-        let modeloOrError = ModeloElevador.create(elevadorDTO.modelo);
-        let numeroSerieOrError = NumeroSerieElevador.create(elevadorDTO.numeroSerie);
-        let descricaoOrError = DescricaoElevador.create(elevadorDTO.descricao);
-
-        let finalResult = Result.combine([marcaOrError,modeloOrError,numeroSerieOrError,descricaoOrError]);
-
-        if (finalResult.isFailure){
-            return Result.fail<Elevador>(finalResult.errorValue());
+        if(this.verificarSeElevadorEstaNoInteriorDaSala(informacaoPiso, xCoordSup, yCoordSup, xCoordInf, yCoordInf)){
+            return Result.fail<Elevador>('O elevador não pode estar no interior de uma sala');
         }
-        
-        const elevadorOuErro = await Elevador.carregarElevadorPiso({
-            pisosServidos: [piso],
-            pontos : pontos,
-            marca: marcaOrError.getValue(),
-            modelo: modeloOrError.getValue(),
-            numeroSerie: numeroSerieOrError.getValue(),
-            descricao: descricaoOrError.getValue(),
-        }, idElevadorOrError.getValue());
 
-        if (elevadorOuErro.isFailure) {
-            return Result.fail<Elevador>(elevadorOuErro.errorValue());
+        if(this.verificarSeElevadorEstaAFrenteDeUmaPassagem(informacaoPiso, xCoordSup, yCoordSup, xCoordInf, yCoordInf, edificioDimensaoX, edificioDimensaoY)){
+            return Result.fail<Elevador>('O elevador não pode estar à frente de uma passagem');
         }
-        return Result.ok<Elevador>(elevadorOuErro.getValue());
+
+        if(this.verificaSeElevadorAFrenteDePorta()){
+            return Result.fail<Elevador>('O elevador não pode estar à frente de uma porta');
+        }
     }
-    */
-    /**
-     * Este método retorna o elevador atualizado com o novo piso servido
-     * @param elevadorDTO ElevadorDTO
-     * @param edificio Edifício ao qual o elevador pertence
-     * @param piso Piso ao qual o elevador vai servir
-     * @returns Result <Elevador> Quando tem sucesso retorna o elevador atualizado
-     */
-    /*
-    private adicionarPisoServido(elevadorDTO: ICriarElevadorDTO, edificio: Edificio,piso : Piso): Result<Elevador>{
-        let elevador = edificio.returnElevador();
-        if(elevador.pisosServidosAtuais().includes(piso)){
-            return Result.fail<Elevador>("O piso já tem um elevador")
-        }else{
-            let pisosSerividos = elevador.pisosServidosAtuais();
-            pisosSerividos.push(piso);
-            if(elevadorDTO.descricao){
-                if(elevadorDTO.descricao !== elevador.returnDescricao()){
-                    return Result.fail<Elevador>("O elevador já existe e a descrição não corresponde")
-                }
-            }
-            if(elevadorDTO.marca){
-                if(elevadorDTO.marca !== elevador.returnMarca()){
-                    return Result.fail<Elevador>("O elevador já existe e a marca não corresponde")
-                }
-            }
 
-            if(elevadorDTO.modelo){
-                if(elevadorDTO.modelo !== elevador.returnModelo()){
-                    return Result.fail<Elevador>("O elevador já existe e o modelo não corresponde")
-                }
-            }
+        private verificarSeElevadorEstaNoInteriorDaSala(informacaoPiso : ICarregarPisoDTO, xCoordSup : number, yCoordSup : number,
+                 xCoordInf : number, yCoordInf : number) : boolean{
+        const arraySalas = informacaoPiso.salas;
 
-            if(elevadorDTO.numeroSerie){
-                if(elevadorDTO.numeroSerie !== elevador.returnNumeroSerie()){
-                    return Result.fail<Elevador>("O elevador já existe e o número de série não corresponde")
-                }
-            }
-            if(elevador.pontosAtuais()[0].returnAbscissa() !== elevadorDTO.xCoord || elevador.pontosAtuais()[0].returnOrdenada() !== elevadorDTO.yCoord || elevador.orientacao() !== elevadorDTO.orientacao){
-                return Result.fail<Elevador>("O elevador já existe e a posição não corresponde")
+        for(let sala of arraySalas){
+            let pontoSalaInf;
+            let pontoSalaSup;
+
+            if(sala.abcissaA > sala.abcissaB || sala.ordenadaA > sala.ordenadaB){
+                pontoSalaInf = [sala.abcissaA, sala.ordenadaA]
+                pontoSalaSup = [sala.abcissaB, sala.ordenadaB];
             }else{
-                let novosPontos = piso.returnPontosParaElevador(elevadorDTO.xCoord,elevadorDTO.yCoord,elevadorDTO.orientacao);
-                let pontos = elevador.pontosAtuais().concat(novosPontos);
-                elevador.updatePontos(pontos);
-                return Result.ok<Elevador>(elevador);
+                pontoSalaInf = [sala.abcissaB, sala.ordenadaB]
+                pontoSalaSup = [sala.abcissaA, sala.ordenadaA];
+            }
+
+            if(xCoordInf > pontoSalaSup[0] && xCoordInf < pontoSalaInf[0] && yCoordInf > pontoSalaSup[1] && yCoordInf < pontoSalaInf[1] ||
+                xCoordSup > pontoSalaSup[0] && xCoordSup < pontoSalaInf[0] && yCoordSup > pontoSalaSup[1] && yCoordSup < pontoSalaInf[1]){
+                return false;
             }
         }
+        return true;
     }
-    */
+
+    private verificarSeElevadorEstaAFrenteDeUmaPassagem(informacaoPiso : ICarregarPisoDTO, xCoordSup : number, yCoordSup : number,
+        xCoordInf : number, yCoordInf : number, edificioDimensaoX : number, edificioDimensaoY:number): boolean{
+
+        let passagemSup = [informacaoPiso.passagem.abcissa, informacaoPiso.passagem.ordenada];
+        let passagemInf;
+
+        if(informacaoPiso.passagem.orientacao === 'norte'){
+            passagemInf = [informacaoPiso.passagem.abcissa, informacaoPiso.passagem.ordenada + 1];
+        }else{
+            passagemInf = [informacaoPiso.passagem.abcissa + 1, informacaoPiso.passagem.ordenada];
+        }
+
+        if(passagemSup[0] === 0 && passagemInf[0] === 0){
+            if(xCoordInf === passagemSup[0] + 1 || xCoordInf === passagemInf[0] + 1 || xCoordSup === passagemSup[0] + 1 || xCoordSup === passagemInf[0] + 1){
+                if(yCoordInf === passagemSup[1] || yCoordInf === passagemInf[1] || yCoordSup === passagemSup[1] || yCoordSup === passagemInf[1]){
+                    return false;
+                }
+            }
+        }else if(passagemSup[1] === 0 && passagemInf[1] === 0){
+            if(yCoordInf === passagemSup[1] + 1 || yCoordInf === passagemInf[1] + 1 || yCoordSup === passagemSup[1] + 1 || yCoordSup === passagemInf[1] + 1){
+                if(xCoordInf === passagemSup[0] || xCoordInf === passagemInf[0] || xCoordSup === passagemSup[0] || xCoordSup === passagemInf[0]){
+                    return false;
+                }
+
+            }
+        }else if(passagemSup[0] === edificioDimensaoX - 1 && passagemInf[0] === edificioDimensaoX - 1){
+            if(xCoordInf === passagemSup[0] - 1 || xCoordInf === passagemInf[0] - 1 || xCoordSup === passagemSup[0] - 1 || xCoordSup === passagemInf[0] - 1){
+                if(yCoordInf === passagemSup[1] || yCoordInf === passagemInf[1] || yCoordSup === passagemSup[1] || yCoordSup === passagemInf[1]){
+                    return false;
+                }
+            }
+        }else if(passagemSup[1] === edificioDimensaoY - 1 && passagemInf[1] === edificioDimensaoY - 1){
+            if(yCoordInf === passagemSup[1] - 1 || yCoordInf === passagemInf[1] - 1 || yCoordSup === passagemSup[1] - 1 || yCoordSup === passagemInf[1] - 1){
+                if(xCoordInf === passagemSup[0] || xCoordInf === passagemInf[0] || xCoordSup === passagemSup[0] || xCoordSup === passagemInf[0]){
+                    return false;
+                }
+             }
+        }
+        return true;
+    }
+
+    //////////////////TODO////////////////////////
+    private verificaSeElevadorAFrenteDePorta(): boolean{
+        // por implementar
+        return false;
+    }
+
+    private criarListaPontos(informacaoPiso : ICarregarPisoDTO, piso : Piso) : Ponto[]{
+        let listaPontos : Ponto[] = [];
+                    
+        let xCoordSup = informacaoPiso.elevador.xCoord;
+        let yCoordSup = informacaoPiso.elevador.yCoord;
+        let xCoordInf : number;
+        let yCoordInf : number;
+        if (informacaoPiso.elevador.orientacao === 'norte') {
+            xCoordInf = xCoordSup;
+            yCoordInf = yCoordSup + 1;
+        } else if (informacaoPiso.elevador.orientacao === 'oeste') {
+            xCoordInf = xCoordSup + 1;
+            yCoordInf = yCoordSup;
+        }
+
+        listaPontos = piso.returnPontosParaElevador(xCoordSup,yCoordSup,informacaoPiso.elevador.orientacao);
+
+        for(let ponto of listaPontos){
+            ponto.toElevador();
+        }
+        return listaPontos;
+    }
         
     public async editarElevador(elevadorDTO: ICriarElevadorDTO): Promise<Result<ICriarElevadorDTO>>{
         try {
