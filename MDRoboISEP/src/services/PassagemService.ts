@@ -34,12 +34,12 @@ export default class PassagemService implements IPassagemService {
                 return Result.fail<IPassagemDTO>(validacaoResultado.errorValue());
             }
 
-            const {pontoA, pontoB, pontoA1, pontoB1, pisoA, pisoB } 
+            const {pontoA, pontoB, pontoA1, pontoB1, pisoA, pisoB, id} 
             = validacaoResultado.getValue();
 
             const listaPontosOrErr = [pontoA, pontoA1, pontoB, pontoB1]
 
-            const passagemOrError = await this.criarObjetoPassagem(listaPontosOrErr, pisoA, pisoB);
+            const passagemOrError = await this.criarObjetoPassagem(listaPontosOrErr, pisoA, pisoB, id);
             if (passagemOrError.isFailure) {
                 return Result.fail<IPassagemDTO>(passagemOrError.errorValue());
             }
@@ -96,14 +96,13 @@ export default class PassagemService implements IPassagemService {
             "pontoB1": pontoB1,
             "pisoA": pisoA,
             "pisoB": pisoB,
+            "id": passagemDTO.id,
         });
     }
 
-    private async criarObjetoPassagem(listaPontos: Ponto[], pisoA: Piso, pisoB: Piso ): Promise<Result<Passagem>> {
-
-        let maxId = await this.passagemRepo.getMaxId();
-        maxId = maxId + 1;
-        let idPassagemOuErro = await IdPassagem.create(maxId);
+    private async criarObjetoPassagem(listaPontos: Ponto[], pisoA: Piso, pisoB: Piso, id: number): Promise<Result<Passagem>> {
+       
+        let idPassagemOuErro = await IdPassagem.create(id);
 
         const passagemOuErro = Passagem.create({
             listaPontos: listaPontos,

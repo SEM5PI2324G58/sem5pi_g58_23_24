@@ -74,7 +74,7 @@ export class SalaMap extends Mapper<Sala> {
     public static toPersistence(sala: Sala): any {
 
         //criar lista de number com os ids dos pontos
-        let listaPontos: number[] = [];
+        let listaPontos: any[] = [];
         //passar os id dos pontos para a lista
 
         if (sala.props.listaPontos === null || sala.props.listaPontos === undefined || sala.props.listaPontos.length === 0) {

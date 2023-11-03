@@ -55,9 +55,7 @@ export class PassagemMap extends Mapper<Passagem> {
       }
     }
 
-    let passagemRepo = Container.get(PassagemRepo)
-    let maxiD = await passagemRepo.getMaxId();
-    let id = IdPassagem.create(maxiD).getValue();
+    let id = IdPassagem.create(raw.domainID).getValue();
     let pisoA: Piso;
     let pisoB: Piso;
 
