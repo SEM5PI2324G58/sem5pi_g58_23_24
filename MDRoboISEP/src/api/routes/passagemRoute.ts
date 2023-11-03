@@ -28,8 +28,8 @@ export default (app: Router) => {
   route.get('/listarPassagensPorParDeEdificios',
     celebrate({
       body: Joi.object({
-        codigoEdificioA: Joi.string(),
-        codigoEdificioB: Joi.string(),
+        edificioACod: Joi.string(),
+        edificioBCod: Joi.string(),
       })
     }),
     (req, res, next) => ctrl.listarPassagensPorParDeEdificios(req, res, next));

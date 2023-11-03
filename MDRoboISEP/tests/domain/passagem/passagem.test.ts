@@ -12,7 +12,7 @@ import { IdPiso } from '../../../src/domain/piso/IdPiso';
 import { NumeroPiso } from '../../../src/domain/piso/NumeroPiso';
 import { Piso } from '../../../src/domain/piso/Piso';
 
-async function newDummyPonto(x:number, y:number, id: number) {
+async function newDummyPonto(x: number, y: number, id: number) {
 	let idPonto = IdPonto.create(id).getValue();
 	let tipoPonto = TipoPonto.create(" ").getValue();
 	let coordenadas = Coordenadas.create({ abscissa: x, ordenada: y }).getValue();
@@ -21,36 +21,35 @@ async function newDummyPonto(x:number, y:number, id: number) {
 describe('passagem domain', function () {
 
 	it('passagem é criado com sucesso', async function () {
-		// Arrange
 		let idPassagem = IdPassagem.create(1).getValue();
 		let pontoArray: Ponto[] = [];
-		let ponto = await newDummyPonto(0,0,1);
+		let ponto = await newDummyPonto(0, 0, 1);
 		pontoArray[0] = ponto;
-		ponto = await newDummyPonto(1,1,2);
+		ponto = await newDummyPonto(1, 1, 2);
 		pontoArray[1] = ponto;
-		ponto = await newDummyPonto(2,2,3);
+		ponto = await newDummyPonto(2, 2, 3);
 		pontoArray[2] = ponto;
-		ponto = await newDummyPonto(3,3,4);
+		ponto = await newDummyPonto(3, 3, 4);
 		pontoArray[3] = ponto;
 
 		let pontoMatriz: Ponto[][] = [];
 		pontoMatriz[0] = pontoArray;
 
 		let pisoA = Piso.create(
-				{ 
-					numeroPiso: NumeroPiso.create(0).getValue(), 
-					descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: pontoMatriz 
-				}, 
-				IdPiso.create(1).getValue()
-			).getValue();
+			{
+				numeroPiso: NumeroPiso.create(0).getValue(),
+				descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: pontoMatriz
+			},
+			IdPiso.create(1).getValue()
+		).getValue();
 
 		let pisoB = Piso.create(
-				{ 
-					numeroPiso: NumeroPiso.create(0).getValue(), 
-					descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: pontoMatriz 
-				}, 
-				IdPiso.create(2).getValue()
-			).getValue();
+			{
+				numeroPiso: NumeroPiso.create(0).getValue(),
+				descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: pontoMatriz
+			},
+			IdPiso.create(2).getValue()
+		).getValue();
 
 		let passagemOuErro = Passagem.create({
 			listaPontos: pontoArray,
@@ -61,5 +60,114 @@ describe('passagem domain', function () {
 		assert.equal(passagemOuErro.isSuccess, true);
 	});
 
+	it('passagem não é criado com 3 pontos', async function () {
+		let idPassagem = IdPassagem.create(1).getValue();
+		let pontoArray: Ponto[] = [];
+		let ponto = await newDummyPonto(0, 0, 1);
+		pontoArray[0] = ponto;
+		ponto = await newDummyPonto(1, 1, 2);
+		pontoArray[1] = ponto;
+		ponto = await newDummyPonto(2, 2, 3);
+		pontoArray[2] = ponto;
+
+		let pontoMatriz: Ponto[][] = [];
+		pontoMatriz[0] = pontoArray;
+
+		let pisoA = Piso.create(
+			{
+				numeroPiso: NumeroPiso.create(0).getValue(),
+				descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: pontoMatriz
+			},
+			IdPiso.create(1).getValue()
+		).getValue();
+
+		let pisoB = Piso.create(
+			{
+				numeroPiso: NumeroPiso.create(0).getValue(),
+				descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: pontoMatriz
+			},
+			IdPiso.create(2).getValue()
+		).getValue();
+
+		let passagemOuErro = Passagem.create({
+			listaPontos: pontoArray,
+			pisoA: pisoA,
+			pisoB: pisoB,
+		}, idPassagem);
+
+		assert.equal(passagemOuErro.errorValue(), "listaPontos deve ter um tamanho igual a 4.");
+	});
+
+	it('passagem não é criado com pisoA undefined', async function () {
+		let idPassagem = IdPassagem.create(1).getValue();
+		let pontoArray: Ponto[] = [];
+		let ponto = await newDummyPonto(0, 0, 1);
+		pontoArray[0] = ponto;
+		ponto = await newDummyPonto(1, 1, 2);
+		pontoArray[1] = ponto;
+		ponto = await newDummyPonto(2, 2, 3);
+		pontoArray[2] = ponto;
+		ponto = await newDummyPonto(3, 3, 4);
+		pontoArray[3] = ponto;
+
+		let pontoMatriz: Ponto[][] = [];
+		pontoMatriz[0] = pontoArray;
+
+		let pisoB = Piso.create(
+			{
+				numeroPiso: NumeroPiso.create(0).getValue(),
+				descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: pontoMatriz
+			},
+			IdPiso.create(2).getValue()
+		).getValue();
+
+		let pisoA : Piso;
+
+		let passagemOuErro = Passagem.create({
+			listaPontos: pontoArray,
+			pisoA: pisoA,
+			pisoB: pisoB,
+		}, idPassagem);
+
+		assert.equal(passagemOuErro.errorValue(), "pisoA is null or undefined");
+	} 
+	
+	);
+
+	it('passagem não é criado com pisoA undefined', async function () {
+		let idPassagem = IdPassagem.create(1).getValue();
+		let pontoArray: Ponto[] = [];
+		let ponto = await newDummyPonto(0, 0, 1);
+		pontoArray[0] = ponto;
+		ponto = await newDummyPonto(1, 1, 2);
+		pontoArray[1] = ponto;
+		ponto = await newDummyPonto(2, 2, 3);
+		pontoArray[2] = ponto;
+		ponto = await newDummyPonto(3, 3, 4);
+		pontoArray[3] = ponto;
+
+		let pontoMatriz: Ponto[][] = [];
+		pontoMatriz[0] = pontoArray;
+
+		let pisoA = Piso.create(
+			{
+				numeroPiso: NumeroPiso.create(0).getValue(),
+				descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: pontoMatriz
+			},
+			IdPiso.create(2).getValue()
+		).getValue();
+
+		let pisoB : Piso;
+
+		let passagemOuErro = Passagem.create({
+			listaPontos: pontoArray,
+			pisoA: pisoA,
+			pisoB: pisoB,
+		}, idPassagem);
+
+		assert.equal(passagemOuErro.errorValue(), "pisoB is null or undefined");
+	}
+
+	);
 
 });
