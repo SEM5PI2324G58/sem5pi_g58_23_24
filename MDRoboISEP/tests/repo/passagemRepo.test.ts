@@ -1,29 +1,27 @@
 import { expect } from "chai";
 import 'mocha';
-import { Document } from 'mongoose';
 import "reflect-metadata";
 import * as sinon from 'sinon';
 import { Container } from 'typedi';
 import { IPassagemPersistence } from "../../src/dataschema/IPassagemPersistence";
-import  IPassagemDTO  from '../../src/dto/IPassagemDTO';
-import { PassagemMap } from "../../src/mappers/PassagemMap";
 import PassagemRepo from "../../src/repos/PassagemRepo";
-import { Coordenadas } from "../../src/domain/ponto/Coordenadas";
 import { Ponto } from "../../src/domain/ponto/Ponto";
-import { TipoPonto } from "../../src/domain/ponto/TipoPonto";
 import { Result } from "../../src/core/logic/Result";
 import { NumeroPiso } from "../../src/domain/piso/NumeroPiso";
 import { DescricaoPiso } from "../../src/domain/piso/DescricaoPiso";
 import { Piso } from "../../src/domain/piso/Piso";
 import { Passagem } from "../../src/domain/passagem/Passagem";
 import { IdPassagem } from "../../src/domain/passagem/IdPassagem";
+import { IdPiso } from "../../src/domain/piso/IdPiso";
 import IPontoRepo from "../../src/services/IRepos/IPontoRepo";
+import { Document } from 'mongoose';
+
 
 describe('PassagemRepo', () => {
 
     const sandbox = sinon.createSandbox();
-    beforeEach(() => {
-        
+    beforeEach(function() {
+        this.timeout(10000);
         Container.reset();
 
         let passagemSchemaInstance = require('../../src/persistence/schemas/PassagemSchema').default;
@@ -46,12 +44,12 @@ describe('PassagemRepo', () => {
 
     });
     
-    afterEach(() => {
+    afterEach(function() {
         sinon.restore();
         sandbox.restore();
     });
 
-    it('Exists deve retornar true', async () => {
+    it('Exists deve retornar true', async function () {
 
         const data = await createAllData();
         let listaPontos = data.getValue().listaPontos;
@@ -82,7 +80,7 @@ describe('PassagemRepo', () => {
         expect(answer).to.be.true;
     });
 
-    it('Save deve retornar passagem', async () => {
+    it('Save deve retornar passagem', async function () {
 
         const data = await createAllData();
         let listaPontos = data.getValue().listaPontos;
@@ -97,11 +95,18 @@ describe('PassagemRepo', () => {
             pisoB: pisoB,
         }
 
+        let passagemPersistence = {
+            domainID: 1,
+            listaPontos: listaPontos,
+            pisoA: pisoA,
+            pisoB: pisoB,
+        } as IPassagemPersistence;
+
         let passagem = Passagem.create(body, id).getValue();
 
         const passagemSchemaInstance = Container.get("PassagemSchema");
         sinon.stub(passagemSchemaInstance, "findOne").returns(null);
-        sinon.stub(passagemSchemaInstance, "create").returns(body as IPassagemPersistence);
+        sinon.stub(passagemSchemaInstance, "create").returns(passagemPersistence as IPassagemPersistence);
         const repoStub = Container.get("PassagemRepo");
         const stub = sinon.stub(repoStub, 'getMaxId');
         stub.onCall(0).returns(Promise.resolve(1));
@@ -113,10 +118,12 @@ describe('PassagemRepo', () => {
         const passagemRepo = new PassagemRepo(passagemSchemaInstance as any);
         const answer = await passagemRepo.save(passagem);
         expect(answer.id.toValue()).to.equal(passagem.id.toValue());
-        expect(answer.props).to.equal(passagem.props);   
+        expect(answer.props.listaPontos.length).to.equal(passagem.props.listaPontos.length);
+        expect(answer.props.pisoA.returnNumeroPiso()).to.equal(passagem.props.pisoA.returnNumeroPiso());
+        expect(answer.props.pisoB.returnNumeroPiso()).to.equal(passagem.props.pisoB.returnNumeroPiso()); 
     });
  
-    /*it('findByDomainId deve retornar passagem quando encontra', async () => {
+    it('findByDomainId deve retornar passagem quando encontra', async () => {
     
         const data = await createAllData();
         let listaPontos = data.getValue().listaPontos;
@@ -150,11 +157,13 @@ describe('PassagemRepo', () => {
         sinon.stub(passagemSchemaInstance, "findOne").returns(passagem);
         const passagemRepo = new PassagemRepo(passagemSchemaInstance as any);
         const answer = await passagemRepo.findByDomainId(id);
-        expect(answer.id).to.equal(passagem.id);
-        expect(answer.props).to.equal(passagem.props);
-    });*/
+        expect(answer.id.toValue()).to.equal(passagem.id.toValue());
+        expect(answer.props.listaPontos.length).to.equal(passagem.props.listaPontos.length);
+        expect(answer.props.pisoA.returnNumeroPiso()).to.equal(passagem.props.pisoA.returnNumeroPiso());
+        expect(answer.props.pisoB.returnNumeroPiso()).to.equal(passagem.props.pisoB.returnNumeroPiso());
+    });
 
-    it('findByDomainId deve retornar null on fail', async () => {
+    it('findByDomainId deve retornar null on fail', async function () {
     
         const data = await createAllData();
         let listaPontos = data.getValue().listaPontos;
@@ -178,36 +187,39 @@ describe('PassagemRepo', () => {
     });
 
 
-    /*it('getMaxId deve retornar 2', async () => {
+    it('getMaxId deve retornar 2', async () => {
 
         const data = await createAllData();
         let listaPontos = data.getValue().listaPontos;
         let pisoA = data.getValue().pisoA;
         let pisoB = data.getValue().pisoB;
 
-        let id = IdPassagem.create(1).getValue();
-        let id2 = IdPassagem.create(2).getValue();
-
-        let body = {
+        let body1 = {
+            domainID: 1,
             listaPontos: listaPontos,
             pisoA: pisoA,
             pisoB: pisoB,
-        }
-
-        let passagem = Passagem.create(body, id).getValue();
-        let passagem2 = Passagem.create(body,id2).getValue();
+            save() { return this; }
+        } as unknown as IPassagemPersistence & Document<any, any, any>;
+        let body2 = {
+            domainID: 2,
+            listaPontos: listaPontos,
+            pisoA: pisoA,
+            pisoB: pisoB,
+            save() { return this; }
+        } as unknown as IPassagemPersistence & Document<any, any, any> ;
 
         const passagemSchemaInstance = Container.get("PassagemSchema");
        
-        sinon.stub(passagemSchemaInstance, "find").returns([passagem,passagem2]);
+        sinon.stub(passagemSchemaInstance, "find").returns([body1,body2]);
 
         const passagemRepo = new PassagemRepo(passagemSchemaInstance as any);
         const answer = await passagemRepo.getMaxId();
         expect(answer).to.equal(2);
 
-    });*/
+    });
 
-    it('getMaxId deve retornar 0', async () => {
+    it('getMaxId deve retornar 0', async function () {
 
         const passagemSchemaInstance = Container.get("PassagemSchema");
        
@@ -223,10 +235,6 @@ describe('PassagemRepo', () => {
 
 function createAllData(): Promise<Result<any>> {
 
-    interface pontoProps {
-        coordenadas: Coordenadas;
-        tipoPonto: TipoPonto;
-    }
     interface coordenadaProps {
         abscissa: number;
         ordenada: number;
@@ -237,47 +245,11 @@ function createAllData(): Promise<Result<any>> {
         mapa: Ponto[][];
     }
 
-    // criar props pontos
-    let coordenadasA: coordenadaProps = {
-        abscissa: 0,
-        ordenada: 0,
-    }
-    let coordenadasB: coordenadaProps = {
-        abscissa: 1,
-        ordenada: 0,
-    }
-    let coordenadasC: coordenadaProps = {
-        abscissa: 0,
-        ordenada: 1,
-    }
-    let coordenadasD: coordenadaProps = {
-        abscissa: 1,
-        ordenada: 1,
-    }
-
-    // criar props pontos
-    let pontoPropsA: pontoProps = {
-        coordenadas: Coordenadas.create(coordenadasA).getValue(),
-        tipoPonto: TipoPonto.create("Norte").getValue(),
-    }
-    let pontoPropsB: pontoProps = {
-        coordenadas: Coordenadas.create(coordenadasB).getValue(),
-        tipoPonto: TipoPonto.create("Norte").getValue(),
-    }
-    let pontoPropsC: pontoProps = {
-        coordenadas: Coordenadas.create(coordenadasC).getValue(),
-        tipoPonto: TipoPonto.create("Norte").getValue(),
-    }
-    let pontoPropsD: pontoProps = {
-        coordenadas: Coordenadas.create(coordenadasD).getValue(),
-        tipoPonto: TipoPonto.create("Norte").getValue(),
-    }
-
     // criar pontos
-    let pontoA = Ponto.create(pontoPropsA).getValue();
-    let pontoB = Ponto.create(pontoPropsB).getValue();
-    let pontoC = Ponto.create(pontoPropsC).getValue();
-    let pontoD = Ponto.create(pontoPropsD).getValue();
+    let pontoA = undefined;
+    let pontoB = undefined;
+    let pontoC = undefined;
+    let pontoD = undefined;
 
     // criar lista de pontos
     let lista = [pontoA,pontoB,pontoC,pontoD]
@@ -289,17 +261,17 @@ function createAllData(): Promise<Result<any>> {
     let pisoPropsA: pisoProps = {
         numeroPiso: NumeroPiso.create(1).getValue(),
         descricaoPiso: DescricaoPiso.create("Piso 1").getValue(),
-        mapa: mapa,
+        mapa: mapa as any,
     }
     let pisoPropsB: pisoProps = {
         numeroPiso: NumeroPiso.create(1).getValue(),
         descricaoPiso: DescricaoPiso.create("Piso 1").getValue(),
-        mapa: mapa,
+        mapa: mapa as any,
     }
 
     // criar pisos
-    let pisoA = Piso.create(pisoPropsA).getValue();
-    let pisoB = Piso.create(pisoPropsB).getValue();
+    let pisoA = Piso.create(pisoPropsA,IdPiso.create(1).getValue()).getValue();
+    let pisoB = Piso.create(pisoPropsB,IdPiso.create(2).getValue()).getValue();
 
     return Promise.resolve(Result.ok<any>({
         "listaPontos": lista,

@@ -8,7 +8,6 @@ import PontoRepo from "../repos/PontoRepo";
 import PisoRepo from "../repos/PisoRepo";
 
 import { IdPassagem } from "../domain/passagem/IdPassagem";
-import PassagemRepo from "../repos/PassagemRepo";
 import { Piso } from "../domain/piso/Piso";
 import IListarPassagemDTO from "../dto/IListarPassagemDTO";
 
@@ -92,7 +91,7 @@ export class PassagemMap extends Mapper<Passagem> {
     }
 
     let dadosPassagem = {
-      domainID: passagem.id.toValue(),
+      domainID: Number(passagem.id.toValue()),
       listaPontos: listaPontos,
       pisoA: passagem.props.pisoA.returnIdPiso(),
       pisoB: passagem.props.pisoB.returnIdPiso(),
