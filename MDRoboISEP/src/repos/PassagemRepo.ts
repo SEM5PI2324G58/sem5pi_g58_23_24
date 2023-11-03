@@ -20,11 +20,11 @@ export default class PassagemRepo implements IPassagemRepo {
     async getMaxId(): Promise<number> {
     try {
       var maxIdResult = await this.passagemSchema
-        .find({}, { id: 1 })
+        .find({}, { domainID: 1 })
        ;
 
       if (maxIdResult && maxIdResult.length > 0) {
-        return (maxIdResult.sort((a, b) => b.id - a.id))[0].id;
+        return (maxIdResult.sort((a, b) => b.domainID - a.domainID))[0].domainID;
       } else {
         return 0; 
       }
@@ -43,7 +43,7 @@ export default class PassagemRepo implements IPassagemRepo {
 
     const idX = passagem.id instanceof IdPassagem ? (<IdPassagem>passagem.id).toValue() : passagem.id;
 
-    const query = { codigo: idX };
+    const query = { domainID: idX };
     const roleDocument = await this.passagemSchema.findOne(query as FilterQuery<IPassagemPersistence & Document>);
 
     return !!roleDocument === true;
@@ -64,7 +64,7 @@ export default class PassagemRepo implements IPassagemRepo {
 
         return PassagemMap.toDomain(passagemCreated);
       } else {
-        passagemDocument.id = passagem.id;
+        passagemDocument.domainID = Number(passagem.id.toValue());
         const listaPontos = [];
         for (let index = 0; index < passagem.props.listaPontos.length; index++) {
           const element = passagem.props.listaPontos[index];
@@ -81,7 +81,7 @@ export default class PassagemRepo implements IPassagemRepo {
   }
 
   public async findByDomainId(idPassagem: IdPassagem | number): Promise<Passagem> {
-    const query = { idPassagem: idPassagem };
+    const query = { domainID: idPassagem.toString() };
     const passagemRecord = await this.passagemSchema.findOne(query as FilterQuery<IPassagemPersistence & Document>);
 
     if (passagemRecord != null) {
@@ -92,7 +92,7 @@ export default class PassagemRepo implements IPassagemRepo {
   }
 
   public async delete(passagem: Passagem): Promise<boolean> {
-    const query = { idSala: passagem.id.toString() };
+    const query = { domainID: passagem.id.toString() };
     const salaRecord = await this.passagemSchema.findOne(query as FilterQuery<IPassagemPersistence & Document>);
 
     if (salaRecord != null) {
