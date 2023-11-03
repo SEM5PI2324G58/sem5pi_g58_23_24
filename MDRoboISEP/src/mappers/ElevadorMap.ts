@@ -14,13 +14,26 @@ import { Ponto } from "../domain/ponto/Ponto";
 
 export class ElevadorMap extends Mapper<Elevador>{
     public static toDTO(elevador: Elevador): IElevadorDTO {
-        return {
-            id: elevador.id.toValue(),
-            marca: elevador.props.marca.props.marca,
-            modelo: elevador.props.modelo.props.modelo,
-            numeroSerie: elevador.props.numeroSerie.props.numeroSerie,
-            descricao: elevador.props.descricao.props.descricao
-        } as IElevadorDTO;
+        let dadosElevador: any = {
+            id: elevador.id.toValue()
+        }
+
+        if (elevador.props.marca !== undefined && elevador.props.marca !== null) {
+            dadosElevador.marca = elevador.returnMarca();
+        }
+
+        if (elevador.props.modelo !== undefined && elevador.props.modelo !== null) {
+            dadosElevador.modelo = elevador.returnModelo();
+        }
+
+        if (elevador.props.numeroSerie !== undefined && elevador.props.numeroSerie !== null) {
+            dadosElevador.numeroSerie = elevador.returnNumeroSerie();
+        }
+
+        if (elevador.props.descricao !== undefined && elevador.props.descricao !== null) {
+            dadosElevador.descricao = elevador.returnDescricao();
+        }
+        return dadosElevador as IElevadorDTO;
     }
 
     public static async toDomain (raw: any): Promise<Elevador>{
