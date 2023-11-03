@@ -6,16 +6,12 @@ import IPassagemDTO from '../dto/IPassagemDTO';
 import IPassagemService from './IServices/IPassagemService';
 import IEdificioRepo from './IRepos/IEdificioRepo';
 import { Passagem } from '../domain/passagem/Passagem';
-import IPontoRepo from './IRepos/IPontoRepo';
 import { IdPassagem } from '../domain/passagem/IdPassagem';
 import { Ponto } from '../domain/ponto/Ponto';
 import { Piso } from '../domain/piso/Piso';
-import { Edificio } from '../domain/edificio/Edificio';
 import IListarPassagemDTO from '../dto/IListarPassagemDTO';
 import { PassagemMap } from '../mappers/PassagemMap';
 import IListarPassagensPorParDeEdificioDTO from '../dto/IListarPassagensPorParDeEdificioDTO';
-import e from 'express';
-import PisoSchema from '../persistence/schemas/PisoSchema';
 @Service()
 
 @Service()

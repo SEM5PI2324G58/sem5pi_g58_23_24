@@ -18,19 +18,17 @@ import { DescricaoPiso } from "../../src/domain/piso/DescricaoPiso";
 import { NumeroPiso } from "../../src/domain/piso/NumeroPiso";
 import IPassagemRepo from "../../src/services/IRepos/IPassagemRepo";
 import IEdificioRepo from "../../src/services/IRepos/IEdificioRepo";
-import IPontoRepo from "../../src/services/IRepos/IPontoRepo";
 import { Result } from "../../src/core/logic/Result";
 import { Elevador } from "../../src/domain/elevador/Elevador";
 import IPassagemDTO from "../../src/dto/IPassagemDTO";
 import { Passagem } from "../../src/domain/passagem/Passagem";
-import { IdPassagem } from "../../src/domain/passagem/IdPassagem";
 
 describe('PassagemService ', () => {
 
 
     const sandbox = sinon.createSandbox();
     beforeEach(() => {
-        
+
         Container.reset();
 
         let edificioSchemaInstance = require('../../src/persistence/schemas/EdificioSchema').default;
@@ -58,19 +56,13 @@ describe('PassagemService ', () => {
 
         let body = {
             id: 2,
-            abcissaA: 0,
-            ordenadaA: 0,
-            abcissaB: 0,
-            ordenadaB: 0,
-            orientacao: "Norte",
             codigoEdificioA: "1",
             codigoEdificioB: "2",
             numeroPisoA: 1,
             numeroPisoB: 1,
         }
 
-        let data = await createAllData(body.codigoEdificioA, body.numeroPisoA, body.codigoEdificioB, body.numeroPisoB,
-            body.abcissaA, body.ordenadaA, body.abcissaB, body.ordenadaB);
+        let data = await createAllData(body.codigoEdificioA, body.numeroPisoA, body.codigoEdificioB, body.numeroPisoB);
 
         const edificioA = data.getValue().edificioA
         const edificioB = data.getValue().edificioB
@@ -100,19 +92,13 @@ describe('PassagemService ', () => {
 
         let body = {
             id: 2,
-            abcissaA: 0,
-            ordenadaA: 0,
-            abcissaB: 0,
-            ordenadaB: 0,
-            orientacao: "Norte",
             codigoEdificioA: "1",
             codigoEdificioB: "2",
             numeroPisoA: 1,
             numeroPisoB: 1,
         }
 
-        let data = await createAllData(body.codigoEdificioA, body.numeroPisoA, body.codigoEdificioB, body.numeroPisoB,
-            body.abcissaA, body.ordenadaA, body.abcissaB, body.ordenadaB);
+        let data = await createAllData(body.codigoEdificioA, body.numeroPisoA, body.codigoEdificioB, body.numeroPisoB);
 
         const edificioA = data.getValue().edificioA
         const edificioB = data.getValue().edificioB
@@ -141,11 +127,89 @@ describe('PassagemService ', () => {
         expect(answer.errorValue()).to.equal("A passagem com o id " + body.id + " já existe")
     });
 
+    it('Passagem não pode ser criada porque edificio não existe', async () => {
+
+        let body = {
+            id: 2,
+            codigoEdificioA: "1",
+            codigoEdificioB: "2",
+            numeroPisoA: 1,
+            numeroPisoB: 1,
+        }
+
+        let data = await createAllData(body.codigoEdificioA, body.numeroPisoA, body.codigoEdificioB, body.numeroPisoB);
+
+        const edificioA = data.getValue().edificioA
+        const edificioB = data.getValue().edificioB
+
+        let edificioRepo = Container.get("EdificioRepo") as IEdificioRepo;
+        let stubRepo = sinon.stub(edificioRepo, 'findByDomainId');
+        stubRepo.onCall(0).returns(Promise.resolve(edificioA));
+        stubRepo.onCall(1).returns(Promise.resolve(null));
+        let passagemRepo = Container.get("PassagemRepo") as IPassagemRepo;
+        let stubPassagemRepo = sinon.stub(passagemRepo, 'findByDomainId');
+        stubPassagemRepo.onCall(0).returns(null);
+        let stubRepo2 = sinon.stub(passagemRepo, 'save');
+        stubRepo2.onCall(0).returns(Promise.resolve(Passagem));
+        stubRepo2 = sinon.stub(passagemRepo, 'getMaxId');
+        stubRepo2.onCall(0).returns(Promise.resolve(1));
+        let stubRepoo = sinon.stub(edificioRepo, 'save');
+        stubRepoo.onCall(0).returns(Promise.resolve(edificioA));
+        stubRepoo.onCall(1).returns(Promise.resolve(edificioB));
+
+        const passagemService = new PassagemService(passagemRepo, edificioRepo);
+
+        let answer = await passagemService.criarPassagem(body as IPassagemDTO);
+
+        answer = await passagemService.criarPassagem(body as IPassagemDTO);
+        expect(answer.errorValue()).to.equal("Edificio A não existe")
+    });
+
+    it('Passagem não pode ser criada porque piso não existe', async () => {
+
+        let body = {
+            id: 2,
+            codigoEdificioA: "1",
+            codigoEdificioB: "2",
+            numeroPisoA: 2,
+            numeroPisoB: 2,
+        }
+
+        let data = await createAllData(body.codigoEdificioA, 1, body.codigoEdificioB, 1,);
+
+        let edificioA = data.getValue().edificioA
+        const edificioB = data.getValue().edificioB
+
+        let edificioRepo = Container.get("EdificioRepo") as IEdificioRepo;
+        let stubRepo = sinon.stub(edificioRepo, 'findByDomainId');
+        stubRepo.onCall(0).returns(Promise.resolve(edificioA));
+        stubRepo.onCall(1).returns(Promise.resolve(edificioB));
+        let passagemRepo = Container.get("PassagemRepo") as IPassagemRepo;
+        let stubPassagemRepo = sinon.stub(passagemRepo, 'findByDomainId');
+        stubPassagemRepo.onCall(0).returns(null);
+        let stubRepo2 = sinon.stub(passagemRepo, 'save');
+        stubRepo2.onCall(0).returns(Promise.resolve(Passagem));
+        stubRepo2 = sinon.stub(passagemRepo, 'getMaxId');
+        stubRepo2.onCall(0).returns(Promise.resolve(1));
+        let stubRepoo = sinon.stub(edificioRepo, 'save');
+        stubRepoo.onCall(0).returns(Promise.resolve(edificioA));
+        stubRepoo.onCall(1).returns(Promise.resolve(edificioB));
+
+        const passagemService = new PassagemService(passagemRepo, edificioRepo);
+
+        let answer = await passagemService.criarPassagem(body as IPassagemDTO);
+
+        answer = await passagemService.criarPassagem(body as IPassagemDTO);
+        expect(answer.errorValue()).to.equal("Piso A não existe")
+
+    });
+
+    
 });
 
 
-function createAllData(codigoEdificioA: string, numeroPisoA: number, codigoEdificioB: string,
-    numeroPisoB: number, abcissaA: number, ordenadaA: number, abcissaB: number, ordenadaB: number): Promise<Result<any>> {
+function createAllData(codigoEdificioA: string, numeroPisoA: any, codigoEdificioB: string,
+    numeroPisoB: any): Promise<Result<any>> {
 
     // definir props
     interface edificioPropsA {
@@ -160,15 +224,6 @@ function createAllData(codigoEdificioA: string, numeroPisoA: number, codigoEdifi
         descricaoPiso: DescricaoPiso;
         mapa: Ponto[][];
     }
-    interface pontoProps {
-        coordenadas: Coordenadas;
-        tipoPonto: TipoPonto;
-    }
-    interface coordenadaProps {
-        abscissa: number;
-        ordenada: number;
-    }
-
 
     // criar props edificios
     let edificioPropsA: edificioPropsA = {
@@ -192,50 +247,14 @@ function createAllData(codigoEdificioA: string, numeroPisoA: number, codigoEdifi
     let edificioA = Edificio.create(edificioPropsA, codigoEdificio).getValue();
     let edificioB = Edificio.create(edificiosPropsB, codigoEdificio).getValue();
 
-    // criar props pontos
-    let coordenadasA: coordenadaProps = {
-        abscissa: abcissaA,
-        ordenada: ordenadaA,
-    }
-    let coordenadasB: coordenadaProps = {
-        abscissa: abcissaB,
-        ordenada: ordenadaB,
-    }
-    let coordenadasC: coordenadaProps = {
-        abscissa: abcissaA,
-        ordenada: ordenadaA + 1,
-    }
-    let coordenadasD: coordenadaProps = {
-        abscissa: abcissaA + 1,
-        ordenada: ordenadaA,
-    }
-
-    // criar props pontos
-    let pontoPropsA: pontoProps = {
-        coordenadas: Coordenadas.create(coordenadasA).getValue(),
-        tipoPonto: TipoPonto.create("Norte").getValue(),
-    }
-    let pontoPropsB: pontoProps = {
-        coordenadas: Coordenadas.create(coordenadasB).getValue(),
-        tipoPonto: TipoPonto.create("Norte").getValue(),
-    }
-    let pontoPropsC: pontoProps = {
-        coordenadas: Coordenadas.create(coordenadasC).getValue(),
-        tipoPonto: TipoPonto.create("Norte").getValue(),
-    }
-    let pontoPropsD: pontoProps = {
-        coordenadas: Coordenadas.create(coordenadasD).getValue(),
-        tipoPonto: TipoPonto.create("Norte").getValue(),
-    }
-
     // criar pontos
-    let pontoA = Ponto.create(pontoPropsA).getValue();
-    let pontoB = Ponto.create(pontoPropsB).getValue();
-    let pontoC = Ponto.create(pontoPropsC).getValue();
-    let pontoD = Ponto.create(pontoPropsD).getValue();
+    let pontoA = undefined;
+    let pontoB = undefined;
+    let pontoC = undefined;
+    let pontoD = undefined;
 
     // criar mapa
-    let mapa: Ponto[][] = [];
+    let mapa: any[][] = [];
     mapa.push([pontoA, pontoB]);
     mapa.push([pontoC, pontoD]);
 
@@ -259,8 +278,7 @@ function createAllData(codigoEdificioA: string, numeroPisoA: number, codigoEdifi
     edificioA.addPiso(pisoA);
     edificioB.addPiso(pisoB);
 
-    if (edificioA == null || edificioB == null || pisoA == null || pisoB == null || pontoA == null || pontoB == null
-        || pontoC == null || pontoD == null) {
+    if (edificioA == null || edificioB == null || pisoA == null || pisoB == null ) {
         return Promise.resolve(Result.fail<void>("Erro ao criar dados de test"));
     }
 
