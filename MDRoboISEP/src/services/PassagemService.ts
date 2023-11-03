@@ -11,7 +11,9 @@ import { IdPassagem } from '../domain/passagem/IdPassagem';
 import { Ponto } from '../domain/ponto/Ponto';
 import { Piso } from '../domain/piso/Piso';
 import { Edificio } from '../domain/edificio/Edificio';
-
+import IListarPassagemDTO from '../dto/IListarPassagemDTO';
+import { PassagemMap } from '../mappers/PassagemMap';
+import IListarPassagensPorParDeEdificioDTO from '../dto/IListarPassagensPorParDeEdificioDTO';
 @Service()
 
 @Service()
@@ -122,4 +124,32 @@ export default class PassagemService implements IPassagemService {
         }
         return Result.ok<void>();
     }
+
+    
+    public async listarPassagensPorParDeEdificios(edificiosDTO: IListarPassagensPorParDeEdificioDTO): Promise<Result<IListarPassagemDTO[]>> {
+        try {
+            var passagens: Passagem[] = [];
+
+            if (edificiosDTO.edificioACod !== undefined && edificiosDTO.edificioBCod !== undefined) {
+                passagens = await this.passagemRepo.listarPassagensPorParDeEdificios(edificiosDTO.edificioACod, edificiosDTO.edificioBCod);
+            }else{
+                passagens = await this.passagemRepo.findAll();
+            }
+
+            if (passagens.length === 0) {
+                return Result.fail<IListarPassagemDTO[]>("Não existem passagens que satisfaçam os parâmetros de pesquisa");
+            }
+
+            const passagensDTO: IListarPassagemDTO[] = [];
+            
+            for (let passagem of passagens) {
+                passagensDTO.push(PassagemMap.toListarPassagemDTO(passagem));
+            }
+
+            return Result.ok<IListarPassagemDTO[]>(passagensDTO);
+        } catch (e) {
+            throw e;
+        }
+    }
+    
 }
