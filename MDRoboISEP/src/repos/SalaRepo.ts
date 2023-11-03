@@ -8,6 +8,7 @@ import { Sala } from '../domain/sala/Sala';
 import { ISalaPersistence } from '../dataschema/ISalaPersistence';
 import { SalaMap } from '../mappers/SalaMap';
 import ISalaRepo from '../services/IRepos/ISalaRepo';
+import { off } from 'process';
 
 @Service()
 export default class SalaRepo implements ISalaRepo {
@@ -85,6 +86,16 @@ export default class SalaRepo implements ISalaRepo {
     }
     else
       return false;
+  }
+
+  public async findSalasByPiso(idPiso: number): Promise<Sala[]> {
+    const query = { piso: idPiso };
+    const salaRecord = await this.salaSchema.find(query as FilterQuery<ISalaPersistence & Document>);
+    let listaSalas = [];
+    for(let sala of salaRecord){
+      listaSalas.push(SalaMap.toDomain(sala));
+    }
+    return listaSalas;
   }
 
 }
