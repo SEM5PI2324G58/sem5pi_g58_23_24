@@ -7,9 +7,9 @@ import ISalaService from '../services/IServices/ISalaService';
 import ISalaDTO from '../dto/ISalaDTO';
 
 @Service()
-export default class SalaController implements ISalaController /* TODO: extends ../core/infra/BaseController */ {
+export default class SalaController implements ISalaController {
   constructor(
-      @Inject(config.services.passagem.name) private salaServiceInstance : ISalaService
+      @Inject(config.services.sala.name) private salaServiceInstance : ISalaService
   ) {}
 
   public async criarSala(req: Request, res: Response, next: NextFunction) {

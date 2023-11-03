@@ -16,15 +16,10 @@ export default (app: Router) => {
   route.post('',
     celebrate({
       body: Joi.object({
-        id: Joi.number().required(),
-        abcissaA: Joi.number().required(),
-        ordenadaA: Joi.number().required(),
-        abcissaB: Joi.number().required(),
-        ordenadaB: Joi.number().required(),
-        orientacao: Joi.string().required(),
-        codigoEdificio: Joi.number().required(),
+        id: Joi.string().required(),
+        codigoEdificio: Joi.string().required(),
         numeroPiso: Joi.number().required(),
-        descricao: Joi.string().required(),
+        descricao: Joi.string(),
         categoria: Joi.string().required(),
       })
     }),

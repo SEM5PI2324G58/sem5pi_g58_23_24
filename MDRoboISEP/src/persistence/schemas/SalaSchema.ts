@@ -4,7 +4,7 @@ import { ISalaPersistence } from '../../dataschema/ISalaPersistence';
 const SalaSchema = new mongoose.Schema(
     {
         domainID: {
-            type: Number,
+            type: String,
             unique: true
         },
         categoria: {
@@ -18,8 +18,13 @@ const SalaSchema = new mongoose.Schema(
             index: true,
         },
         listaPontos: {
-            type: [[Number]],
+            type: [Number],
             required: [true, 'Introduz os pontos'],
+            index: true,
+        },
+        piso: {
+            type: Number,
+            required: [true, 'Introduz o piso'],
             index: true,
         },
         

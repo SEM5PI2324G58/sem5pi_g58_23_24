@@ -18,7 +18,7 @@ import { Piso } from '../domain/piso/Piso';
 export default class SalaService implements ISalaService {
 
     constructor(
-        @Inject(config.repos.piso.name) private edificioRepo: IEdificioRepo,
+        @Inject(config.repos.edificio.name) private edificioRepo: IEdificioRepo,
         @Inject(config.repos.sala.name) private salaRepo: ISalaRepo,
     ) { }
 
@@ -33,7 +33,9 @@ export default class SalaService implements ISalaService {
             let {pontoA, pontoB, piso }
                 = validacaoResultado.getValue();
 
-            const listaPontosOrErr = [pontoA, pontoB]
+            let listaPontosOrErr: any[] = [];
+            listaPontosOrErr[0] = pontoA;
+            listaPontosOrErr[1] = pontoB;
 
             const salaOrError = await this.criarObjetoSala(listaPontosOrErr, salaDTO.categoria, salaDTO.descricao, piso, salaDTO.id);
             if (salaOrError.isFailure) {
@@ -59,6 +61,7 @@ export default class SalaService implements ISalaService {
         return Result.ok<void>();
     }
     async criarObjetoSala(listaPontosOrErr: Ponto[], categoria: string, descricao: string, piso: Piso, nome: string): Promise<Result<any>> {
+
         let idSalaOuErro = NomeSala.create(nome);
         if (idSalaOuErro.isFailure) {
             return Result.fail<ISalaDTO>(idSalaOuErro.errorValue());
@@ -98,8 +101,8 @@ export default class SalaService implements ISalaService {
         }
        
         const piso = edificioDocument.returnPisoPeloNumero(salaDTO.numeroPiso);
-        let pontoA : undefined;
-        let pontoB : undefined;
+        let pontoA : null;
+        let pontoB : null;
 
         return Result.ok<any>({
             "edificioDocument": edificioDocument,

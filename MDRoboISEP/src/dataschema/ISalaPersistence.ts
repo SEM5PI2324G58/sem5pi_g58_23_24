@@ -1,5 +1,5 @@
 export interface ISalaPersistence {
-    domainID: number;
+    domainID: string;
     categoria: string;
     descricao: string;
     listaPontos: number[];

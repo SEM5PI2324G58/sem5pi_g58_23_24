@@ -8,7 +8,7 @@ import { ISalaPersistence } from "../dataschema/ISalaPersistence";
 import NomeSala from "../domain/sala/NomeSala";
 import DescricaoSala from "../domain/sala/DescricaoSala";
 import CategorizacaoSala from "../domain/sala/CategorizacaoSala";
-import  ISalaDTO  from "../dto/ISalaDTO";
+import ISalaDTO from "../dto/ISalaDTO";
 import { Piso } from "../domain/piso/Piso";
 import PisoRepo from "../repos/PisoRepo";
 
@@ -24,16 +24,10 @@ export class SalaMap extends Mapper<Sala> {
     public static async toDomain(raw: any): Promise<Sala> {
         //criar lista de pontos
         let listaPonto: Ponto[] = [];
-        if (raw instanceof Sala) {
-            return raw;
-        }
         if (raw.listaPontos !== null && raw.listaPontos !== undefined && raw.listaPontos.length > 0) {
             const repoPonto = Container.get(PontoRepo);
             for (let i = 0; i < raw.listaPontos.length; i++) {
-                if (raw.listaPontos[i] === null || raw.listaPontos[i] === undefined) {
-                    return null;
-                }
-                if (raw.listaPontos[i] instanceof Ponto) {
+                if (raw.listaPontos[i] === undefined || raw.listaPontos[i] === null) {
                     listaPonto[i] = raw.listaPontos[i];
                 }
                 else {
@@ -51,12 +45,13 @@ export class SalaMap extends Mapper<Sala> {
         let descricao: DescricaoSala;
         let piso: Piso;
 
-        if (raw.categoria === null || raw.categoria === undefined || raw.descricao === null || raw.descricao === undefined) {
+        if (raw.categoria === null || raw.categoria === undefined) {
             return null;
         }
         if (raw.categoria instanceof CategorizacaoSala && raw.descricao instanceof DescricaoSala && raw.piso instanceof Piso) {
             categoria = raw.categoria;
             descricao = raw.descricao;
+            piso = raw.piso;
         } else {
             let categoriaSala = String(raw.categoria);
             let descricaoSala = String(raw.descricao);
@@ -88,7 +83,12 @@ export class SalaMap extends Mapper<Sala> {
 
         for (let index = 0; index < sala.props.listaPontos.length; index++) {
             const element = sala.props.listaPontos[index];
-            listaPontos.push(element.returnIdPonto());
+            if (element === null || element === undefined) {
+                listaPontos.push(element);
+            }
+            else {
+                listaPontos.push(element.returnIdPonto());
+            }
         }
 
         let dadosSala = {

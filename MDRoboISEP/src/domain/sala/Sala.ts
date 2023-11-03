@@ -11,7 +11,7 @@ import { Piso } from "../piso/Piso";
 
 interface SalaProps {
     categoria: CategorizacaoSala;
-    descricao: DescricaoSala;
+    descricao?: DescricaoSala;
     piso: Piso;
     listaPontos: Ponto[];
 }
