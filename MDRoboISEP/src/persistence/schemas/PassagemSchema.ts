@@ -22,16 +22,6 @@ const PassagemSchema = new mongoose.Schema(
             required: [true, 'Introduz o piso A'],
             index: true,
         },
-        edificioA: {
-            type: String,
-            required: [true, 'Introduz o edificio A'],
-            index: true,
-        },
-        edificioB: {
-            type: String,
-            required: [true, 'Introduz o edificio B'],
-            index: true,
-        },
     },
     {
         timestamps: true,

@@ -11,8 +11,7 @@ import { IdPassagem } from "../domain/passagem/IdPassagem";
 import PassagemRepo from "../repos/PassagemRepo";
 import { Piso } from "../domain/piso/Piso";
 import IListarPassagemDTO from "../dto/IListarPassagemDTO";
-import { Edificio } from "../domain/edificio/Edificio";
-import EdificioRepo from "../repos/EdificioRepo";
+
 
 
 export class PassagemMap extends Mapper<Passagem> {
@@ -61,26 +60,19 @@ export class PassagemMap extends Mapper<Passagem> {
     let id = IdPassagem.create(maxiD).getValue();
     let pisoA: Piso;
     let pisoB: Piso;
-    let edificioA: Edificio;
-    let edificioB: Edificio;
 
     if (raw.pisoA === null || raw.pisoA === undefined || raw.pisoB === null || raw.pisoB === undefined) {
       return null;
     }
 
     const repoPiso = Container.get(PisoRepo);
-    const repoEdificio = Container.get(EdificioRepo);
     pisoA = await repoPiso.findByDomainId(raw.pisoA);
     pisoB = await repoPiso.findByDomainId(raw.pisoB);
-    edificioA = await repoEdificio.findByDomainId(raw.edificioA);
-    edificioB = await repoEdificio.findByDomainId(raw.edificioB);
 
     const passagemOrError = Passagem.create({
       listaPontos: listaPonto,
       pisoA: pisoA,
       pisoB: pisoB,
-      edificioA: edificioA,
-      edificioB: edificioB,
     }, id);
 
     return passagemOrError.isSuccess ? passagemOrError.getValue() : null;
@@ -106,8 +98,6 @@ export class PassagemMap extends Mapper<Passagem> {
       listaPontos: listaPontos,
       pisoA: passagem.props.pisoA.returnIdPiso(),
       pisoB: passagem.props.pisoB.returnIdPiso(),
-      edificioA: passagem.props.edificioA.id.toValue(),
-      edificioB: passagem.props.edificioB.id.toValue(),
     } as unknown as IPassagemPersistence
 
     return dadosPassagem;

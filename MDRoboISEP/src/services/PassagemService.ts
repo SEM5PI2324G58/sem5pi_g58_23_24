@@ -30,12 +30,12 @@ export default class PassagemService implements IPassagemService {
                 return Result.fail<IPassagemDTO>(validacaoResultado.errorValue());
             }
 
-            const {pontoA, pontoB, pontoA1, pontoB1, pisoA, pisoB, edificioA, edificioB } 
+            const {pontoA, pontoB, pontoA1, pontoB1, pisoA, pisoB } 
             = validacaoResultado.getValue();
 
             const listaPontosOrErr = [pontoA, pontoA1, pontoB, pontoB1]
 
-            const passagemOrError = await this.criarObjetoPassagem(listaPontosOrErr, pisoA, pisoB, edificioA, edificioB);
+            const passagemOrError = await this.criarObjetoPassagem(listaPontosOrErr, pisoA, pisoB);
             if (passagemOrError.isFailure) {
                 return Result.fail<IPassagemDTO>(passagemOrError.errorValue());
             }
@@ -92,12 +92,10 @@ export default class PassagemService implements IPassagemService {
             "pontoB1": pontoB1,
             "pisoA": pisoA,
             "pisoB": pisoB,
-            "edificioA": edificioDocumentA,
-            "edificioB": edificioDocumentB,
         });
     }
 
-    private async criarObjetoPassagem(listaPontos: Ponto[], pisoA: Piso, pisoB: Piso, edificioA: Edificio, edificioB: Edificio ): Promise<Result<Passagem>> {
+    private async criarObjetoPassagem(listaPontos: Ponto[], pisoA: Piso, pisoB: Piso ): Promise<Result<Passagem>> {
 
         let maxId = await this.passagemRepo.getMaxId();
         maxId = maxId + 1;
@@ -107,8 +105,6 @@ export default class PassagemService implements IPassagemService {
             listaPontos: listaPontos,
             pisoA: pisoA,
             pisoB: pisoB,
-            edificioA: edificioA,
-            edificioB: edificioB,
         }, idPassagemOuErro.getValue());
 
         return passagemOuErro;

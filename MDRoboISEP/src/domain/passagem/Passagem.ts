@@ -11,8 +11,6 @@ interface PassagemProps {
   listaPontos: Ponto[];
   pisoA: Piso;
   pisoB: Piso;
-  edificioA: Edificio
-  edificioB: Edificio
 }
 
 export class Passagem extends AggregateRoot<PassagemProps> {
