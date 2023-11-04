@@ -13,6 +13,9 @@ import { Ponto } from "../domain/ponto/Ponto";
 import { Passagem } from "../domain/passagem/Passagem";
 import { Sala } from "../domain/sala/Sala";
 import IElevadorRepo from "./IRepos/IElevadorRepo";
+import { TipoPonto } from "../domain/ponto/TipoPonto";
+import { Coordenadas } from "../domain/ponto/Coordenadas";
+import { IdPonto } from "../domain/ponto/IdPonto";
 @Service()
 export default class PontoService implements IPontoService{
     constructor(
@@ -42,7 +45,18 @@ export default class PontoService implements IPontoService{
             return Result.fail<ICarregarMapaDTO>(pisoOrError.errorValue());
         }
 
-        let listaPontosFinal : Ponto[] = [];
+        // Criação de bermas mapa
+        let x = edificioOrError.getValue().props.dimensao.props.x;
+        let y = edificioOrError.getValue().props.dimensao.props.y;
+        for (let i = 0; i <= x; i++) {
+            for (let j = 0; j <= y ; j++) {
+                if(i == 0 && j ==0 ) {pisoOrError.getValue().props.mapa[i][j].toParedeNorteOeste();}
+                else if((1 <= i && i < x && (j == 0 || j == y)) || (i == 0 && j == y)) {pisoOrError.getValue().props.mapa[i][j].toParedeNorte;}
+                else if((1 <= j && j < y && (i == 0 || i == x)) || (i == x && j == 0)) {pisoOrError.getValue().props.mapa[i][j].toParedeOeste();}
+                else{pisoOrError.getValue().props.mapa[i][j].toVazio();}
+            }
+        }  
+
     
         // Elevador
 
@@ -51,7 +65,6 @@ export default class PontoService implements IPontoService{
         }
 
         const listaPontosElevador = this.criarListaPontosElevador(informacaoPisoOrError, pisoOrError.getValue());
-        listaPontosFinal.concat(listaPontosElevador);
         let elevador = edificioOrError.getValue().returnElevador();
         let listaPontosElevadorFinal = elevador.pontosAtuais().concat(listaPontosElevador);
         elevador.updatePontos(listaPontosElevadorFinal);
@@ -65,10 +78,8 @@ export default class PontoService implements IPontoService{
         }
         for(let sala of listaSalas.getValue()){
             let listaPontosDiagonal = this.criarPontosDiagonalSala(informacaoPisoOrError, sala, pisoOrError.getValue());
-            listaPontosFinal = listaPontosFinal.concat(listaPontosDiagonal);
             sala.atualizarListaPontos(listaPontosDiagonal);
             let listaPontosSala = this.criarListaPontosSala(informacaoPisoOrError, sala,pisoOrError.getValue());
-            listaPontosFinal = listaPontosFinal.concat(listaPontosSala);
         }
 
 
@@ -81,15 +92,15 @@ export default class PontoService implements IPontoService{
         
         for(let passagem of listaPassagens.getValue()){
             let listaPontos = this.criarListaPontosPassagem(informacaoPisoOrError, passagem, pisoOrError.getValue());
-            listaPontosFinal = listaPontosFinal.concat(listaPontos);
             passagem.atualizarListaPontos(listaPontos);
         }
 
 
         //save
-
-        for(let ponto of listaPontosFinal){
-            await this.pontoRepo.save(ponto);
+        for(let i = 0; i < pisoOrError.getValue().props.mapa.length; i++){
+            for(let j = 0; j < pisoOrError.getValue().props.mapa[i].length; j++){
+                await this.pontoRepo.save(pisoOrError.getValue().props.mapa[i][j]);
+            }
         }
         this.elevadorRepo.save(elevador);
         for(let sala of listaSalas.getValue()){
@@ -213,10 +224,6 @@ export default class PontoService implements IPontoService{
         }
 
         listaPontos = piso.returnPontosParaPassagem(passagemInfo.abcissa,passagemInfo.ordenada,passagemInfo.orientacao);
-
-        for (let ponto of listaPontos) {
-            ponto.toPassagem();
-        }
         return listaPontos;
     }
 
