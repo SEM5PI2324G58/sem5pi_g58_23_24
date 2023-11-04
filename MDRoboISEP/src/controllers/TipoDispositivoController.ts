@@ -19,7 +19,8 @@ export default class TipoDispositivoController implements ITipoDispositivoContro
             return res.json(tipoDispositivoOrError.errorValue()).status(402).send();
           }
           const tipoDispositivoDTO = tipoDispositivoOrError.getValue();
-          return res.json( tipoDispositivoDTO ).status(201);
+          res.status(201);
+          return res.json( tipoDispositivoDTO );
         }catch(e){
           return next(e);
         }

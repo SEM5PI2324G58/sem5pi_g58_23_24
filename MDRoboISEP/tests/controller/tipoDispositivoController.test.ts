@@ -50,6 +50,7 @@ describe('Tipo Dispositivo Controller', () => {
         req.body = body;
 
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
 
@@ -62,6 +63,8 @@ describe('Tipo Dispositivo Controller', () => {
         await tipoDispositivoController.criarTipoDispositivo(<Request>req, <Response>res, <NextFunction>next);
 
         // Assert
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
         sinon.assert.calledWith(res.json as sinon.SinonSpy, bodyEsperado);
     });
@@ -80,6 +83,7 @@ describe('Tipo Dispositivo Controller', () => {
         let req: Partial<Request> = {};
         req.body = body;
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
         let next: Partial<NextFunction> = () => {};
@@ -103,7 +107,8 @@ describe('Tipo Dispositivo Controller', () => {
         let tipoDispositivoController = new TipoDispositivoController(tipoDispositivoService as ITipoDispositivoService);
         await tipoDispositivoController.criarTipoDispositivo(<Request>req, <Response>res, <NextFunction>next);
 
-
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
         sinon.assert.calledOnce(tipoDispositivoServiceSpy);
         sinon.assert.calledWith(tipoDispositivoServiceSpy, body);
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
@@ -125,6 +130,7 @@ describe('Tipo Dispositivo Controller', () => {
         let req: Partial<Request> = {};
         req.body = body;
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
         let next: Partial<NextFunction> = () => {};
@@ -147,7 +153,9 @@ describe('Tipo Dispositivo Controller', () => {
 
         let tipoDispositivoController = new TipoDispositivoController(tipoDispositivoService as ITipoDispositivoService);
         await tipoDispositivoController.criarTipoDispositivo(<Request>req, <Response>res, <NextFunction>next);
-
+        
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
         sinon.assert.calledOnce(tipoDispositivoServiceSpy);
         sinon.assert.calledWith(tipoDispositivoServiceSpy, body);
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
