@@ -17,6 +17,7 @@ import { TipoTarefa } from "../../src/domain/tipoDispositivo/TipoTarefa";
 import { Marca } from "../../src/domain/tipoDispositivo/Marca";
 import { Modelo } from "../../src/domain/tipoDispositivo/Modelo";
 import { IdTipoDispositivo } from "../../src/domain/tipoDispositivo/IdTipoDispositivo";
+import IDispositivoRepo from "../../src/services/IRepos/IDispositivoRepo";
 
 describe('Tipo Dispositivo Service ', () => {
 
@@ -25,6 +26,14 @@ describe('Tipo Dispositivo Service ', () => {
     beforeEach(function() {
         Container.reset();
         this.timeout(10000);
+
+        let dispositivoSchemaInstance = require('../../src/persistence/schemas/DispositivoSchema').default;
+        Container.set("DispositivoSchema", dispositivoSchemaInstance);
+
+        let dispositivoRepoClass = require('../../src/repos/DispositivoRepo').default;
+        let dispositivoRepoInstance = Container.get(dispositivoRepoClass);
+        Container.set("DispositivoRepo", dispositivoRepoInstance);
+
         let tipoDispositivoSchema = require('../../src/persistence/schemas/TipoDispositivoSchema').default;
         Container.set("TipoDispositivoSchema", tipoDispositivoSchema);
 
@@ -53,20 +62,21 @@ describe('Tipo Dispositivo Service ', () => {
             marca: Marca.create(body.marca).getValue(),
             modelo: Modelo.create(body.modelo).getValue(),
         };
+        let dispositivoRepoInstance = Container.get("DispositivoRepo");
 
         let tipoDispositivoRepoInstance = Container.get("TipoDispositivoRepo");
         let tipoDispositivo = TipoDispositivo.create(tipoDispositivoProps, IdTipoDispositivo.create(3).getValue()).getValue();
 
-        sinon.stub(tipoDispositivoRepoInstance, "getMaxId").returns(Promise.resolve(2));
+        sinon.stub(tipoDispositivoRepoInstance, "getMaxId").returns(Promise.resolve(0));
         sinon.stub(tipoDispositivoRepoInstance, "save").returns(Promise.resolve(tipoDispositivo));
 
-        const tipoDispositivoService = new TipoDispositivoService(tipoDispositivoRepoInstance as ITipoDispositivoRepo);
+        const tipoDispositivoService = new TipoDispositivoService(tipoDispositivoRepoInstance as ITipoDispositivoRepo, dispositivoRepoInstance as IDispositivoRepo);
 
         let answer = await tipoDispositivoService.criarTipoDispositivo(body as ITipoDispositivoDTO);
         expect(answer.getValue().tipoTarefa[0]).to.equal(body.tipoTarefa[0]);
         expect(answer.getValue().marca).to.equal(body.marca);
         expect(answer.getValue().modelo).to.equal(body.modelo);
-
+        expect(answer.getValue().idTipoDispositivo).to.equal(1);
     });
 
     it('Criar tipo de dispositivo com marca incorreta', async () => {
@@ -76,11 +86,11 @@ describe('Tipo Dispositivo Service ', () => {
             "marca": "_______",
             "modelo": "as1",
         };
-        
+        let dispositivoRepoInstance = Container.get("DispositivoRepo");
         let tipoDispositivoRepoInstance = Container.get("TipoDispositivoRepo");
 
         sinon.stub(tipoDispositivoRepoInstance, "getMaxId").returns(Promise.resolve(2));
-        const tipoDispositivoService = new TipoDispositivoService(tipoDispositivoRepoInstance as ITipoDispositivoRepo);
+        const tipoDispositivoService = new TipoDispositivoService(tipoDispositivoRepoInstance as ITipoDispositivoRepo, dispositivoRepoInstance as IDispositivoRepo);
         let answer = await tipoDispositivoService.criarTipoDispositivo(body as ITipoDispositivoDTO);
         expect(answer.errorValue()).to.equal("Erro: A marca tem de ser válida e ter até 50 caratéres.");
     });
@@ -92,11 +102,11 @@ describe('Tipo Dispositivo Service ', () => {
             "marca": "as1",
             "modelo": "_________",
         };
-        
+        let dispositivoRepoInstance = Container.get("DispositivoRepo");
         let tipoDispositivoRepoInstance = Container.get("TipoDispositivoRepo");
 
         sinon.stub(tipoDispositivoRepoInstance, "getMaxId").returns(Promise.resolve(2));
-        const tipoDispositivoService = new TipoDispositivoService(tipoDispositivoRepoInstance as ITipoDispositivoRepo);
+        const tipoDispositivoService = new TipoDispositivoService(tipoDispositivoRepoInstance as ITipoDispositivoRepo, dispositivoRepoInstance as IDispositivoRepo);
         let answer = await tipoDispositivoService.criarTipoDispositivo(body as ITipoDispositivoDTO);
         expect(answer.errorValue()).to.equal("Erro: O modelo tem de ser válido e ter até 100 caratéres.");
     });
@@ -107,11 +117,11 @@ describe('Tipo Dispositivo Service ', () => {
             "marca": "as1",
             "modelo": "as1"
         };
-
+        let dispositivoRepoInstance = Container.get("DispositivoRepo");
         let tipoDispositivoRepoInstance = Container.get("TipoDispositivoRepo");
 
         sinon.stub(tipoDispositivoRepoInstance, "getMaxId").returns(Promise.resolve(2));
-        const tipoDispositivoService = new TipoDispositivoService(tipoDispositivoRepoInstance as ITipoDispositivoRepo);
+        const tipoDispositivoService = new TipoDispositivoService(tipoDispositivoRepoInstance as ITipoDispositivoRepo, dispositivoRepoInstance as IDispositivoRepo);
         let answer = await tipoDispositivoService.criarTipoDispositivo(body as ITipoDispositivoDTO);
         expect(answer.errorValue()).to.equal("Erro: O tipo de tarefa não é válido.");
     });

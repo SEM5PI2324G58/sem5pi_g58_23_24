@@ -27,6 +27,7 @@ import { MarcaElevador } from '../../src/domain/elevador/MarcaElevador';
 import { ModeloElevador } from '../../src/domain/elevador/ModeloElevador';
 import { NumeroSerieElevador } from '../../src/domain/elevador/NumeroSerieElevador';
 import IPontoRepo from '../../src/services/IRepos/IPontoRepo';
+import { IEdificioPersistence } from '../../src/dataschema/IEdificioPersistence';
 
 describe('ElevadorService ', () => {
 
@@ -457,8 +458,6 @@ describe('ElevadorService ', () => {
 
     
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioComElevador")));
-        sinon.stub(pontoRepoInstance, "save").returns(Promise.resolve(null))
-        sinon.stub(elevadorRepoInstance, "save").returns(Promise.resolve(null))
 
         const elevadorService = new ElevadorService(edificioRepoInstance as IEdificioRepo,elevadorRepoInstance as IElevadorRepo, pontoRepoInstance as IPontoRepo);
         

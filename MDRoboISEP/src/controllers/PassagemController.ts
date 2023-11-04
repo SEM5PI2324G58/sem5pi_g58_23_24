@@ -57,12 +57,23 @@ export default class PassagemController implements IPassagemController /* TODO: 
 
   public async listarPassagensPorParDeEdificios(req: Request, res: Response, next: NextFunction) {
     try{
+      
       const passagemOrError = await this.passagemServiceInstance.listarPassagensPorParDeEdificios(req.body as IListarPassagensPorParDeEdificioDTO) as Result<IListarPassagemDTO[]>;
+      
       if (passagemOrError.isFailure) {
-        return res.json(passagemOrError.errorValue()).status(402).send();
+        let erro = String(passagemOrError.errorValue());
+        if (erro === "Edificio A não existe" || erro === "Edificio B não existe") {
+          res.status(404);
+          return res.json(passagemOrError.errorValue());
+        }
+        res.status(400);
+        return res.json(passagemOrError.errorValue());
       }
+
       const passagemDTO = passagemOrError.getValue();
-      return res.json( passagemDTO ).status(201);
+      res.status(200);
+      return res.json(passagemDTO);
+
     }catch(e){
       return next(e);
     }

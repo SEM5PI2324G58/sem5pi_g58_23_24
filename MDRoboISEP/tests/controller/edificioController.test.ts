@@ -350,6 +350,7 @@ it('EdificioController + EdificioService + EdificioRepo criar edificio', async f
 
         let req: Partial<Request> = {};req.body = body;
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
         let next: Partial<NextFunction> = () => {};
@@ -362,6 +363,9 @@ it('EdificioController + EdificioService + EdificioRepo criar edificio', async f
         await edificioController.listarEdificioMinEMaxPisos(<Request> req,<Response> res, <NextFunction> next);
 
         // Assert
+
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
         sinon.assert.calledWith(res.json as sinon.SinonSpy, listaDTO);
     });
@@ -395,6 +399,7 @@ it('EdificioController + EdificioService + EdificioRepo criar edificio', async f
 
         let req: Partial<Request> = {};req.body = body;
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
         let next: Partial<NextFunction> = () => {};
@@ -413,6 +418,8 @@ it('EdificioController + EdificioService + EdificioRepo criar edificio', async f
         await pisoController.listarEdificioMinEMaxPisos(<Request> req,<Response> res, <NextFunction> next);
 
         // Assert
+        sinon.assert.calledOnce(res.status);
+        sinon.assert.calledWith(res.status, 200);
         sinon.assert.calledOnce(edificioServiceSpy);
         sinon.assert.calledWith(edificioServiceSpy, body);
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
@@ -452,6 +459,7 @@ it('EdificioController + EdificioService + EdificioRepo criar edificio', async f
 
         let req: Partial<Request> = {};req.body = body;
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
         let next: Partial<NextFunction> = () => {};
@@ -466,8 +474,13 @@ it('EdificioController + EdificioService + EdificioRepo criar edificio', async f
         await pisoController.listarEdificioMinEMaxPisos(<Request> req,<Response> res, <NextFunction> next);
 
         // Assert
+
+        sinon.assert.calledOnce(res.status);
+        sinon.assert.calledWith(res.status, 200);
         sinon.assert.calledOnce(edificioServiceSpy);
         sinon.assert.calledWith(edificioServiceSpy, body);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, listaDTO);
     });
 
 

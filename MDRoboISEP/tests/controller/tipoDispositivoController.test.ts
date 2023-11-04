@@ -39,25 +39,34 @@ describe('Tipo Dispositivo Controller', () => {
             "marca": "as1",
             "modelo": "as1",
         };
+        let bodyEsperado = {
+            "idTipoDispositivo": 1,
+            "tipoTarefa": ["Vigilancia"],
+            "marca": "as1",
+            "modelo": "as1",
+        };
 
         let req: Partial<Request> = {};
         req.body = body;
 
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
 
         let next: Partial<NextFunction> = () => {};
         let tipoDispositivoService = Container.get("TipoDispositivoService");
-        sinon.stub(tipoDispositivoService, "criarTipoDispositivo").returns(Promise.resolve(Result.ok<ITipoDispositivoDTO>(body as ITipoDispositivoDTO)));
+        sinon.stub(tipoDispositivoService, "criarTipoDispositivo").returns(Promise.resolve(Result.ok<ITipoDispositivoDTO>(bodyEsperado as ITipoDispositivoDTO)));
 
         let tipoDispositivoController = new TipoDispositivoController(tipoDispositivoService as ITipoDispositivoService);
         // Act
         await tipoDispositivoController.criarTipoDispositivo(<Request>req, <Response>res, <NextFunction>next);
 
         // Assert
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
-        sinon.assert.calledWith(res.json as sinon.SinonSpy, sinon.match.any);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, bodyEsperado);
     });
     it('TipoDispositivoController + TipoDispositivoService teste de integração ao método criarTipoDispositivo', async function() {
         let body = {
@@ -65,9 +74,16 @@ describe('Tipo Dispositivo Controller', () => {
             "marca": "as1",
             "modelo": "as1",
         };
+        let bodyEsperado = {
+            "idTipoDispositivo": 1,
+            "tipoTarefa": ["Vigilancia"],
+            "marca": "as1",
+            "modelo": "as1",
+        };
         let req: Partial<Request> = {};
         req.body = body;
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
         let next: Partial<NextFunction> = () => {};
@@ -91,11 +107,12 @@ describe('Tipo Dispositivo Controller', () => {
         let tipoDispositivoController = new TipoDispositivoController(tipoDispositivoService as ITipoDispositivoService);
         await tipoDispositivoController.criarTipoDispositivo(<Request>req, <Response>res, <NextFunction>next);
 
-
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
         sinon.assert.calledOnce(tipoDispositivoServiceSpy);
         sinon.assert.calledWith(tipoDispositivoServiceSpy, body);
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
-        sinon.assert.calledWith(res.json as sinon.SinonSpy, body);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, bodyEsperado);
     });
 
     it('TipoDispositivoController + TipoDispositivoService + TipoDispositivoRepo teste de integração ao método criarTipoDispositivo', async function() {
@@ -104,9 +121,16 @@ describe('Tipo Dispositivo Controller', () => {
             "marca": "as1",
             "modelo": "as1",
         };
+        let bodyEsperado = {
+            "idTipoDispositivo": 1,
+            "tipoTarefa": ["Vigilancia"],
+            "marca": "as1",
+            "modelo": "as1",
+        };
         let req: Partial<Request> = {};
         req.body = body;
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
         let next: Partial<NextFunction> = () => {};
@@ -129,11 +153,13 @@ describe('Tipo Dispositivo Controller', () => {
 
         let tipoDispositivoController = new TipoDispositivoController(tipoDispositivoService as ITipoDispositivoService);
         await tipoDispositivoController.criarTipoDispositivo(<Request>req, <Response>res, <NextFunction>next);
-
+        
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
         sinon.assert.calledOnce(tipoDispositivoServiceSpy);
         sinon.assert.calledWith(tipoDispositivoServiceSpy, body);
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
-        sinon.assert.calledWith(res.json as sinon.SinonSpy, body);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, bodyEsperado);
     });
 
 });

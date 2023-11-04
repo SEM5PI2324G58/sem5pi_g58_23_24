@@ -19,9 +19,31 @@ export default class TipoDispositivoController implements ITipoDispositivoContro
             return res.json(tipoDispositivoOrError.errorValue()).status(402).send();
           }
           const tipoDispositivoDTO = tipoDispositivoOrError.getValue();
-          return res.json( tipoDispositivoDTO ).status(201);
+          res.status(201);
+          return res.json( tipoDispositivoDTO );
         }catch(e){
           return next(e);
         }
       }
+
+  public async deleteTipoDispositivo(req: Request, res: Response, next: NextFunction) {
+    try{
+      const tipoDispositivoOrError = await this.tipoDispositivoServiceInstance.deleteTipoDispositivo(req.body.idTipoDispositivo);
+      if (tipoDispositivoOrError.isFailure) {
+        if (String(tipoDispositivoOrError.errorValue()) === "Tipo de dispositivo não existe") {
+          res.status(404);
+          return res.json(tipoDispositivoOrError.errorValue());
+        }
+        res.status(400);
+        return res.json(tipoDispositivoOrError.errorValue());
+      }
+      const tipoDispositivoDTO = tipoDispositivoOrError.getValue();
+      res.status(200);
+      
+      return res.json( tipoDispositivoDTO );
+      
+    }catch(e){
+      return next(e);
+    }
+}
 }

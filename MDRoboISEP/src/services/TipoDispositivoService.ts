@@ -9,12 +9,14 @@ import { TipoTarefa } from "../domain/tipoDispositivo/TipoTarefa";
 import { Marca } from "../domain/tipoDispositivo/Marca";
 import { Modelo } from "../domain/tipoDispositivo/Modelo";
 import { TipoDispositivo } from "../domain/tipoDispositivo/TipoDispositivo";
-
+import { TipoDispositivoMap } from "../mappers/TipoDispositivoMap";
+import IDispositivoRepo from "./IRepos/IDispositivoRepo";
 @Service()
 
 export default class TipoDispositivoService implements ITipoDispositivoService {
     constructor(
-        @Inject(config.repos.tipoDispositivo.name) private tipoDispositivoRepo : ITipoDispositivoRepo
+        @Inject(config.repos.tipoDispositivo.name) private tipoDispositivoRepo : ITipoDispositivoRepo,
+        @Inject(config.repos.dispositivo.name) private dispositivoRepo : IDispositivoRepo
     ){}
 
     public async criarTipoDispositivo(tipoDispositivoDTO: ITipoDispositivoDTO): Promise<Result<ITipoDispositivoDTO>> {
@@ -48,10 +50,27 @@ export default class TipoDispositivoService implements ITipoDispositivoService {
             }
             const tipoDispositivo = tipoDispositivoOrError.getValue();
             await this.tipoDispositivoRepo.save(tipoDispositivo);
-            return Result.ok<ITipoDispositivoDTO>(tipoDispositivoDTO);
-
+            return Result.ok<ITipoDispositivoDTO>(TipoDispositivoMap.toDTO(tipoDispositivo));           // retorna o tipo de dispositivo criado
         }catch(e){
             throw e;
         }
     }
+
+    public async deleteTipoDispositivo(idTipoDispositivo: number): Promise<Result<ITipoDispositivoDTO>> {
+        try{
+            const tipoDispositivo = await this.tipoDispositivoRepo.findByDomainId(idTipoDispositivo); 
+            if(tipoDispositivo === null){
+                return Result.fail<ITipoDispositivoDTO>("Tipo de dispositivo não existe");
+            }
+            let listaDispositivos = await this.dispositivoRepo.listarTodosOsDispositivosDeUmTipo(idTipoDispositivo); 
+            for(let dispositivo of listaDispositivos){
+                await this.dispositivoRepo.delete(dispositivo);
+            }
+            await this.tipoDispositivoRepo.delete(tipoDispositivo);                               
+            return Result.ok<ITipoDispositivoDTO>(TipoDispositivoMap.toDTO(tipoDispositivo));
+        }catch(e){
+            throw e;
+        }
+    }
+    
 }

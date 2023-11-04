@@ -32,10 +32,16 @@ export default class DispositivoController implements IDispositivoController {
     try{
       const dispositivoOrError = await this.dispositivoServiceInstance.adicionarDispositivoAFrota(req.body as IAdicionarRoboAFrotaDTO) as Result<IDispositivoDTO>;
       if (dispositivoOrError.isFailure) {
-        return res.json(dispositivoOrError.errorValue()).status(402).send();
+          if(String(dispositivoOrError.errorValue()) === "O tipo de dispositivo com o id " + req.body.tipoDispositivo +" não existe"){
+            res.status(404);
+            return res.json(dispositivoOrError.errorValue());
+          }
+        res.status(400);
+        return res.json(dispositivoOrError.errorValue());
       }
       const dispositivoDTO = dispositivoOrError.getValue();
-      return res.json( dispositivoDTO ).status(201);
+      res.status(201);
+      return res.json( dispositivoDTO );
     }catch(e){
       return next(e);
     }
@@ -44,11 +50,16 @@ export default class DispositivoController implements IDispositivoController {
   public async listarDispositivosDaFrota(req: Request, res: Response, next: NextFunction) {
     try{
       const dispositivoOrError = await this.dispositivoServiceInstance.listarDispositivosDaFrota() as Result<IDispositivoDTO[]>;
+      
       if (dispositivoOrError.isFailure) {
-        return res.json(dispositivoOrError.errorValue()).status(402).send();
+        res.status(400);
+        return res.json(dispositivoOrError.errorValue());
       }
+      
       const dispositivoDTO = dispositivoOrError.getValue();
-      return res.json( dispositivoDTO ).status(201);
+      res.status(200);
+      return res.json(dispositivoDTO);
+      
     }catch(e){
       return next(e);
     }

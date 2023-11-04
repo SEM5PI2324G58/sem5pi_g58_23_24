@@ -1,0 +1,298 @@
+{
+	"info": {
+		"_postman_id": "8fb26fd5-9c59-4022-ba74-29abee88dd89",
+		"name": "EdificioTest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "30695664"
+	},
+	"item": [
+		{
+			"name": "ListarMinEMaxPisosVemSemConteudo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(\"Não existem edificios com o número de pisos pretendido\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"minPisos\": 1000,\r\n    \"maxPisos\": 10000\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio/listarMinEMaxPisos"
+			},
+			"response": []
+		},
+		{
+			"name": "ListarMinEMaxPisosComNumerosNegativos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(\"O número mínimo e máximo de pisos não pode ser inferior a 0\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"minPisos\": -1,\r\n    \"maxPisos\": 5\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio/listarMinEMaxPisos"
+			},
+			"response": []
+		},
+		{
+			"name": "ListarMinEMaxPisosComOMinimoEOMaximoTrocados",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(\"O número mínimo de pisos não pode ser superior ao máximo\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"minPisos\": 5,\r\n    \"maxPisos\": 1\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio/listarMinEMaxPisos"
+			},
+			"response": []
+		},
+		{
+			"name": "ListarMinEMaxPisos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"resposta tem um tamanho especifico\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"length\", jsonData.length);\r",
+							"    pm.expect(jsonData).to.have.lengthOf(pm.environment.get(\"length\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"minPisos\": 0,\r\n    \"maxPisos\": 2\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio/listarMinEMaxPisos"
+			},
+			"response": []
+		},
+		{
+			"name": "CriarEdificio",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql({\r",
+							"    \"codigo\": \"Teste\",\r",
+							"    \"nome\": \"EdificioTest\",\r",
+							"    \"descricao\": \"EdificioTest\",\r",
+							"    \"dimensaoX\": 4,\r",
+							"    \"dimensaoY\": 4\r",
+							"});\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"Teste\",\r\n    \"nome\": \"EdificioTest\",\r\n    \"descricao\": \"EdificioTest\",\r\n    \"dimensaoX\": \"4\",\r\n    \"dimensaoY\": \"4\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio"
+			},
+			"response": []
+		},
+		{
+			"name": "ListarMinEMaxPisos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"resposta tem um tamanho especifico\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.lengthOf(pm.environment.get(\"length\")+1);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"minPisos\": 0,\r\n    \"maxPisos\": 2\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio/listarMinEMaxPisos"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql({\r",
+							"    \"codigo\": \"Teste\",\r",
+							"    \"dimensaoX\": 4,\r",
+							"    \"dimensaoY\": 4,\r",
+							"    \"descricao\": \"EdificioTest\",\r",
+							"    \"nome\": \"EdificioTest\"\r",
+							"});\r",
+							"    \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"Teste\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio"
+			},
+			"response": []
+		}
+	]
+}

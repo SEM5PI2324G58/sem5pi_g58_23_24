@@ -56,4 +56,8 @@ export class Sala extends AggregateRoot<SalaProps> {
   public returnDescricaoSala() : string{
     return this.props.descricao.toString();
   }
+
+  public atualizarListaPontos(listaPontos: Ponto[]) : void{
+    this.props.listaPontos = listaPontos;
+  }
 }

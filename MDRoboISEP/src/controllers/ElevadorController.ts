@@ -17,11 +17,19 @@ export default class ElevadorController implements IElevadorController{
             const elevadorOrError = await this.elevadorServiceInstance.criarElevador(req.body as ICriarElevadorDTO);
               
             if (elevadorOrError.isFailure) {
-              return res.json(elevadorOrError.errorValue()).status(402).send();
+                let erro = String(elevadorOrError.errorValue());
+                if (erro === "Edificio não existe." || erro === "Foram inseridos pisos inválidos") {
+                    res.status(404);
+                    return res.json(elevadorOrError.errorValue());
+                }
+                res.status(400);
+                return res.json(elevadorOrError.errorValue());
             }
       
             const criarElevadorDTO = elevadorOrError.getValue();
-            return res.json( criarElevadorDTO ).status(201);
+
+            res.status(201);
+            return res.json(criarElevadorDTO);
         }
         catch (e) {
             return next(e);
@@ -33,13 +41,19 @@ export default class ElevadorController implements IElevadorController{
             const elevadorOrError = await this.elevadorServiceInstance.editarElevador(req.body as ICriarElevadorDTO);
               
             if (elevadorOrError.isFailure) {
-              return res.json(elevadorOrError.errorValue()).status(402).send();
+              let erro = String(elevadorOrError.errorValue());
+                if (erro === "Edificio não existe." || erro === "Foram inseridos pisos inválidos") {
+                    res.status(404);
+                    return res.json(elevadorOrError.errorValue());
+                }
+                res.status(400);
+                return res.json(elevadorOrError.errorValue());
             }
       
-            const criarElevadorDTO = elevadorOrError.getValue();
-            return res.json( criarElevadorDTO ).status(201);
-        }
-        catch (e) {
+            const editarElevadorDTO = elevadorOrError.getValue();
+            res.status(200)
+            return res.json(editarElevadorDTO);
+        } catch (e) {
             return next(e);
         }
     }
@@ -49,11 +63,19 @@ export default class ElevadorController implements IElevadorController{
             const listaElevadoresOrErro = await this.elevadorServiceInstance.listarElevadoresDoEdificio(req.body.edificio);
               
             if (listaElevadoresOrErro.isFailure) {
-              return res.json(listaElevadoresOrErro.errorValue()).status(402).send();
+                let erro = String(listaElevadoresOrErro.errorValue());
+                if (erro === "Edifício não existe." || erro === "O edifício não tem elevadores.") {
+                    res.status(404);
+                    return res.json(listaElevadoresOrErro.errorValue());
+                }
+                res.status(400);
+                return res.json(listaElevadoresOrErro.errorValue());
             }
       
             const listaElevadoresDTO = listaElevadoresOrErro.getValue();
-            return res.json( listaElevadoresDTO ).status(201);
+            res.status(200);
+
+            return res.json(listaElevadoresDTO);
         }
         catch (e) {
             return next(e);
