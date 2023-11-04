@@ -22,4 +22,12 @@ export default (app: Router) => {
       })
     }),
     (req, res, next) => ctrl.criarTipoDispositivo(req, res, next));
+
+  route.delete('',
+    celebrate({
+        body: Joi.object({
+        idTipoDispositivo: Joi.number().required()
+      })
+    }),
+    (req, res, next) => ctrl.deleteTipoDispositivo(req, res, next));
 };
