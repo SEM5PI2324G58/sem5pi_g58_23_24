@@ -273,11 +273,6 @@ describe('DispositivoController', () => {
         listaDTO.push(dispositivoDTO);
            
         let body = {
-            "codigo": "as1",
-            "descricaoDispositivo": "asdasdqwe123",
-            "nickname": "ola",
-            "estado": true,
-            "numeroSerie": "123456789"
         };
 
         let req: Partial<Request> = {};req.body = body;
@@ -295,6 +290,100 @@ describe('DispositivoController', () => {
         let answer = await dispositivoController.listarDispositivosDaFrota(<Request> req,<Response> res, <NextFunction> next);
 
         
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, listaDTO);
+    });
+
+    it('(Listar dispositivos da frota) Teste integração DispositivoController + DispositivoService', async function() {
+
+        let listaDTO : IDispositivoDTO[] = [];
+        let dispositivoDTO = {
+            codigo: "as1",
+            descricaoDispositivo: "asdasdqwe123",
+            nickname: "ola",
+            estado: true,
+            numeroSerie: "123456789"
+        } as IDispositivoDTO
+        
+        listaDTO.push(dispositivoDTO);
+        
+        let body = {
+        };
+
+        let req: Partial<Request> = {};req.body = body;
+
+        let res: Partial<Response> = {
+            status: sinon.spy(),
+            json: sinon.spy()
+        };
+
+        let next: Partial<NextFunction> = () => {};
+
+        let dispositivoServiceInstance = Container.get("DispositivoService");
+        let dispositivoRepoInstance = Container.get("DispositivoRepo");
+
+        let dispositivos : Dispositivo[] = [];
+        dispositivos.push(Container.get("dispositivo"));
+
+        sinon.stub(dispositivoRepoInstance, "findAll").returns(Promise.resolve(dispositivos));
+        
+        let dispositivoController = new DispositivoController(dispositivoServiceInstance as IDispositivoService);
+        let answer = await dispositivoController.listarDispositivosDaFrota(<Request> req,<Response> res, <NextFunction> next);
+
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, listaDTO);
+    });
+
+    it('(Listar dispositivos da frota) Teste integração DispositivoController + DispositivoService + DispositivosRepo', async function() {
+
+        let listaDTO : IDispositivoDTO[] = [];
+        let dispositivoDTO = {
+            codigo: "as1",
+            descricaoDispositivo: "asdasdqwe123",
+            nickname: "ola",
+            estado: true,
+            numeroSerie: "123456789"
+        } as IDispositivoDTO
+        
+        listaDTO.push(dispositivoDTO);
+        
+        const dispositivoPersistence = {
+            codigo: "as1",
+            descricaoDispositivo: "asdasdqwe123",
+            estado: true,
+            nickname: "ola",
+            numeroSerie: "123456789",
+            tipoDeDispositivo: 1,
+        } as IDispositivoPersistence;
+
+        let body = {
+        };
+
+        let req: Partial<Request> = {};req.body = body;
+
+        let res: Partial<Response> = {
+            status: sinon.spy(),
+            json: sinon.spy()
+        };
+
+        let next: Partial<NextFunction> = () => {};
+
+        let dispositivoServiceInstance = Container.get("DispositivoService");
+        let dispositivoSchemaInstance = Container.get("DispositivoSchema");
+        let tipoDispositivoRepoInstance = Container.get("TipoDispositivoRepo");
+
+
+        sinon.stub(dispositivoSchemaInstance, "find").returns(Promise.resolve([dispositivoPersistence as IDispositivoPersistence]));
+        
+        sinon.stub(tipoDispositivoRepoInstance, "findByDomainId").returns( Promise.resolve(Container.get("tipoDispositivo")));
+        
+        let dispositivoController = new DispositivoController(dispositivoServiceInstance as IDispositivoService);
+        let answer = await dispositivoController.listarDispositivosDaFrota(<Request> req,<Response> res, <NextFunction> next);
+
         sinon.assert.calledOnce(res.status as sinon.SinonSpy);
         sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);

@@ -23,6 +23,7 @@ import { ITipoDispositivoPersistence } from "../../src/dataschema/ITipoDispositi
 import { IDispositivoPersistence } from "../../src/dataschema/IDispositivoPersistence";
 import DispositivoRepo from "../../src/repos/DispositivoRepo";
 import TipoDispositivoRepo from "../../src/repos/TipoDispositivoRepo";
+import { DispositivoMap } from "../../src/mappers/DispositivoMap";
 
 
 describe('DispositivoService ', () => {
@@ -297,6 +298,38 @@ describe('DispositivoService ', () => {
         expect(answer[0].nickname).to.equal('ola');
         expect(answer[0].numeroSerie).to.equal('123456789');
         expect(answer[0].estado).to.equal(true);        
+    });
+
+    it('(Listar dispositiovos da frota) DispositivoService + DispositivoRepo teste de integração', async () => {
+        
+        const dispositivoPersistence = {
+            codigo: "as1",
+            descricaoDispositivo: "asdasdqwe123",
+            estado: true,
+            nickname: "ola",
+            numeroSerie: "123456789",
+            tipoDeDispositivo: 1,
+        } as IDispositivoPersistence;
+
+
+        let dispositivoSchemaInstance = Container.get("DispositivoSchema");
+        let tipoDispositivoSchemaInstance = Container.get("TipoDispositivo");
+        let tipoDispositivoRepoInstance = Container.get("TipoDispositivoRepo");
+
+        sinon.stub(dispositivoSchemaInstance, "find").returns(Promise.resolve([dispositivoPersistence as IDispositivoPersistence]));
+        
+        sinon.stub(tipoDispositivoRepoInstance, "findByDomainId").returns( Promise.resolve(Container.get("tipoDispositivo")));
+
+        const dispositivoService = new DispositivoService(new TipoDispositivoRepo(tipoDispositivoSchemaInstance as any),new DispositivoRepo(dispositivoSchemaInstance as any));
+        
+        const answer = (await dispositivoService.listarDispositivosDaFrota()).getValue();
+
+        expect(answer[0].codigo).to.equal('as1');
+        expect(answer[0].descricaoDispositivo).to.equal('asdasdqwe123');
+        expect(answer[0].nickname).to.equal('ola');
+        expect(answer[0].numeroSerie).to.equal('123456789');
+        expect(answer[0].estado).to.equal(true);       
+
     });
 
 });
