@@ -32,10 +32,16 @@ export default class EdificioController implements IEdificioController /* TODO: 
     try{
       const edificioOrError = await this.edificioServiceInstance.listarEdificioMinEMaxPisos(req.body as IListarEdMinEMaxPisosDTO) as Result<IEdificioDTO[]>;
       if (edificioOrError.isFailure) {
-        return res.json(edificioOrError.errorValue()).status(402).send();
+        if(String(edificioOrError.errorValue()) === "Não existem edificios com o número de pisos pretendido"){
+          res.status(404);
+          return res.json(edificioOrError.errorValue());
+        }
+        res.status(400);
+        return res.json(edificioOrError.errorValue());
       }
       const edificioDTO = edificioOrError.getValue();
-      return res.json( edificioDTO ).status(201);
+      res.status(200);
+      return res.json( edificioDTO );
     }catch(e){
       return next(e);
     }
