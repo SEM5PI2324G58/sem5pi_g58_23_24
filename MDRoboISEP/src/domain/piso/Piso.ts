@@ -74,9 +74,9 @@ export class Piso extends AggregateRoot<pisoProps> {
 
     pontos.push(this.props.mapa[xCoordSup][yCoordSup]);
 
-    if (orientacao === 'norte'){  
+    if (orientacao === 'Norte'){  
       pontos.push(this.props.mapa[xCoordSup][yCoordSup+1]);
-    }else if(orientacao === 'oeste'){
+    }else if(orientacao === 'Oeste'){
       pontos.push(this.props.mapa[xCoordSup+1][yCoordSup]);
     }
 
@@ -86,23 +86,24 @@ export class Piso extends AggregateRoot<pisoProps> {
   public returnPontosParaPassagem(xCoordSup: number, yCoordSup: number, orientacao : string) : Ponto[]{
     let pontos: Ponto[] = [];
 
-    if (orientacao === 'norte'){
-      if(this.props.mapa[xCoordSup][yCoordSup].returnTipoPonto() === 'Norte' || this.props.mapa[xCoordSup][yCoordSup].returnTipoPonto() === 'NorteOeste'){
-        this.props.mapa[xCoordSup][yCoordSup].toPassagemNorte();
-      }else{
-        this.props.mapa[xCoordSup][yCoordSup].toPassagem();
-      
-      }
-      pontos.push(this.props.mapa[xCoordSup][yCoordSup]);
-      pontos.push(this.props.mapa[xCoordSup][yCoordSup+1]);
-    }else if(orientacao === 'oeste'){
+    if (orientacao === 'Norte'){
       if(this.props.mapa[xCoordSup][yCoordSup].returnTipoPonto() === 'Oeste' || this.props.mapa[xCoordSup][yCoordSup].returnTipoPonto() === 'NorteOeste'){
         this.props.mapa[xCoordSup][yCoordSup].toPassagemOeste();
       }else{
         this.props.mapa[xCoordSup][yCoordSup].toPassagem();
       }
+      this.props.mapa[xCoordSup + 1][yCoordSup].toPassagem();
       pontos.push(this.props.mapa[xCoordSup][yCoordSup]);
       pontos.push(this.props.mapa[xCoordSup+1][yCoordSup]);
+    }else if(orientacao === 'Oeste'){
+      if(this.props.mapa[xCoordSup][yCoordSup].returnTipoPonto() === 'Norte' || this.props.mapa[xCoordSup][yCoordSup].returnTipoPonto() === 'NorteOeste'){
+        this.props.mapa[xCoordSup][yCoordSup].toPassagemNorte();
+      }else{
+        this.props.mapa[xCoordSup][yCoordSup].toPassagem();
+      }
+      this.props.mapa[xCoordSup][yCoordSup + 1].toPassagem();
+      pontos.push(this.props.mapa[xCoordSup][yCoordSup]);
+      pontos.push(this.props.mapa[xCoordSup][yCoordSup+1]);
     }
     return pontos;
   }
@@ -117,11 +118,20 @@ export class Piso extends AggregateRoot<pisoProps> {
     if(abcissaA < abcissaB){
       xCoordSup = abcissaA;
       xCoordInf = abcissaB;
+    }else{
+      xCoordSup = abcissaB;
+      xCoordInf = abcissaA;
     }
     if(ordenadaA < ordenadaB){
       yCoordSup = ordenadaA;
       yCoordInf = ordenadaB;
+    }else{
+      yCoordSup = ordenadaB;
+      yCoordInf = ordenadaA;
     }
+    
+    this.props.mapa[xCoordSup][yCoordSup].toParedeNorteOeste();
+    this.props.mapa[xCoordSup][yCoordInf].toVazio();
     pontos.push(this.props.mapa[xCoordSup][yCoordSup]);
     pontos.push(this.props.mapa[xCoordInf][yCoordInf]);
     return pontos;
@@ -138,50 +148,65 @@ export class Piso extends AggregateRoot<pisoProps> {
     if(abcissaA < abcissaB){
       xCoordSup = abcissaA;
       xCoordInf = abcissaB;
+    }else{
+      xCoordSup = abcissaB;
+      xCoordInf = abcissaA;
     }
     if(ordenadaA < ordenadaB){
       yCoordSup = ordenadaA;
       yCoordInf = ordenadaB;
+    }else{
+      yCoordSup = ordenadaB;
+      yCoordInf = ordenadaA;
     }
-    let pontoPorta = this.props.mapa[abcissaPorta][ordenadaPorta];
-    pontoPorta.toPorta();
-    pontos.push(pontoPorta);
 
+    this.props.mapa[abcissaPorta][ordenadaPorta].toPorta();
+    
     for(let i = xCoordSup + 1; i <= xCoordInf; i++){
-      let ponto = this.props.mapa[i][yCoordSup];
-      if(ponto.returnIdPonto() !== pontoPorta.returnIdPonto()){
-        ponto.toParedeNorte();
-        pontos.push(ponto);
+      if(this.props.mapa[i][yCoordSup].returnIdPonto() !== this.props.mapa[abcissaPorta][ordenadaPorta].returnIdPonto()){
+        this.props.mapa[i][yCoordSup].toParedeNorte();
+        pontos.push(this.props.mapa[i][yCoordSup]);
+      }else{
+        this.props.mapa[abcissaPorta][ordenadaPorta].toPortaNorte();
       }
     }
-
+    
     for(let i = xCoordSup; i <= xCoordInf; i++){
-      let ponto = this.props.mapa[i][yCoordInf + 1];
-      if(ponto.returnIdPonto() !== pontoPorta.returnIdPonto()){
-        ponto.toParedeNorte();
-        pontos.push(ponto);
+      this.props.mapa[i][yCoordInf + 1];
+      if(this.props.mapa[i][yCoordInf + 1].returnIdPonto() !== this.props.mapa[abcissaPorta][ordenadaPorta].returnIdPonto()){
+        this.props.mapa[i][yCoordInf + 1].toParedeNorte();
+        pontos.push(this.props.mapa[i][yCoordInf + 1]);
+      }else{
+        this.props.mapa[abcissaPorta][ordenadaPorta].toPortaNorte();
       }
     }
-
+    
     for(let i = yCoordSup + 1; i <= yCoordInf; i++){
-      let ponto = this.props.mapa[xCoordSup][i];
-      if(ponto.returnIdPonto() !== pontoPorta.returnIdPonto()){
-        ponto.toParedeOeste();
-        pontos.push(ponto);
+      if(this.props.mapa[xCoordSup][i].returnIdPonto() !== this.props.mapa[abcissaPorta][ordenadaPorta].returnIdPonto()){
+        this.props.mapa[xCoordSup][i].toParedeOeste();
+        pontos.push(this.props.mapa[xCoordSup][i]);
+      }else{
+        this.props.mapa[abcissaPorta][ordenadaPorta].toPortaOeste();
       }
     }
-
+    
     for(let i = yCoordSup; i <= yCoordInf; i++){
-      let ponto = this.props.mapa[xCoordInf + 1][i];
-      if(ponto.returnIdPonto() !== pontoPorta.returnIdPonto()){
-        if(ponto.returnTipoPonto() === 'Norte'){
-          ponto.toParedeNorteOeste();
+      if(this.props.mapa[xCoordInf + 1][i].returnIdPonto() !== this.props.mapa[abcissaPorta][ordenadaPorta].returnIdPonto()){
+        if(this.props.mapa[xCoordInf + 1][i].returnTipoPonto() === 'Norte'){
+          this.props.mapa[xCoordInf + 1][i].toParedeNorteOeste();
         }else{
-          ponto.toParedeOeste();
+          this.props.mapa[xCoordInf + 1][i].toParedeOeste();
         }
-        pontos.push(ponto);
+        pontos.push(this.props.mapa[xCoordInf + 1][i]);
+      }else{
+        if(this.props.mapa[xCoordInf + 1][i].returnTipoPonto() === 'Norte'){
+          this.props.mapa[abcissaPorta][ordenadaPorta].toPortaNorteOeste();
+        }else{
+          this.props.mapa[abcissaPorta][ordenadaPorta].toPortaOeste();
+        }
       }
     }
+    pontos.push(this.props.mapa[abcissaPorta][ordenadaPorta]);
     return pontos;
   }
   /**
