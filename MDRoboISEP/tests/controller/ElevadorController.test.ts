@@ -168,6 +168,7 @@ describe('ElevadorController', () => {
         req.body = body;
 
         let res:Partial<Response> =  {
+            status: sinon.spy(),
             json: sinon.spy()
         };
 
@@ -181,6 +182,8 @@ describe('ElevadorController', () => {
 
         await elevadorController.criarElevador(<Request>req, <Response>res, <NextFunction>next);
 
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
         sinon.assert.calledOnce(res.json);
         sinon.assert.calledWith(res.json, sinon.match({
             edificio: "cod",
@@ -208,6 +211,7 @@ describe('ElevadorController', () => {
         req.body = body;
 
         let res:Partial<Response> =  {
+            status: sinon.spy(),
             json: sinon.spy()
         };
 
@@ -227,7 +231,10 @@ describe('ElevadorController', () => {
         const elevadorServiceSpy = sinon.spy(elevadorServiceInstance,"criarElevador")
         const elevadorController = new ElevadorController(elevadorServiceInstance as IElevadorService)
 
-        await elevadorController.criarElevador(<Request>req, <Response>res, <NextFunction>next);
+        let answer = await elevadorController.criarElevador(<Request>req, <Response>res, <NextFunction>next);
+        
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
         sinon.assert.calledOnce(elevadorServiceSpy)
         sinon.assert.calledWith(elevadorServiceSpy, body);
         sinon.assert.calledWith(res.json, sinon.match({
