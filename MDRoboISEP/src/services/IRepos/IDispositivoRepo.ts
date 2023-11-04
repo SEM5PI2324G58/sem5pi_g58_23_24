@@ -12,4 +12,5 @@ export default interface IDispositivoRepo extends Repo<Dispositivo> {
   exists(dispositivo : Dispositivo): Promise<boolean>;
   findByNumeroSerie(numeroDeSerie: NumeroDeSerie | string): Promise<Dispositivo[]>;
   delete(dispositivo: Dispositivo): Promise<boolean>;
+  listarTodosOsDispositivosDeUmTipo(idTipoDispositivo: number): Promise<Dispositivo[]>;
 }

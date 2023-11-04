@@ -126,4 +126,20 @@ export default class DispositivoRepo implements IDispositivoRepo {
     else
       return false;
   }
+
+  public async listarTodosOsDispositivosDeUmTipo(tipoDeDispositivo: number): Promise<Dispositivo[]> {
+    const query = { tipoDeDispositivo: tipoDeDispositivo};
+    
+    const dispositivoRecords = await this.dispositivoSchema.find(query as FilterQuery<IDispositivoPersistence & Document>);
+
+    const listaDispositivosPromises: Promise<Dispositivo>[] = [];
+
+    for (const dispositivo of dispositivoRecords) {
+      listaDispositivosPromises.push(DispositivoMap.toDomain(dispositivo));
+    }
+
+    const listaDispositivos = await Promise.all(listaDispositivosPromises);
+    return listaDispositivos;
+  }
+
 }
