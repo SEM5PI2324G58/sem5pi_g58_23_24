@@ -86,14 +86,24 @@ export class Piso extends AggregateRoot<pisoProps> {
   public returnPontosParaPassagem(xCoordSup: number, yCoordSup: number, orientacao : string) : Ponto[]{
     let pontos: Ponto[] = [];
 
-    pontos.push(this.props.mapa[xCoordSup][yCoordSup]);
-
-    if (orientacao === 'norte'){  
+    if (orientacao === 'norte'){
+      if(this.props.mapa[xCoordSup][yCoordSup].returnTipoPonto() === 'Norte' || this.props.mapa[xCoordSup][yCoordSup].returnTipoPonto() === 'NorteOeste'){
+        this.props.mapa[xCoordSup][yCoordSup].toPassagemNorte();
+      }else{
+        this.props.mapa[xCoordSup][yCoordSup].toPassagem();
+      
+      }
+      pontos.push(this.props.mapa[xCoordSup][yCoordSup]);
       pontos.push(this.props.mapa[xCoordSup][yCoordSup+1]);
     }else if(orientacao === 'oeste'){
+      if(this.props.mapa[xCoordSup][yCoordSup].returnTipoPonto() === 'Oeste' || this.props.mapa[xCoordSup][yCoordSup].returnTipoPonto() === 'NorteOeste'){
+        this.props.mapa[xCoordSup][yCoordSup].toPassagemOeste();
+      }else{
+        this.props.mapa[xCoordSup][yCoordSup].toPassagem();
+      }
+      pontos.push(this.props.mapa[xCoordSup][yCoordSup]);
       pontos.push(this.props.mapa[xCoordSup+1][yCoordSup]);
     }
-
     return pontos;
   }
 
