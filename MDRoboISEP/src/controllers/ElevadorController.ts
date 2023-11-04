@@ -64,7 +64,7 @@ export default class ElevadorController implements IElevadorController{
               
             if (listaElevadoresOrErro.isFailure) {
                 let erro = String(listaElevadoresOrErro.errorValue());
-                if (erro === "Edifício não existe.") {
+                if (erro === "Edifício não existe." || erro === "O edifício não tem elevadores.") {
                     res.status(404);
                     return res.json(listaElevadoresOrErro.errorValue());
                 }
