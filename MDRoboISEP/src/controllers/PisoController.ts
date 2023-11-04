@@ -21,11 +21,17 @@ export default class PisoController implements IPisoController {
       const pisoOrError = await this.pisoServiceInstance.criarPiso(req.body as ICriarPisoDTO);
         
       if (pisoOrError.isFailure) {
-        return res.json( pisoOrError.errorValue()).status(402).send();
+        let message = String(pisoOrError.errorValue());
+        if(message === "O edificio com o código " + req.body.codigo +" não existe"){
+          res.status(404);
+          return res.json( pisoOrError.errorValue());
+        }
+        return res.status(400).json( pisoOrError.errorValue());
       }
 
       const criarPisoDTO = pisoOrError.getValue();
-      return res.json( criarPisoDTO ).status(201);
+      res.status(201);
+      return res.json( criarPisoDTO );
     }
     catch (e) {
       return next(e);
@@ -37,11 +43,16 @@ export default class PisoController implements IPisoController {
       const pisoOrError = await this.pisoServiceInstance.listarTodosOsPisosDeUmEdificio(req.body.codigo);
         
       if (pisoOrError.isFailure) {
-        return res.json( pisoOrError.errorValue()).status(402).send();
+        let message = String(pisoOrError.errorValue());
+        if(message === "O edificio com o código " + req.body.codigo +" não existe" || message === "Não existem pisos nesse Edificio"){
+          return res.status(404).json( pisoOrError.errorValue());
+        }
+        return res.json( pisoOrError.errorValue()).status(400).send();
       }
 
       const pisoDTO = pisoOrError.getValue();
-      return res.json( pisoDTO ).status(201);
+      res.status(200);
+      return res.json( pisoDTO );
     }
     catch (e) {
       return next(e);
@@ -53,11 +64,18 @@ export default class PisoController implements IPisoController {
       const pisoOrError = await this.pisoServiceInstance.editarPiso(req.body as IEditarPisoDTO);
         
       if (pisoOrError.isFailure) {
-        return res.json( pisoOrError.errorValue()).status(402).send();
+        let message = String(pisoOrError.errorValue());
+        if(message === "O edificio com o código " + req.body.codigoEdificio +" não existe" || 
+              message === "O piso com o número " + req.body.numeroPiso +" não existe"){
+          return res.status(404).json( pisoOrError.errorValue());
+        }
+        return res.json( pisoOrError.errorValue()).status(400).send();
+
       }
 
       const pisoDTO = pisoOrError.getValue();
-      return res.json( pisoDTO ).status(201);
+      res.status(200);
+      return res.json( pisoDTO );
   }catch (e) {
       return next(e);
   }

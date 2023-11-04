@@ -23,6 +23,11 @@ export class SalaMap extends Mapper<Sala> {
 
     public static async toDomain(raw: any): Promise<Sala> {
         //criar lista de pontos
+
+        if (raw instanceof Sala) {
+            return raw;
+        }
+
         let listaPonto: Ponto[] = [];
         if (raw.listaPontos !== null && raw.listaPontos !== undefined && raw.listaPontos.length > 0) {
             const repoPonto = Container.get(PontoRepo);

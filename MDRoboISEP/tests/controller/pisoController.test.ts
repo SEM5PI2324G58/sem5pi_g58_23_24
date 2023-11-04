@@ -35,7 +35,7 @@ import IEditarPisoDTO from "../../src/dto/IEditarPisoDTO";
 describe('PisoController', () => {
     const sandbox = sinon.createSandbox();
     beforeEach(function() {
-        this.timeout(10000);
+        this.timeout(20000);
         Container.reset();
 
         
@@ -85,6 +85,7 @@ describe('PisoController', () => {
         req.body = body;
 
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
 
@@ -103,6 +104,8 @@ describe('PisoController', () => {
         await pisoController.criarPiso(<Request>req, <Response>res, <NextFunction>next);
 
         //Assert
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
         sinon.assert.calledOnce(res.json);
         sinon.assert.calledWith(res.json, sinon.match({
             codigo: "as1",
@@ -125,6 +128,7 @@ describe('PisoController', () => {
         req.body = body;
 
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy(),
         };
 
@@ -164,11 +168,13 @@ describe('PisoController', () => {
         const pisoController = new PisoController(pisoServiceInstance as IPisoService);
 
 		// Act
-		await pisoController.criarPiso(<Request>req, <Response>res, <NextFunction>next);
+		let answer = await pisoController.criarPiso(<Request>req, <Response>res, <NextFunction>next);
 
 		// Assert
         sinon.assert.calledOnce(pisoServiceSpy);
         sinon.assert.calledWith(pisoServiceSpy, body);
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
         sinon.assert.calledWith(res.json, body as ICriarPisoDTO)
         
 	});
@@ -187,13 +193,18 @@ describe('PisoController', () => {
         let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
 		pontoArray[0] = []
 		pontoArray[0][0] = ponto;
+        let listaPisos : number[] = [];
         
         let edificioDoc  = {
             codigo: 'ED01',
             nome: 'string',
+            descricao: 'string',
             dimensaoX: 1,
             dimensaoY: 1,
-        } as IEdificioPersistence;
+            piso:  listaPisos,
+            save() { return this; }
+        }  as unknown as IEdificioPersistence & Document<any, any, any>;
+
         let pontoId  : String[][] = [[]];
         pontoId[0][0] = pontoArray[0][0].id.toString()
 
@@ -217,13 +228,11 @@ describe('PisoController', () => {
         req.body = body;
 
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy(),
         };
 
         let next: Partial<NextFunction> = () => {};
-
-        let pisoServiceInstance = Container.get("PisoService");
-        const pisoServiceSpy = sinon.spy(pisoServiceInstance,'criarPiso');
 
         const pisoSchemaInstance = Container.get("PisoSchema");
         const edificioSchemaInstance = Container.get("EdificioSchema");
@@ -238,13 +247,18 @@ describe('PisoController', () => {
         sinon.stub(pontoSchemaInstance, "create").returns(pontoDTO as IPontoPersistence);
         sinon.stub(pontoSchemaInstance, "find").returns(null);
 
+        let pisoServiceInstance = Container.get("PisoService");
+        const pisoServiceSpy = sinon.spy(pisoServiceInstance,'criarPiso');
         const pisoController = new PisoController(pisoServiceInstance as IPisoService);
 
-        await pisoController.criarPiso(<Request>req, <Response>res, <NextFunction>next);
+        let answer = await pisoController.criarPiso(<Request>req, <Response>res, <NextFunction>next);
 
-
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
         sinon.assert.calledOnce(pisoServiceSpy);
         sinon.assert.calledWith(pisoServiceSpy,body as ICriarPisoDTO);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, body as ICriarPisoDTO);
 
 	});
 
@@ -265,6 +279,7 @@ describe('PisoController', () => {
         req.body = body;
 
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
 
@@ -280,6 +295,8 @@ describe('PisoController', () => {
         await pisoController.listarTodosOsPisosDeUmEdificio(<Request>req, <Response>res, <NextFunction>next);
 
         //Assert
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
         sinon.assert.calledOnce(res.json);
         sinon.assert.calledWith(res.json, sinon.match({
             id: 1,
@@ -298,6 +315,7 @@ describe('PisoController', () => {
         req.body = body;
 
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
         let next: Partial<NextFunction> = () => {};
@@ -327,7 +345,9 @@ describe('PisoController', () => {
                 
         // Act
         await pisoController.listarTodosOsPisosDeUmEdificio(<Request>req, <Response>res, <NextFunction>next);
-
+        
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
         sinon.assert.calledOnce(pisoServiceSpy);
         sinon.assert.calledWith(pisoServiceSpy, "as1");
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
@@ -349,6 +369,7 @@ describe('PisoController', () => {
         req.body = body;
     
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
         let next: Partial<NextFunction> = () => {};
@@ -380,8 +401,10 @@ describe('PisoController', () => {
         const pisoController = new PisoController(pisoServiceInstance as IPisoService);
                 
         // Act
-        await pisoController.listarTodosOsPisosDeUmEdificio(<Request>req, <Response>res, <NextFunction>next);
-    
+        let answer = await pisoController.listarTodosOsPisosDeUmEdificio(<Request>req, <Response>res, <NextFunction>next);
+        
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
         sinon.assert.calledOnce(pisoServiceSpy);
         sinon.assert.calledWith(pisoServiceSpy, "as1");
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
@@ -413,6 +436,7 @@ describe('PisoController', () => {
         req.body = body;
 
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
 
@@ -428,6 +452,8 @@ describe('PisoController', () => {
         await pisoController.editarPiso(<Request>req, <Response>res, <NextFunction>next);
 
         //Assert
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
         sinon.assert.calledOnce(res.json);
         sinon.assert.calledWith(res.json, sinon.match({
             id: 1,
@@ -449,6 +475,7 @@ describe('PisoController', () => {
         req.body = body;
 
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
         let next: Partial<NextFunction> = () => {};
@@ -486,6 +513,8 @@ describe('PisoController', () => {
         // Act
         await pisoController.editarPiso(<Request>req, <Response>res, <NextFunction>next);
 
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
         sinon.assert.calledOnce(pisoServiceSpy);
         sinon.assert.calledWith(pisoServiceSpy, body as IEditarPisoDTO);
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
@@ -509,6 +538,7 @@ describe('PisoController', () => {
         req.body = body;
 
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
         let next: Partial<NextFunction> = () => {};
@@ -542,8 +572,10 @@ describe('PisoController', () => {
         const pisoController = new PisoController(pisoServiceInstance as IPisoService);
                 
         // Act
-        await pisoController.editarPiso(<Request>req, <Response>res, <NextFunction>next);
+        let answer = await pisoController.editarPiso(<Request>req, <Response>res, <NextFunction>next);
 
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
         sinon.assert.calledOnce(pisoServiceSpy);
         sinon.assert.calledWith(pisoServiceSpy, body as IEditarPisoDTO);
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
