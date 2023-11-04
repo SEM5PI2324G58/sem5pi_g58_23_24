@@ -1,14 +1,12 @@
-export default interface ICarregarPisoDTO{
+export default interface ICarregarMapaDTO{
     codigoEdificio: string,
     numeroPiso: number,
-    passagem : {
+    passagens : [{
         id : number,
         abcissa : number,
         ordenada : number,
         orientacao : string,
-        codigoEdificioA : string,
-        codigoEdificioB : string,
-    }
+    }],
     elevador : {
         xCoord : number,
         yCoord : number,
@@ -19,13 +17,13 @@ export default interface ICarregarPisoDTO{
         descricao : string    
     },
     salas: [{
-        id: number,
+        nome: string,
         abcissaA : number,
         ordenadaA : number,
         abcissaB : number,
         ordenadaB : number,
-        ordenadaPorta : number,
         abcissaPorta : number,
+        ordenadaPorta : number,
         orientacaoPorta : string,
         descricao : string,
         categoria : string

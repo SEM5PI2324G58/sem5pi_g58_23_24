@@ -3,7 +3,6 @@ import { Result } from "../core/logic/Result";
 import { Inject, Service } from "typedi";
 import IElevadorRepo from "./IRepos/IElevadorRepo";
 import IEdificioRepo from "./IRepos/IEdificioRepo";
-import IPisoRepo from "./IRepos/IPisoRepo";
 import config from "../../config";
 import ICriarElevadorDTO from "../dto/ICriarElevadorDTO";
 import { Piso } from "../domain/piso/Piso";
@@ -17,8 +16,6 @@ import { Elevador } from "../domain/elevador/Elevador";
 import IPontoRepo from "./IRepos/IPontoRepo";
 import IElevadorDTO from "../dto/IElevadorDTO";
 import { ElevadorMap } from "../mappers/ElevadorMap";
-import {Edificio} from "../domain/edificio/Edificio";
-import ICarregarPisoDTO from "../dto/ICarregarPisoDTO";
 
 
 @Service()
