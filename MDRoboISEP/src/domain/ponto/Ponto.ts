@@ -75,4 +75,12 @@ export class Ponto extends AggregateRoot<pontoProps> {
   public toVazio() {
     this.props.tipoPonto = TipoPonto.create(" ").getValue();
   }
+
+  public toPassagem() {
+    this.props.tipoPonto = TipoPonto.create("Passagem").getValue();
+  }
+
+  public toPorta() {
+    this.props.tipoPonto = TipoPonto.create("Porta").getValue();
+  }
 }

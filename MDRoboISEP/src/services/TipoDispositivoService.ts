@@ -9,6 +9,7 @@ import { TipoTarefa } from "../domain/tipoDispositivo/TipoTarefa";
 import { Marca } from "../domain/tipoDispositivo/Marca";
 import { Modelo } from "../domain/tipoDispositivo/Modelo";
 import { TipoDispositivo } from "../domain/tipoDispositivo/TipoDispositivo";
+import { TipoDispositivoMap } from "../mappers/TipoDispositivoMap";
 
 @Service()
 
@@ -48,8 +49,7 @@ export default class TipoDispositivoService implements ITipoDispositivoService {
             }
             const tipoDispositivo = tipoDispositivoOrError.getValue();
             await this.tipoDispositivoRepo.save(tipoDispositivo);
-            return Result.ok<ITipoDispositivoDTO>(tipoDispositivoDTO);
-
+            return Result.ok<ITipoDispositivoDTO>(TipoDispositivoMap.toDTO(tipoDispositivo));           // retorna o tipo de dispositivo criado
         }catch(e){
             throw e;
         }

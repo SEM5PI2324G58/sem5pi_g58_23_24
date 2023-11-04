@@ -57,7 +57,7 @@ describe('Tipo Dispositivo Service ', () => {
         let tipoDispositivoRepoInstance = Container.get("TipoDispositivoRepo");
         let tipoDispositivo = TipoDispositivo.create(tipoDispositivoProps, IdTipoDispositivo.create(3).getValue()).getValue();
 
-        sinon.stub(tipoDispositivoRepoInstance, "getMaxId").returns(Promise.resolve(2));
+        sinon.stub(tipoDispositivoRepoInstance, "getMaxId").returns(Promise.resolve(0));
         sinon.stub(tipoDispositivoRepoInstance, "save").returns(Promise.resolve(tipoDispositivo));
 
         const tipoDispositivoService = new TipoDispositivoService(tipoDispositivoRepoInstance as ITipoDispositivoRepo);
@@ -66,7 +66,7 @@ describe('Tipo Dispositivo Service ', () => {
         expect(answer.getValue().tipoTarefa[0]).to.equal(body.tipoTarefa[0]);
         expect(answer.getValue().marca).to.equal(body.marca);
         expect(answer.getValue().modelo).to.equal(body.modelo);
-
+        expect(answer.getValue().idTipoDispositivo).to.equal(1);
     });
 
     it('Criar tipo de dispositivo com marca incorreta', async () => {
