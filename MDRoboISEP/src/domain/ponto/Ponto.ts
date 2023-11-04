@@ -91,4 +91,13 @@ export class Ponto extends AggregateRoot<pontoProps> {
   public toPassagemOeste() {
     this.props.tipoPonto = TipoPonto.create("PassagemOeste").getValue();
   }
+  public toPortaNorte() {
+    this.props.tipoPonto = TipoPonto.create("PortaNorte").getValue();
+  }
+  public toPortaNorteOeste() {
+    this.props.tipoPonto = TipoPonto.create("PortaNorteOeste").getValue();
+  }
+  public toPortaOeste() {
+    this.props.tipoPonto = TipoPonto.create("PortaOeste").getValue();
+  }
 }
