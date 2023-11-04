@@ -11,5 +11,4 @@ export default interface IElevadorService{
     criarElevador(elevadorDTO: ICriarElevadorDTO): Promise<Result<ICriarElevadorDTO>>;
     editarElevador(elevadorDTO: ICriarElevadorDTO): Promise<Result<ICriarElevadorDTO>>;
     listarElevadoresDoEdificio(codigoEdificio: string): Promise<Result<IElevadorDTO>>;
-    carregarElevadorPiso(edificio: Edificio,piso : Piso, informacaoPiso : ICarregarPisoDTO): Promise<Result<Elevador>>;
 }
