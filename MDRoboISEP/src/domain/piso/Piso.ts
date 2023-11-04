@@ -82,6 +82,98 @@ export class Piso extends AggregateRoot<pisoProps> {
 
     return pontos;
   }
+
+  public returnPontosParaPassagem(xCoordSup: number, yCoordSup: number, orientacao : string) : Ponto[]{
+    let pontos: Ponto[] = [];
+
+    pontos.push(this.props.mapa[xCoordSup][yCoordSup]);
+
+    if (orientacao === 'norte'){  
+      pontos.push(this.props.mapa[xCoordSup][yCoordSup+1]);
+    }else if(orientacao === 'oeste'){
+      pontos.push(this.props.mapa[xCoordSup+1][yCoordSup]);
+    }
+
+    return pontos;
+  }
+
+  public returnPontosParaDiagonalSala(abcissaA: number, ordenadaA: number, abcissaB: number, ordenadaB: number) : Ponto[]{
+    let pontos: Ponto[] = [];
+    let xCoordSup;
+    let yCoordSup;
+    let xCoordInf;
+    let yCoordInf;
+
+    if(abcissaA < abcissaB){
+      xCoordSup = abcissaA;
+      xCoordInf = abcissaB;
+    }
+    if(ordenadaA < ordenadaB){
+      yCoordSup = ordenadaA;
+      yCoordInf = ordenadaB;
+    }
+    pontos.push(this.props.mapa[xCoordSup][yCoordSup]);
+    pontos.push(this.props.mapa[xCoordInf][yCoordInf]);
+    return pontos;
+  }
+
+  public returnPontosParaParedesSalas(abcissaA : number, ordenadaA : number, abcissaB : number, ordenadaB : number,
+         abcissaPorta : number, ordenadaPorta : number) : Ponto[]{
+    let pontos: Ponto[] = [];
+    let xCoordSup;
+    let yCoordSup;
+    let xCoordInf;
+    let yCoordInf;
+
+    if(abcissaA < abcissaB){
+      xCoordSup = abcissaA;
+      xCoordInf = abcissaB;
+    }
+    if(ordenadaA < ordenadaB){
+      yCoordSup = ordenadaA;
+      yCoordInf = ordenadaB;
+    }
+    let pontoPorta = this.props.mapa[abcissaPorta][ordenadaPorta];
+    pontoPorta.toPorta();
+    pontos.push(pontoPorta);
+
+    for(let i = xCoordSup + 1; i <= xCoordInf; i++){
+      let ponto = this.props.mapa[i][yCoordSup];
+      if(ponto.returnIdPonto() !== pontoPorta.returnIdPonto()){
+        ponto.toParedeNorte();
+        pontos.push(ponto);
+      }
+    }
+
+    for(let i = xCoordSup; i <= xCoordInf; i++){
+      let ponto = this.props.mapa[i][yCoordInf + 1];
+      if(ponto.returnIdPonto() !== pontoPorta.returnIdPonto()){
+        ponto.toParedeNorte();
+        pontos.push(ponto);
+      }
+    }
+
+    for(let i = yCoordSup + 1; i <= yCoordInf; i++){
+      let ponto = this.props.mapa[xCoordSup][i];
+      if(ponto.returnIdPonto() !== pontoPorta.returnIdPonto()){
+        ponto.toParedeOeste();
+        pontos.push(ponto);
+      }
+    }
+
+    for(let i = yCoordSup; i <= yCoordInf; i++){
+      let ponto = this.props.mapa[xCoordInf + 1][i];
+      if(ponto.returnIdPonto() !== pontoPorta.returnIdPonto()){
+        if(ponto.returnTipoPonto() === 'Norte'){
+          ponto.toParedeNorteOeste();
+        }else{
+          ponto.toParedeOeste();
+        }
+        pontos.push(ponto);
+      }
+    }
+    return pontos;
+  }
   /**
    * Elimina o elevador do mapa, mudando o tipo dos pontos para parede ou vazio
    * @param coords array com as coordenadas dos ponto do elevador
