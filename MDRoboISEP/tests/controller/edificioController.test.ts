@@ -92,8 +92,9 @@ describe('EdificioController', () => {
             req.body = body;
     
             let res: Partial<Response> = {
+                status: sinon.spy(),
                 json: sinon.spy()
-            };
+            } 
     
             let next: Partial<NextFunction> = () => {};
             let edificioServiceInstance = Container.get("EdificioService");
@@ -105,6 +106,8 @@ describe('EdificioController', () => {
             await edificioController.criarEdificio(<Request> req,<Response> res, <NextFunction> next);
     
             // Assert
+            sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+            sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
             sinon.assert.calledOnce(res.json as sinon.SinonSpy);
             sinon.assert.calledWith(res.json as sinon.SinonSpy, body);
     });
@@ -129,6 +132,7 @@ describe('EdificioController', () => {
         req.body = body;
 
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
 
@@ -147,8 +151,11 @@ describe('EdificioController', () => {
         // Assert
         sinon.assert.calledOnce(edificioServiceSpy);
         sinon.assert.calledWith(edificioServiceSpy, body);
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
         sinon.assert.calledWith(res.json as sinon.SinonSpy, body);
+        
 });
 
 it('EdificioController + EdificioService + EdificioRepo criar edificio', async function() {
@@ -185,6 +192,7 @@ it('EdificioController + EdificioService + EdificioRepo criar edificio', async f
     req.body = body;
 
     let res: Partial<Response> = {
+        status: sinon.spy(),
         json: sinon.spy()
     };
 
@@ -204,6 +212,8 @@ it('EdificioController + EdificioService + EdificioRepo criar edificio', async f
     // Assert
     sinon.assert.calledOnce(edificioServiceSpy);
     sinon.assert.calledWith(edificioServiceSpy, body);
+    sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+    sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
     sinon.assert.calledOnce(res.json as sinon.SinonSpy);
     sinon.assert.calledWith(res.json as sinon.SinonSpy, body);
 });

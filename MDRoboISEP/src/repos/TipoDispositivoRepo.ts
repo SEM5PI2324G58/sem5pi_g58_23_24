@@ -81,4 +81,16 @@ export default class TipoDispositivoRepo implements ITipoDispositivoRepo {
     }
 }
 
+  public async delete(tipoDispositivo: TipoDispositivo): Promise<boolean> {
+    const query = { idTipoDispositivo: tipoDispositivo.returnIdTipoDispositivo()}; 
+    const tipoDispositivoDocument = await this.tipoDispositivoSchema.findOne( query );
+    if (tipoDispositivoDocument != null ) {
+      await this.tipoDispositivoSchema.deleteOne( query as FilterQuery<ITipoDispositivoPersistence & Document> );
+      return true;
+    } else {
+      return false;
+    }
+
+  }
+
 }
