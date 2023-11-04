@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "a9e270f5-89bb-446b-b5e1-a5e7c90fd8f8",
+		"_postman_id": "e744949a-2b88-4604-acf8-a2c6e4e189f0",
 		"name": "DispositivoTest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "30673359"
+		"_exporter_id": "30695664"
 	},
 	"item": [
 		{
@@ -126,6 +126,47 @@
 			"response": []
 		},
 		{
+			"name": "ListarDispositivosDaFrota",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"resposta tem um tamanho especifico\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"length\", jsonData.length);\r",
+							"    pm.expect(jsonData).to.have.lengthOf(pm.environment.get(\"length\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n}"
+				},
+				"url": "http://localhost:4000/api/dispositivo"
+			},
+			"response": []
+		},
+		{
 			"name": "CriarDispositivo",
 			"event": [
 				{
@@ -169,6 +210,46 @@
 			"response": []
 		},
 		{
+			"name": "ListarDispositivosDaFrota",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"resposta tem um tamanho especifico\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.lengthOf(pm.environment.get(\"length\")+1);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n}"
+				},
+				"url": "http://localhost:4000/api/dispositivo"
+			},
+			"response": []
+		},
+		{
 			"name": "CriarDispositivoComOMesmoCodigo",
 			"event": [
 				{
@@ -200,6 +281,46 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n    \"codigo\": \"RoboTesteTeste\",\r\n    \"descricaoDispositivo\": \"teste\",\r\n    \"nickname\": \"teste\",\r\n    \"tipoDispositivo\": {{id}},\r\n    \"numeroSerie\": \"12343254\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/dispositivo"
+			},
+			"response": []
+		},
+		{
+			"name": "ListarDispositivosDaFrota",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"resposta tem um tamanho especifico\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.lengthOf(pm.environment.get(\"length\")+1);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n}"
 				},
 				"url": "http://localhost:4000/api/dispositivo"
 			},
@@ -243,6 +364,46 @@
 			"response": []
 		},
 		{
+			"name": "ListarDispositivosDaFrota",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"resposta tem um tamanho especifico\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.lengthOf(pm.environment.get(\"length\")+1);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n}"
+				},
+				"url": "http://localhost:4000/api/dispositivo"
+			},
+			"response": []
+		},
+		{
 			"name": "CriarDispositivoComOMesmoNumeroSerie",
 			"event": [
 				{
@@ -274,6 +435,46 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n    \"codigo\": \"RoboTesteTeste131231\",\r\n    \"descricaoDispositivo\": \"testeTeste\",\r\n    \"nickname\": \"robotesteTeste23123\",\r\n    \"tipoDispositivo\": {{id}},\r\n    \"numeroSerie\": \"12343254\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/dispositivo"
+			},
+			"response": []
+		},
+		{
+			"name": "ListarDispositivosDaFrota",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"resposta tem um tamanho especifico\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.lengthOf(pm.environment.get(\"length\")+1);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n}"
 				},
 				"url": "http://localhost:4000/api/dispositivo"
 			},

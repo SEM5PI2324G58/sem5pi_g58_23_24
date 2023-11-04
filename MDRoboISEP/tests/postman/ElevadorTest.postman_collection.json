@@ -1,106 +1,13 @@
 {
 	"info": {
-		"_postman_id": "b1bc9ab0-f13a-41e8-b52a-644ea63c1e12",
-		"name": "PisoTest",
+		"_postman_id": "ac5a82dc-5784-4ed7-b785-314c2a483263",
+		"name": "ElevadorTest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "30695664"
 	},
 	"item": [
 		{
-			"name": "ListarTodosPisosDeUmEdificioQueNaoExiste",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 404\", function () {\r",
-							"    pm.response.to.have.status(404);\r",
-							"});\r",
-							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.eql(\"O edificio com o código Teste não existe\");\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"codigo\": \"Teste\"\r\n}"
-				},
-				"url": {
-					"raw": "http://localhost:4000/api/piso",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"api",
-						"piso"
-					],
-					"query": [
-						{
-							"key": "",
-							"value": null,
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "CriarUmPisoEmUmEdificioQueNaoExiste",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 404\", function () {\r",
-							"    pm.response.to.have.status(404);\r",
-							"});\r",
-							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.eql(\"O edificio com o código Teste não existe\");\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"codigo\": \"Teste\",\r\n\t\"numeroPiso\": 1,\r\n\t\"descricaoPiso\": \"Piso 1\"\r\n}"
-				},
-				"url": "http://localhost:4000/api/piso"
-			},
-			"response": []
-		},
-		{
-			"name": "CriarEdificio",
+			"name": "CriarEdifício",
 			"event": [
 				{
 					"listen": "test",
@@ -117,12 +24,8 @@
 							"    \"descricao\": \"EdificioTest\",\r",
 							"    \"dimensaoX\": 4,\r",
 							"    \"dimensaoY\": 4\r",
-							"});\r",
-							"});\r",
-							"\r",
-							"\r",
-							"\r",
-							""
+							"    });\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -146,7 +49,87 @@
 			"response": []
 		},
 		{
-			"name": "ListarTodosPisosDeUmEdificioQueNaoTemPisos",
+			"name": "CriarPiso1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql({\r",
+							"    \"codigo\": \"Teste\",\r",
+							"    \"numeroPiso\": 1,\r",
+							"    \"descricaoPiso\": \"Piso 1\"\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"Teste\",\r\n    \"numeroPiso\": 1,\r\n    \"descricaoPiso\": \"Piso 1\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/piso"
+			},
+			"response": []
+		},
+		{
+			"name": "CriarPiso2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql({\r",
+							"    \"codigo\": \"Teste\",\r",
+							"    \"numeroPiso\": 2,\r",
+							"    \"descricaoPiso\": \"Piso 2\"\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"Teste\",\r\n    \"numeroPiso\": 2,\r\n    \"descricaoPiso\": \"Piso 2\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/piso"
+			},
+			"response": []
+		},
+		{
+			"name": "ListarElevadorDoEdifício (Não existe)",
 			"event": [
 				{
 					"listen": "test",
@@ -157,7 +140,7 @@
 							"});\r",
 							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
 							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.eql(\"Não existem pisos nesse Edificio\");\r",
+							"    pm.expect(jsonData).to.eql(\"O edifício não tem elevadores.\");\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -178,32 +161,14 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"codigo\": \"Teste\"\r\n}"
+					"raw": "{\r\n    \"edificio\": \"Teste\"\r\n}"
 				},
-				"url": {
-					"raw": "http://localhost:4000/api/piso",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"api",
-						"piso"
-					],
-					"query": [
-						{
-							"key": "",
-							"value": null,
-							"disabled": true
-						}
-					]
-				}
+				"url": "http://localhost:4000/api/elevador/elevadoresPorEdificio"
 			},
 			"response": []
 		},
 		{
-			"name": "CriarUmPisoEmUmEdificio",
+			"name": "CriarElevador",
 			"event": [
 				{
 					"listen": "test",
@@ -215,10 +180,13 @@
 							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
 							"    var jsonData = pm.response.json();\r",
 							"    pm.expect(jsonData).to.eql({\r",
-							"    \"codigo\": \"Teste\",\r",
-							"    \"numeroPiso\": 1,\r",
-							"    \"descricaoPiso\": \"Piso 1\"\r",
-							"});\r",
+							"    \"edificio\": \"Teste\",\r",
+							"    \"pisosServidos\": [1,2],\r",
+							"    \"marca\": \"marca\",\r",
+							"    \"modelo\": \"modelo\",\r",
+							"    \"numeroSerie\": \"numeroSerie\",\r",
+							"    \"descricao\": \"descricao\"\r",
+							"    });\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -236,14 +204,14 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"codigo\": \"Teste\",\r\n\t\"numeroPiso\": 1,\r\n\t\"descricaoPiso\": \"Piso 1\"\r\n}"
+					"raw": "{\r\n    \"edificio\": \"Teste\",\r\n    \"pisosServidos\": [1,2],\r\n    \"marca\": \"marca\",\r\n    \"modelo\": \"modelo\",\r\n    \"numeroSerie\": \"numeroSerie\",\r\n    \"descricao\": \"descricao\" \r\n}"
 				},
-				"url": "http://localhost:4000/api/piso"
+				"url": "http://localhost:4000/api/elevador"
 			},
 			"response": []
 		},
 		{
-			"name": "ListarTodosPisosDeUmEdificio",
+			"name": "ListarElevadorDoEdifício (Existe)",
 			"event": [
 				{
 					"listen": "test",
@@ -254,14 +222,15 @@
 							"});\r",
 							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
 							"    var jsonData = pm.response.json();\r",
-							"    pm.environment.set(\"id\", jsonData[0].id);\r",
-							"    pm.expect(jsonData).to.eql([\r",
+							"    pm.environment.set(\"id\", jsonData.id);\r",
+							"    pm.expect(jsonData).to.eql(\r",
 							"    {\r",
 							"        \"id\": pm.environment.get(\"id\"),\r",
-							"        \"numeroPiso\": 1,\r",
-							"        \"descricaoPiso\": \"Piso 1\"\r",
-							"    }\r",
-							"    ]);\r",
+							"        \"marca\": \"marca\",\r",
+							"        \"modelo\": \"modelo\",\r",
+							"        \"numeroSerie\": \"numeroSerie\",\r",
+							"        \"descricao\": \"descricao\"\r",
+							"    });\r",
 							"    \r",
 							"});"
 						],
@@ -283,32 +252,14 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"codigo\": \"Teste\"\r\n}"
+					"raw": "{\r\n    \"edificio\": \"Teste\"\r\n}"
 				},
-				"url": {
-					"raw": "http://localhost:4000/api/piso",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"api",
-						"piso"
-					],
-					"query": [
-						{
-							"key": "",
-							"value": null,
-							"disabled": true
-						}
-					]
-				}
+				"url": "http://localhost:4000/api/elevador/elevadoresPorEdificio"
 			},
 			"response": []
 		},
 		{
-			"name": "EditarPisoDeUmEdificio",
+			"name": "EditarElevador",
 			"event": [
 				{
 					"listen": "test",
@@ -319,10 +270,10 @@
 							"});\r",
 							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
 							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.eql({\r",
-							"    \"id\": pm.environment.get(\"id\"),\r",
-							"    \"numeroPiso\": 0,\r",
-							"        \"descricaoPiso\": \"Ola\"\r",
+							"    pm.expect(jsonData).to.eql({   \r",
+							"        \"edificio\": \"Teste\",\r",
+							"        \"numeroSerie\": \"novoNumeroSerie\",\r",
+							"        \"descricao\": \"novaDescricao\" \r",
 							"    });\r",
 							"    \r",
 							"});"
@@ -342,14 +293,14 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"codigoEdificio\": \"Teste\",\r\n    \"numeroPiso\": 1,\r\n    \"novoNumeroPiso\": 0,\r\n    \"descricaoPiso\": \"Ola\"\r\n}"
+					"raw": "{\r\n    \"edificio\": \"Teste\",\r\n    \"numeroSerie\": \"novoNumeroSerie\",\r\n    \"descricao\": \"novaDescricao\" \r\n}"
 				},
-				"url": "http://localhost:4000/api/piso"
+				"url": "http://localhost:4000/api/elevador"
 			},
 			"response": []
 		},
 		{
-			"name": "ListarTodosPisosDeUmEdificio Editado",
+			"name": "ListarElevadorDoEdifício (Updated)",
 			"event": [
 				{
 					"listen": "test",
@@ -360,14 +311,14 @@
 							"});\r",
 							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
 							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.eql([\r",
+							"    pm.expect(jsonData).to.eql(\r",
 							"    {\r",
 							"        \"id\": pm.environment.get(\"id\"),\r",
-							"        \"numeroPiso\": 0,\r",
-							"        \"descricaoPiso\": \"Ola\"\r",
-							"    }\r",
-							"    ]);\r",
-							"    \r",
+							"        \"marca\": \"marca\",\r",
+							"        \"modelo\": \"modelo\",\r",
+							"        \"numeroSerie\": \"novoNumeroSerie\",\r",
+							"        \"descricao\": \"novaDescricao\"\r",
+							"    });\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -388,27 +339,9 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"codigo\": \"Teste\"\r\n}"
+					"raw": "{\r\n    \"edificio\": \"Teste\"\r\n}"
 				},
-				"url": {
-					"raw": "http://localhost:4000/api/piso",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"api",
-						"piso"
-					],
-					"query": [
-						{
-							"key": "",
-							"value": null,
-							"disabled": true
-						}
-					]
-				}
+				"url": "http://localhost:4000/api/elevador/elevadoresPorEdificio"
 			},
 			"response": []
 		},
@@ -455,33 +388,6 @@
 				"url": "http://localhost:4000/api/edificio"
 			},
 			"response": []
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "id",
-			"value": "",
-			"type": "string"
 		}
 	]
 }
