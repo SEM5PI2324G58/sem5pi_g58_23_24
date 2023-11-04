@@ -21,6 +21,7 @@ import { Passagem } from '../../src/domain/passagem/Passagem';
 import IEdificioRepo from '../../src/services/IRepos/IEdificioRepo';
 import IPassagemRepo from '../../src/services/IRepos/IPassagemRepo';
 import { IPassagemPersistence } from '../../src/dataschema/IPassagemPersistence';
+import IListarPassagemDTO from '../../src/dto/IListarPassagemDTO';
 
 
 describe('PassagemController', () => {
@@ -233,6 +234,43 @@ describe('PassagemController', () => {
 
     });
 
+
+    it('listarPassagensPorParDeEdifício retorna passagens JSON', async function() {
+        
+        let body = {
+        };
+        
+        let listaDTO : IListarPassagemDTO[] = [];
+        const passagemDTO = {
+            id: 1,
+            numeroPisoA: 1,
+            idPisoA: 1,
+            numeroPisoB: 1,
+            idPisoB: 2,
+        } as IListarPassagemDTO;
+
+        listaDTO.push(passagemDTO);
+
+        let req: Partial<Request> = {};
+        req.body = body;
+
+        let res: Partial<Response> = {
+            json: sinon.spy()
+        };
+
+        let next: Partial<NextFunction> = () => {};
+
+        let passagemServiceInstance = Container.get("PassagemService");
+
+        sinon.stub(passagemServiceInstance, 'listarPassagensPorParDeEdificios').returns(Promise.resolve(Result.ok<IListarPassagemDTO[]>(listaDTO)));
+
+        const passagemController = new PassagemController(passagemServiceInstance as IPassagemService);
+        
+        await passagemController.listarPassagensPorParDeEdificios(<Request>req, <Response>res, <NextFunction>next);
+
+        sinon.assert.calledOnce(res.json);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, listaDTO);
+    });
 
 });
 
