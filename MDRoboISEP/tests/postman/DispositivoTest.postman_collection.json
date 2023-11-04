@@ -1,0 +1,316 @@
+{
+	"info": {
+		"_postman_id": "a9e270f5-89bb-446b-b5e1-a5e7c90fd8f8",
+		"name": "DispositivoTest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "30673359"
+	},
+	"item": [
+		{
+			"name": "CriarDispositivoSemExistirTipoDispositivo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(\"O tipo de dispositivo com o id -1 não existe\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"RoboTesteTeste\",\r\n    \"descricaoDispositivo\": \"testeTeste\",\r\n    \"nickname\": \"robotesteTeste\",\r\n    \"tipoDispositivo\": -1,\r\n    \"numeroSerie\": \"12343254\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/dispositivo"
+			},
+			"response": []
+		},
+		{
+			"name": "CriarTipoDispositivo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"id\", jsonData.idTipoDispositivo);\r",
+							"    pm.expect(jsonData).to.eql({\r",
+							"    \"idTipoDispositivo\": pm.environment.get(\"id\"),\r",
+							"    \"tipoTarefa\": [\r",
+							"        \"PickUp/Delivery\"\r",
+							"    ],\r",
+							"    \"marca\": \"testeTeste\",\r",
+							"    \"modelo\": \"testeTeste\"\r",
+							"});\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tipoTarefa\": [\"PickUp/Delivery\"],\r\n    \"marca\": \"testeTeste\",\r\n    \"modelo\": \"testeTeste\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/tipoDispositivo"
+			},
+			"response": []
+		},
+		{
+			"name": "CriarDispositivoComCodigoErrado",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(\"Código do Dispositivo deve ser alfanumérico.\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"RoboTeste@Teste\",\r\n    \"descricaoDispositivo\": \"testeTeste\",\r\n    \"nickname\": \"robotesteTeste\",\r\n    \"tipoDispositivo\": {{id}},\r\n    \"numeroSerie\": \"12343254\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/dispositivo"
+			},
+			"response": []
+		},
+		{
+			"name": "CriarDispositivo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql({\r",
+							"    \"codigo\": \"RoboTesteTeste\",\r",
+							"    \"estado\": true,\r",
+							"    \"nickname\": \"robotesteTeste\",\r",
+							"    \"numeroSerie\": \"12343254\",\r",
+							"    \"descricaoDispositivo\": \"testeTeste\"\r",
+							"});\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"RoboTesteTeste\",\r\n    \"descricaoDispositivo\": \"testeTeste\",\r\n    \"nickname\": \"robotesteTeste\",\r\n    \"tipoDispositivo\": {{id}},\r\n    \"numeroSerie\": \"12343254\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/dispositivo"
+			},
+			"response": []
+		},
+		{
+			"name": "CriarDispositivoComOMesmoCodigo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(\"O dispositivo com o codigo RoboTesteTeste já existe\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"RoboTesteTeste\",\r\n    \"descricaoDispositivo\": \"teste\",\r\n    \"nickname\": \"teste\",\r\n    \"tipoDispositivo\": {{id}},\r\n    \"numeroSerie\": \"12343254\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/dispositivo"
+			},
+			"response": []
+		},
+		{
+			"name": "CriarDispositivoComOMesmoNickname",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(\"O dispositivo com o nickname robotesteTeste já existe\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"RoboTesteTeste131231\",\r\n    \"descricaoDispositivo\": \"testeTeste\",\r\n    \"nickname\": \"robotesteTeste\",\r\n    \"tipoDispositivo\": {{id}},\r\n    \"numeroSerie\": \"12343254\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/dispositivo"
+			},
+			"response": []
+		},
+		{
+			"name": "CriarDispositivoComOMesmoNumeroSerie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(\"O dispositivo com o numero de serie 12343254 já existe\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"RoboTesteTeste131231\",\r\n    \"descricaoDispositivo\": \"testeTeste\",\r\n    \"nickname\": \"robotesteTeste23123\",\r\n    \"tipoDispositivo\": {{id}},\r\n    \"numeroSerie\": \"12343254\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/dispositivo"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"idTipoDispositivo\" : {{id}}\r\n}"
+				},
+				"url": "http://localhost:4000/api/tipoDispositivo"
+			},
+			"response": []
+		}
+	]
+}
