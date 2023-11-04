@@ -113,4 +113,17 @@ export default class DispositivoRepo implements IDispositivoRepo {
     const listaDispositivos = await Promise.all(listaDispositivosPromises);
     return listaDispositivos;
   }
+
+  public async delete(dispositivo: Dispositivo): Promise<boolean> {
+  
+    const query = { codigo: dispositivo.returnCodigoDispositivo()}; 
+    const dispositivoDocument = await this.dispositivoSchema.findOne( query as FilterQuery<IDispositivoPersistence & Document>);
+
+    if( dispositivoDocument != null) {
+      await this.dispositivoSchema.deleteOne( query as FilterQuery<IDispositivoPersistence & Document> );
+      return true;
+    }
+    else
+      return false;
+  }
 }
