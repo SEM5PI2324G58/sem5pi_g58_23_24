@@ -10,15 +10,56 @@ import PisoRepo from "../repos/PisoRepo";
 import { IdPassagem } from "../domain/passagem/IdPassagem";
 import { Piso } from "../domain/piso/Piso";
 import IListarPassagemDTO from "../dto/IListarPassagemDTO";
+import IListarPisoComPassagensDTO from "../dto/IListarPisoComPassagensDTO";
+import { Edificio } from "../domain/edificio/Edificio";
 
-
+type Pair<K, V> = {
+  first: K;
+  second: V;
+};
 
 export class PassagemMap extends Mapper<Passagem> {
+
 
   public static toDTO(passagem: Passagem): IPassagemDTO {
     //Not implemented yet
     //return error
     return null;
+  }
+
+
+  public static toListarPisoComPassagensDTO(map: Map<Passagem, Pair<Piso, Piso>>, pairpair: Pair<Pair<number, number>, string>[],
+    pair: Pair<number, Edificio>[]): IListarPisoComPassagensDTO {
+
+    let mapIdPassagemPairIdPisoDTO: Pair<number, Pair<number, number>>[] = [];
+
+    for (let [key, value] of map) {
+      const newPair: Pair<number, Pair<number, number>> = {
+        first: Number(key.id.toValue()),
+        second: {
+          first: value.first.returnIdPiso(),
+          second: value.second.returnIdPiso()
+        }
+      };
+      mapIdPassagemPairIdPisoDTO.push(newPair);
+    }
+
+    let pairIdPisoIdEdificioDTO: Pair<number, string>[] = [];
+    for (let par of pair) {
+      const newPair: Pair<number, string> = {
+        first: par.first,
+        second: par.second.returnEdificioId()
+      };
+      pairIdPisoIdEdificioDTO.push(newPair);
+    }
+
+    const dados: IListarPisoComPassagensDTO = {
+      mapIdPassagemPairIdPiso: mapIdPassagemPairIdPisoDTO,
+      pairNumeroPisoIdPisoPairDescricao: pairpair,
+      pairIdPisoIdEdificio: pairIdPisoIdEdificioDTO,
+    } as IListarPisoComPassagensDTO;
+
+    return dados;
   }
 
   public static toListarPassagemDTO(passagem: Passagem): IListarPassagemDTO {

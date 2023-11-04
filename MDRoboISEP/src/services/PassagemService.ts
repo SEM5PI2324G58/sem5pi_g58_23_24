@@ -12,6 +12,8 @@ import { Piso } from '../domain/piso/Piso';
 import IListarPassagemDTO from '../dto/IListarPassagemDTO';
 import { PassagemMap } from '../mappers/PassagemMap';
 import IListarPassagensPorParDeEdificioDTO from '../dto/IListarPassagensPorParDeEdificioDTO';
+import { Edificio } from '../domain/edificio/Edificio';
+import IListarPisoComPassagensDTO from '../dto/IListarPisoComPassagensDTO';
 @Service()
 
 @Service()
@@ -21,6 +23,77 @@ export default class PassagemService implements IPassagemService {
         @Inject(config.repos.passagem.name) private passagemRepo: IPassagemRepo,
         @Inject(config.repos.edificio.name) private edificioRepo: IEdificioRepo,
     ) { }
+    public async editarPassagens(passagemDTO: IPassagemDTO): Promise<Result<IPassagemDTO>> {
+        try {
+            const validacaoResultado = await this.validarDadosEditar(passagemDTO);
+            if (validacaoResultado.isFailure) {
+                return Result.fail<IPassagemDTO>(validacaoResultado.errorValue());
+            }
+            const { pontoA, pontoB, pontoA1, pontoB1, pisoA, pisoB, id }
+                = validacaoResultado.getValue();
+
+            const listaPontosOrErr = [pontoA, pontoA1, pontoB, pontoB1]
+
+            const passagemOrError = await this.criarObjetoPassagem(listaPontosOrErr, pisoA, pisoB, id);
+            if (passagemOrError.isFailure) {
+                return Result.fail<IPassagemDTO>(passagemOrError.errorValue());
+            }
+
+            let okouErro = await this.salvarDados(passagemOrError.getValue());
+
+            if (okouErro.isFailure) {
+                return Result.fail<IPassagemDTO>(okouErro.errorValue());
+            }
+
+            return Result.ok<IPassagemDTO>(passagemDTO);
+        }
+        catch (e) {
+            throw e;
+        }
+    }
+    private async validarDadosEditar(passagemDTO: IPassagemDTO) : Promise<Result<any>> {
+        
+        let passagemDocument = await this.passagemRepo.findByDomainId(passagemDTO.id)
+
+        if (passagemDocument == null) {
+            return Result.fail<IPassagemDTO>("A passagem com o id " + passagemDTO.id + " não existe");
+        }
+
+        let edificioDocumentA = await this.edificioRepo.findByDomainId(passagemDTO.codigoEdificioA);
+
+        if (edificioDocumentA == null) {
+            return Result.fail<IPassagemDTO>("Edificio A não existe");
+        }
+        if (!edificioDocumentA.verificaSePisoJaExiste(passagemDTO.numeroPisoA)) {
+            return Result.fail<IPassagemDTO>("Piso A não existe");
+        }
+
+        let edificioDocumentB = await this.edificioRepo.findByDomainId(passagemDTO.codigoEdificioB);
+
+        if (edificioDocumentB == null) {
+            return Result.fail<IPassagemDTO>("Edificio B não existe");
+        }
+        if (!edificioDocumentB.verificaSePisoJaExiste(passagemDTO.numeroPisoB)) {
+            return Result.fail<IPassagemDTO>("Piso B não existe");
+        }
+        const pisoA = edificioDocumentA.returnPisoPeloNumero(passagemDTO.numeroPisoA);
+        const pisoB = edificioDocumentB.returnPisoPeloNumero(passagemDTO.numeroPisoB);
+
+        let pontoA: undefined;
+        let pontoB: undefined;
+        let pontoA1: undefined;
+        let pontoB1: undefined;
+
+        return Result.ok<any>({
+            "pontoA": pontoA,
+            "pontoB": pontoB,
+            "pontoA1": pontoA1,
+            "pontoB1": pontoB1,
+            "pisoA": pisoA,
+            "pisoB": pisoB,
+            "id": passagemDTO.id,
+        });
+    }
 
     public async criarPassagem(passagemDTO: IPassagemDTO): Promise<Result<IPassagemDTO>> {
         try {
@@ -30,8 +103,8 @@ export default class PassagemService implements IPassagemService {
                 return Result.fail<IPassagemDTO>(validacaoResultado.errorValue());
             }
 
-            const {pontoA, pontoB, pontoA1, pontoB1, pisoA, pisoB, id} 
-            = validacaoResultado.getValue();
+            const { pontoA, pontoB, pontoA1, pontoB1, pisoA, pisoB, id }
+                = validacaoResultado.getValue();
 
             const listaPontosOrErr = [pontoA, pontoA1, pontoB, pontoB1]
 
@@ -56,7 +129,7 @@ export default class PassagemService implements IPassagemService {
 
         let passagemDocument = await this.passagemRepo.findByDomainId(passagemDTO.id)
 
-        if(passagemDocument!=null){
+        if (passagemDocument != null) {
             return Result.fail<IPassagemDTO>("A passagem com o id " + passagemDTO.id + " já existe");
         }
 
@@ -80,10 +153,10 @@ export default class PassagemService implements IPassagemService {
         const pisoA = edificioDocumentA.returnPisoPeloNumero(passagemDTO.numeroPisoA);
         const pisoB = edificioDocumentB.returnPisoPeloNumero(passagemDTO.numeroPisoB);
 
-        let pontoA : undefined;
-        let pontoB : undefined;
-        let pontoA1 : undefined;
-        let pontoB1 : undefined;
+        let pontoA: undefined;
+        let pontoB: undefined;
+        let pontoA1: undefined;
+        let pontoB1: undefined;
 
         return Result.ok<any>({
             "pontoA": pontoA,
@@ -97,7 +170,7 @@ export default class PassagemService implements IPassagemService {
     }
 
     private async criarObjetoPassagem(listaPontos: Ponto[], pisoA: Piso, pisoB: Piso, id: number): Promise<Result<Passagem>> {
-       
+
         let idPassagemOuErro = await IdPassagem.create(id);
 
         const passagemOuErro = Passagem.create({
@@ -110,15 +183,15 @@ export default class PassagemService implements IPassagemService {
     }
 
     private async salvarDados(passagem: Passagem): Promise<Result<void>> {
-        
+
         let passagemOrError = await this.passagemRepo.save(passagem);
-        if (passagemOrError==null) {
+        if (passagemOrError == null) {
             return Result.fail<void>("Erro ao salvar passagem");
         }
         return Result.ok<void>();
     }
 
-    
+
     public async listarPassagensPorParDeEdificios(edificiosDTO: IListarPassagensPorParDeEdificioDTO): Promise<Result<IListarPassagemDTO[]>> {
         try {
             var passagens: Passagem[] = [];
@@ -128,13 +201,13 @@ export default class PassagemService implements IPassagemService {
                 let edificioAPisos = await this.edificioRepo.findByDomainId(edificiosDTO.edificioACod);
 
                 if (edificioAPisos == null) {
-                    return Result.fail<IListarPassagemDTO[]>("Edificio A não existe");                    
+                    return Result.fail<IListarPassagemDTO[]>("Edificio A não existe");
                 }
 
                 let edificioBPisos = await this.edificioRepo.findByDomainId(edificiosDTO.edificioBCod);
 
                 if (edificioBPisos == null) {
-                    return Result.fail<IListarPassagemDTO[]>("Edificio B não existe");                    
+                    return Result.fail<IListarPassagemDTO[]>("Edificio B não existe");
                 }
 
                 let pisosEdificioA = edificioAPisos.returnListaPisos();
@@ -146,9 +219,9 @@ export default class PassagemService implements IPassagemService {
                         passagens = passagens.concat(passagensTemp);
                     }
                 }
-            }else if (edificiosDTO.edificioACod === undefined && edificiosDTO.edificioBCod === undefined){
+            } else if (edificiosDTO.edificioACod === undefined && edificiosDTO.edificioBCod === undefined) {
                 passagens = await this.passagemRepo.findAll();
-            }else{
+            } else {
                 return Result.fail<IListarPassagemDTO[]>("Não é possível listar passagens apenas para um edificio");
             }
 
@@ -157,7 +230,7 @@ export default class PassagemService implements IPassagemService {
             }
 
             const passagensDTO: IListarPassagemDTO[] = [];
-            
+
             for (let passagem of passagens) {
                 passagensDTO.push(PassagemMap.toListarPassagemDTO(await passagem));
             }
@@ -167,5 +240,82 @@ export default class PassagemService implements IPassagemService {
             throw e;
         }
     }
-    
+
+
+    public async listarPisosComPassagens(): Promise<Result<IListarPisoComPassagensDTO>> {
+        try {
+
+            type Pair<K, V> = {
+                first: K;
+                second: V;
+            };
+
+            let passagemList = await this.passagemRepo.findAll();
+
+            if (passagemList == null) {
+                return Promise.resolve(Result.fail<IListarPisoComPassagensDTO>("Não existem passagens"));
+            }
+
+            let idPisoSet: Set<number> = new Set();
+            let pisoSet: Set<Piso> = new Set();
+            let mapPassagemPairPiso: Map<Passagem, Pair<Piso, Piso>> = new Map();
+
+            for (let passagem of passagemList) {
+                mapPassagemPairPiso.set(passagem, { first: passagem.props.pisoA, second: passagem.props.pisoB });
+            }
+
+            for (let passagem of passagemList) {
+                //Colocar só os pisos sem repetir
+                idPisoSet.add(Number(passagem.props.pisoA.id.toValue()));
+                idPisoSet.add(Number(passagem.props.pisoB.id.toValue()));
+                pisoSet.add(passagem.props.pisoA);
+                pisoSet.add(passagem.props.pisoB);
+            }
+
+            let idPisoList = Array.from(idPisoSet);
+            let edificioList: Edificio[] = [];
+
+            for (let piso of idPisoList) {
+                //procurar edificio no repo
+                let edificio = await this.edificioRepo.findByPiso(piso);
+                if (edificio != null) {
+                    edificioList.push(edificio);
+                }
+                else {
+                    return Promise.resolve(Result.fail<IListarPisoComPassagensDTO>
+                        ("Não existe edificio para o piso com id: " + piso));
+                }
+            }
+            let pisoList = Array.from(pisoSet);
+            let pairNumeroIdPisoPairDescricao: Pair<Pair<number, number>, string>[] = [];
+        
+            for (let piso of pisoList){
+                const pair: Pair<Pair<number, number>, string> = {
+                    first: {first: piso.returnIdPiso(), second: piso.returnNumeroPiso()},
+                    second: piso.props.descricaoPiso.props.descricao.toString()
+                  };
+                pairNumeroIdPisoPairDescricao.push(pair);
+            }
+
+            if (edificioList.length != idPisoList.length) {
+                return Promise.resolve(Result.fail<IListarPisoComPassagensDTO>("Não existe edificio para um dos pisos"));
+            }
+            let edificioPisoPair: Pair<number, Edificio>[] = [];
+            for (let index = 0; index < edificioList.length; index++) {
+                let pair: Pair<number, Edificio> = {
+                    first: idPisoList[index],
+                    second: edificioList[index]
+                };
+                edificioPisoPair.push(pair);
+            }
+
+            let passagensDTO: IListarPisoComPassagensDTO;
+            passagensDTO = PassagemMap.toListarPisoComPassagensDTO(mapPassagemPairPiso,pairNumeroIdPisoPairDescricao,edificioPisoPair);
+
+            return Promise.resolve(Result.ok<IListarPisoComPassagensDTO>(passagensDTO));
+        } catch (e) {
+            throw e;
+        }
+    }
+
 }

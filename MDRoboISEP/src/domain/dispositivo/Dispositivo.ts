@@ -20,6 +20,9 @@ interface dispositivoProps {
 }
 
 export class Dispositivo extends AggregateRoot<dispositivoProps> {
+  inibirDispositivo() {
+    this.props.estado = EstadoDispositivo.create(false).getValue();
+  }
 
   public returnDescricaoDispositivo (): string {
     return this.props.descricaoDispositivo.props.descricao;

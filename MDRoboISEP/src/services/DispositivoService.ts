@@ -28,6 +28,10 @@ import { EstadoDispositivo } from '../domain/dispositivo/EstadoDispositivo';
 import { result } from 'lodash';
 import { CodigoDispositivo } from '../domain/dispositivo/CodigoDispositivo';
 import { DispositivoMap } from '../mappers/DispositivoMap';
+import IDispositivoInibirDTO from '../dto/IDispositivoInibirDTO';
+import { TipoDispositivo } from '../domain/tipoDispositivo/TipoDispositivo';
+import { IdTipoDispositivo } from '../domain/tipoDispositivo/IdTipoDispositivo';
+import { Marca } from '../domain/tipoDispositivo/Marca';
 
 
 @Service()
@@ -36,6 +40,23 @@ export default class DispositivoService implements IDispositivoService{
       @Inject(config.repos.tipoDispositivo.name) private tipoDispositivoRepo : ITipoDispositivoRepo,
       @Inject(config.repos.dispositivo.name) private dispositivoRepo : IDispositivoRepo,
   ) {}
+    public async inibirDispositivo(dispositivoDTO: IDispositivoInibirDTO): Promise<Result<IDispositivoInibirDTO>> {
+        try { 
+            let disposi = await this.dispositivoRepo.findByDomainId(dispositivoDTO.codigo);
+            let flag = !!disposi;
+            if(!flag){
+                return Result.fail<IDispositivoInibirDTO>("O dispositivo com o codigo " + dispositivoDTO.codigo +" não existe");
+            }
+            disposi.inibirDispositivo();
+            disposi = await this.dispositivoRepo.save(disposi);
+            if (disposi === null) {
+                return Result.fail<IDispositivoInibirDTO>("O dispositivo com o codigo " + dispositivoDTO.codigo +" não foi persistido");
+            }
+            return Result.ok<IDispositivoInibirDTO>(DispositivoMap.toDTO(disposi));
+        } catch (e) {
+            throw e;
+        }
+    }
 
 
   public async adicionarDispositivoAFrota(adicionarRoboAFrotaDTO: IAdicionarRoboAFrotaDTO ): Promise<Result<IDispositivoDTO>> {

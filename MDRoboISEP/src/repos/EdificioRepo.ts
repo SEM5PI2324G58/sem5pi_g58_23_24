@@ -7,6 +7,7 @@ import { Edificio } from "../domain/edificio/Edificio";
 import { Codigo } from '../domain/edificio/Codigo';
 import { Document, FilterQuery, Model } from 'mongoose';
 import { IEdificioPersistence } from '../dataschema/IEdificioPersistence';
+import { Piso } from '../domain/piso/Piso';
 
 @Service()
 export default class EdificioRepo implements IEdificioRepo {
@@ -100,6 +101,16 @@ export default class EdificioRepo implements IEdificioRepo {
     }
     else
       return false;
+  }
+
+  public async findByPiso(piso: number): Promise<Edificio> {
+    const query = { piso: { $elemMatch: { $eq: piso } } };
+    const edificioRecord = await this.edificioSchema.findOne( query as FilterQuery<IEdificioPersistence & Document> );
+    if( edificioRecord != null) {
+      return EdificioMap.toDomain(edificioRecord);
+    }
+    else
+      return null;
   }
 
 }

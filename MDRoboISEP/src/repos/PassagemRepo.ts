@@ -17,21 +17,21 @@ export default class PassagemRepo implements IPassagemRepo {
     @Inject('PassagemSchema') private passagemSchema: Model<IPassagemPersistence & Document>,
   ) { }
 
-    async getMaxId(): Promise<number> {
+  async getMaxId(): Promise<number> {
     try {
       var maxIdResult = await this.passagemSchema
         .find({}, { domainID: 1 })
-       ;
+        ;
 
       if (maxIdResult && maxIdResult.length > 0) {
         return (maxIdResult.sort((a, b) => b.domainID - a.domainID))[0].domainID;
       } else {
-        return 0; 
+        return 0;
       }
     } catch (err) {
       throw err;
     }
-    }
+  }
 
   private createBaseQuery(): any {
     return {
@@ -68,7 +68,12 @@ export default class PassagemRepo implements IPassagemRepo {
         const listaPontos = [];
         for (let index = 0; index < passagem.props.listaPontos.length; index++) {
           const element = passagem.props.listaPontos[index];
-          listaPontos.push(element.id.toString());
+          if (element != null) {
+            listaPontos.push(element.id.toString());
+          }
+          else {
+            listaPontos.push(element);
+          }
         }
         passagemDocument.listaPontos = listaPontos;
         await passagemDocument.save();
@@ -98,7 +103,7 @@ export default class PassagemRepo implements IPassagemRepo {
     if (salaRecord != null) {
       await this.passagemSchema.deleteOne(query as FilterQuery<IPassagemPersistence & Document>);
       return true;
-    }else{
+    } else {
       return false;
     }
   }
@@ -129,10 +134,10 @@ export default class PassagemRepo implements IPassagemRepo {
     for (let passagem of passagemRecord2) {
       listaPassagens.push(PassagemMap.toDomain(passagem));
     }
-  
+
     return listaPassagens;
   }
-  
+
   public async listarPassagensPorParDePisos(idPisoA: number, idPisoB: number): Promise<Passagem[]> {
     const query = { pisoA: idPisoA, pisoB: idPisoB };
     const passagemRecord1 = await this.passagemSchema.find(query as FilterQuery<IPassagemPersistence & Document>);
@@ -146,7 +151,7 @@ export default class PassagemRepo implements IPassagemRepo {
     for (let passagem of passagemRecord2) {
       listaPassagens.push(PassagemMap.toDomain(passagem));
     }
-  
+
     return listaPassagens;
   }
 }

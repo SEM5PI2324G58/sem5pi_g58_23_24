@@ -27,4 +27,12 @@ export default (app: Router) => {
 
     route.get('',
     (req, res, next) => ctrl.listarDispositivosDaFrota(req, res, next));
+
+    route.patch('/inibir',
+    celebrate({
+      body: Joi.object({
+        codigo: Joi.string().required(),
+      })
+    }),
+    (req, res, next) => ctrl.inibirDispositivo(req, res, next));
 }
