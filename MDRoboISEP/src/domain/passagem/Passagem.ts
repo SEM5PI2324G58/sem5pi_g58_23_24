@@ -32,5 +32,13 @@ export class Passagem extends AggregateRoot<PassagemProps> {
     }
   }
 
+  public returnIdPassagem() : number{
+    return Number(this._id.toValue());
+  }
 
+  public atualizarListaPontos(listaPontos : Ponto[]) : void{
+    for(let i = 0; i < listaPontos.length; i++){
+      this.props.listaPontos[i] = listaPontos[i];
+    }
+  }
 }
