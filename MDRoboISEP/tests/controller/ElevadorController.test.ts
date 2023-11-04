@@ -341,7 +341,6 @@ describe('ElevadorController', () => {
     it('listarElevadoresDoEdificio retorna elevador JSON', async function() {
         
         let body = {
-            "codigo": "COD",
         };
 
         const elevadorDTO = {
@@ -356,6 +355,7 @@ describe('ElevadorController', () => {
         req.body = body;
 
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
 
@@ -368,7 +368,9 @@ describe('ElevadorController', () => {
         const elevadorController = new ElevadorController(elevadorServiceInstance as IElevadorService);
         
         await elevadorController.listarElevadoresDoEdificio(<Request>req, <Response>res, <NextFunction>next);
-
+        
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
         sinon.assert.calledOnce(res.json);
         sinon.assert.calledWith(res.json, sinon.match({
             id: 1,
