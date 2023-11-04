@@ -25,6 +25,8 @@ import { Passagem } from "../../src/domain/passagem/Passagem";
 import IListarPassagensPorParDeEdificioDTO from "../../src/dto/IListarPassagensPorParDeEdificioDTO";
 import { IdPiso } from "../../src/domain/piso/IdPiso";
 import { IdPonto } from "../../src/domain/ponto/IdPonto";
+import { IPassagemPersistence } from "../../src/dataschema/IPassagemPersistence";
+import IPisoRepo from "../../src/services/IRepos/IPisoRepo";
 
 describe('PassagemService ', () => {
 
@@ -95,6 +97,9 @@ describe('PassagemService ', () => {
         let passagemSchemaInstance = require('../../src/persistence/schemas/PassagemSchema').default;
         Container.set("PassagemSchema", passagemSchemaInstance);
 
+        let pisoSchemaInstance = require('../../src/persistence/schemas/PisoSchema').default;
+        Container.set("PisoSchema", pisoSchemaInstance);
+
         let passagemRepoClass = require('../../src/repos/PassagemRepo').default;
         let passagemRepoInstance = Container.get(passagemRepoClass);
         Container.set("PassagemRepo", passagemRepoInstance);
@@ -102,6 +107,10 @@ describe('PassagemService ', () => {
         let edificioRepoClass = require('../../src/repos/EdificioRepo').default;
         let edificioRepoInstance = Container.get(edificioRepoClass);
         Container.set("EdificioRepo", edificioRepoInstance);
+
+        let pisoRepoClass = require('../../src/repos/PisoRepo').default;
+        let pisoRepoInstance = Container.get(pisoRepoClass);
+        Container.set("PisoRepo", pisoRepoInstance);
 
     });
 
@@ -355,7 +364,7 @@ describe('PassagemService ', () => {
         expect(answer.errorValue()).to.equal("Não existem passagens que satisfaçam os parâmetros de pesquisa")
     });
 
-    it('(Listar passagem por par de edifícios) Náo exitem passagens que satisfaçam as condições', async () => {
+    it('(Listar passagem por par de edifícios) Sucesso quando não são passados parâmetros', async () => {
 
         let body = {
         } as IListarPassagensPorParDeEdificioDTO
@@ -374,7 +383,7 @@ describe('PassagemService ', () => {
         expect(answer[0].id.valueOf()).to.equal(1)
     });
 
-    it('(Listar passagem por par de edifícios) Náo exitem passagens que satisfaçam as condições', async () => {
+    it('(Listar passagem por par de edifícios) Sucesso quando são passados 2 códigos de edifícios', async () => {
 
         let body = {
             edificioACod: "COD",
@@ -391,6 +400,46 @@ describe('PassagemService ', () => {
         stubFindByIdEdRepo.onCall(1).returns(Promise.resolve(Container.get("Edificio2")));
 
         sinon.stub(passagemRepoInstance, "listarPassagensPorParDePisos").returns(Promise.resolve([Container.get("Passagem")]));
+
+        const passagemService = new PassagemService(passagemRepo, edificioRepo);
+
+        let answer = (await passagemService.listarPassagensPorParDeEdificios(body as IListarPassagensPorParDeEdificioDTO)).getValue();
+
+        expect(answer[0].id.valueOf()).to.equal(1)
+    });
+
+    it('(Listar passagem por par de edifícios) Teste de integração PassagemService + PassagemRepo', async () => {
+
+        let body = {
+        } as IListarPassagensPorParDeEdificioDTO
+
+        let pontosList : number[] = [];
+        let ponto: number ;
+        pontosList.push(ponto);
+        pontosList.push(ponto);
+        pontosList.push(ponto);
+        pontosList.push(ponto);
+        
+        const passagemPersistence = {
+            domainID: 1,
+            listaPontos: pontosList,
+            pisoA: 1,
+            pisoB: 2,
+        } as IPassagemPersistence;
+
+        let edificioRepo = Container.get("EdificioRepo") as IEdificioRepo;
+        let passagemRepo = Container.get("PassagemRepo") as IPassagemRepo;
+        let pisoRepo = Container.get("PisoRepo") as IPisoRepo;
+
+        let passagemSchemaInstance = Container.get("PassagemSchema");
+
+        let passagemRepoInstance = Container.get("PassagemRepo") as IPassagemRepo;
+
+        sinon.stub(passagemSchemaInstance, "find").returns(Promise.resolve([passagemPersistence]));
+
+        let stubFindByIdPisoRepo = sinon.stub(pisoRepo, 'findByDomainId');
+        stubFindByIdPisoRepo.onCall(0).returns(Promise.resolve(Container.get("Piso1")));
+        stubFindByIdPisoRepo.onCall(1).returns(Promise.resolve(Container.get("Piso2")));
 
         const passagemService = new PassagemService(passagemRepo, edificioRepo);
 
