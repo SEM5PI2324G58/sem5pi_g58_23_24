@@ -271,7 +271,7 @@ describe('DispositivoController', () => {
             numeroSerie: "123456789"
         } as IDispositivoDTO
         listaDTO.push(dispositivoDTO);
-           // Arrange
+           
         let body = {
             "codigo": "as1",
             "descricaoDispositivo": "asdasdqwe123",
@@ -282,6 +282,7 @@ describe('DispositivoController', () => {
 
         let req: Partial<Request> = {};req.body = body;
         let res: Partial<Response> = {
+            status: sinon.spy(),
             json: sinon.spy()
         };
         let next: Partial<NextFunction> = () => {};
@@ -290,10 +291,12 @@ describe('DispositivoController', () => {
 
         let dispositivoController = new DispositivoController(dispositivoServiceInstance as IDispositivoService);
 
-        // Act
-        await dispositivoController.listarDispositivosDaFrota(<Request> req,<Response> res, <NextFunction> next);
+        
+        let answer = await dispositivoController.listarDispositivosDaFrota(<Request> req,<Response> res, <NextFunction> next);
 
-        // Assert
+        
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
         sinon.assert.calledWith(res.json as sinon.SinonSpy, listaDTO);
     });

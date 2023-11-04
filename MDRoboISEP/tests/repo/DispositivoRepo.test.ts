@@ -338,5 +338,70 @@ describe('DispositivoRepo', () => {
 
     });
 
+    it('findAll deve retornar dispositivo quando encontra', async () => {
+
+       
+        const dispositivoPersistence = {
+            codigo: "AS1",
+            descricaoDispositivo: "AS1",
+            estado: true,
+            nickname: "ola",
+            numeroSerie: "asas",
+            tipoDeDispositivo: 1,
+        } as IDispositivoPersistence;
+
+        const dispositivoPersistence2 = {
+            codigo: "AS2",
+            descricaoDispositivo: "AS2",
+            estado: true,
+            nickname: "ola2",
+            numeroSerie: "asas2",
+            tipoDeDispositivo: 1,
+        } as IDispositivoPersistence;
+        
+        
+        const dispositivoSchemaInstance = Container.get("DispositivoSchema");
+        const tipoDispositivoRepoInstance = Container.get("TipoDispositivoRepo");
+        
+        sinon.stub(dispositivoSchemaInstance, "find").returns([dispositivoPersistence,dispositivoPersistence2]);
+
+        sinon.stub(tipoDispositivoRepoInstance, "findByDomainId").returns( Promise.resolve(Container.get("tipoDispositivo")));
+
+        const dispositivo = await DispositivoMap.toDomain(dispositivoPersistence);
+        const dispositivo2 = await DispositivoMap.toDomain(dispositivoPersistence2);
+
+        const dispositivoRepo = new DispositivoRepo(dispositivoSchemaInstance as any);
+        const answer = await dispositivoRepo.findByNumeroSerie(dispositivoPersistence.codigo);
+        
+        expect(answer[0].returnCodigoDispositivo()).to.equal(dispositivo.returnCodigoDispositivo());
+        expect(answer[0].returnEstado()).to.equal(dispositivo.returnEstado());
+        expect(answer[0].returnNickname()).to.equal(dispositivo.returnNickname());
+        expect(answer[0].returnNumeroSerie()).to.equal(dispositivo.returnNumeroSerie());
+        expect(answer[0].props.tipoDeDispositivo.returnIdTipoDispositivo()).to.equal(dispositivo.props.tipoDeDispositivo.returnIdTipoDispositivo());
+        expect(answer[0].returnDescricaoDispositivo()).to.equal(dispositivo.returnDescricaoDispositivo());
+
+        expect(answer[1].returnCodigoDispositivo()).to.equal(dispositivo2.returnCodigoDispositivo());
+        expect(answer[1].returnEstado()).to.equal(dispositivo2.returnEstado());
+        expect(answer[1].returnNickname()).to.equal(dispositivo2.returnNickname());
+        expect(answer[1].returnNumeroSerie()).to.equal(dispositivo2.returnNumeroSerie());
+        expect(answer[1].props.tipoDeDispositivo.returnIdTipoDispositivo()).to.equal(dispositivo2.props.tipoDeDispositivo.returnIdTipoDispositivo());
+        expect(answer[1].returnDescricaoDispositivo()).to.equal(dispositivo2.returnDescricaoDispositivo());
+
+    });
+
+    it('findAll deve retornar lista vazia quando não existem dispositivos ', async () => {
+
+        const dispositivoSchemaInstance = Container.get("DispositivoSchema");
+        const tipoDispositivoRepoInstance = Container.get("TipoDispositivoRepo");
+        sinon.stub(tipoDispositivoRepoInstance, "findByDomainId").returns( Promise.resolve(Container.get("tipoDispositivo")));
+
+        sinon.stub(dispositivoSchemaInstance, "find").returns([]);
+        const dispositivoRepo = new DispositivoRepo(dispositivoSchemaInstance as any);
+        const answer = await dispositivoRepo.findAll();
+        
+        expect(answer.length).to.equal(0);
+
+    });
+
  
 });
