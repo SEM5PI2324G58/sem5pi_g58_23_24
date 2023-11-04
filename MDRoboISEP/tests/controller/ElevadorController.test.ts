@@ -380,4 +380,40 @@ describe('ElevadorController', () => {
             descricao: "descricao1",
         }));
     });
+
+    it('listarElevadoresDoEdificio retorna elevador JSON', async function() {
+        
+        let body = {
+        };
+
+        let req: Partial<Request> = {};
+        req.body = body;
+
+        let res: Partial<Response> = {
+            status: sinon.spy(),
+            json: sinon.spy()
+        };
+
+        let next: Partial<NextFunction> = () => {};
+
+        let elevadorServiceInstance = Container.get("ElevadorService");
+        let edificioRepoInstance = Container.get("EdificioRepo");
+
+        sinon.stub(edificioRepoInstance, 'findByDomainId').returns(Promise.resolve(Container.get("edificioComElevador")));
+
+        const elevadorController = new ElevadorController(elevadorServiceInstance as IElevadorService);
+        
+        await elevadorController.listarElevadoresDoEdificio(<Request>req, <Response>res, <NextFunction>next);
+        
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
+        sinon.assert.calledOnce(res.json);
+        sinon.assert.calledWith(res.json, sinon.match({
+            id: 1,
+            marca: '123',
+            modelo: "123",
+            numeroSerie: "123",
+            descricao: "123",
+        }));
+    });
 });
