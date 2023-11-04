@@ -10,11 +10,7 @@ export default interface ICarregarMapaDTO{
     elevador : {
         xCoord : number,
         yCoord : number,
-        orientacao: string,
-        marca: string,
-        modelo: string,
-        numeroSerie : string,
-        descricao : string    
+        orientacao: string, 
     },
     salas: [{
         nome: string,
@@ -25,7 +21,5 @@ export default interface ICarregarMapaDTO{
         abcissaPorta : number,
         ordenadaPorta : number,
         orientacaoPorta : string,
-        descricao : string,
-        categoria : string
     }]
 }
