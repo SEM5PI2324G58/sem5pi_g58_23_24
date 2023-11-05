@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "6a830592-8881-4a5b-be43-0c17c233e9ca",
+		"_postman_id": "d2109019-5df5-4a1b-b696-c09a843e0a1c",
 		"name": "MapaTest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "30690787"
+		"_exporter_id": "30695664"
 	},
 	"item": [
 		{
@@ -226,7 +226,7 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Status code is 201\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.have.status(201);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
@@ -269,7 +269,7 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Status code is 201\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.have.status(201);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
