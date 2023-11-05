@@ -8,7 +8,7 @@ import middlewares from '../middlewares';
 import { celebrate, Joi } from 'celebrate';
 import winston = require('winston');
 
-var user_controller = require('../../controllers/userController');
+var user_controller = require('../../controllers/ImplControllers/userController');
 
 const route = Router();
 

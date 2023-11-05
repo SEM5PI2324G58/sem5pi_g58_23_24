@@ -43,39 +43,39 @@ export default {
   controllers: {
     edificio: {
       name: "EdificioController",
-      path: "../controllers/EdificioController"
+      path: "../controllers/ImplControllers/EdificioController"
     },
     role: {
       name: "RoleController",
-      path: "../controllers/roleController"
+      path: "../controllers/ImplControllers/roleController"
     },
     piso: {
       name: "PisoController",
-      path: "../controllers/PisoController"
+      path: "../controllers/ImplControllers/PisoController"
     },
     elevador: {
       name: "ElevadorController",
-      path: "../controllers/ElevadorController"
+      path: "../controllers/ImplControllers/ElevadorController"
     },
     tipoDispositivo: {
       name: "TipoDispositivoController",
-      path: "../controllers/TipoDispositivoController"
+      path: "../controllers/ImplControllers/TipoDispositivoController"
     },
     passagem: {
       name: "PassagemController",
-      path: "../controllers/PassagemController"
+      path: "../controllers/ImplControllers/PassagemController"
     },
     dispositivo: {
       name: "DispositivoController",
-      path: "../controllers/DispositivoController"
+      path: "../controllers/ImplControllers/DispositivoController"
     },
     sala : {
       name: "SalaController",
-      path: "../controllers/SalaController"
+      path: "../controllers/ImplControllers/SalaController"
     },
     ponto : {
       name: "PontoController",
-      path: "../controllers/PontoController"
+      path: "../controllers/ImplControllers/PontoController"
     },
   },
 

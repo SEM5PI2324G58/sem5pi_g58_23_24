@@ -2,7 +2,7 @@ import {Response, Request, NextFunction} from 'express';import * as sinon from '
 import Container from 'typedi';
 import  IEdificioDTO  from '../../src/dto/IEdificioDTO';
 import { Result }  from '../../src/core/logic/Result';
-import EdificioController from '../../src/controllers/EdificioController';
+import EdificioController from '../../src/controllers/ImplControllers/EdificioController';
 import IEdificioService from '../../src/services/IServices/IEdificioService';
 import { Nome } from '../../src/domain/edificio/Nome';
 import { Dimensao } from '../../src/domain/edificio/Dimensao';

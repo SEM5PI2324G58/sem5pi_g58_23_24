@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { Inject, Service } from 'typedi';
-import config from "../../config";
-import { Result } from "../core/logic/Result";
-import ISalaController from './IControllers/ISalaController';
-import ISalaService from '../services/IServices/ISalaService';
-import ISalaDTO from '../dto/ISalaDTO';
+import config from "../../../config";
+import { Result } from "../../core/logic/Result";
+import ISalaController from '../IControllers/ISalaController';
+import ISalaService from '../../services/IServices/ISalaService';
+import ISalaDTO from '../../dto/ISalaDTO';
 
 @Service()
 export default class SalaController implements ISalaController {

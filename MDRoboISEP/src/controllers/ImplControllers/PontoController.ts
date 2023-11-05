@@ -1,10 +1,10 @@
 import { Inject, Service } from "typedi";
-import IPontoService from "../services/IServices/IPontoService";
-import config from "../../config";
+import IPontoService from "../../services/IServices/IPontoService";
+import config from "../../../config";
 import { Request, Response, NextFunction } from "express";
-import IPontoController from "./IControllers/IPontoController";
-import ICarregarMapaDTO from "../dto/ICarregarMapaDTO";
-import { Result } from "../core/logic/Result";
+import IPontoController from "../IControllers/IPontoController";
+import ICarregarMapaDTO from "../../dto/ICarregarMapaDTO";
+import { Result } from "../../core/logic/Result";
 
 @Service()
 export default class PontoController implements IPontoController {

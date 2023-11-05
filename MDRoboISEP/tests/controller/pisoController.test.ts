@@ -3,7 +3,7 @@ import {Response, Request, NextFunction} from 'express';
 import { Container } from 'typedi';
 import { Result }  from '../../src/core/logic/Result';
 import * as sinon from 'sinon';
-import PisoController from '../../src/controllers/PisoController';
+import PisoController from '../../src/controllers/ImplControllers/PisoController';
 import IPisoService from '../../src/services/IServices/IPisoService';
 import  ICriarPisoDTO  from '../../src/dto/ICriarPisoDTO';
 import { IPisoPersistence } from "../../src/dataschema/IPisoPersistence";

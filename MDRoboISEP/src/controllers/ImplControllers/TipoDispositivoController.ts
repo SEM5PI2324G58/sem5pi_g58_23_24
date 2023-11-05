@@ -1,10 +1,10 @@
 import { Inject, Service } from "typedi";
-import ITipoDispositivoController from "./IControllers/ITipoDispositivoController";
+import ITipoDispositivoController from "../IControllers/ITipoDispositivoController";
 import { NextFunction, Request, Response } from "express";
-import config from "../../config";
-import ITipoDispositivoDTO from "../dto/ITipoDispositivoDTO";
-import { Result } from "../core/logic/Result";
-import ITipoDispositivoService from "../services/IServices/ITipoDispositivoService";
+import config from "../../../config";
+import ITipoDispositivoDTO from "../../dto/ITipoDispositivoDTO";
+import { Result } from "../../core/logic/Result";
+import ITipoDispositivoService from "../../services/IServices/ITipoDispositivoService";
 
 @Service()
 

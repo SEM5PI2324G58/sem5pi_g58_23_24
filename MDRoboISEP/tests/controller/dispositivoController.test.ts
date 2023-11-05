@@ -3,7 +3,7 @@ import {Response, Request, NextFunction} from 'express';
 import { Container } from 'typedi';
 import { Result }  from '../../src/core/logic/Result';
 import * as sinon from 'sinon';
-import DispositivoController from '../../src/controllers/DispositivoController';
+import DispositivoController from '../../src/controllers/ImplControllers/DispositivoController';
 import IDispositivoService from '../../src/services/IServices/IDispositivoService';
 import IAdicionarRoboAFrotaDTO from "../../src/dto/IAdicionarRoboAFrotaDTO";
 import { TipoTarefa } from "../../src/domain/tipoDispositivo/TipoTarefa";
@@ -24,7 +24,6 @@ import TipoDispositivoRepo from "../../src/repos/TipoDispositivoRepo";
 
 import 'mocha';
 import IDispositivoDTO from "../../src/dto/IDispositivoDTO";
-import PisoController from "../../src/controllers/PisoController";
 
 
 

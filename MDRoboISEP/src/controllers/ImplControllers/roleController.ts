@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { Inject, Service } from 'typedi';
-import config from "../../config";
+import config from "../../../config";
 
-import IRoleController from "./IControllers/IRoleController";
-import IRoleService from '../services/IServices/IRoleService';
-import IRoleDTO from '../dto/IRoleDTO';
+import IRoleController from "../IControllers/IRoleController";
+import IRoleService from '../../services/IServices/IRoleService';
+import IRoleDTO from '../../dto/IRoleDTO';
 
-import { Result } from "../core/logic/Result";
+import { Result } from "../../core/logic/Result";
 
 @Service()
 export default class RoleController implements IRoleController /* TODO: extends ../core/infra/BaseController */ {

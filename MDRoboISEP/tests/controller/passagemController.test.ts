@@ -2,7 +2,7 @@ import { Response, Request, NextFunction } from 'express'; import * as sinon fro
 import Container from 'typedi';
 import IPassagemDTO from '../../src/dto/IPassagemDTO';
 import { Result } from '../../src/core/logic/Result';
-import PassagemController from '../../src/controllers/PassagemController';
+import PassagemController from '../../src/controllers/ImplControllers/PassagemController';
 import IPassagemService from '../../src/services/IServices/IPassagemService';
 import { Codigo } from '../../src/domain/edificio/Codigo';
 import { DescricaoEdificio } from '../../src/domain/edificio/DescricaoEdificio';

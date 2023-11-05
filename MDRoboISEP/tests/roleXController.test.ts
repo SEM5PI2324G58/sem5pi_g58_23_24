@@ -5,7 +5,7 @@ import { Response, Request, NextFunction } from 'express';
 import { Container } from 'typedi';
 import { Result } from '../src/core/logic/Result';
 import IRoleService from "../src/services/IServices/IRoleService";
-import RoleController from "../src/controllers/roleController";
+import RoleController from "../src/controllers/ImplControllers/roleController";
 import IRoleDTO from '../src/dto/IRoleDTO';
 import { Role } from '../src/domain/role';
 

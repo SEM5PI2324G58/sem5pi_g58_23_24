@@ -2,7 +2,7 @@ import { describe } from "node:test";
 import * as sinon from "sinon";
 import { Container } from "typedi";
 import { Response,Request, NextFunction } from "express";
-import PontoController from "../../src/controllers/PontoController";
+import PontoController from "../../src/controllers/ImplControllers/PontoController";
 import ICarregarMapaDTO from "../../src/dto/ICarregarMapaDTO";
 import IPontoService from "../../src/services/IServices/IPontoService";
 import { Result } from "../../src/core/logic/Result";
