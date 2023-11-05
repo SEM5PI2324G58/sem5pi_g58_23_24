@@ -3,7 +3,7 @@ autonumber
 participant Frontend as fe <<Container (C4)>>
 participant MDRoboISEP as md <<Container (C4)>>
 
-[o-> fe: recebe informação de criação (edificio, pisosServidos, xCoord, yCoord, orientacao,\n marca, modelo, numeroSerie, descricao)
+[o-> fe: recebe informação de criação (edificio, pisosServidos, marca, modelo, numeroSerie, descricao)
 activate fe
 fe	-> md: criarElevador(json)
 activate md
