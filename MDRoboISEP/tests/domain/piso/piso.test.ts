@@ -110,6 +110,17 @@ describe('piso domain', function () {
 			}
 		}
 
+		let pontoArray5x5Vazio : Ponto[][] = [];
+		for(let i = 0; i < 5; i++){
+			pontoArray5x5Vazio[i] = [];
+			for(let j = 0; j < 5; j++){
+				let idPonto = IdPonto.create(i*5 + j + 1).getValue();
+				let tipoPonto = TipoPonto.create(" ").getValue();
+				let coordenadas = Coordenadas.create({abscissa: i , ordenada: j }).getValue();
+				pontoArray5x5Vazio[i][j] = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
+			}
+		}
+
 		pontoArray5x5[0][0].toParedeNorteOeste();
 		pontoArray5x5[1][0].toParedeNorte();
 		pontoArray5x5[2][0].toParedeNorte();
@@ -124,7 +135,9 @@ describe('piso domain', function () {
 		pontoArray5x5[4][3].toParedeOeste();
 		pontoArray5x5[1][4].toParedeNorte();
 		pontoArray5x5[2][4].toParedeNorte();
-		pontoArray5x5[3][4].toParedeNorte();		
+		pontoArray5x5[3][4].toParedeNorte();
+		
+		
 
 		let piso5x5 = Piso.create({
 			numeroPiso: numeroPiso,
@@ -133,6 +146,14 @@ describe('piso domain', function () {
 		}, idPiso).getValue();
 		Container.set ('piso5x5',piso5x5);
 
+		let piso5x5Vazio = Piso.create({
+			numeroPiso: numeroPiso,
+			descricaoPiso: descricaoPiso,
+			mapa: pontoArray5x5Vazio,
+		}, idPiso).getValue();
+		Container.set ('piso5x5Vazio',piso5x5Vazio);
+
+		
     });
 
 	it('piso é criado com sucesso com descrição', async function () {
@@ -347,5 +368,38 @@ describe('piso domain', function () {
 		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 4 && ponto.returnOrdenada() === 1)?.returnTipoPonto(), "Oeste");
 		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 4 && ponto.returnOrdenada() === 2)?.returnTipoPonto(), "Oeste");
 		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 4 && ponto.returnOrdenada() === 3)?.returnTipoPonto(), "Oeste");
+	});
+
+	it('Criação de bermas edificio 5x5', async function() {
+		let piso = Container.get("piso5x5Vazio") as Piso;
+		let pontos = piso.criacaoBermasPiso();
+
+		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 0 && ponto.returnOrdenada() === 0)?.returnTipoPonto(), "NorteOeste");
+		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 1 && ponto.returnOrdenada() === 0)?.returnTipoPonto(), "Norte");
+		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 2 && ponto.returnOrdenada() === 0)?.returnTipoPonto(), "Norte");
+		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 3 && ponto.returnOrdenada() === 0)?.returnTipoPonto(), "Norte");
+		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 4 && ponto.returnOrdenada() === 0)?.returnTipoPonto(), "Oeste");
+		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 0 && ponto.returnOrdenada() === 1)?.returnTipoPonto(), "Oeste");
+		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 0 && ponto.returnOrdenada() === 2)?.returnTipoPonto(), "Oeste");
+		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 0 && ponto.returnOrdenada() === 3)?.returnTipoPonto(), "Oeste");
+		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 0 && ponto.returnOrdenada() === 4)?.returnTipoPonto(), "Norte");
+		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 1 && ponto.returnOrdenada() === 4)?.returnTipoPonto(), "Norte");
+		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 2 && ponto.returnOrdenada() === 4)?.returnTipoPonto(), "Norte");
+		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 3 && ponto.returnOrdenada() === 4)?.returnTipoPonto(), "Norte");
+		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 4 && ponto.returnOrdenada() === 0)?.returnTipoPonto(), "Oeste");
+		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 4 && ponto.returnOrdenada() === 1)?.returnTipoPonto(), "Oeste");
+		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 4 && ponto.returnOrdenada() === 2)?.returnTipoPonto(), "Oeste");
+		assert.equal(pontos.find(ponto => ponto.returnAbscissa() === 4 && ponto.returnOrdenada() === 3)?.returnTipoPonto(), "Oeste");
+	});
+
+	it('Verificar se piso é vazio correto', async function() {
+		let piso = Container.get("piso5x5Vazio") as Piso;
+		assert.equal(piso.verificarSeMapaVazio(), true);
+	});
+
+	it('Verificar se piso é vazio com algo no mapa', async function() {
+		let piso = Container.get("piso5x5Vazio") as Piso;
+		piso.props.mapa[0][0].toElevador();
+		assert.equal(piso.verificarSeMapaVazio(), false);
 	});
 });
