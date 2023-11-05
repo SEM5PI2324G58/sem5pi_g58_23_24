@@ -73,6 +73,10 @@ export default {
       name: "SalaController",
       path: "../controllers/SalaController"
     },
+    ponto : {
+      name: "PontoController",
+      path: "../controllers/PontoController"
+    },
   },
 
   repos: {
@@ -150,6 +154,10 @@ export default {
     sala: {
       name: "SalaService",
       path: "../services/SalaService"
+    },
+    ponto: {
+      name: "PontoService",
+      path: "../services/PontoService"
     },
   },
 };

@@ -111,6 +111,17 @@ describe('PontoService', () => {
 			}
 		}
 
+        let pontoArray5x5Vazio : Ponto[][] = [];
+		for(let i = 0; i < 5; i++){
+			pontoArray5x5Vazio[i] = [];
+			for(let j = 0; j < 5; j++){
+				let idPonto = IdPonto.create(i*5 + j + 1).getValue();
+				let tipoPonto = TipoPonto.create(" ").getValue();
+				let coordenadas = Coordenadas.create({abscissa: i , ordenada: j }).getValue();
+				pontoArray5x5Vazio[i][j] = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
+			}
+		}
+
 
         let descricaoPiso = DescricaoPiso.create("Ola").getValue();
 		let idPiso = IdPiso.create(1).getValue();
@@ -123,6 +134,10 @@ describe('PontoService', () => {
         let descricaoPiso3 = DescricaoPiso.create("Ola3").getValue();
         let idPiso3 = IdPiso.create(3).getValue();
         let numeroPiso3 = NumeroPiso.create(3).getValue();
+
+        let descricaoPiso4 = DescricaoPiso.create("Ola4").getValue();
+        let idPiso4 = IdPiso.create(4).getValue();
+        let numeroPiso4 = NumeroPiso.create(0).getValue();
 
 		pontoArray5x5[0][0].toParedeNorteOeste();
 		pontoArray5x5[1][0].toParedeNorte();
@@ -195,8 +210,15 @@ describe('PontoService', () => {
         }, idPiso3).getValue();
         Container.set ('piso5x5_3',piso5x5_3);
 
+        let piso5x5Vazio = Piso.create({
+			numeroPiso: numeroPiso4,
+			descricaoPiso: descricaoPiso4,
+			mapa: pontoArray5x5Vazio,
+		}, idPiso4).getValue();
+		Container.set ('piso5x5Vazio',piso5x5Vazio);
+
         let elevador =  Elevador.create({
-            pisosServidos: [Container.get('piso5x5'), Container.get('piso5x5_2')],
+            pisosServidos: [Container.get('piso5x5Vazio'), Container.get('piso5x5_2')],
             marca: MarcaElevador.create("Marca").getValue(),
             modelo: ModeloElevador.create("Modelo").getValue(),
             numeroSerie : NumeroSerieElevador.create("NumeroSerie").getValue(),
@@ -204,6 +226,16 @@ describe('PontoService', () => {
             pontos: [],
         }, IdElevador.create(1).getValue()).getValue()
         Container.set('elevador', elevador);
+        
+        let elevadorNaoServePisoAtual = Elevador.create({
+            pisosServidos: [Container.get('piso5x5'), Container.get('piso5x5_2')],
+            marca: MarcaElevador.create("Marca").getValue(),
+            modelo: ModeloElevador.create("Modelo").getValue(),
+            numeroSerie : NumeroSerieElevador.create("NumeroSerie").getValue(),
+            descricao : DescricaoElevador.create("Descricao").getValue(),
+            pontos: [],
+        }, IdElevador.create(1).getValue()).getValue();
+        Container.set('elevadorNaoServePisoAtual', elevadorNaoServePisoAtual);
     });
 
     afterEach(() => {
@@ -238,12 +270,10 @@ describe('PontoService', () => {
             }]
         }
 
-        let piso5x5 = Container.get('piso5x5');
-        let piso5x5_2 = Container.get('piso5x5_2');
         let edificioProps : any = {
             nome: Nome.create('ED01 A').getValue(),
             dimensao: Dimensao.create(4,4).getValue(),
-            listaPisos: [Container.get('piso5x5'), Container.get('piso5x5_2')],
+            listaPisos: [Container.get('piso5x5Vazio'), Container.get('piso5x5_2')],
         };    
         
         
@@ -304,5 +334,326 @@ describe('PontoService', () => {
         expect(answer.getValue().salas[0].orientacaoPorta).to.equal(body.salas[0].orientacaoPorta);
     });
 
-    
+    it('CarregarMapa - Edificio não existe', async () => {
+        let body = {
+            "codigoEdificio": "ED01",
+            "numeroPiso" : 0,
+            "passagens" : [{
+                "id": 1,
+                "abcissa": 3,
+                "ordenada": 2,
+                "orientacao": "Norte"
+            }],
+            "elevador" : {
+                "xCoord" : 3,
+                "yCoord" : 3,
+                "orientacao": "Norte"   
+            },
+            "salas": [{
+                "nome": "B203",
+                "abcissaA": 0,
+                "ordenadaA": 0,
+                "abcissaB": 2,
+                "ordenadaB": 2,
+                "abcissaPorta" : 1,
+                "ordenadaPorta" : 0,
+                "orientacaoPorta" : "Norte"
+            }]
+        }
+
+
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+
+        sinon.stub(edificioRepoInstance, 'findByDomainId').returns(Promise.resolve(null));
+
+        const pontoService = new PontoService(pontoRepoInstance as IPontoRepo, edificioRepoInstance as IEdificioRepo, elevadorRepoInstance as IElevadorRepo , salaRepoInstance as ISalaRepo, passagemRepoInstance as IPassagemRepo);
+        let answer = await pontoService.carregarMapa(body as ICarregarMapaDTO);
+
+        expect(answer.isFailure).to.equal(true);
+        expect(answer.errorValue()).to.equal("O Edifício que inseriu não existe.");
+    });
+
+    it('CarregarMapa - Piso não existe', async () => {
+        let body = {
+            "codigoEdificio": "ED01",
+            "numeroPiso" : 7,
+            "passagens" : [{
+                "id": 1,
+                "abcissa": 3,
+                "ordenada": 2,
+                "orientacao": "Norte"
+            }],
+            "elevador" : {
+                "xCoord" : 3,
+                "yCoord" : 3,
+                "orientacao": "Norte"   
+            },
+            "salas": [{
+                "nome": "B203",
+                "abcissaA": 0,
+                "ordenadaA": 0,
+                "abcissaB": 2,
+                "ordenadaB": 2,
+                "abcissaPorta" : 1,
+                "ordenadaPorta" : 0,
+                "orientacaoPorta" : "Norte"
+            }]
+        }
+
+        let edificioProps : any = {
+            nome: Nome.create('ED01 A').getValue(),
+            dimensao: Dimensao.create(4,4).getValue(),
+            listaPisos: [Container.get('piso5x5Vazio'), Container.get('piso5x5_2')],
+        };    
+        
+        
+        let edificio = Edificio.create(edificioProps, Codigo.create(body.codigoEdificio).getValue()).getValue();
+
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+
+        sinon.stub(edificioRepoInstance, 'findByDomainId').returns(Promise.resolve(edificio));
+
+        const pontoService = new PontoService(pontoRepoInstance as IPontoRepo, edificioRepoInstance as IEdificioRepo, elevadorRepoInstance as IElevadorRepo , salaRepoInstance as ISalaRepo, passagemRepoInstance as IPassagemRepo);
+        let answer = await pontoService.carregarMapa(body as ICarregarMapaDTO);
+
+        expect(answer.isFailure).to.equal(true);
+        expect(answer.errorValue()).to.equal("O piso que inseriu não existe.");
+
+    });
+
+    it('CarregarMapa - Passagem não existe', async () => {
+        let body = {
+            "codigoEdificio": "ED01",
+            "numeroPiso" : 0,
+            "passagens" : [{
+                "id": 1,
+                "abcissa": 3,
+                "ordenada": 2,
+                "orientacao": "Norte"
+            }],
+            "elevador" : {
+                "xCoord" : 3,
+                "yCoord" : 3,
+                "orientacao": "Norte"   
+            },
+            "salas": [{
+                "nome": "B203",
+                "abcissaA": 0,
+                "ordenadaA": 0,
+                "abcissaB": 2,
+                "ordenadaB": 2,
+                "abcissaPorta" : 1,
+                "ordenadaPorta" : 0,
+                "orientacaoPorta" : "Norte"
+            }]
+        }
+
+        let edificioProps : any = {
+            nome: Nome.create('ED01 A').getValue(),
+            dimensao: Dimensao.create(4,4).getValue(),
+            listaPisos: [Container.get('piso5x5Vazio'), Container.get('piso5x5_2')],
+        };    
+        
+        
+        let edificio = Edificio.create(edificioProps, Codigo.create(body.codigoEdificio).getValue()).getValue();
+        edificio.adicionarElevador(Container.get('elevador'));
+
+        let salaProps : any = {
+            piso : edificio.returnListaPisos()[0],
+            categoria : Categorizacao.create("Gabinete").getValue(),
+            descricao : DescricaoSala.create("B203").getValue(),
+            listaPontos : [undefined, undefined],
+        }
+        let sala = Sala.create(salaProps, NomeSala.create(body.salas[0].nome).getValue()).getValue();
+
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+
+        let passagemProps : any = {
+            listaPontos : [undefined, undefined, undefined, undefined],
+            pisoA : edificio.returnListaPisos()[0],
+            pisoB : Container.get('piso5x5_3'),
+        }
+        sinon.stub(edificioRepoInstance, 'findByDomainId').returns(Promise.resolve(edificio));
+        sinon.stub(salaRepoInstance, 'findSalasByPiso').returns(Promise.resolve([sala]));
+        sinon.stub(passagemRepoInstance, 'listarPassagensComUmPiso').returns(Promise.resolve([]));        
+
+        const pontoService = new PontoService(pontoRepoInstance as IPontoRepo, edificioRepoInstance as IEdificioRepo, elevadorRepoInstance as IElevadorRepo , salaRepoInstance as ISalaRepo, passagemRepoInstance as IPassagemRepo);
+        let answer = await pontoService.carregarMapa(body as ICarregarMapaDTO);
+
+        expect(answer.isFailure).to.equal(true);
+        expect(answer.errorValue()).to.equal("Não existem passagens que satisfaçam os dados inseridos");
+        
+    });
+
+    it('CarregarMapa - Elevador não existe', async () => {
+        let body = {
+            "codigoEdificio": "ED01",
+            "numeroPiso" : 0,
+            "passagens" : [{
+                "id": 1,
+                "abcissa": 3,
+                "ordenada": 2,
+                "orientacao": "Norte"
+            }],
+            "elevador" : {
+                "xCoord" : 3,
+                "yCoord" : 3,
+                "orientacao": "Norte"   
+            },
+            "salas": [{
+                "nome": "B203",
+                "abcissaA": 0,
+                "ordenadaA": 0,
+                "abcissaB": 2,
+                "ordenadaB": 2,
+                "abcissaPorta" : 1,
+                "ordenadaPorta" : 0,
+                "orientacaoPorta" : "Norte"
+            }]
+        }
+
+        let edificioProps : any = {
+            nome: Nome.create('ED01 A').getValue(),
+            dimensao: Dimensao.create(4,4).getValue(),
+            listaPisos: [Container.get('piso5x5Vazio'), Container.get('piso5x5_2')],
+        };    
+        
+        
+        let edificio = Edificio.create(edificioProps, Codigo.create(body.codigoEdificio).getValue()).getValue();
+
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+
+        sinon.stub(edificioRepoInstance, 'findByDomainId').returns(Promise.resolve(edificio));
+        
+        const pontoService = new PontoService(pontoRepoInstance as IPontoRepo, edificioRepoInstance as IEdificioRepo, elevadorRepoInstance as IElevadorRepo , salaRepoInstance as ISalaRepo, passagemRepoInstance as IPassagemRepo);
+        let answer = await pontoService.carregarMapa(body as ICarregarMapaDTO);
+
+        expect(answer.isFailure).to.equal(true);
+        expect(answer.errorValue()).to.equal("Não existe elevador neste edifício.");
+
+    });
+
+    it('CarregarMapa - Sala não existe', async () => {
+        let body = {
+            "codigoEdificio": "ED01",
+            "numeroPiso" : 0,
+            "passagens" : [{
+                "id": 1,
+                "abcissa": 3,
+                "ordenada": 2,
+                "orientacao": "Norte"
+            }],
+            "elevador" : {
+                "xCoord" : 3,
+                "yCoord" : 3,
+                "orientacao": "Norte"   
+            },
+            "salas": [{
+                "nome": "B203",
+                "abcissaA": 0,
+                "ordenadaA": 0,
+                "abcissaB": 2,
+                "ordenadaB": 2,
+                "abcissaPorta" : 1,
+                "ordenadaPorta" : 0,
+                "orientacaoPorta" : "Norte"
+            }]
+        }
+
+        let edificioProps : any = {
+            nome: Nome.create('ED01 A').getValue(),
+            dimensao: Dimensao.create(4,4).getValue(),
+            listaPisos: [Container.get('piso5x5Vazio'), Container.get('piso5x5_2')],
+        };    
+        
+        
+        let edificio = Edificio.create(edificioProps, Codigo.create(body.codigoEdificio).getValue()).getValue();
+        edificio.adicionarElevador(Container.get('elevador'));
+
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+
+        sinon.stub(edificioRepoInstance, 'findByDomainId').returns(Promise.resolve(edificio));
+        sinon.stub(salaRepoInstance, 'findSalasByPiso').returns(Promise.resolve([]));
+
+        const pontoService = new PontoService(pontoRepoInstance as IPontoRepo, edificioRepoInstance as IEdificioRepo, elevadorRepoInstance as IElevadorRepo , salaRepoInstance as ISalaRepo, passagemRepoInstance as IPassagemRepo);
+        let answer = await pontoService.carregarMapa(body as ICarregarMapaDTO);
+
+        expect(answer.isFailure).to.equal(true);
+        expect(answer.errorValue()).to.equal("Não existem salas que satisfaçam os dados inseridos");
+    });
+
+    it('CarregarMapa - Elevador não serve o piso atual', async () => {
+        let body = {
+            "codigoEdificio": "ED01",
+            "numeroPiso" : 0,
+            "passagens" : [{
+                "id": 1,
+                "abcissa": 3,
+                "ordenada": 2,
+                "orientacao": "Norte"
+            }],
+            "elevador" : {
+                "xCoord" : 3,
+                "yCoord" : 3,
+                "orientacao": "Norte"   
+            },
+            "salas": [{
+                "nome": "B203",
+                "abcissaA": 0,
+                "ordenadaA": 0,
+                "abcissaB": 2,
+                "ordenadaB": 2,
+                "abcissaPorta" : 1,
+                "ordenadaPorta" : 0,
+                "orientacaoPorta" : "Norte"
+            }]
+        }
+
+        let edificioProps : any = {
+            nome: Nome.create('ED01 A').getValue(),
+            dimensao: Dimensao.create(4,4).getValue(),
+            listaPisos: [Container.get('piso5x5Vazio'), Container.get('piso5x5_2'), Container.get('piso5x5_3')],
+        };    
+        
+        
+        let edificio = Edificio.create(edificioProps, Codigo.create(body.codigoEdificio).getValue()).getValue();
+        edificio.adicionarElevador(Container.get('elevadorNaoServePisoAtual'));
+
+        let edificioRepoInstance = Container.get("EdificioRepo");
+        let salaRepoInstance = Container.get("SalaRepo");
+        let passagemRepoInstance = Container.get("PassagemRepo");
+        let pontoRepoInstance = Container.get("PontoRepo");
+        let elevadorRepoInstance = Container.get("ElevadorRepo");
+
+        sinon.stub(edificioRepoInstance, 'findByDomainId').returns(Promise.resolve(edificio));
+
+        
+
+        const pontoService = new PontoService(pontoRepoInstance as IPontoRepo, edificioRepoInstance as IEdificioRepo, elevadorRepoInstance as IElevadorRepo , salaRepoInstance as ISalaRepo, passagemRepoInstance as IPassagemRepo);
+        let answer = await pontoService.carregarMapa(body as ICarregarMapaDTO);
+
+        expect(answer.isFailure).to.equal(true);
+        expect(answer.errorValue()).to.equal("O elevador não serve este piso.");
+    });
+
 });
