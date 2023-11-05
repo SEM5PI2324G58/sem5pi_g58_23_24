@@ -3,7 +3,7 @@ import 'mocha';
 import "reflect-metadata";
 import { expect } from "chai";
 import { Container } from 'typedi';
-import ElevadorService from '../../src/services/ElevadorService';
+import ElevadorService from '../../src/services/ImplServices/ElevadorService';
 import IEdificioRepo from '../../src/services/IRepos/IEdificioRepo';
 import IElevadorRepo from '../../src/services/IRepos/IElevadorRepo';
 import ICriarElevadorDTO from '../../src/dto/ICriarElevadorDTO';

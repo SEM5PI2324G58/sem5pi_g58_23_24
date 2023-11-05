@@ -67,7 +67,7 @@ describe('PassagemController', () => {
         let passagemRepoInstance = Container.get(passagemRepoClass);
         Container.set("PassagemRepo", passagemRepoInstance);
 
-        let passagemServiceClass = require('../../src/services/PassagemService').default;
+        let passagemServiceClass = require('../../src/services/ImplServices/PassagemService').default;
         let passagemServiceInstance = Container.get(passagemServiceClass);
         Container.set("PassagemService", passagemServiceInstance);
 

@@ -1,16 +1,16 @@
 import { Service, Inject } from 'typedi';
-import config from "../../config";
-import { Result } from "../core/logic/Result";
-import ISalaDTO from '../dto/ISalaDTO';
-import ISalaService from './IServices/ISalaService';
-import IEdificioRepo from './IRepos/IEdificioRepo';
-import ISalaRepo from './IRepos/ISalaRepo';
-import { Ponto } from '../domain/ponto/Ponto';
-import NomeSala from '../domain/sala/NomeSala';
-import { Sala } from '../domain/sala/Sala';
-import CategorizacaoSala from '../domain/sala/CategorizacaoSala';
-import DescricaoSala from '../domain/sala/DescricaoSala';
-import { Piso } from '../domain/piso/Piso';
+import config from "../../../config";
+import { Result } from "../../core/logic/Result";
+import ISalaDTO from '../../dto/ISalaDTO';
+import ISalaService from '../IServices/ISalaService';
+import IEdificioRepo from '../IRepos/IEdificioRepo';
+import ISalaRepo from '../IRepos/ISalaRepo';
+import { Ponto } from '../../domain/ponto/Ponto';
+import NomeSala from '../../domain/sala/NomeSala';
+import { Sala } from '../../domain/sala/Sala';
+import CategorizacaoSala from '../../domain/sala/CategorizacaoSala';
+import DescricaoSala from '../../domain/sala/DescricaoSala';
+import { Piso } from '../../domain/piso/Piso';
 
 @Service()
 

@@ -141,7 +141,7 @@ describe('ElevadorController', () => {
         Container.set("PontoRepo", pontoRepoInstance);
 
         //Service
-        let elevadorServiceClass = require('../../src/services/ElevadorService').default;
+        let elevadorServiceClass = require('../../src/services/ImplServices/ElevadorService').default;
         let elevadorServiceInstance = Container.get(elevadorServiceClass);
         Container.set("ElevadorService", elevadorServiceInstance);
 

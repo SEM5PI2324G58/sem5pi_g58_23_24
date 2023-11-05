@@ -1,37 +1,37 @@
 import { Container, Service, Inject } from 'typedi';
 
 import jwt from 'jsonwebtoken';
-import config from '../../config';
+import config from '../../../config';
 import argon2 from 'argon2';
 import { randomBytes } from 'crypto';
 
 
-import { UserMap } from "../mappers/UserMap";
-import { IUserDTO } from '../dto/IUserDTO';
+import { UserMap } from "../../mappers/UserMap";
+import { IUserDTO } from '../../dto/IUserDTO';
 
-import ICriarPisoDTO from '../dto/ICriarPisoDTO';
+import ICriarPisoDTO from '../../dto/ICriarPisoDTO';
 
 
-import { Role } from '../domain/role';
+import { Role } from '../../domain/role';
 
-import { Result } from "../core/logic/Result";
-import IDispositivoService from './IServices/IDispositivoService';
-import IAdicionarRoboAFrotaDTO from '../dto/IAdicionarRoboAFrotaDTO';
-import IDispositivoDTO from '../dto/IDispositivoDTO';
-import ITipoDispositivoRepo from './IRepos/ITipoDispositivoRepo';
-import IDispositivoRepo from './IRepos/IDispositivoRepo';
-import { Dispositivo } from '../domain/dispositivo/Dispositivo';
-import { NumeroDeSerie } from '../domain/dispositivo/NumeroDeSerie';
-import { DescricaoDispositivo } from '../domain/dispositivo/DescricaoDispositivo';
-import { Nickname } from '../domain/dispositivo/Nickname';
-import { EstadoDispositivo } from '../domain/dispositivo/EstadoDispositivo';
+import { Result } from "../../core/logic/Result";
+import IDispositivoService from '../IServices/IDispositivoService';
+import IAdicionarRoboAFrotaDTO from '../../dto/IAdicionarRoboAFrotaDTO';
+import IDispositivoDTO from '../../dto/IDispositivoDTO';
+import ITipoDispositivoRepo from '../IRepos/ITipoDispositivoRepo';
+import IDispositivoRepo from '../IRepos/IDispositivoRepo';
+import { Dispositivo } from '../../domain/dispositivo/Dispositivo';
+import { NumeroDeSerie } from '../../domain/dispositivo/NumeroDeSerie';
+import { DescricaoDispositivo } from '../../domain/dispositivo/DescricaoDispositivo';
+import { Nickname } from '../../domain/dispositivo/Nickname';
+import { EstadoDispositivo } from '../../domain/dispositivo/EstadoDispositivo';
 import { result } from 'lodash';
-import { CodigoDispositivo } from '../domain/dispositivo/CodigoDispositivo';
-import { DispositivoMap } from '../mappers/DispositivoMap';
-import IDispositivoInibirDTO from '../dto/IDispositivoInibirDTO';
-import { TipoDispositivo } from '../domain/tipoDispositivo/TipoDispositivo';
-import { IdTipoDispositivo } from '../domain/tipoDispositivo/IdTipoDispositivo';
-import { Marca } from '../domain/tipoDispositivo/Marca';
+import { CodigoDispositivo } from '../../domain/dispositivo/CodigoDispositivo';
+import { DispositivoMap } from '../../mappers/DispositivoMap';
+import IDispositivoInibirDTO from '../../dto/IDispositivoInibirDTO';
+import { TipoDispositivo } from '../../domain/tipoDispositivo/TipoDispositivo';
+import { IdTipoDispositivo } from '../../domain/tipoDispositivo/IdTipoDispositivo';
+import { Marca } from '../../domain/tipoDispositivo/Marca';
 
 
 @Service()

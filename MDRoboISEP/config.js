@@ -125,39 +125,39 @@ export default {
   services: {
     edificio: {
       name: "EdificioService",
-      path: "../services/EdificioService"
+      path: "../services/ImplServices/EdificioService"
     },
     role: {
       name: "RoleService",
-      path: "../services/roleService"
+      path: "../services/ImplServices/roleService"
     },
     piso: {
       name: "PisoService",
-      path: "../services/PisoService"
+      path: "../services/ImplServices/PisoService"
     },
     elevador: {
       name: "ElevadorService",
-      path: "../services/ElevadorService"
+      path: "../services/ImplServices/ElevadorService"
     },
     tipoDispositivo: {
       name: "TipoDispositivoService",
-      path: "../services/TipoDispositivoService"
+      path: "../services/ImplServices/TipoDispositivoService"
     },
     passagem: {
       name: "PassagemService",
-      path: "../services/PassagemService"
+      path: "../services/ImplServices/PassagemService"
     },
     dispositivo: {
       name: "DispositivoService",
-      path: "../services/DispositivoService"
+      path: "../services/ImplServices/DispositivoService"
     },
     sala: {
       name: "SalaService",
-      path: "../services/SalaService"
+      path: "../services/ImplServices/SalaService"
     },
     ponto: {
       name: "PontoService",
-      path: "../services/PontoService"
+      path: "../services/ImplServices/PontoService"
     },
   },
 };

@@ -9,7 +9,7 @@ import { Piso } from "../../src/domain/piso/Piso";
 import  ICriarPisoDTO  from '../../src/dto/ICriarPisoDTO';
 import  {PisoMap}  from "../../src/mappers/PisoMap";
 import IPisoRepo from "../../src/services/IRepos/IPisoRepo";
-import PisoService from '../../src/services/PisoService';
+import PisoService from '../../src/services/ImplServices/PisoService';
 import IEdificioRepo from "../../src/services/IRepos/IEdificioRepo";
 import IPontoRepo from "../../src/services/IRepos/IPontoRepo";
 import { Edificio } from "../../src/domain/edificio/Edificio";
@@ -87,7 +87,7 @@ describe('PisoService ', () => {
         let elevadorRepoInstance = Container.get(elvadorRepo);
         Container.set("ElevadorRepo", elevadorRepoInstance);
 
-        let elevadorService = require('../../src/services/ElevadorService').default;
+        let elevadorService = require('../../src/services/ImplServices/ElevadorService').default;
         let elevadorServiceInstance = Container.get(elevadorService);
         Container.set("ElevadorService", elevadorServiceInstance);
 

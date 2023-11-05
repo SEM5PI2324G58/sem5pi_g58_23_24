@@ -42,7 +42,7 @@ describe('SalaController', () => {
         let salaRepoInstance = Container.get(salaRepoClass);
         Container.set("SalaRepo", salaRepoInstance);
 
-        let salaServiceClass = require('../../src/services/SalaService').default;
+        let salaServiceClass = require('../../src/services/ImplServices/SalaService').default;
         let salaServiceInstance = Container.get(salaServiceClass);
         Container.set("SalaService", salaServiceInstance);
     });

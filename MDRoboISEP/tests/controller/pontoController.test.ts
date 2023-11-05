@@ -75,7 +75,7 @@ describe('PontoController', () => {
         let pisoRepoClass = require('../../src/repos/PisoRepo').default;
         let pisoRepoInstance = Container.get(pisoRepoClass);
         Container.set("PisoRepo", pisoRepoInstance);
-        let pontoServiceClass = require('../../src/services/PontoService').default;
+        let pontoServiceClass = require('../../src/services/ImplServices/PontoService').default;
         let pontoServiceInstance = Container.get(pontoServiceClass);
         Container.set("PontoService", pontoServiceInstance);
 

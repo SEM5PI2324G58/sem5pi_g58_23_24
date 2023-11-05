@@ -1,26 +1,26 @@
 import { Container, Service, Inject } from 'typedi';
 
 import jwt from 'jsonwebtoken';
-import config from '../../config';
+import config from '../../../config';
 import argon2 from 'argon2';
 import { randomBytes } from 'crypto';
 
 //import MailerService from './mailer.ts.bak';
 
-import IUserService from '../services/IServices/IUserService';
-import { UserMap } from "../mappers/UserMap";
-import { IUserDTO } from '../dto/IUserDTO';
+import IUserService from '../IServices/IUserService';
+import { UserMap } from "../../mappers/UserMap";
+import { IUserDTO } from '../../dto/IUserDTO';
 
-import IUserRepo from './IRepos/IUserRepo';
-import IRoleRepo from './IRepos/IRoleRepo';
+import IUserRepo from '../IRepos/IUserRepo';
+import IRoleRepo from '../IRepos/IRoleRepo';
 
-import { User } from '../domain/user';
-import { UserPassword } from '../domain/userPassword';
-import { UserEmail } from '../domain/userEmail';
+import { User } from '../../domain/user';
+import { UserPassword } from '../../domain/userPassword';
+import { UserEmail } from '../../domain/userEmail';
 
-import { Role } from '../domain/role';
+import { Role } from '../../domain/role';
 
-import { Result } from "../core/logic/Result";
+import { Result } from "../../core/logic/Result";
 
 @Service()
 export default class UserService implements IUserService{

@@ -68,7 +68,7 @@ describe('EdificioController', () => {
         let elevadorRepoInstance = Container.get(elevadorRepoClass);
         Container.set("ElevadorRepo", elevadorRepoInstance);
 
-        let edificioServiceClass = require('../../src/services/EdificioService').default;
+        let edificioServiceClass = require('../../src/services/ImplServices/EdificioService').default;
         let edificioServiceInstance = Container.get(edificioServiceClass);
         Container.set("EdificioService", edificioServiceInstance);
 

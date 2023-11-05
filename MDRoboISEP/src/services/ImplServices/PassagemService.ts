@@ -1,19 +1,19 @@
 import { Service, Inject } from 'typedi';
-import config from "../../config";
-import { Result } from "../core/logic/Result";
-import IPassagemRepo from './IRepos/IPassagemRepo';
-import IPassagemDTO from '../dto/IPassagemDTO';
-import IPassagemService from './IServices/IPassagemService';
-import IEdificioRepo from './IRepos/IEdificioRepo';
-import { Passagem } from '../domain/passagem/Passagem';
-import { IdPassagem } from '../domain/passagem/IdPassagem';
-import { Ponto } from '../domain/ponto/Ponto';
-import { Piso } from '../domain/piso/Piso';
-import IListarPassagemDTO from '../dto/IListarPassagemDTO';
-import { PassagemMap } from '../mappers/PassagemMap';
-import IListarPassagensPorParDeEdificioDTO from '../dto/IListarPassagensPorParDeEdificioDTO';
-import { Edificio } from '../domain/edificio/Edificio';
-import IListarPisoComPassagensDTO from '../dto/IListarPisoComPassagensDTO';
+import config from "../../../config";
+import { Result } from "../../core/logic/Result";
+import IPassagemRepo from '../IRepos/IPassagemRepo';
+import IPassagemDTO from '../../dto/IPassagemDTO';
+import IPassagemService from '../IServices/IPassagemService';
+import IEdificioRepo from '../IRepos/IEdificioRepo';
+import { Passagem } from '../../domain/passagem/Passagem';
+import { IdPassagem } from '../../domain/passagem/IdPassagem';
+import { Ponto } from '../../domain/ponto/Ponto';
+import { Piso } from '../../domain/piso/Piso';
+import IListarPassagemDTO from '../../dto/IListarPassagemDTO';
+import { PassagemMap } from '../../mappers/PassagemMap';
+import IListarPassagensPorParDeEdificioDTO from '../../dto/IListarPassagensPorParDeEdificioDTO';
+import { Edificio } from '../../domain/edificio/Edificio';
+import IListarPisoComPassagensDTO from '../../dto/IListarPisoComPassagensDTO';
 @Service()
 
 @Service()
