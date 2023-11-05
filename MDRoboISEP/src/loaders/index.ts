@@ -108,6 +108,11 @@ export default async ({ expressApp }) => {
     name: config.controllers.sala.name,
     path: config.controllers.sala.path
   }
+
+  const pontoController = {
+    name: config.controllers.ponto.name,
+    path: config.controllers.ponto.path
+  }
   
   const roleRepo = {
     name: config.repos.role.name,
@@ -197,6 +202,11 @@ export default async ({ expressApp }) => {
     path: config.services.sala.path
   }
 
+  const pontoService = {
+    name: config.services.ponto.name,
+    path: config.services.ponto.path
+  }
+
   await dependencyInjectorLoader({
     mongoConnection,
     schemas: [
@@ -219,7 +229,8 @@ export default async ({ expressApp }) => {
       tipoDispositivoController,
       passagemController,
       dispositivoController,
-      salaController
+      salaController,
+      pontoController
     ],
     repos: [
       roleRepo,
@@ -241,7 +252,8 @@ export default async ({ expressApp }) => {
       tipoDispositivoService,
       passagemService,
       dispositivoService,
-      salaService
+      salaService,
+      pontoService
     ]
   });
   Logger.info('✌️ Schemas, Controllers, Repositories, Services, etc. loaded');
