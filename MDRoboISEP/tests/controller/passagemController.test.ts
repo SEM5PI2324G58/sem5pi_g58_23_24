@@ -94,7 +94,8 @@ describe('PassagemController', () => {
         req.body = body;
 
         let res: Partial<Response> = {
-            json: sinon.spy()
+            json: sinon.spy(),
+            status: sinon.spy(),
         };
 
         let next: Partial<NextFunction> = () => { };
@@ -107,8 +108,11 @@ describe('PassagemController', () => {
         await passagemController.criarPassagem(<Request>req, <Response>res, <NextFunction>next);
 
         // Assert
-        sinon.assert.calledOnce(res.json);
-        sinon.assert.calledWith(res.json, body);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, body);
+   
     });
 
     it('PassagemController + PassagemService integration test criar passagem', async function () {
@@ -126,6 +130,7 @@ describe('PassagemController', () => {
 
         let res: Partial<Response> = {
             json: sinon.spy(),
+            status: sinon.spy(),
         };
 
         let next: Partial<NextFunction> = () => { };
@@ -173,7 +178,9 @@ describe('PassagemController', () => {
         await passagemController.criarPassagem(<Request>req, <Response>res, <NextFunction>next);
 
         // Assert
-        sinon.assert.calledOnce(passagemServiceSpy);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
         sinon.assert.calledWith(passagemServiceSpy, body as IPassagemDTO);
 
     });
