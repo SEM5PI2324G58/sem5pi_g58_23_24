@@ -1,16 +1,16 @@
 import { Service,Inject } from "typedi";
-import config from "../../config";
-import ITipoDispositivoService from "./IServices/ITipoDispositivoService";
-import ITipoDispositivoDTO from "../dto/ITipoDispositivoDTO";
-import { Result } from "../core/logic/Result";
-import ITipoDispositivoRepo from "./IRepos/ITipoDispositivoRepo";
-import { IdTipoDispositivo } from "../domain/tipoDispositivo/IdTipoDispositivo";
-import { TipoTarefa } from "../domain/tipoDispositivo/TipoTarefa";
-import { Marca } from "../domain/tipoDispositivo/Marca";
-import { Modelo } from "../domain/tipoDispositivo/Modelo";
-import { TipoDispositivo } from "../domain/tipoDispositivo/TipoDispositivo";
-import { TipoDispositivoMap } from "../mappers/TipoDispositivoMap";
-import IDispositivoRepo from "./IRepos/IDispositivoRepo";
+import config from "../../../config";
+import ITipoDispositivoService from "../IServices/ITipoDispositivoService";
+import ITipoDispositivoDTO from "../../dto/ITipoDispositivoDTO";
+import { Result } from "../../core/logic/Result";
+import ITipoDispositivoRepo from "../IRepos/ITipoDispositivoRepo";
+import { IdTipoDispositivo } from "../../domain/tipoDispositivo/IdTipoDispositivo";
+import { TipoTarefa } from "../../domain/tipoDispositivo/TipoTarefa";
+import { Marca } from "../../domain/tipoDispositivo/Marca";
+import { Modelo } from "../../domain/tipoDispositivo/Modelo";
+import { TipoDispositivo } from "../../domain/tipoDispositivo/TipoDispositivo";
+import { TipoDispositivoMap } from "../../mappers/TipoDispositivoMap";
+import IDispositivoRepo from "../IRepos/IDispositivoRepo";
 @Service()
 
 export default class TipoDispositivoService implements ITipoDispositivoService {

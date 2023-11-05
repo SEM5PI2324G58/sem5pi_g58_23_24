@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { Container } from 'typedi';
 
-import AuthService from '../../services/userService';
+import AuthService from '../../services/ImplServices/userService';
 import { IUserDTO } from '../../dto/IUserDTO';
 
 import middlewares from '../middlewares';

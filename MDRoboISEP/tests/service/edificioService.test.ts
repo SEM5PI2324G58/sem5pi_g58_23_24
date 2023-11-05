@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 import "reflect-metadata";
 import * as sinon from 'sinon';
 import { Container } from 'typedi';
-import EdificioService from '../../src/services/EdificioService';
+import EdificioService from '../../src/services/ImplServices/EdificioService';
 
 import IEdificioRepo from "../../src/services/IRepos/IEdificioRepo";
 import { Edificio } from "../../src/domain/edificio/Edificio";

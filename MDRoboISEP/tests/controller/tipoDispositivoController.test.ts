@@ -22,7 +22,7 @@ describe('Tipo Dispositivo Controller', () => {
         let tipoDispositvoRepoInstance = Container.get(tipoDispositivoRepoClass);
         Container.set("TipoDispositivoRepo", tipoDispositvoRepoInstance);
 
-        let tipoDispositivoServiceClass = require('../../src/services/TipoDispositivoService').default;
+        let tipoDispositivoServiceClass = require('../../src/services/ImplServices/TipoDispositivoService').default;
         let tipoDispositivoServiceInstance = Container.get(tipoDispositivoServiceClass);
         Container.set("TipoDispositivoService", tipoDispositivoServiceInstance);
     });

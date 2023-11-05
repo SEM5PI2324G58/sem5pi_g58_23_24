@@ -60,7 +60,7 @@ describe('PisoController', () => {
         let edificioRepoRepoInstance = Container.get(edificioRepoClass);
         Container.set("EdificioRepo", edificioRepoRepoInstance);
 
-        let pisoServiceClass = require('../../src/services/PisoService').default;
+        let pisoServiceClass = require('../../src/services/ImplServices/PisoService').default;
         let pisoServiceInstance = Container.get(pisoServiceClass);
         Container.set("PisoService", pisoServiceInstance);
 

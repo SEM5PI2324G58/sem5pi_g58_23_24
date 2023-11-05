@@ -1,28 +1,28 @@
 import { Container, Service, Inject } from 'typedi';
-import config from '../../config';
+import config from '../../../config';
 
-import IEdificioRepo from './IRepos/IEdificioRepo';
-import IPisoRepo from './IRepos/IPisoRepo';
-import IPontoRepo from './IRepos/IPontoRepo';
-import ICriarPisoDTO from '../dto/ICriarPisoDTO';
-import { Piso } from '../domain/piso/Piso';
-import { NumeroPiso } from '../domain/piso/NumeroPiso';
-import { DescricaoPiso } from '../domain/piso/DescricaoPiso';
-import { IdPiso } from '../domain/piso/IdPiso';
-import { Ponto } from '../domain/ponto/Ponto';
-import { Coordenadas } from '../domain/ponto/Coordenadas';
-import { TipoPonto } from '../domain/ponto/TipoPonto';
-import { IdPonto } from '../domain/ponto/IdPonto';
+import IEdificioRepo from '../IRepos/IEdificioRepo';
+import IPisoRepo from '../IRepos/IPisoRepo';
+import IPontoRepo from '../IRepos/IPontoRepo';
+import ICriarPisoDTO from '../../dto/ICriarPisoDTO';
+import { Piso } from '../../domain/piso/Piso';
+import { NumeroPiso } from '../../domain/piso/NumeroPiso';
+import { DescricaoPiso } from '../../domain/piso/DescricaoPiso';
+import { IdPiso } from '../../domain/piso/IdPiso';
+import { Ponto } from '../../domain/ponto/Ponto';
+import { Coordenadas } from '../../domain/ponto/Coordenadas';
+import { TipoPonto } from '../../domain/ponto/TipoPonto';
+import { IdPonto } from '../../domain/ponto/IdPonto';
 
-import { Result } from "../core/logic/Result";
-import IPisoService from './IServices/IPisoService';
-import IPisoDTO from '../dto/IPisoDTO';
-import { PisoMap } from '../mappers/PisoMap';
-import IEditarPisoDTO from '../dto/IEditarPisoDTO';
-import IElevadorService from './IServices/IElevadorService';
-import { Edificio } from '../domain/edificio/Edificio';
-import { Elevador } from '../domain/elevador/Elevador';
-import IElevadorRepo from './IRepos/IElevadorRepo';
+import { Result } from "../../core/logic/Result";
+import IPisoService from '../IServices/IPisoService';
+import IPisoDTO from '../../dto/IPisoDTO';
+import { PisoMap } from '../../mappers/PisoMap';
+import IEditarPisoDTO from '../../dto/IEditarPisoDTO';
+import IElevadorService from '../IServices/IElevadorService';
+import { Edificio } from '../../domain/edificio/Edificio';
+import { Elevador } from '../../domain/elevador/Elevador';
+import IElevadorRepo from '../IRepos/IElevadorRepo';
 
 
 @Service()

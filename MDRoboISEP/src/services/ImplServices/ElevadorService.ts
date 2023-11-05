@@ -1,21 +1,21 @@
-import IElevadorService from "./IServices/IElevadorService";
-import { Result } from "../core/logic/Result";
+import IElevadorService from "../IServices/IElevadorService";
+import { Result } from "../../core/logic/Result";
 import { Inject, Service } from "typedi";
-import IElevadorRepo from "./IRepos/IElevadorRepo";
-import IEdificioRepo from "./IRepos/IEdificioRepo";
-import config from "../../config";
-import ICriarElevadorDTO from "../dto/ICriarElevadorDTO";
-import { Piso } from "../domain/piso/Piso";
-import { IdElevador } from "../domain/elevador/IdElevador";
-import { MarcaElevador } from "../domain/elevador/MarcaElevador";
-import { ModeloElevador } from "../domain/elevador/ModeloElevador";
-import { NumeroSerieElevador } from "../domain/elevador/NumeroSerieElevador";
-import { DescricaoElevador } from "../domain/elevador/DescricaoElevador";
-import { Ponto } from "../domain/ponto/Ponto";
-import { Elevador } from "../domain/elevador/Elevador";
-import IPontoRepo from "./IRepos/IPontoRepo";
-import IElevadorDTO from "../dto/IElevadorDTO";
-import { ElevadorMap } from "../mappers/ElevadorMap";
+import IElevadorRepo from "../IRepos/IElevadorRepo";
+import IEdificioRepo from "../IRepos/IEdificioRepo";
+import config from "../../../config";
+import ICriarElevadorDTO from "../../dto/ICriarElevadorDTO";
+import { Piso } from "../../domain/piso/Piso";
+import { IdElevador } from "../../domain/elevador/IdElevador";
+import { MarcaElevador } from "../../domain/elevador/MarcaElevador";
+import { ModeloElevador } from "../../domain/elevador/ModeloElevador";
+import { NumeroSerieElevador } from "../../domain/elevador/NumeroSerieElevador";
+import { DescricaoElevador } from "../../domain/elevador/DescricaoElevador";
+import { Ponto } from "../../domain/ponto/Ponto";
+import { Elevador } from "../../domain/elevador/Elevador";
+import IPontoRepo from "../IRepos/IPontoRepo";
+import IElevadorDTO from "../../dto/IElevadorDTO";
+import { ElevadorMap } from "../../mappers/ElevadorMap";
 
 
 @Service()
