@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "e744949a-2b88-4604-acf8-a2c6e4e189f0",
+		"_postman_id": "658b25a1-0e58-486b-9249-97ccd39e13d3",
 		"name": "DispositivoTest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "30695664"
+		"_exporter_id": "30921552"
 	},
 	"item": [
 		{
@@ -477,6 +477,86 @@
 					"raw": "{\r\n}"
 				},
 				"url": "http://localhost:4000/api/dispositivo"
+			},
+			"response": []
+		},
+		{
+			"name": "InibirRobot",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql({\r",
+							"    \"codigo\": \"RoboTesteTeste\",\r",
+							"    \"estado\": false,\r",
+							"    \"nickname\": \"robotesteTeste\",\r",
+							"    \"numeroSerie\": \"12343254\",\r",
+							"    \"descricaoDispositivo\": \"testeTeste\"\r",
+							"});\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"RoboTesteTeste\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/dispositivo/inibir"
+			},
+			"response": []
+		},
+		{
+			"name": "InibirRobot não existe robot",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(\"O dispositivo com o codigo EVA não existe\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"EVA\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/dispositivo/inibir"
 			},
 			"response": []
 		},
