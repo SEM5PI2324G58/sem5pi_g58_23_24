@@ -65,7 +65,8 @@ describe('SalaController', () => {
         req.body = body;
 
         let res: Partial<Response> = {
-            json: sinon.spy()
+            json: sinon.spy(),
+            status: sinon.spy(),
         };
 
         let next: Partial<NextFunction> = () => { };
@@ -78,7 +79,9 @@ describe('SalaController', () => {
         await salaController.criarSala(<Request>req, <Response>res, <NextFunction>next);
 
         // Assert
-        sinon.assert.calledOnce(res.json);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status, 201);
         sinon.assert.calledWith(res.json, body);
     });
 
