@@ -16,10 +16,16 @@ export default class SalaController implements ISalaController {
     try{
       const salaOrError = await this.salaServiceInstance.criarSala(req.body as ISalaDTO) as Result<ISalaDTO>;
       if (salaOrError.isFailure) {
-        return res.json(salaOrError.errorValue()).status(402).send();
+        let message = String(salaOrError.errorValue());
+        if (message === "Edificio não existe" || message === "Piso não existe") {
+          res.status(404);
+          return res.json(salaOrError.errorValue());
+        }
+        return res.status(400).json(salaOrError.errorValue());
       }
       const salaDTO = salaOrError.getValue();
-      return res.json( salaDTO ).status(201);
+      res.status(201);
+      return res.json( salaDTO );
     }catch(e){
       return next(e);
     }

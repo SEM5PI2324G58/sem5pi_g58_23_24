@@ -20,10 +20,16 @@ export default class PassagemController implements IPassagemController /* TODO: 
     try {
       const passagemOrError = await this.passagemServiceInstance.editarPassagens(req.body as IPassagemDTO) as Result<IPassagemDTO>;
       if (passagemOrError.isFailure) {
-        return res.json(passagemOrError.errorValue()).status(402).send();
+        let message = String(passagemOrError.errorValue());
+    if (message === "Edificio A não existe" || message === "Edificio B não existe" || message === "Piso A não existe" || message === "Piso B não existe" || message === "A passagem com o id "+req.body.id+" não existe") {
+          res.status(404);
+          return res.json(passagemOrError.errorValue());
+        }
+        return res.status(400).json(passagemOrError.errorValue());
       }
       const passagemDTO = passagemOrError.getValue();
-      return res.json( passagemDTO ).status(200);
+      res.status(200);
+      return res.json( passagemDTO );
     } catch (e) {
       return next(e);
     }
@@ -33,10 +39,11 @@ export default class PassagemController implements IPassagemController /* TODO: 
     try{
       const passagemOrError = await this.passagemServiceInstance.listarPisosComPassagens();
       if (passagemOrError.isFailure) {
-        return res.json(passagemOrError.errorValue()).status(402).send();
+        return res.status(400).json(passagemOrError.errorValue());
       }
       const passagemDTO = passagemOrError.getValue();
-      return res.json( passagemDTO ).status(200);
+      res.status(200);
+      return res.json( passagemDTO );
     }catch(e){
       return next(e);
     }
@@ -46,10 +53,16 @@ export default class PassagemController implements IPassagemController /* TODO: 
     try{
       const passagemOrError = await this.passagemServiceInstance.criarPassagem(req.body as IPassagemDTO) as Result<IPassagemDTO>;
       if (passagemOrError.isFailure) {
-        return res.json(passagemOrError.errorValue()).status(402).send();
+        let message = String(passagemOrError.errorValue());
+        if (message === "Edificio A não existe" || message === "Edificio B não existe" || message === "Piso A não existe" || message === "Piso B não existe") {
+          res.status(404);
+          return res.json(passagemOrError.errorValue());
+        }
+        return res.status(400).json(passagemOrError.errorValue());
       }
       const passagemDTO = passagemOrError.getValue();
-      return res.json( passagemDTO ).status(201);
+      res.status(201);
+      return res.json( passagemDTO );
     }catch(e){
       return next(e);
     }

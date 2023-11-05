@@ -19,10 +19,16 @@ export default class DispositivoController implements IDispositivoController {
     try{
       const dispositivoOrError = await this.dispositivoServiceInstance.inibirDispositivo(req.body as IDispositivoInibirDTO);
       if (dispositivoOrError.isFailure) {
-        return res.json(dispositivoOrError.errorValue()).status(402).send();
+        let message = String(dispositivoOrError.errorValue());
+        if (message === "O dispositivo com o codigo " + req.body.codigo +" não existe") {
+          res.status(404);
+          return res.json(dispositivoOrError.errorValue());
+        }
+        return res.status(402).json(dispositivoOrError.errorValue());
       }
       const dispositivoDTO = dispositivoOrError.getValue();
-      return res.json( dispositivoDTO ).status(200);
+      res.status(200);
+      return res.json( dispositivoDTO );
     }catch(e){
       return next(e);
     }
