@@ -22,7 +22,7 @@ export default class DispositivoController implements IDispositivoController {
         return res.json(dispositivoOrError.errorValue()).status(402).send();
       }
       const dispositivoDTO = dispositivoOrError.getValue();
-      return res.json( dispositivoDTO ).status(201);
+      return res.json( dispositivoDTO ).status(200);
     }catch(e){
       return next(e);
     }
