@@ -510,7 +510,7 @@ describe('EdificioService ', () => {
             sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(edificio));
             const edificioService = new EdificioService(edificioRepoInstance as IEdificioRepo,pisoRepoInstance as IPisoRepo,elevadorRepoInstance as IElevadorRepo,salaRepoInstance as ISalaRepo,passagemRepoInstance as IPassagemRepo,pontoRepoInstance as IPontoRepo);
             let answer = await edificioService.editarEdificio(body as IEdificioDTO);
-            expect(answer.errorValue()).to.equal("Nome e descrição são obrigatórios");
+            expect(answer.errorValue()).to.equal("É necessário pelo menos um dos campos para editar o edificio");
     });
 
     it('EdificioService + EdificioRepo teste de integração ao método listarEdificioMinEMaxPisos', async function() {

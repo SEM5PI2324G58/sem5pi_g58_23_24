@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "8fb26fd5-9c59-4022-ba74-29abee88dd89",
+		"_postman_id": "53766eed-c2f3-48a6-8528-8099ccbad07c",
 		"name": "EdificioTest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "30695664"
+		"_exporter_id": "30690787"
 	},
 	"item": [
 		{
@@ -165,6 +165,177 @@
 			"response": []
 		},
 		{
+			"name": "ListarEdificios",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"resposta tem um tamanho especifico\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"lengthListarEdificios\", jsonData.length);\r",
+							"    pm.expect(jsonData).to.have.lengthOf(pm.environment.get(\"lengthListarEdificios\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:4000/api/edificio"
+			},
+			"response": []
+		},
+		{
+			"name": "CriarEdificioComCodigoErrado",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"___\",\r\n    \"nome\": \"EdificioTest\",\r\n    \"descricao\": \"EdificioTest\",\r\n    \"dimensaoX\": \"4\",\r\n    \"dimensaoY\": \"4\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio"
+			},
+			"response": []
+		},
+		{
+			"name": "CriarEdificioComNomeErrado",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"Teste\",\r\n    \"nome\": \"_____\",\r\n    \"descricao\": \"EdificioTest\",\r\n    \"dimensaoX\": \"4\",\r\n    \"dimensaoY\": \"4\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio"
+			},
+			"response": []
+		},
+		{
+			"name": "CriarEdificioComDescricaoErrada",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"Teste\",\r\n    \"nome\": \"Teste\",\r\n    \"descricao\": \"_____\",\r\n    \"dimensaoX\": \"4\",\r\n    \"dimensaoY\": \"4\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio"
+			},
+			"response": []
+		},
+		{
+			"name": "CriarEdificioComDimensoesErradas",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"Teste\",\r\n    \"nome\": \"Teste\",\r\n    \"descricao\": \"Teste\",\r\n    \"dimensaoX\": \"0\",\r\n    \"dimensaoY\": \"0\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio"
+			},
+			"response": []
+		},
+		{
 			"name": "CriarEdificio",
 			"event": [
 				{
@@ -207,6 +378,276 @@
 					"raw": "{\r\n    \"codigo\": \"Teste\",\r\n    \"nome\": \"EdificioTest\",\r\n    \"descricao\": \"EdificioTest\",\r\n    \"dimensaoX\": \"4\",\r\n    \"dimensaoY\": \"4\"\r\n}"
 				},
 				"url": "http://localhost:4000/api/edificio"
+			},
+			"response": []
+		},
+		{
+			"name": "CriarEdificioCodigoJaExiste",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"Teste\",\r\n    \"nome\": \"EdificioTest\",\r\n    \"descricao\": \"EdificioTest\",\r\n    \"dimensaoX\": \"4\",\r\n    \"dimensaoY\": \"4\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio"
+			},
+			"response": []
+		},
+		{
+			"name": "EditarEdificioNome",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql({\r",
+							"    \"codigo\": \"Teste\",\r",
+							"    \"nome\": \"EdificioTeste\",\r",
+							"});\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"Teste\",\r\n    \"nome\": \"EdificioTeste\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio"
+			},
+			"response": []
+		},
+		{
+			"name": "EditarEdificioDescricao",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql({\r",
+							"    \"codigo\": \"Teste\",\r",
+							"    \"descricao\": \"EdificioTeste\",\r",
+							"});\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"Teste\",\r\n    \"descricao\": \"EdificioTeste\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio"
+			},
+			"response": []
+		},
+		{
+			"name": "EditarEdificioNomeDescricao",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql({\r",
+							"    \"codigo\": \"Teste\",\r",
+							"    \"nome\": \"EdificioTeste\",\r",
+							"    \"descricao\": \"EdificioTeste\",\r",
+							"});\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"Teste\",\r\n    \"nome\": \"EdificioTeste\",\r\n    \"descricao\": \"EdificioTeste\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio"
+			},
+			"response": []
+		},
+		{
+			"name": "EditarEdificioCodigoNaoExiste",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"CodigoQueNaoExiste\",\r\n    \"nome\": \"EdificioTeste\",\r\n    \"descricao\": \"EdificioTeste\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio"
+			},
+			"response": []
+		},
+		{
+			"name": "EditarEdificioNomeDescricaoIncorretos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"Teste\",\r\n    \"nome\": \"____\",\r\n    \"descricao\": \"___\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio"
+			},
+			"response": []
+		},
+		{
+			"name": "ListarEdificios",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"resposta tem um tamanho especifico\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.lengthOf(pm.environment.get(\"length\")+1);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"minPisos\": 0,\r\n    \"maxPisos\": 2\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio/listarMinEMaxPisos"
 			},
 			"response": []
 		},
@@ -267,8 +708,8 @@
 							"    \"codigo\": \"Teste\",\r",
 							"    \"dimensaoX\": 4,\r",
 							"    \"dimensaoY\": 4,\r",
-							"    \"descricao\": \"EdificioTest\",\r",
-							"    \"nome\": \"EdificioTest\"\r",
+							"    \"descricao\": \"EdificioTeste\",\r",
+							"    \"nome\": \"EdificioTeste\"\r",
 							"});\r",
 							"    \r",
 							"});"
