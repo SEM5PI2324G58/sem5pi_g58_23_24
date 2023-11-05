@@ -13,6 +13,7 @@ import { Ponto } from "../domain/ponto/Ponto";
 import { Passagem } from "../domain/passagem/Passagem";
 import { Sala } from "../domain/sala/Sala";
 import IElevadorRepo from "./IRepos/IElevadorRepo";
+import { Elevador } from "../domain/elevador/Elevador";
 @Service()
 export default class PontoService implements IPontoService{
     constructor(
@@ -36,46 +37,71 @@ export default class PontoService implements IPontoService{
             return Result.fail<ICarregarMapaDTO>(pisoOrError.errorValue());
         }
 
-        if(pisoOrError.getValue().verificarSeMapaVazio()){
+        if(!pisoOrError.getValue().verificarSeMapaVazio()){
             return Result.fail<ICarregarMapaDTO>("O mapa já tem algo carregado.");
         }
         pisoOrError.getValue().criacaoBermasPiso();
     
         // Elevador
 
-        if(!edificioOrError.getValue().temElevador()){
-            return Result.fail<ICarregarMapaDTO>("Não existe elevador neste edifício.");
+        let elevadorVaiSerCriado = true;
+        if(informacaoPiso.elevador === undefined){
+            elevadorVaiSerCriado = false;
+        }
+        let salasVaoSerCriadas = true;
+        if(informacaoPiso.salas === undefined){
+            salasVaoSerCriadas = false;
+        }
+        let passagensVaoSerCriadas = true;
+        if(informacaoPiso.passagens === undefined){
+            passagensVaoSerCriadas = false;
         }
 
-        const listaPontosElevador = this.criarListaPontosElevador(informacaoPiso, pisoOrError.getValue());
-        let elevador = edificioOrError.getValue().returnElevador();
-        let listaPontosElevadorFinal = elevador.pontosAtuais().concat(listaPontosElevador);
-        elevador.updatePontos(listaPontosElevadorFinal);
-        
+        if(!elevadorVaiSerCriado && !salasVaoSerCriadas && !passagensVaoSerCriadas){
+            return Result.fail<ICarregarMapaDTO>("Não existe nada para carregar no mapa.");
+        }
 
+        let elevador : Elevador;
+        if(elevadorVaiSerCriado){
+
+            if(!edificioOrError.getValue().temElevador()){
+                return Result.fail<ICarregarMapaDTO>("Não existe elevador neste edifício.");
+            }
+            if(!edificioOrError.getValue().props.elevador.returnIdPisosServidos().includes(pisoOrError.getValue().returnIdPiso())){
+                return Result.fail<ICarregarMapaDTO>("O elevador não serve este piso.");
+            };
+
+            const listaPontosElevador = this.criarListaPontosElevador(informacaoPiso, pisoOrError.getValue());
+            elevador = edificioOrError.getValue().returnElevador();
+            let listaPontosElevadorFinal = elevador.pontosAtuais().concat(listaPontosElevador);
+            elevador.updatePontos(listaPontosElevadorFinal);
+        }
+        let listaSalas;
         // Salas
-
-        let listaSalas = await this.retornarSalasValidas(pisoOrError.getValue(), informacaoPiso);
-        if(listaSalas.isFailure){
-            return Result.fail<ICarregarMapaDTO>(listaSalas.errorValue());
+        if(salasVaoSerCriadas){
+            listaSalas = await this.retornarSalasValidas(pisoOrError.getValue(), informacaoPiso);
+            if(listaSalas.isFailure){
+                return Result.fail<ICarregarMapaDTO>(listaSalas.errorValue());
+            }
+            for(let sala of listaSalas.getValue()){
+                let listaPontosDiagonal = this.criarPontosDiagonalSala(informacaoPiso, sala, pisoOrError.getValue());
+                sala.atualizarListaPontos(listaPontosDiagonal);
+                let listaPontosSala = this.criarListaPontosSala(informacaoPiso, sala,pisoOrError.getValue());
+            }
         }
-        for(let sala of listaSalas.getValue()){
-            let listaPontosDiagonal = this.criarPontosDiagonalSala(informacaoPiso, sala, pisoOrError.getValue());
-            sala.atualizarListaPontos(listaPontosDiagonal);
-            let listaPontosSala = this.criarListaPontosSala(informacaoPiso, sala,pisoOrError.getValue());
-        }
 
-
+        let listaPassagens;
         // Passagens
-
-        let listaPassagens = await this.retornarPassagensValidadas(pisoOrError.getValue(), informacaoPiso);
-        if(listaPassagens.isFailure){
-            return Result.fail<ICarregarMapaDTO>(listaPassagens.errorValue());
-        }
-        
-        for(let passagem of listaPassagens.getValue()){
-            let listaPontos = this.criarListaPontosPassagem(informacaoPiso, passagem, pisoOrError.getValue());
-            passagem.atualizarListaPontos(listaPontos);
+        if(passagensVaoSerCriadas){
+            listaPassagens = await this.retornarPassagensValidadas(pisoOrError.getValue(), informacaoPiso);
+            if(listaPassagens.isFailure){
+                return Result.fail<ICarregarMapaDTO>(listaPassagens.errorValue());
+            }
+            
+            for(let passagem of listaPassagens.getValue()){
+                let listaPontos = this.criarListaPontosPassagem(informacaoPiso, passagem, pisoOrError.getValue());
+                passagem.atualizarListaPontos(listaPontos);
+            }
         }
 
 
@@ -85,17 +111,26 @@ export default class PontoService implements IPontoService{
                 await this.pontoRepo.save(pisoOrError.getValue().props.mapa[i][j]);
             }
         }
-        this.elevadorRepo.save(elevador);
-        for(let sala of listaSalas.getValue()){
-            await this.salaRepo.save(sala);
+        if(elevadorVaiSerCriado){
+            this.elevadorRepo.save(elevador);
         }
-        for(let passagem of listaPassagens.getValue()){
-            await this.passagemRepo.save(passagem);
+        if(salasVaoSerCriadas){
+            for(let sala of listaSalas.getValue()){
+                await this.salaRepo.save(sala);
+            }
+        }
+        if(passagensVaoSerCriadas){
+            for(let passagem of listaPassagens.getValue()){
+                await this.passagemRepo.save(passagem);
+            }
         }
         return Result.ok<ICarregarMapaDTO>(informacaoPiso);
     }
     private async retornarSalasValidas(piso : Piso, informacaoPiso : ICarregarMapaDTO) : Promise<Result<Sala[]>>{
         let listaSala = await this.salaRepo.findSalasByPiso(piso.returnIdPiso());
+        if(listaSala.length === 0){
+            return Result.fail<Sala[]>("Não existem salas que satisfaçam os dados inseridos");
+        }
         let listaSalasValidas : Sala[] = [];
         for(let sala of informacaoPiso.salas){
             let match = false;
