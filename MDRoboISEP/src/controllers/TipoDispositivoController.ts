@@ -16,7 +16,8 @@ export default class TipoDispositivoController implements ITipoDispositivoContro
         try{
           const tipoDispositivoOrError = await this.tipoDispositivoServiceInstance.criarTipoDispositivo(req.body as ITipoDispositivoDTO) as Result<ITipoDispositivoDTO>;
           if (tipoDispositivoOrError.isFailure) {
-            return res.json(tipoDispositivoOrError.errorValue()).status(402).send();
+            res.status(400);
+            return res.json(tipoDispositivoOrError.errorValue());
           }
           const tipoDispositivoDTO = tipoDispositivoOrError.getValue();
           res.status(201);
