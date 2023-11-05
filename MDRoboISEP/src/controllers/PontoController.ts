@@ -14,7 +14,6 @@ export default class PontoController implements IPontoController {
 
     public async carregarMapa(req: Request, res: Response, next: NextFunction) {
         try{
-            console.log(req.body);
             const carregarMapaOrError = await this.pontoServiceInstance.carregarMapa(req.body as ICarregarMapaDTO);
             if (carregarMapaOrError.isFailure) {
                 let erro = String(carregarMapaOrError.errorValue());
