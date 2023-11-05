@@ -128,8 +128,8 @@ export default class EdificioService implements IEdificioService {
       if(edificio === null ){
         return Result.fail<IEdificioDTO>("Edificio não existe")
       }
-      if(!!edificioDTO.descricao === false || !!edificioDTO.nome === false){
-        return Result.fail<IEdificioDTO>("Nome e descrição são obrigatórios");
+      if(!!edificioDTO.descricao === false && !!edificioDTO.nome === false){
+        return Result.fail<IEdificioDTO>("É necessário pelo menos um dos campos para editar o edificio");
       }
       if(edificioDTO.descricao){
         let descricaoOrError = DescricaoEdificio.create(edificioDTO.descricao);

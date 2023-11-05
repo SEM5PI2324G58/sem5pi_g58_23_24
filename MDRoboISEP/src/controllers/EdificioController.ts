@@ -17,7 +17,8 @@ export default class EdificioController implements IEdificioController /* TODO: 
     try{
       const edificioOrError = await this.edificioServiceInstance.criarEdificio(req.body as IEdificioDTO) as Result<IEdificioDTO>;
       if (edificioOrError.isFailure) {
-        return res.json(edificioOrError.errorValue()).status(402).send();
+        res.status(400);
+        return res.json(edificioOrError.errorValue());
       }
       const edificioDTO = edificioOrError.getValue();
       res.status(201);
@@ -51,10 +52,15 @@ export default class EdificioController implements IEdificioController /* TODO: 
     try{
       const listaEdificiosOrError = await this.edificioServiceInstance.listarEdificios() as Result<IEdificioDTO[]>;
       if (listaEdificiosOrError.isFailure) {
-        return res.json(listaEdificiosOrError.errorValue()).status(402).send();
+        if(String(listaEdificiosOrError.errorValue()) === "Não existem edificios"){
+          res.status(404);
+        }else{
+          res.status(400);
+        }
+        return res.json(listaEdificiosOrError.errorValue());
       }
       const listaEdificiosDTO = listaEdificiosOrError.getValue();
-      return res.json( listaEdificiosDTO ).status(201);
+      return res.json( listaEdificiosDTO ).status(200);
     }catch(e){
     return next(e);
     }
@@ -64,7 +70,12 @@ export default class EdificioController implements IEdificioController /* TODO: 
     try{
       const edificioOrError = await this.edificioServiceInstance.editarEdificio(req.body as IEdificioDTO) as Result<IEdificioDTO>;
       if (edificioOrError.isFailure) {
-        return res.json(edificioOrError.errorValue()).status(402).send();
+        if(String(edificioOrError.errorValue()) === "Edificio não existe"){
+          res.status(404);
+        }else{
+          res.status(400);
+        }
+        return res.json(edificioOrError.errorValue());
       }
       const edificioDTO = edificioOrError.getValue();
       return res.json( edificioDTO );
