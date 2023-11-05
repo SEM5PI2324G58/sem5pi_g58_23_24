@@ -135,7 +135,7 @@ export default class PassagemRepo implements IPassagemRepo {
       listaPassagens.push(PassagemMap.toDomain(passagem));
     }
 
-    return listaPassagens;
+    return await Promise.all(listaPassagens);
   }
 
   public async listarPassagensPorParDePisos(idPisoA: number, idPisoB: number): Promise<Passagem[]> {

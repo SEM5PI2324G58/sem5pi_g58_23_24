@@ -95,7 +95,7 @@ export default class SalaRepo implements ISalaRepo {
     for(let sala of salaRecord){
       listaSalas.push(SalaMap.toDomain(sala));
     }
-    return listaSalas;
+    return await Promise.all(listaSalas);
   }
 
 }
