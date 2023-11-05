@@ -1,0 +1,54 @@
+autonumber
+
+participant RouteEdificio as route
+participant "carregarMapaDTO" as dto
+participant "controller: PontoController" as ctrl
+participant "service: PontoService" as service
+participant "repository: EdificioRepo" as edificioRepo
+participant "Piso" as piso
+participant "repository: SalaRepo" as salaRepo
+participant "repository: PassagemRepo" as passagemRepo
+participant "repository: PontoRepo" as pontoRepo
+participant "repository: ElevadorRepo" as elevadorRepo
+
+[o-> route: POST(json)
+activate route
+route -> dto** : create(json)
+route -> ctrl: carregarMapa(carregarMapaDTO)
+activate ctrl
+ctrl -> service: carregarMapa(carregarMapaDTO) 
+activate service
+service -> edificioRepo: findByDomainId(codigoEdificio)
+activate edificioRepo
+return edificio
+service -> piso: returnPontosParaElevador(xCoord,yCoord, orientacao)
+activate piso
+deactivate piso
+service -> salaRepo: findSalasByPiso(idPiso)
+activate salaRepo
+return listaSalas
+service -> piso: returnListaPontosDiagonalSala(xCoord,yCoord)
+activate piso
+deactivate piso
+service -> piso: criarListaPontosSalas(listaSalas)
+activate piso
+deactivate piso
+service -> passagemRepo: listarPassagensComUmPiso(idPiso)
+activate passagemRepo
+return listaPassagens
+service -> piso : returnPontosParaPassagem(xCoord,yCoord, orientacao)
+activate piso
+deactivate piso
+service -> pontoRepo: save(pontosMapa)
+activate pontoRepo
+deactivate pontoRepo
+service -> elevadorRepo : save(elevador)
+activate elevadorRepo
+deactivate elevadorRepo
+service -> salaRepo : save(sala)
+activate salaRepo
+deactivate salaRepo
+service -> passagemRepo : save(passagem)
+activate passagemRepo
+deactivate passagemRepo
+return ok
