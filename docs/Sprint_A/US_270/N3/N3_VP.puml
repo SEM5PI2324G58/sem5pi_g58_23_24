@@ -26,14 +26,9 @@ return edificio
 service -> edificio : temElevador()
 activate edificio
 return boolean
-service -> edificio : posicaoValidaNoMapa(posicao)
+service -> edificio : pisosCorrespondentes(pisosServidos)
 activate edificio
-return boolean
-loop para cada piso
-service -> Piso : pontosParaElevador(x,y,orientacao)
-activate Piso
-return listaPontos
-end loop para cada piso
+return pisos
 service -> eleRepo: maxId()
 activate eleRepo
 return idElevador
@@ -41,14 +36,6 @@ service -> elevador ** : create(idElevador, pisosServidos, pontos, marca, modelo
 service -> edificio: adicionarElevador(elevador)
 activate edificio
 deactivate edificio
-loop para cada ponto 
-service -> ponto: toElevador()
-activate ponto
-deactivate ponto
-service -> pRepo: save(ponto)
-activate pRepo
-deactivate pRepo
-end loop
 service -> eleRepo: save(elevador)
 activate eleRepo
 deactivate eleRepo
