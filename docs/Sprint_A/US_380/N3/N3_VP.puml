@@ -9,7 +9,7 @@ participant "dto: \n dispositivoDTO" as dto
 
 [o-> route: GET()
 activate route
-route -> ctrl: listarDispositivosDaFrota()
+route -> ctrl: listarDispositivosDaFrota(req, res, next)
 activate ctrl
 ctrl -> service: listarDispositivosDaFrota() 
 activate service
