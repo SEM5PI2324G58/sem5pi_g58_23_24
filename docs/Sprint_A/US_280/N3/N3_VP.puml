@@ -8,75 +8,44 @@ participant "repo: \n EdificioRepo" as edRepo
 participant "domain: \n Edificio" as edificio
 participant "repo: \n ElevadorRepo" as eleRepo
 participant "domain: \n Elevador" as elevador
-participant "repo: \n PontoRepo" as PontoRepo
-participant "domain: \n Piso" as Piso
-participant "domain: \n Ponto" as Ponto
 
-
-[o-> route: POST(json)
+[o-> route: PUT(json)
 activate route
 route -> dto ** : create(json)
 route -> ctrl: editarElevador(req, res, next)
 activate ctrl
 ctrl -> service: editarElevador(elevadorDTO) 
 activate service
-service -> edRepo: findByDomain(idEdificio)
+service -> edRepo: findByDomain(codEdificio)
 activate edRepo
 return edificio
 service -> edificio: returnElevador()
 activate edificio
 return elevador
 
-service -> edificio : posicaoValidaNoMapa(posicao)
+service -> edificio : pisosCorrespondentes(pisosServidos)
 activate edificio
-return boolean
+return pisos
 
-service -> edificio: reverterMapa(listaPisos)
-activate edificio
-deactivate edificio
-
-loop para cada piso
-service -> Piso : pontosParaElevador(x,y,orientacao)
-activate Piso
-return listaPontos
-end loop
-
-loop para cada ponto
-service -> Ponto : toElevador()
-activate Ponto
-deactivate Ponto
-
-end loop 
-
-service -> elevador: atualizarPisos()
+service -> elevador: atualizarPisos(newPisos)
 activate elevador
 deactivate elevador
 
-service -> elevador: atualizarPontos()
+service -> elevador: atualizarMarca(newMarca)
 activate elevador
 deactivate elevador
 
-service -> elevador: atualizarMarca()
+service -> elevador: atualizarModelo(newModelo)
 activate elevador
 deactivate elevador
 
-service -> elevador: atualizarModelo()
+service -> elevador: atualizarNumeroSerie(newNumeroSerie)
 activate elevador
 deactivate elevador
 
-service -> elevador: atualizarNumeroSerie()
+service -> elevador: atualizarDescricao(newDescricao)
 activate elevador
 deactivate elevador
-
-service -> elevador: atualizarDescricao()
-activate elevador
-deactivate elevador
-
-loop para cada ponto
-service -> PontoRepo : save(ponto)
-activate PontoRepo
-deactivate PontoRepo
-end loop 
 
 service -> eleRepo: save(elevador)
 activate eleRepo
