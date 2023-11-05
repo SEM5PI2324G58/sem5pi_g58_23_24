@@ -9,6 +9,7 @@ import tipoDispositivo from './routes/tipoDispositivoRoute'
 import passagem from './routes/passagemRoute'
 import dispositivo from './routes/dispositivoRoute'
 import sala from './routes/salaRoute'
+import ponto from './routes/pontoRoute'
 
 
 export default () => {
@@ -24,6 +25,7 @@ export default () => {
 	passagem(app);
 	dispositivo(app);
 	sala(app);
+	ponto(app);
 
 	return app
 }
