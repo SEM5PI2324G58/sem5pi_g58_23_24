@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "47d17e26-6bff-4267-9f7a-2da2d4902747",
+		"_postman_id": "6f06d363-12dc-4a99-8a8a-dd3636919040",
 		"name": "PassagemTest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "30695664"
+		"_exporter_id": "30921552"
 	},
 	"item": [
 		{
@@ -208,48 +208,6 @@
 			"response": []
 		},
 		{
-			"name": "listarPassagensPorParDeEdificios",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 400\", function () {\r",
-							"    pm.response.to.have.status(400);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.environment.set(\"length\",0);\r",
-							"    pm.expect(jsonData).to.eql(\"Não existem passagens que satisfaçam os parâmetros de pesquisa\");\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"edificioACod\": \"Teste\",\r\n    \"edificioBCod\": \"Test1\" \r\n}"
-				},
-				"url": "http://localhost:4000/api/passagem/listarPassagensPorParDeEdificios"
-			},
-			"response": []
-		},
-		{
 			"name": "criarPassagem",
 			"event": [
 				{
@@ -257,7 +215,7 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Status code is 201\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.have.status(201);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
@@ -293,55 +251,14 @@
 			"response": []
 		},
 		{
-			"name": "listarPassagensPorParDeEdificios",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.have.lengthOf(pm.environment.get(\"length\")+1);\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"edificioACod\": \"Teste\",\r\n    \"edificioBCod\": \"Test1\" \r\n}"
-				},
-				"url": "http://localhost:4000/api/passagem/listarPassagensPorParDeEdificios"
-			},
-			"response": []
-		},
-		{
 			"name": "criarPassagem não pode ser criado com o mesmo id",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 201\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
@@ -377,8 +294,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 201\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
@@ -414,8 +331,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 201\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
@@ -451,8 +368,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
@@ -488,8 +405,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
@@ -525,8 +442,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
