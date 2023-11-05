@@ -9,12 +9,12 @@ participant "repo: \n passagemRepo" as passRepo
 participant "dto: \n passagemMapper" as mapper
 participant "dto: \n listarPassagenDTO" as resDTO
 
-[o-> route: GET()
+[o-> route: GET(json)
 activate route
 route -> paramDTO : create(json)
 activate paramDTO
 deactivate paramDTO
-route -> ctrl: listarPassagensPorParDeEdificios(edificiosDTO)
+route -> ctrl: listarPassagensPorParDeEdificios(req, res, next)
 activate ctrl
 ctrl -> service: listarPassagensPorParDeEdificios(edificiosDTO) 
 activate service
