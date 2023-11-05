@@ -111,7 +111,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"tipoTarefa\": [\"PickUp/Delivery\"],\n    \"marca\": \"____\",\n    \"modelo\": \"testeTeste\"\n}"
+					"raw": "{\n    \"tipoTarefa\": [\"PickUp/Delivery\"],\n    \"marca\": \"marca\",\n    \"modelo\": \"____\"\n}"
 				},
 				"url": "http://localhost:4000/api/tipoDispositivo"
 			},
@@ -144,7 +144,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"tipoTarefa\": [\"PickUp/Delivery\"],\n    \"marca\": \"____\",\n    \"modelo\": \"testeTeste\"\n}"
+					"raw": "{\n    \"tipoTarefa\": [\"PickUp/Delive\"],\n    \"marca\": \"testeTeste\",\n    \"modelo\": \"teste\"\n}"
 				},
 				"url": "http://localhost:4000/api/tipoDispositivo"
 			},
