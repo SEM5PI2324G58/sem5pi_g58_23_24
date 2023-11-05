@@ -82,6 +82,43 @@ export class Piso extends AggregateRoot<pisoProps> {
 
     return pontos;
   }
+  public verificarSeMapaVazio() : boolean{
+    let x = this.props.mapa.length;
+    let y = this.props.mapa[0].length;
+    for (let i = 0; i < x; i++) {
+      for (let j = 0; j < y ; j++) {
+        if(this.props.mapa[i][j].returnTipoPonto() !== " "){
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  public criacaoBermasPiso() : Ponto[]{
+    let x = this.props.mapa[0].length - 1;
+    let y = this.props.mapa.length - 1;
+
+    let listaPontos : Ponto[] = [];
+    for (let i = 0; i <= x; i++) {
+      for (let j = 0; j <= y ; j++) {
+          if(i == 0 && j ==0 ) {
+            this.props.mapa[i][j].toParedeNorteOeste();
+            listaPontos.push(this.props.mapa[i][j]);
+          }
+          else if((1 <= i && i < x && (j == 0 || j == y)) || (i == 0 && j == y)) {
+            this.props.mapa[i][j].toParedeNorte();
+            listaPontos.push(this.props.mapa[i][j]);
+          }
+          else if((1 <= j && j < y && (i == 0 || i == x)) || (i == x && j == 0)) {
+            this.props.mapa[i][j].toParedeOeste();
+            listaPontos.push(this.props.mapa[i][j]);
+          }
+          else{this.props.mapa[i][j].toVazio();}
+      }
+    }  
+    return listaPontos;
+  }
 
   public returnPontosParaPassagem(xCoordSup: number, yCoordSup: number, orientacao : string) : Ponto[]{
     let pontos: Ponto[] = [];
