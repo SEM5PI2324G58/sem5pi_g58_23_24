@@ -1,0 +1,557 @@
+{
+	"info": {
+		"_postman_id": "6f06d363-12dc-4a99-8a8a-dd3636919040",
+		"name": "PassagemTest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "30921552"
+	},
+	"item": [
+		{
+			"name": "listarPisosComPassagemSuccess",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:4000/api/passagem/listarPisosComPassagens"
+			},
+			"response": []
+		},
+		{
+			"name": "CriarEdificioA",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql({\r",
+							"    \"codigo\": \"Teste\",\r",
+							"    \"nome\": \"EdificioTest\",\r",
+							"    \"descricao\": \"EdificioTest\",\r",
+							"    \"dimensaoX\": 4,\r",
+							"    \"dimensaoY\": 4\r",
+							"});\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"Teste\",\r\n    \"nome\": \"EdificioTest\",\r\n    \"descricao\": \"EdificioTest\",\r\n    \"dimensaoX\": \"4\",\r\n    \"dimensaoY\": \"4\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio"
+			},
+			"response": []
+		},
+		{
+			"name": "CriarEdificioB",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql({\r",
+							"    \"codigo\": \"Test1\",\r",
+							"    \"nome\": \"EdificioTest\",\r",
+							"    \"descricao\": \"EdificioTest\",\r",
+							"    \"dimensaoX\": 4,\r",
+							"    \"dimensaoY\": 4\r",
+							"});\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"Test1\",\r\n    \"nome\": \"EdificioTest\",\r\n    \"descricao\": \"EdificioTest\",\r\n    \"dimensaoX\": \"4\",\r\n    \"dimensaoY\": \"4\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio"
+			},
+			"response": []
+		},
+		{
+			"name": "CriarUmPisoEmEdificioB",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql({\r",
+							"    \"codigo\": \"Test1\",\r",
+							"    \"numeroPiso\": 1,\r",
+							"    \"descricaoPiso\": \"Piso 1\"\r",
+							"});\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"Test1\",\r\n\t\"numeroPiso\": 1,\r\n\t\"descricaoPiso\": \"Piso 1\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/piso"
+			},
+			"response": []
+		},
+		{
+			"name": "CriarUmPisoEmEdificioA",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql({\r",
+							"    \"codigo\": \"Teste\",\r",
+							"    \"numeroPiso\": 1,\r",
+							"    \"descricaoPiso\": \"Piso 1\"\r",
+							"});\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"Teste\",\r\n\t\"numeroPiso\": 1,\r\n\t\"descricaoPiso\": \"Piso 1\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/piso"
+			},
+			"response": []
+		},
+		{
+			"name": "criarPassagem",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql({\r",
+							"    \"id\": 8,\r",
+							"    \"codigoEdificioA\": \"Teste\",\r",
+							"    \"codigoEdificioB\": \"Test1\",\r",
+							"    \"numeroPisoA\": 1,\r",
+							"    \"numeroPisoB\": 1\r",
+							"});\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 8,\r\n    \"codigoEdificioA\": \"Teste\",\r\n    \"codigoEdificioB\": \"Test1\",\r\n    \"numeroPisoA\": 1 ,\r\n    \"numeroPisoB\": 1\r\n}"
+				},
+				"url": "http://localhost:4000/api/passagem"
+			},
+			"response": []
+		},
+		{
+			"name": "criarPassagem não pode ser criado com o mesmo id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(\"A passagem com o id 8 já existe\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 8,\r\n    \"codigoEdificioA\": \"Teste\",\r\n    \"codigoEdificioB\": \"Test1\",\r\n    \"numeroPisoA\": 1 ,\r\n    \"numeroPisoB\": 1\r\n}"
+				},
+				"url": "http://localhost:4000/api/passagem"
+			},
+			"response": []
+		},
+		{
+			"name": "criarPassagem não pode ser criado com um edificio inexistente",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(\"Edificio A não existe\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 9,\r\n    \"codigoEdificioA\": \"Test\",\r\n    \"codigoEdificioB\": \"Test1\",\r\n    \"numeroPisoA\": 1 ,\r\n    \"numeroPisoB\": 1\r\n}"
+				},
+				"url": "http://localhost:4000/api/passagem"
+			},
+			"response": []
+		},
+		{
+			"name": "criarPassagem não pode ser criado com um edificio sem pisos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(\"Piso A não existe\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 9,\r\n    \"codigoEdificioA\": \"Teste\",\r\n    \"codigoEdificioB\": \"Test1\",\r\n    \"numeroPisoA\": 150 ,\r\n    \"numeroPisoB\": 1\r\n}"
+				},
+				"url": "http://localhost:4000/api/passagem"
+			},
+			"response": []
+		},
+		{
+			"name": "editarPassagem não podes editar uma passagem que não existe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(\"A passagem com o id 10 não existe\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 10,\r\n    \"codigoEdificioA\": \"Teste\",\r\n    \"codigoEdificioB\": \"Test1\",\r\n    \"numeroPisoA\": 1 ,\r\n    \"numeroPisoB\": 1\r\n}"
+				},
+				"url": "http://localhost:4000/api/passagem/editarPassagens"
+			},
+			"response": []
+		},
+		{
+			"name": "editarPassagem não podes editar uma passagem que não existe Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(\"Edificio A não existe\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 8,\r\n    \"codigoEdificioA\": \"Tes\",\r\n    \"codigoEdificioB\": \"Test1\",\r\n    \"numeroPisoA\": 1 ,\r\n    \"numeroPisoB\": 1\r\n}"
+				},
+				"url": "http://localhost:4000/api/passagem/editarPassagens"
+			},
+			"response": []
+		},
+		{
+			"name": "editarPassagem não podes editar uma passagem que não existe Copy 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(\"Piso A não existe\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 8,\r\n    \"codigoEdificioA\": \"Teste\",\r\n    \"codigoEdificioB\": \"Test1\",\r\n    \"numeroPisoA\": 100 ,\r\n    \"numeroPisoB\": 1\r\n}"
+				},
+				"url": "http://localhost:4000/api/passagem/editarPassagens"
+			},
+			"response": []
+		},
+		{
+			"name": "editarPassagem não podes editar uma passagem que não existe Copy 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Informação returnada foi a esperada\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql({\r",
+							"    \"id\": 8,\r",
+							"    \"codigoEdificioA\": \"Teste\",\r",
+							"    \"codigoEdificioB\": \"Test1\",\r",
+							"    \"numeroPisoA\": 1,\r",
+							"    \"numeroPisoB\": 1\r",
+							"});\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 8,\r\n    \"codigoEdificioA\": \"Teste\",\r\n    \"codigoEdificioB\": \"Test1\",\r\n    \"numeroPisoA\": 1 ,\r\n    \"numeroPisoB\": 1\r\n}"
+				},
+				"url": "http://localhost:4000/api/passagem/editarPassagens"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete EdificioA",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"Teste\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete EdificioB",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo\": \"Test1\"\r\n}"
+				},
+				"url": "http://localhost:4000/api/edificio"
+			},
+			"response": []
+		}
+	]
+}
