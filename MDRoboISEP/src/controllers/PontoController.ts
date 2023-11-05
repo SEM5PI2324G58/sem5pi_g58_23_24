@@ -17,7 +17,15 @@ export default class PontoController implements IPontoController {
             console.log(req.body);
             const carregarMapaOrError = await this.pontoServiceInstance.carregarMapa(req.body as ICarregarMapaDTO);
             if (carregarMapaOrError.isFailure) {
-                return res.json(carregarMapaOrError.errorValue()).status(402).send();
+                let erro = String(carregarMapaOrError.errorValue());
+                if(erro === "Não existe nada para carregar no mapa." || erro === "Não existe elevador neste edifício." || 
+                erro === "Não existem salas que satisfaçam os dados inseridos" || erro === "Não existem passagens que satisfaçam os dados inseridos"
+                || erro === "O Edifício que inseriu não existe." || erro == "O piso que inseriu não existe."){
+                    res.status(404);
+                }else{
+                    res.status(400);
+                }
+                return res.json(carregarMapaOrError.errorValue());
             }
             const carregarMapaDTO = carregarMapaOrError.getValue();
             res.status(201);
