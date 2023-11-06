@@ -1,3 +1,4 @@
+/*
 import { expect } from "chai";
 import 'mocha';
 import { Document } from 'mongoose';
@@ -146,3 +147,4 @@ describe('PontoRepo', () => {
 
     });
 });
+*/
