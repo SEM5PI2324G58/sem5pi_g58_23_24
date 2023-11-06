@@ -9,7 +9,7 @@ const MapaSchema = new mongoose.Schema(
     },
 
     mapa: {
-      type: [String],
+      type: [[String]],
       index: true,
     },
 
@@ -18,12 +18,22 @@ const MapaSchema = new mongoose.Schema(
       index: true,
     },
 
-    abcissa: {
+    abcissaSupPassagem: {
       type: [Number],
       index: true,
     },
 
-    ordenada: {
+    ordenadaSupPassagem: {
+        type: [Number],
+        index: true,
+    },
+
+    abcissaInfPassagem: {
+        type: [Number],
+        index: true,
+    },
+
+    ordenadaInfPassagem: {
         type: [Number],
         index: true,
     },
@@ -33,12 +43,12 @@ const MapaSchema = new mongoose.Schema(
         index: true,
     },
 
-    xCoord: {
+    xCoordElevador: {
         type: [Number],
         index: true,
     },
 
-    yCoord: {
+    yCoordElevador: {
         type: [Number],
         index: true,
     },
@@ -46,23 +56,23 @@ const MapaSchema = new mongoose.Schema(
         type: String,
         index: true,
     },
-    nome: {
+    nomeSala: {
         type: [String],
         index: true,
     },
-    abcissaA: {
+    abcissaASala: {
         type: [Number],
         index: true,
     },
-    ordenadaA: {
+    ordenadaASala: {
         type: [Number],
         index: true,
     },
-    abcissaB: {
+    abcissaBSala: {
         type: [Number],
         index: true,
     },
-    ordenadaB: {
+    ordenadaBSala: {
         type: [Number],
         index: true,
     },

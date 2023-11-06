@@ -6,8 +6,10 @@ import { Guard } from "../../core/logic/Guard";
 
 interface coordenadasPassagemProps {
   id : number;
-  abcissa : number;
-  ordenada : number;
+  abcissaSup : number;
+  ordenadaSup : number;
+  abcissaInf : number;
+  ordenadaInf : number;
   orientacao : string;
 }
 
@@ -20,8 +22,10 @@ export class CoordenadasPassagem extends ValueObject<coordenadasPassagemProps> {
 
   const guardedProps = [
     { argument: props.id, argumentName: 'id' },
-    { argument: props.abcissa, argumentName: 'abcissa' },
-    { argument: props.ordenada, argumentName: 'ordenada' },
+    { argument: props.abcissaSup, argumentName: 'abcissaSup' },
+    { argument: props.ordenadaSup, argumentName: 'ordenadaSup' },
+    { argument: props.abcissaInf, argumentName: 'abcissaInf' },
+    { argument: props.ordenadaInf, argumentName: 'ordenadaInf' },
     { argument: props.orientacao, argumentName: 'orientacao' },
   ];
     
@@ -37,11 +41,18 @@ export class CoordenadasPassagem extends ValueObject<coordenadasPassagemProps> {
   public returnId(): number {
     return this.props.id;
   }
-  public returnAbcissa(): number {
-    return this.props.abcissa;
+  public returnAbcissaSup(): number {
+    return this.props.abcissaSup;
   }
-  public returnOrdenada(): number {
-    return this.props.ordenada;
+  public returnOrdenadaSup(): number {
+    return this.props.ordenadaSup;
+  }
+
+  public returnAbcissaInf(): number {
+    return this.props.abcissaInf;
+  }
+  public returnOrdenadaInf(): number {
+    return this.props.ordenadaInf;
   }
   public returnOrientacao(): string {
     return this.props.orientacao;

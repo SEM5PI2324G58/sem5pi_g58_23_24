@@ -37,9 +37,11 @@ export class MapaMap extends Mapper<Mapa> {
       for (let i = 0; i < raw.idPassagem.length; i++) {
         let propsPassagem = {
           id : raw.idPassagem[i],
-          abcissa : raw.idPassagem[i],
-          ordenada : raw.idPassagem[i],
-          orientacao : raw.idPassagem[i]
+          abcissaSup : raw.abcissaSupPassagem[i],
+          ordenadaSup : raw.ordenadaSupPassagem[i],
+          abcissaInf : raw.abcissaInfPassagem[i],
+          ordenadaInf : raw.ordenadaInfPassagem[i],
+          orientacao : raw.orientacaoPassagem[i]
         }
         coordenadasPassagem[i] = CoordenadasPassagem.create(propsPassagem).getValue();
       }
@@ -47,8 +49,8 @@ export class MapaMap extends Mapper<Mapa> {
     let coordenadasElevador : CoordenadasElevador;
     if  (raw.xCoord !== null && raw.xCoord !== undefined){
       let propsElevador= {
-        xCoord : [raw.xCoord[0],raw.xCoord[1]],
-        yCoord : [raw.yCoord[0],raw.yCoord[1]],
+        xCoord : [raw.xCoordElevador[0],raw.xCoordElevador[1]],
+        yCoord : [raw.yCoordElevador[0],raw.yCoordElevador[1]],
         orientacao : raw.orientacaoElevador
       }
       coordenadasElevador = CoordenadasElevador.create(propsElevador).getValue();
@@ -57,11 +59,11 @@ export class MapaMap extends Mapper<Mapa> {
     if  (raw.nome !== null && raw.nome !== undefined){
       for (let i = 0; i < raw.nome.length; i++) {
         let propsSala= {
-          nome : raw.nome[i],
-          abcissaA : raw.abcissaA[i],
-          ordenadaA : raw.ordenadaA[i],
-          abcissaB : raw.abcissaB[i],
-          ordenadaB : raw.ordenadaB[i],
+          nome : raw.nomeSala[i],
+          abcissaA : raw.abcissaASala[i],
+          ordenadaA : raw.ordenadaASala[i],
+          abcissaB : raw.abcissaBSala[i],
+          ordenadaB : raw.ordenadaBSala[i],
           abcissaPorta : raw.abcissaPorta[i],
           ordenadaPorta : raw.ordenadaPorta[i],
           orientacaoPorta : raw.orientacaoPorta[i],
@@ -85,29 +87,31 @@ export class MapaMap extends Mapper<Mapa> {
 
   public static toPersistence (mapa: Mapa): any {
     let dadosMapa : any = {
-      IdMapa: mapa.returnIdMapa(),
+      idMapa: mapa.returnIdMapa(),
       mapa: mapa.returnTipoDePontos(),
     }
 
     if(mapa.verificaSeExistePassagens()){
       dadosMapa.idPassagem = mapa.returnIdPassagem();
-      dadosMapa.abcissa =  mapa.returnAbcissaPassagem();
-      dadosMapa.ordenada = mapa.returnOrdenadaPassagem();
+      dadosMapa.abcissaSupPassagem =  mapa.returnAbcissaSupPassagem();
+      dadosMapa.ordenadaSupPassagem = mapa.returnOrdenadaSupPassagem();
+      dadosMapa.abcissaInfPassagem = mapa.returnAbcissaInfPassagem();
+      dadosMapa.ordenadaInfPassagem = mapa.returnOrdenadaInfPassagem();
       dadosMapa.orientacaoPassagem = mapa.returnOrientacaoPassagem();
     }
     
     if(mapa.verificaSeExisteElevador()){
-      dadosMapa.xCoord = mapa.returnXCoordElevador();
-      dadosMapa.yCoord = mapa.returnYCoordElevador();
+      dadosMapa.xCoordElevador = mapa.returnXCoordElevador();
+      dadosMapa.yCoordElevador = mapa.returnYCoordElevador();
       dadosMapa.orientacaoElevador = mapa.returnOrientacaoElevador();
     }
     
     if(mapa.verificaSeExisteSalas()){
-      dadosMapa.nome = mapa.returnNomeSala();
-      dadosMapa.abcissaA = mapa.returnAbcissaASala();
-      dadosMapa.ordenadaA = mapa.returnOrdenadaASala();
-      dadosMapa.abcissaB = mapa.returnAbcissaBSala();
-      dadosMapa.ordenadaB = mapa.returnOrdenadaBSala();
+      dadosMapa.nomeSala = mapa.returnNomeSala();
+      dadosMapa.abcissaASala = mapa.returnAbcissaASala();
+      dadosMapa.ordenadaASala = mapa.returnOrdenadaASala();
+      dadosMapa.abcissaBSala = mapa.returnAbcissaBSala();
+      dadosMapa.ordenadaBSala = mapa.returnOrdenadaBSala();
       dadosMapa.abcissaPorta = mapa.returnAbcissaPortaSala();
       dadosMapa.ordenadaPorta = mapa.returnOrdenadaPortaSala();
       dadosMapa.orientacaoPorta = mapa.returnOrientacaoPortaSala();

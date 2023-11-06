@@ -77,6 +77,10 @@ export default {
       name: "PontoController",
       path: "../controllers/ImplControllers/PontoController"
     },
+    mapa : {
+      name: "MapaController",
+      path: "../controllers/ImplControllers/MapaController"
+    },
   },
 
   repos: {
@@ -120,6 +124,10 @@ export default {
       name: "SalaRepo",
       path: "../repos/SalaRepo"
     },
+    mapa: {
+      name: "MapaRepo",
+      path: "../repos/MapaRepo"
+    },
   },
 
   services: {
@@ -158,6 +166,10 @@ export default {
     ponto: {
       name: "PontoService",
       path: "../services/ImplServices/PontoService"
+    },
+    mapa: {
+      name: "MapaService",
+      path: "../services/ImplServices/MapaService"
     },
   },
 };
