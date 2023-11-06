@@ -7,7 +7,6 @@ import { TipoPonto } from "./TipoPonto";
 import { CoordenadasPassagem } from "./CoordenadasPassagem";
 import { CoordenadasElevador } from "./CoordenadasElevador";
 import { CoordenadasSala } from "./CoordenadasSala";
-import { publicDecrypt } from "crypto";
 
 
 interface pisoProps {
@@ -82,18 +81,34 @@ export class Mapa extends AggregateRoot<pisoProps> {
     return dados;
   }
 
-  public returnAbcissaPassagem(): number[] {
+  public returnAbcissaSupPassagem(): number[] {
     let dados : number[] = [];
     for (let i = 0; i < this.props.coordenadasPassagem.length; i++) {
-      dados[i] = this.props.coordenadasPassagem[i].returnAbcissa();
+      dados[i] = this.props.coordenadasPassagem[i].returnAbcissaSup();
     }
     return dados;
   }
 
-  public returnOrdenadaPassagem(): number[] {
+  public returnOrdenadaSupPassagem(): number[] {
     let dados : number[] = [];
     for (let i = 0; i < this.props.coordenadasPassagem.length; i++) {
-      dados[i] = this.props.coordenadasPassagem[i].returnOrdenada();
+      dados[i] = this.props.coordenadasPassagem[i].returnOrdenadaSup();
+    }
+    return dados;
+  }
+
+  public returnAbcissaInfPassagem(): number[] {
+    let dados : number[] = [];
+    for (let i = 0; i < this.props.coordenadasPassagem.length; i++) {
+      dados[i] = this.props.coordenadasPassagem[i].returnAbcissaInf();
+    }
+    return dados;
+  }
+
+  public returnOrdenadaInfPassagem(): number[] {
+    let dados : number[] = [];
+    for (let i = 0; i < this.props.coordenadasPassagem.length; i++) {
+      dados[i] = this.props.coordenadasPassagem[i].returnOrdenadaInf();
     }
     return dados;
   }
@@ -196,4 +211,244 @@ export class Mapa extends AggregateRoot<pisoProps> {
     return dados;
   }
 
+  public verificarSeMapaVazio() : boolean{
+    let x = this.props.mapa.length;
+    let y = this.props.mapa[0].length;
+    for (let i = 0; i < x; i++) {
+      for (let j = 0; j < y ; j++) {
+        if(this.props.mapa[i][j].returnTipoPonto() !== " "){
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  public criacaoBermasPiso() : TipoPonto[]{
+    let x = this.props.mapa[0].length - 1;
+    let y = this.props.mapa.length - 1;
+
+    let listaPontos : TipoPonto[] = [];
+    for (let i = 0; i <= x; i++) {
+      for (let j = 0; j <= y ; j++) {
+          if(i == 0 && j ==0 ) {
+            this.toParedeNorteOeste(i,j);
+            listaPontos.push(this.props.mapa[i][j]);
+          }
+          else if((1 <= i && i < x && (j == 0 || j == y)) || (i == 0 && j == y)) {
+            this.toParedeNorte(i,j);
+            listaPontos.push(this.props.mapa[i][j]);
+          }
+          else if((1 <= j && j < y && (i == 0 || i == x)) || (i == x && j == 0)) {
+            this.toParedeOeste(i,j);
+            listaPontos.push(this.props.mapa[i][j]);
+          }
+          else{this.toVazio(i,j)}
+      }
+    }  
+    return listaPontos;
+  }
+
+  public toElevador(x:number, y:number, orientacao:string) {
+    this.props.mapa[x][y] = TipoPonto.create("Elevador").getValue();
+    this.props.coordenadasElevador = CoordenadasElevador.create({xCoord: [x], yCoord: [y], orientacao: orientacao}).getValue();
+  }
+
+  public toParedeNorteOeste(x:number, y:number) {
+    this.props.mapa[x][y] = TipoPonto.create("NorteOeste").getValue();
+  }
+
+  public toParedeNorte(x:number, y:number) {
+    this.props.mapa[x][y] = TipoPonto.create("Norte").getValue();
+  }
+
+  public toParedeOeste(x:number, y:number) {
+    this.props.mapa[x][y] = TipoPonto.create("Oeste").getValue();
+  }
+
+  public toVazio(x:number, y:number) {
+    this.props.mapa[x][y] = TipoPonto.create(" ").getValue();
+  }
+
+  public toPassagem(x:number, y:number) {
+    this.props.mapa[x][y] = TipoPonto.create("Passagem").getValue();
+  }
+
+  public toPorta(x:number, y:number) {
+    this.props.mapa[x][y] = TipoPonto.create("Porta").getValue();
+  }
+
+  public toPassagemNorte(x:number, y:number) {
+    this.props.mapa[x][y] = TipoPonto.create("PassagemNorte").getValue();
+  }
+
+  public toPassagemOeste(x:number, y:number) {
+    this.props.mapa[x][y] = TipoPonto.create("PassagemOeste").getValue();
+
+  }
+  public toPortaNorte(x:number, y:number) {
+    this.props.mapa[x][y] = TipoPonto.create("PortaNorte").getValue();
+  }
+  public toPortaNorteOeste(x:number, y:number) {
+    this.props.mapa[x][y] = TipoPonto.create("PortaNorteOeste").getValue();
+  }
+  public toPortaOeste(x:number, y:number) {
+    this.props.mapa[x][y] = TipoPonto.create("PortaOeste").getValue();
+  }
+
+  public carregarMapaComBermas(){
+
+    for(let i = 0; i < this.returnDimensaoX(); i++){
+      this.props.mapa = [];
+      for(let j = 0; j < this.returnDimensaoY(); j++){
+          this.props.mapa[i][j] = TipoPonto.create(" ").getValue();
+      }
+    }
+
+    let x = this.props.mapa[0].length - 1;
+    let y = this.props.mapa.length - 1;
+
+    for (let i = 0; i <= x; i++) {
+      for (let j = 0; j <= y ; j++) {
+          if(i == 0 && j ==0 ) {
+            this.toParedeNorteOeste(i,j);
+          }
+          else if((1 <= i && i < x && (j == 0 || j == y)) || (i == 0 && j == y)) {
+            this.toParedeNorte(i,j);
+          }
+          else if((1 <= j && j < y && (i == 0 || i == x)) || (i == x && j == 0)) {
+            this.toParedeOeste(i,j);
+          }
+          else{this.toVazio(i,j);}
+      }
+    }  
+  }
+
+  public criarPontosElevador(xCoordSup: number, yCoordSup: number, orientacao : string){
+    let xCoordInf;
+    let yCoordInf;
+
+    if (orientacao === 'Norte') {
+      xCoordInf = xCoordSup;
+      yCoordInf = yCoordSup + 1;
+    }else if (orientacao === 'Oeste') {
+      xCoordInf = xCoordSup + 1;
+      yCoordInf = yCoordSup;
+    }
+
+    this.toElevador(xCoordSup,yCoordSup, orientacao);
+    this.toElevador(xCoordInf,yCoordInf, orientacao);    
+  }
+
+  public carregarSalaMapa(nome:string, abcissaA : number, ordenadaA : number, abcissaB : number, ordenadaB : number,
+    abcissaPorta : number, ordenadaPorta : number, orientacaoPorta : string){
+    let xCoordSup;
+    let yCoordSup;
+    let xCoordInf;
+    let yCoordInf;
+
+    if(abcissaA < abcissaB){
+    xCoordSup = abcissaA;
+    xCoordInf = abcissaB;
+    }else{
+    xCoordSup = abcissaB;
+    xCoordInf = abcissaA;
+    }
+    if(ordenadaA < ordenadaB){
+    yCoordSup = ordenadaA;
+    yCoordInf = ordenadaB;
+    }else{
+    yCoordSup = ordenadaB;
+    yCoordInf = ordenadaA;
+    }
+    this.toParedeNorteOeste(xCoordSup,yCoordSup);
+    this.toVazio(xCoordInf,yCoordInf);
+    this.carregarCoordenadasSala(nome, xCoordSup, yCoordSup, xCoordInf, yCoordInf, abcissaPorta,
+      ordenadaPorta, orientacaoPorta);
+
+    this.toPorta(abcissaPorta,ordenadaPorta);
+
+    for(let i = xCoordSup + 1; i <= xCoordInf; i++){
+      if(i !== abcissaPorta && yCoordSup != ordenadaPorta){
+        this.toParedeNorte(i,yCoordSup);
+      }else{
+        this.toPortaNorte(abcissaPorta,ordenadaPorta);
+      }
+    }
+
+    for(let i = xCoordSup; i <= xCoordInf; i++){
+      if(i !== abcissaPorta && yCoordInf + 1 !== ordenadaPorta){
+        this.toParedeNorte(i,yCoordInf + 1);
+      }else{
+        this.toPortaNorte(abcissaPorta,ordenadaPorta);
+      }
+    }
+
+    for(let i = yCoordSup + 1; i <= yCoordInf; i++){
+      if(xCoordSup !== abcissaPorta && i !== ordenadaPorta){
+        this.toParedeOeste(xCoordSup,i);
+      }else{
+        this.toPortaOeste(abcissaPorta,ordenadaPorta);
+      }
+    }
+
+    for(let i = yCoordSup; i <= yCoordInf; i++){
+      if(xCoordInf + 1 !== abcissaPorta && i !== ordenadaPorta){
+        if(this.props.mapa[xCoordInf + 1][i].returnTipoPonto() === 'Norte'){
+          this.toParedeNorteOeste(xCoordInf + 1,i);
+        }else{
+          this.toParedeOeste(xCoordInf + 1,i);
+        }
+      }else{
+        if(this.props.mapa[xCoordInf + 1][i].returnTipoPonto() === 'Norte'){
+          this.toPortaNorteOeste(abcissaPorta,ordenadaPorta);
+        }else{
+          this.toPortaOeste(abcissaPorta,ordenadaPorta);
+        }
+      }
+    }
+  }
+
+  public carregarPassagemMapa(passagem : any){
+    let xCoordSup = passagem.abcissa;
+    let yCoordSup = passagem.ordenada;
+    let orientacao = passagem.orientacao;
+
+    if (orientacao === 'Norte'){
+      
+      if(this.props.mapa[xCoordSup][yCoordSup].returnTipoPonto() === 'Oeste' || this.props.mapa[xCoordSup][yCoordSup].returnTipoPonto() === 'NorteOeste'){
+        this.toPassagemOeste(xCoordSup,yCoordSup);
+      }else{
+        this.toPassagem(xCoordSup,yCoordSup);
+      }
+      this.toPassagem(xCoordSup + 1,yCoordSup);
+      this.carregarCoordenadasPassagem(passagem.id, xCoordSup,yCoordSup,xCoordSup + 1, yCoordSup, orientacao);
+      
+    }else if(orientacao === 'Oeste'){
+      if(this.props.mapa[xCoordSup][yCoordSup].returnTipoPonto() === 'Norte' || this.props.mapa[xCoordSup][yCoordSup].returnTipoPonto() === 'NorteOeste'){
+        this.toPassagemNorte(xCoordSup,yCoordSup);
+      }else{
+        this.toPassagem(xCoordSup,yCoordSup);
+      }
+      this.toPassagem(xCoordSup,yCoordSup + 1);
+      this.carregarCoordenadasPassagem(passagem.id, xCoordSup,yCoordSup, xCoordSup, yCoordSup + 1, orientacao);
+    }
+
+  }
+
+  public returnDimensaoX() : number{
+    return this.props.mapa.length;
+  }
+
+  public returnDimensaoY() : number{
+    return this.props.mapa[0].length;
+  }
+
+  public carregarCoordenadasPassagem(id:number, abcissaSup : number, ordenadaSup : number, abcissaInf : number, ordenadaInf, orientacao : string){
+    this.props.coordenadasPassagem.push(CoordenadasPassagem.create({id: id, abcissaSup: abcissaSup, ordenadaSup: ordenadaSup, abcissaInf : abcissaInf, ordenadaInf : ordenadaInf,orientacao: orientacao}).getValue());
+  }
+
+  public carregarCoordenadasSala(nome : string, abcissaA : number, ordenadaA : number, abcissaB : number, ordenadaB : number, abcissaPorta : number, ordenadaPorta : number, orientacaoPorta : string){
+    this.props.coordenadasSala.push(CoordenadasSala.create({nome: nome, abcissaA: abcissaA, ordenadaA: ordenadaA, abcissaB: abcissaB, ordenadaB: ordenadaB, abcissaPorta: abcissaPorta, ordenadaPorta: ordenadaPorta, orientacaoPorta: orientacaoPorta}).getValue());
+  }
 }
