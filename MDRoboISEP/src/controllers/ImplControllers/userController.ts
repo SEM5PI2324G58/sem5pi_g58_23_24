@@ -2,12 +2,12 @@ import { Response, Request } from 'express';
 
 import { Container} from 'typedi';
 
-import config from '../../config';
+import config from '../../../config';
 
-import IUserRepo from '../services/IRepos/IUserRepo';
+import IUserRepo from '../../services/IRepos/IUserRepo';
 
-import { UserMap } from "../mappers/UserMap";
-import { IUserDTO } from '../dto/IUserDTO';
+import { UserMap } from "../../mappers/UserMap";
+import { IUserDTO } from '../../dto/IUserDTO';
 
 
 exports.getMe = async function(req, res: Response) {

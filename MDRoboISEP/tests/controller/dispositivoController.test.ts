@@ -3,11 +3,8 @@ import {Response, Request, NextFunction} from 'express';
 import { Container } from 'typedi';
 import { Result }  from '../../src/core/logic/Result';
 import * as sinon from 'sinon';
-import DispositivoController from '../../src/controllers/DispositivoController';
+import DispositivoController from '../../src/controllers/ImplControllers/DispositivoController';
 import IDispositivoService from '../../src/services/IServices/IDispositivoService';
-import DispositivoService from '../../src/services/DispositivoService';
-import ITipoDispositivoRepo from "../../src/services/IRepos/ITipoDispositivoRepo";
-import IDispositivoRepo from "../../src/services/IRepos/IDispositivoRepo";
 import IAdicionarRoboAFrotaDTO from "../../src/dto/IAdicionarRoboAFrotaDTO";
 import { TipoTarefa } from "../../src/domain/tipoDispositivo/TipoTarefa";
 import { Marca } from "../../src/domain/tipoDispositivo/Marca";
@@ -27,7 +24,6 @@ import TipoDispositivoRepo from "../../src/repos/TipoDispositivoRepo";
 
 import 'mocha';
 import IDispositivoDTO from "../../src/dto/IDispositivoDTO";
-import PisoController from "../../src/controllers/PisoController";
 
 
 
@@ -71,7 +67,7 @@ describe('DispositivoController', () => {
         let dispositivoRepoInstance = Container.get(dispositivoRepoClass);
         Container.set("DispositivoRepo", dispositivoRepoInstance);
 
-        let dispositivoServiceClass = require('../../src/services/DispositivoService').default;
+        let dispositivoServiceClass = require('../../src/services/ImplServices/DispositivoService').default;
         let dispositivoServiceInstance = Container.get(dispositivoServiceClass);
         Container.set("DispositivoService", dispositivoServiceInstance);
 

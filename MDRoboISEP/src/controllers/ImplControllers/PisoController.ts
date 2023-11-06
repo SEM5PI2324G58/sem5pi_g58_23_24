@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import { Inject, Service } from 'typedi';
-import config from "../../config";
+import config from "../../../config";
 
-import IPisoController from './IControllers/IPisoController';
-import IPisoService from '../services/IServices/IPisoService';
-import ICriarPisoDTO from '../dto/ICriarPisoDTO';
-import IPisoDTO from '../dto/IPisoDTO';
+import IPisoController from '../IControllers/IPisoController';
+import IPisoService from '../../services/IServices/IPisoService';
+import ICriarPisoDTO from '../../dto/ICriarPisoDTO';
+import IPisoDTO from '../../dto/IPisoDTO';
 
-import { Result } from "../core/logic/Result";
-import IEditarPisoDTO from '../dto/IEditarPisoDTO';
+import { Result } from "../../core/logic/Result";
+import IEditarPisoDTO from '../../dto/IEditarPisoDTO';
 
 @Service()
 export default class PisoController implements IPisoController {

@@ -3,7 +3,7 @@ import {Response, Request, NextFunction} from 'express';
 import { Container } from 'typedi';
 import { Result }  from '../../src/core/logic/Result';
 import * as sinon from 'sinon';
-import PisoController from '../../src/controllers/PisoController';
+import PisoController from '../../src/controllers/ImplControllers/PisoController';
 import IPisoService from '../../src/services/IServices/IPisoService';
 import  ICriarPisoDTO  from '../../src/dto/ICriarPisoDTO';
 import { IPisoPersistence } from "../../src/dataschema/IPisoPersistence";
@@ -60,7 +60,7 @@ describe('PisoController', () => {
         let edificioRepoRepoInstance = Container.get(edificioRepoClass);
         Container.set("EdificioRepo", edificioRepoRepoInstance);
 
-        let pisoServiceClass = require('../../src/services/PisoService').default;
+        let pisoServiceClass = require('../../src/services/ImplServices/PisoService').default;
         let pisoServiceInstance = Container.get(pisoServiceClass);
         Container.set("PisoService", pisoServiceInstance);
 

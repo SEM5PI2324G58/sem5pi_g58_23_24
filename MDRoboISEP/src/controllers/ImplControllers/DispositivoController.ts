@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import { Inject, Service } from 'typedi';
-import config from "../../config";
-import { Result } from "../core/logic/Result";
-import IDispositivoController from './IControllers/IDispositivoController';
-import IDispositivoDTO from '../dto/IDispositivoDTO';
-import IDispositivoService from '../services/IServices/IDispositivoService';
-import IAdicionarRoboAFrotaDTO from '../dto/IAdicionarRoboAFrotaDTO';
+import config from "../../../config";
+import { Result } from "../../core/logic/Result";
+import IDispositivoController from '../IControllers/IDispositivoController';
+import IDispositivoDTO from '../../dto/IDispositivoDTO';
+import IDispositivoService from '../../services/IServices/IDispositivoService';
+import IAdicionarRoboAFrotaDTO from '../../dto/IAdicionarRoboAFrotaDTO';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { ParsedQs } from 'qs';
-import IDispositivoInibirDTO from '../dto/IDispositivoInibirDTO';
+import IDispositivoInibirDTO from '../../dto/IDispositivoInibirDTO';
 
 @Service()
 export default class DispositivoController implements IDispositivoController {

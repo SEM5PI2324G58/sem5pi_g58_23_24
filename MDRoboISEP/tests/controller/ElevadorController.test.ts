@@ -7,7 +7,7 @@ import {NextFunction, Request, Response} from 'express';
 import { Result } from '../../src/core/logic/Result';
 import ICriarElevadorDTO from '../../src/dto/ICriarElevadorDTO';
 import IElevadorService from '../../src/services/IServices/IElevadorService';
-import ElevadorController from '../../src/controllers/ElevadorController';
+import ElevadorController from '../../src/controllers/ImplControllers/ElevadorController';
 import { Codigo } from '../../src/domain/edificio/Codigo';
 import { DescricaoEdificio } from '../../src/domain/edificio/DescricaoEdificio';
 import { Dimensao } from '../../src/domain/edificio/Dimensao';
@@ -141,7 +141,7 @@ describe('ElevadorController', () => {
         Container.set("PontoRepo", pontoRepoInstance);
 
         //Service
-        let elevadorServiceClass = require('../../src/services/ElevadorService').default;
+        let elevadorServiceClass = require('../../src/services/ImplServices/ElevadorService').default;
         let elevadorServiceInstance = Container.get(elevadorServiceClass);
         Container.set("ElevadorService", elevadorServiceInstance);
 

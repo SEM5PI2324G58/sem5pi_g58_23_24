@@ -2,7 +2,7 @@ import {Response, Request, NextFunction} from 'express';import * as sinon from '
 import Container from 'typedi';
 import  IEdificioDTO  from '../../src/dto/IEdificioDTO';
 import { Result }  from '../../src/core/logic/Result';
-import EdificioController from '../../src/controllers/EdificioController';
+import EdificioController from '../../src/controllers/ImplControllers/EdificioController';
 import IEdificioService from '../../src/services/IServices/IEdificioService';
 import { Nome } from '../../src/domain/edificio/Nome';
 import { Dimensao } from '../../src/domain/edificio/Dimensao';
@@ -68,7 +68,7 @@ describe('EdificioController', () => {
         let elevadorRepoInstance = Container.get(elevadorRepoClass);
         Container.set("ElevadorRepo", elevadorRepoInstance);
 
-        let edificioServiceClass = require('../../src/services/EdificioService').default;
+        let edificioServiceClass = require('../../src/services/ImplServices/EdificioService').default;
         let edificioServiceInstance = Container.get(edificioServiceClass);
         Container.set("EdificioService", edificioServiceInstance);
 

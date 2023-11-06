@@ -26,7 +26,7 @@ import NomeSala from '../../src/domain/sala/NomeSala';
 import { Passagem } from '../../src/domain/passagem/Passagem';
 import { IdPassagem } from '../../src/domain/passagem/IdPassagem';
 import ElevadorRepo from '../../src/repos/ElevadorRepo';
-import PontoService from '../../src/services/PontoService';
+import PontoService from '../../src/services/ImplServices/PontoService';
 import IPontoRepo from "../../src/services/IRepos/IPontoRepo";
 import ISalaRepo from "../../src/services/IRepos/ISalaRepo";
 import IEdificioRepo from "../../src/services/IRepos/IEdificioRepo";

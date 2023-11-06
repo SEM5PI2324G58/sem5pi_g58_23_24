@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
 import Container from 'typedi';
 import { Request, Response, NextFunction } from 'express';
-import TipoDispositivoController from '../../src/controllers/TipoDispositivoController';
+import TipoDispositivoController from '../../src/controllers/ImplControllers/TipoDispositivoController';
 import ITipoDispositivoService from '../../src/services/IServices/ITipoDispositivoService';
 import ITipoDispositivoDTO from '../../src/dto/ITipoDispositivoDTO';
 import { Result } from '../../src/core/logic/Result';
@@ -22,7 +22,7 @@ describe('Tipo Dispositivo Controller', () => {
         let tipoDispositvoRepoInstance = Container.get(tipoDispositivoRepoClass);
         Container.set("TipoDispositivoRepo", tipoDispositvoRepoInstance);
 
-        let tipoDispositivoServiceClass = require('../../src/services/TipoDispositivoService').default;
+        let tipoDispositivoServiceClass = require('../../src/services/ImplServices/TipoDispositivoService').default;
         let tipoDispositivoServiceInstance = Container.get(tipoDispositivoServiceClass);
         Container.set("TipoDispositivoService", tipoDispositivoServiceInstance);
     });

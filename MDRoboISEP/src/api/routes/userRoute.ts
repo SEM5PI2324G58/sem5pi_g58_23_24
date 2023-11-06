@@ -1,14 +1,14 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { Container } from 'typedi';
 
-import AuthService from '../../services/userService';
+import AuthService from '../../services/ImplServices/userService';
 import { IUserDTO } from '../../dto/IUserDTO';
 
 import middlewares from '../middlewares';
 import { celebrate, Joi } from 'celebrate';
 import winston = require('winston');
 
-var user_controller = require('../../controllers/userController');
+var user_controller = require('../../controllers/ImplControllers/userController');
 
 const route = Router();
 

@@ -1,9 +1,9 @@
 import { Inject, Service } from "typedi";
-import IElevadorController from "./IControllers/IElevadorController";
-import config from "../../config";
-import IElevadorService from "../services/IServices/IElevadorService";
+import IElevadorController from "../IControllers/IElevadorController";
+import config from "../../../config";
+import IElevadorService from "../../services/IServices/IElevadorService";
 import { NextFunction, Request, Response } from "express";
-import ICriarElevadorDTO from "../dto/ICriarElevadorDTO";
+import ICriarElevadorDTO from "../../dto/ICriarElevadorDTO";
 
 
 @Service()

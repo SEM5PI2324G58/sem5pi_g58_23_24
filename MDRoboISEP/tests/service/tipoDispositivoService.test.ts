@@ -4,8 +4,7 @@ import { Document } from 'mongoose';
 import "reflect-metadata";
 import * as sinon from 'sinon';
 import { Container } from 'typedi';
-import EdificioService from '../../src/services/EdificioService';
-import TipoDispositivoService from "../../src/services/TipoDispositivoService";
+import TipoDispositivoService from "../../src/services/ImplServices/TipoDispositivoService";
 import ITipoDispositivoDTO from "../../src/dto/ITipoDispositivoDTO";
 import ITipoDispositivoRepo from "../../src/services/IRepos/ITipoDispositivoRepo";
 

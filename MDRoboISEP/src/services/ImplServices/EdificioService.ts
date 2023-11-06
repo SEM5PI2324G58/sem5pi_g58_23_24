@@ -1,22 +1,22 @@
 import { Service, Inject } from 'typedi';
-import config from "../../config";
-import { Result } from "../core/logic/Result";
-import IEdificioRepo from './IRepos/IEdificioRepo';
-import IEdificioService from './IServices/IEdificioService';
-import IEdificioDTO from '../dto/IEdificioDTO';
-import { Edificio } from '../domain/edificio/Edificio';
-import { Nome } from '../domain/edificio/Nome';
-import { Codigo } from '../domain/edificio/Codigo';
-import { Dimensao } from '../domain/edificio/Dimensao';
-import { Piso } from '../domain/piso/Piso';
-import IListarEdMinEMaxPisosDTO from '../dto/IListarEdMinEMaxPisosDTO';
-import { EdificioMap } from '../mappers/EdificioMap';
-import { DescricaoEdificio } from '../domain/edificio/DescricaoEdificio';
-import IPisoRepo from './IRepos/IPisoRepo';
-import IElevadorRepo from './IRepos/IElevadorRepo';
-import ISalaRepo from './IRepos/ISalaRepo';
-import IPassagemRepo from './IRepos/IPassagemRepo';
-import IPontoRepo from './IRepos/IPontoRepo';
+import config from "../../../config";
+import { Result } from "../../core/logic/Result";
+import IEdificioRepo from '../IRepos/IEdificioRepo';
+import IEdificioService from '../IServices/IEdificioService';
+import IEdificioDTO from '../../dto/IEdificioDTO';
+import { Edificio } from '../../domain/edificio/Edificio';
+import { Nome } from '../../domain/edificio/Nome';
+import { Codigo } from '../../domain/edificio/Codigo';
+import { Dimensao } from '../../domain/edificio/Dimensao';
+import { Piso } from '../../domain/piso/Piso';
+import IListarEdMinEMaxPisosDTO from '../../dto/IListarEdMinEMaxPisosDTO';
+import { EdificioMap } from '../../mappers/EdificioMap';
+import { DescricaoEdificio } from '../../domain/edificio/DescricaoEdificio';
+import IPisoRepo from '../IRepos/IPisoRepo';
+import IElevadorRepo from '../IRepos/IElevadorRepo';
+import ISalaRepo from '../IRepos/ISalaRepo';
+import IPassagemRepo from '../IRepos/IPassagemRepo';
+import IPontoRepo from '../IRepos/IPontoRepo';
 
 @Service()
 

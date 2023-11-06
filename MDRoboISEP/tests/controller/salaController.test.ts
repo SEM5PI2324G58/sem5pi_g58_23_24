@@ -2,7 +2,7 @@ import { Response, Request, NextFunction } from 'express'; import * as sinon fro
 import Container from 'typedi';
 import IPassagemDTO from '../../src/dto/IPassagemDTO';
 import { Result } from '../../src/core/logic/Result';
-import SalaController from '../../src/controllers/SalaController';
+import SalaController from '../../src/controllers/ImplControllers/SalaController';
 import IPassagemService from '../../src/services/IServices/IPassagemService';
 import { Codigo } from '../../src/domain/edificio/Codigo';
 import { DescricaoEdificio } from '../../src/domain/edificio/DescricaoEdificio';
@@ -23,7 +23,6 @@ import IPassagemRepo from '../../src/services/IRepos/IPassagemRepo';
 import { IPassagemPersistence } from '../../src/dataschema/IPassagemPersistence';
 import ISalaDTO from '../../src/dto/ISalaDTO';
 import ISalaService from '../../src/services/IServices/ISalaService';
-import PassagemController from '../../src/controllers/PassagemController';
 import ISalaRepo from '../../src/services/IRepos/ISalaRepo';
 import { Sala } from '../../src/domain/sala/Sala';
 import { ISalaPersistence } from '../../src/dataschema/ISalaPersistence';
@@ -42,7 +41,7 @@ describe('SalaController', () => {
         let salaRepoInstance = Container.get(salaRepoClass);
         Container.set("SalaRepo", salaRepoInstance);
 
-        let salaServiceClass = require('../../src/services/SalaService').default;
+        let salaServiceClass = require('../../src/services/ImplServices/SalaService').default;
         let salaServiceInstance = Container.get(salaServiceClass);
         Container.set("SalaService", salaServiceInstance);
     });

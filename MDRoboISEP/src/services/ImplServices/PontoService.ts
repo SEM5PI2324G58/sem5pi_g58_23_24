@@ -1,19 +1,19 @@
 import { Inject, Service } from "typedi";
-import IPontoService from "./IServices/IPontoService";
-import config from "../../config";
-import IPontoRepo from "./IRepos/IPontoRepo";
-import ICarregarMapaDTO from "../dto/ICarregarMapaDTO";
-import { Result } from "../core/logic/Result";
-import { Edificio } from "../domain/edificio/Edificio";
-import { Piso } from "../domain/piso/Piso";
-import IEdificioRepo from "./IRepos/IEdificioRepo";
-import ISalaRepo from "./IRepos/ISalaRepo";
-import IPassagemRepo from "./IRepos/IPassagemRepo";
-import { Ponto } from "../domain/ponto/Ponto";
-import { Passagem } from "../domain/passagem/Passagem";
-import { Sala } from "../domain/sala/Sala";
-import IElevadorRepo from "./IRepos/IElevadorRepo";
-import { Elevador } from "../domain/elevador/Elevador";
+import IPontoService from "../IServices/IPontoService";
+import config from "../../../config";
+import IPontoRepo from "../IRepos/IPontoRepo";
+import ICarregarMapaDTO from "../../dto/ICarregarMapaDTO";
+import { Result } from "../../core/logic/Result";
+import { Edificio } from "../../domain/edificio/Edificio";
+import { Piso } from "../../domain/piso/Piso";
+import IEdificioRepo from "../IRepos/IEdificioRepo";
+import ISalaRepo from "../IRepos/ISalaRepo";
+import IPassagemRepo from "../IRepos/IPassagemRepo";
+import { Ponto } from "../../domain/ponto/Ponto";
+import { Passagem } from "../../domain/passagem/Passagem";
+import { Sala } from "../../domain/sala/Sala";
+import IElevadorRepo from "../IRepos/IElevadorRepo";
+import { Elevador } from "../../domain/elevador/Elevador";
 @Service()
 export default class PontoService implements IPontoService{
     constructor(
