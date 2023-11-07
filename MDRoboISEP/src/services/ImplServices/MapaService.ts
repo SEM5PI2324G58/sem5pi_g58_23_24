@@ -1,4 +1,4 @@
-import { Inject } from "typedi";
+import { Inject, Service } from "typedi";
 import config from "../../../config";
 import IMapaRepo from "../IRepos/IMapaRepo";
 import IEdificioRepo from "../IRepos/IEdificioRepo";
@@ -13,6 +13,7 @@ import { Sala } from "../../domain/sala/Sala";
 import IPassagemRepo from "../IRepos/IPassagemRepo";
 import { Edificio } from "../../domain/edificio/Edificio";
 
+@Service()
 export default class MapaService implements MapaService{
     constructor(
         @Inject(config.repos.mapa.name) private mapaRepo: IMapaRepo,

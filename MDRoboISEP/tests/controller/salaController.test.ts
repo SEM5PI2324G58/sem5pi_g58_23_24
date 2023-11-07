@@ -26,6 +26,7 @@ import ISalaService from '../../src/services/IServices/ISalaService';
 import ISalaRepo from '../../src/services/IRepos/ISalaRepo';
 import { Sala } from '../../src/domain/sala/Sala';
 import { ISalaPersistence } from '../../src/dataschema/ISalaPersistence';
+import { Mapa } from '../../src/domain/mapa/Mapa';
 
 
 describe('SalaController', () => {
@@ -215,7 +216,7 @@ function createAllData(codigoEdificioA: string, numeroPisoA: number): Promise<Re
     interface pisoProps {
         numeroPiso: NumeroPiso;
         descricaoPiso: DescricaoPiso;
-        mapa: Ponto[][];
+        mapa: Mapa;
     }
 
     // criar props edificios
@@ -241,9 +242,7 @@ function createAllData(codigoEdificioA: string, numeroPisoA: number): Promise<Re
     let pontoD : Ponto;
 
     // criar mapa
-    let mapa: Ponto[][] = [];
-    mapa.push([pontoA, pontoB]);
-    mapa.push([pontoC, pontoD]);
+    let mapa;
 
     // criar props pisos
     let pisoPropsA: pisoProps = {

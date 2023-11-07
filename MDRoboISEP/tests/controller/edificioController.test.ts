@@ -40,12 +40,12 @@ describe('EdificioController', () => {
         let pisoRepoInstance = Container.get(pisoRepoClass);
         Container.set("PisoRepo", pisoRepoInstance);
 
-        let pontoSchemaInstance = require('../../src/persistence/schemas/PontoSchema').default;
-        Container.set("PontoSchema", pontoSchemaInstance);
+        let mapaSchemaInstance = require('../../src/persistence/schemas/MapaSchema').default;
+        Container.set("MapaSchema", mapaSchemaInstance);
 
-        let pontoRepoClass = require('../../src/repos/PontoRepo').default;
-        let pontoRepoInstance = Container.get(pontoRepoClass);
-        Container.set("PontoRepo", pontoRepoInstance);
+        let mapaRepoClass = require('../../src/repos/MapaRepo').default;
+        let mapaRepoInstance = Container.get(mapaRepoClass);
+        Container.set("MapaRepo", mapaRepoInstance);
 
         let salaSchemaInstance = require('../../src/persistence/schemas/SalaSchema').default;
         Container.set("SalaSchema", salaSchemaInstance);
@@ -386,14 +386,14 @@ it('EdificioController + EdificioService + EdificioRepo criar edificio', async f
             "minPisos": 0,
             "maxPisos": 1,
         };
-
+        let mapa;
         let edificioProps : any = {
             nome: Nome.create('Edificio A').getValue(),
             dimensao:Dimensao.create(1,1).getValue(),
             descricao:DescricaoEdificio.create('Edificio A').getValue(),
             listaPisos: [Piso.create({numeroPiso: NumeroPiso.create(1).getValue(),
                                     descricaoPiso: DescricaoPiso.create("ola").getValue(),
-                                    mapa: [[]]}, IdPiso.create(1).getValue()).getValue()],
+                                    mapa: mapa}, IdPiso.create(1).getValue()).getValue()],
                                 
         };
 

@@ -46,10 +46,12 @@ export default class PisoRepo implements IPisoRepo {
         return PisoMap.toDomain(pisoCreated);
       } else {
         pisoDocument.id = piso.id;
-        pisoDocument.pontos = piso.returnListaDeIdDosPontos();
         pisoDocument.numeroPiso = piso.returnNumeroPiso();
-        if(piso.returnDescricaoPiso() !== undefined && piso.returnDescricaoPiso() !== null){
+        if(piso.props.descricaoPiso !== undefined && piso.props.descricaoPiso !== null){
           pisoDocument.descricaoPiso = piso.returnDescricaoPiso();
+        }
+        if(piso.props.mapa !== undefined && piso.props.mapa !== null){
+          pisoDocument.mapa = piso.returnIdMapa();
         }
         await pisoDocument.save();
 

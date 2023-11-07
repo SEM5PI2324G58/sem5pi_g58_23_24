@@ -30,7 +30,6 @@ export default class PisoService implements IPisoService{
   constructor(
       @Inject(config.repos.piso.name) private pisoRepo : IPisoRepo,
       @Inject(config.repos.edificio.name) private edifRepo : IEdificioRepo,
-      @Inject(config.repos.ponto.name) private pontoRepo : IPontoRepo,
       @Inject(config.repos.elevador.name) private elevadorRepo : IElevadorRepo,
       // @Inject(config.repos.sala.name) private salaRepo : IElevadorService,
       @Inject(config.services.elevador.name) private elevadorServiceInstance : IElevadorService
@@ -160,33 +159,13 @@ export default class PisoService implements IPisoService{
         if (finalResult.isFailure) {
             return Result.fail<ICriarPisoDTO>(finalResult.error);
         }
+    
         
-        let ponto : Ponto[][] = [];
-        let x = edificio.props.dimensao.props.x;
-        let y = edificio.props.dimensao.props.y;
-        let pontoID = (await this.pontoRepo.getMaxId()) + 1;
-        let contador = 1;
-        for (let i = 0; i <= x; i++) {
-            ponto[i] = [];
-            for (let j = 0; j <= y ; j++) {
-                let tipoPonto;
-                tipoPonto = TipoPonto.create(" ").getValue();
-                let pontoOuErro = await Ponto.create({
-                coordenadas : Coordenadas.create({abscissa: i , ordenada: j }).getValue(),
-                tipoPonto: tipoPonto
-                }, await IdPonto.create(pontoID).getValue());
-                contador++;
-                pontoID++;
-                if(pontoOuErro.isFailure){return Result.fail<ICriarPisoDTO>(finalResult.error);}
-                ponto[i][j] = pontoOuErro.getValue();
-            }
-        }  
-
 
         const pisoOuErro = await Piso.create({
             numeroPiso: numeroPisoOuErro.getValue(),
             descricaoPiso: descricaoOuErro,
-            mapa: ponto,
+            mapa: null,
         }, idPisoOuErro.getValue());
 
         if (pisoOuErro.isFailure) {
@@ -195,11 +174,6 @@ export default class PisoService implements IPisoService{
 
         edificio.addPiso(pisoOuErro.getValue());
 
-        for (let i = 0; i <= x; i++) {
-            for (let j = 0; j <= y ; j++) {
-                await this.pontoRepo.save(ponto[i][j]);
-            }
-        }  
 
 
         await this.pisoRepo.save(pisoOuErro.getValue());

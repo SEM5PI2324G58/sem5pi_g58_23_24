@@ -37,18 +37,12 @@ describe('Elevador domain', function () {
             let descricaoPiso = DescricaoPiso.create("Piso"+i).getValue();
             let idPiso = IdPiso.create(i).getValue();
             let numeroPiso = NumeroPiso.create(i).getValue();
-            let pontoArray  : Ponto[][] = [];
-            let idPonto = IdPonto.create(i).getValue();
-            let tipoPonto = TipoPonto.create(" ").getValue();
-            let coordenadas = Coordenadas.create({abscissa: i , ordenada: i }).getValue();
-            let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
-            pontoArray[0] = []
-            pontoArray[0][0] = ponto;
+            let mapa;
 
             pisosServidos.push(await Piso.create({
                 numeroPiso: numeroPiso,
                 descricaoPiso: descricaoPiso,
-                mapa: pontoArray,
+                mapa: mapa,
             }, idPiso).getValue())
         }
 
@@ -70,9 +64,9 @@ describe('Elevador domain', function () {
         let modeloElevador = ModeloElevador.create('123').getValue();
         let numeroSerieElevador = NumeroSerieElevador.create('123').getValue();
         let descricaoElevador = DescricaoElevador.create('123').getValue();
-		
+		let pontos: Ponto[] = [];
         //Criar array de pontos vazios
-        let pontos: Ponto[] = [];
+       
         
         // Criar 1 pisos
         let pisosServidos: Piso[]=[];
@@ -81,18 +75,12 @@ describe('Elevador domain', function () {
             let descricaoPiso = DescricaoPiso.create("Piso"+i).getValue();
             let idPiso = IdPiso.create(i).getValue();
             let numeroPiso = NumeroPiso.create(i).getValue();
-            let pontoArray  : Ponto[][] = [];
-            let idPonto = IdPonto.create(i).getValue();
-            let tipoPonto = TipoPonto.create(" ").getValue();
-            let coordenadas = Coordenadas.create({abscissa: i , ordenada: i }).getValue();
-            let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
-            pontoArray[0] = []
-            pontoArray[0][0] = ponto;
+            let mapa;
 
             pisosServidos.push(await Piso.create({
                 numeroPiso: numeroPiso,
                 descricaoPiso: descricaoPiso,
-                mapa: pontoArray,
+                mapa: mapa,
             }, idPiso).getValue())
         }
 

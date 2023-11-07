@@ -5,14 +5,14 @@ import { NumeroPiso } from "./NumeroPiso";
 import { DescricaoPiso } from "./DescricaoPiso";
 import { Guard } from "../../core/logic/Guard";
 import { IdPiso } from "./IdPiso";
-import { Ponto } from "../ponto/Ponto";
+import { Mapa } from "../mapa/Mapa";
 
 
 
 interface pisoProps {
   numeroPiso: NumeroPiso;
   descricaoPiso: DescricaoPiso;
-  mapa: Ponto[][];
+  mapa: Mapa;
 }
 
 export class Piso extends AggregateRoot<pisoProps> {
@@ -29,15 +29,8 @@ export class Piso extends AggregateRoot<pisoProps> {
     return this.props.descricaoPiso.props.descricao;
   }
 
-  public returnListaDeIdDosPontos() : string[][]{
-    let ids: string[][] = [];
-    for (let i = 0; i < this.props.mapa.length; i++) {
-      ids[i] = [];
-      for (let j = 0; j < this.props.mapa[i].length; j++) {
-        ids[i][j] = this.props.mapa[i][j].id.toString();
-      }
-    }  
-    return ids;
+  public returnIdMapa() : number{
+    return this.props.mapa.returnIdMapa();
   }
 
   private constructor (props : pisoProps, id?: IdPiso) {
@@ -53,9 +46,8 @@ export class Piso extends AggregateRoot<pisoProps> {
     ];
 
     let guard1 = Guard.againstNullOrUndefined(guardedProps[0].argument,guardedProps[0].argumentName);
-    let guard2 = Guard.againstNullOrUndefined(guardedProps[2].argument,guardedProps[2].argumentName);
 
-    let guardResult = Guard.combine([guard1,guard2]);
+    let guardResult = Guard.combine([guard1]);
 
     if (!guardResult.succeeded) {
       return Result.fail<Piso>(guardResult.message)
@@ -68,7 +60,7 @@ export class Piso extends AggregateRoot<pisoProps> {
       return Result.ok<Piso>(piso);
     }
   }
-
+  /*
   public returnPontosParaElevador(xCoordSup: number, yCoordSup: number, orientacao : string) : Ponto[]{
     let pontos: Ponto[] = [];
 
@@ -250,6 +242,7 @@ export class Piso extends AggregateRoot<pisoProps> {
    * Elimina o elevador do mapa, mudando o tipo dos pontos para parede ou vazio
    * @param coords array com as coordenadas dos ponto do elevador
    */
+  /*
   public reverterElevadorNoMapa(coords: number[]){
     let x = this.props.mapa.length;
     let y = this.props.mapa[0].length;
@@ -268,7 +261,7 @@ export class Piso extends AggregateRoot<pisoProps> {
       }
     }
   }
-
+  /*
   public returnPontosComCoordenadas(coords: number[]): Ponto[]{
     let pontos: Ponto[] = [];
 
@@ -277,7 +270,7 @@ export class Piso extends AggregateRoot<pisoProps> {
     }
     return pontos;
   }
-
+  */
   public atualizarNumeroPiso(numeroPiso: NumeroPiso): Result<Piso>{
     let guard = Guard.againstNullOrUndefined(numeroPiso,'numero do piso');
     if (!guard.succeeded) {

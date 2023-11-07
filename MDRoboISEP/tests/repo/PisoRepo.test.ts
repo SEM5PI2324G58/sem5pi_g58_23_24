@@ -32,8 +32,7 @@ describe('PisoRepo', () => {
         const pisoDTO = {
             domainID: 1,
             numeroPiso: 1,
-            descricaoPiso: "Ola",
-            pontos: []
+            descricaoPiso: "Ola", 
         } as IPisoPersistence;
 
         const pisoSchemaInstance = Container.get("PisoSchema");
@@ -50,7 +49,6 @@ describe('PisoRepo', () => {
             domainID: 1,
             numeroPiso: 1,
             descricaoPiso: "Ola", 
-            pontos: []
         } as IPisoPersistence;
 
         const pisoSchemaInstance = Container.get("PisoSchema");
@@ -61,9 +59,7 @@ describe('PisoRepo', () => {
         const answer = await pisoRepo.save(piso);
         expect(answer.returnIdPiso()).to.equal(piso.returnIdPiso());
         expect(answer.returnNumeroPiso()).to.equal(piso.returnNumeroPiso());
-        expect(answer.returnDescricaoPiso()).to.equal(piso.returnDescricaoPiso());
-        expect(answer.returnListaDeIdDosPontos().length).to.equal(piso.returnListaDeIdDosPontos().length);
-        
+        expect(answer.returnDescricaoPiso()).to.equal(piso.returnDescricaoPiso());        
     });
 
 
@@ -75,7 +71,6 @@ describe('PisoRepo', () => {
             domainID: 1,
             numeroPiso: 1,
             descricaoPiso: "Ola",
-            pontos: [],
             save() { return this; }
         } as unknown as IPisoPersistence & Document<any, any, any>;
 
@@ -83,7 +78,6 @@ describe('PisoRepo', () => {
             domainID: 1,
             numeroPiso: 2,
             descricaoPiso: "Oas",
-            pontos: []
         } as IPisoPersistence;
 
         const pisoSchemaInstance = Container.get("PisoSchema");
@@ -95,7 +89,6 @@ describe('PisoRepo', () => {
         expect(answer.returnIdPiso()).to.equal(piso.returnIdPiso());
         expect(answer.returnNumeroPiso()).to.equal(piso.returnNumeroPiso());
         expect(answer.returnDescricaoPiso()).to.equal(piso.returnDescricaoPiso());
-        expect(answer.returnListaDeIdDosPontos().length).to.equal(piso.returnListaDeIdDosPontos().length);
 
     });
  
@@ -106,7 +99,6 @@ describe('PisoRepo', () => {
             domainID: 1,
             numeroPiso: 1,
             descricaoPiso: "Ola",
-            pontos: [],
             save() { return this; }
         } as unknown as IPisoPersistence & Document<any, any, any>;
 
@@ -120,7 +112,6 @@ describe('PisoRepo', () => {
         expect(answer.returnIdPiso()).to.equal(piso.returnIdPiso());
         expect(answer.returnNumeroPiso()).to.equal(piso.returnNumeroPiso());
         expect(answer.returnDescricaoPiso()).to.equal(piso.returnDescricaoPiso());
-        expect(answer.returnListaDeIdDosPontos().length).to.equal(piso.returnListaDeIdDosPontos().length);
 
     });
 
@@ -132,7 +123,6 @@ describe('PisoRepo', () => {
             domainID: 1,
             numeroPiso: 1,
             descricaoPiso: "Ola",
-            pontos: [],
             save() { return this; }
         } as unknown as IPisoPersistence & Document<any, any, any>;
 
@@ -155,7 +145,6 @@ describe('PisoRepo', () => {
             domainID: 1,
             numeroPiso: 1,
             descricaoPiso: "Ola",
-            pontos: [],
             save() { return this; }
         } as unknown as IPisoPersistence & Document<any, any, any>;
 
@@ -163,7 +152,6 @@ describe('PisoRepo', () => {
             domainID: 2,
             numeroPiso: 1,
             descricaoPiso: "Ola",
-            pontos: [],
             save() { return this; }
         } as unknown as IPisoPersistence & Document<any, any, any>;
 

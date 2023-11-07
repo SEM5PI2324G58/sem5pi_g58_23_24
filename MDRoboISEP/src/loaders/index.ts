@@ -66,7 +66,11 @@ export default async ({ expressApp }) => {
     name: 'SalaSchema',
     schema: '../persistence/schemas/SalaSchema',
   };
-
+  const mapaSchema = {
+    // compare with the approach followed in repos and services
+    name: 'MapaSchema',
+    schema: '../persistence/schemas/MapaSchema',
+  };
 
 
   const roleController = {
@@ -161,6 +165,10 @@ export default async ({ expressApp }) => {
     name: config.repos.sala.name,
     path: config.repos.sala.path
   }
+  const mapaRepo = {
+    name: config.repos.mapa.name,
+    path: config.repos.mapa.path
+  }
 
   const roleService = {
     name: config.services.role.name,
@@ -219,7 +227,8 @@ export default async ({ expressApp }) => {
       tipoDispositivoSchema,
       passagemSchema,
       dispositivoSchema,
-      salaSchema
+      salaSchema,
+      mapaSchema
     ],
     controllers: [
       roleController,
@@ -230,7 +239,7 @@ export default async ({ expressApp }) => {
       passagemController,
       dispositivoController,
       salaController,
-      pontoController
+      pontoController,
     ],
     repos: [
       roleRepo,
@@ -242,7 +251,8 @@ export default async ({ expressApp }) => {
       tipoDispositivoRepo,
       passagemRepo,
       dispositivoRepo,
-      salaRepo
+      salaRepo,
+      mapaRepo
     ],
     services: [
       roleService,
@@ -253,7 +263,7 @@ export default async ({ expressApp }) => {
       passagemService,
       dispositivoService,
       salaService,
-      pontoService
+      pontoService,
     ]
   });
   Logger.info('✌️ Schemas, Controllers, Repositories, Services, etc. loaded');
