@@ -34,11 +34,11 @@ describe('passagem domain', function () {
 
 		let pontoMatriz: Ponto[][] = [];
 		pontoMatriz[0] = pontoArray;
-
+		let mapa;
 		let pisoA = Piso.create(
 			{
 				numeroPiso: NumeroPiso.create(0).getValue(),
-				descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: pontoMatriz
+				descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: mapa
 			},
 			IdPiso.create(1).getValue()
 		).getValue();
@@ -46,7 +46,7 @@ describe('passagem domain', function () {
 		let pisoB = Piso.create(
 			{
 				numeroPiso: NumeroPiso.create(0).getValue(),
-				descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: pontoMatriz
+				descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: mapa
 			},
 			IdPiso.create(2).getValue()
 		).getValue();
@@ -72,11 +72,11 @@ describe('passagem domain', function () {
 
 		let pontoMatriz: Ponto[][] = [];
 		pontoMatriz[0] = pontoArray;
-
+		let mapa;
 		let pisoA = Piso.create(
 			{
 				numeroPiso: NumeroPiso.create(0).getValue(),
-				descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: pontoMatriz
+				descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: mapa
 			},
 			IdPiso.create(1).getValue()
 		).getValue();
@@ -84,7 +84,7 @@ describe('passagem domain', function () {
 		let pisoB = Piso.create(
 			{
 				numeroPiso: NumeroPiso.create(0).getValue(),
-				descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: pontoMatriz
+				descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: mapa
 			},
 			IdPiso.create(2).getValue()
 		).getValue();
@@ -112,11 +112,11 @@ describe('passagem domain', function () {
 
 		let pontoMatriz: Ponto[][] = [];
 		pontoMatriz[0] = pontoArray;
-
+		let mapa;
 		let pisoB = Piso.create(
 			{
 				numeroPiso: NumeroPiso.create(0).getValue(),
-				descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: pontoMatriz
+				descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: mapa
 			},
 			IdPiso.create(2).getValue()
 		).getValue();
@@ -148,11 +148,11 @@ describe('passagem domain', function () {
 
 		let pontoMatriz: Ponto[][] = [];
 		pontoMatriz[0] = pontoArray;
-
+		let mapa;
 		let pisoA = Piso.create(
 			{
 				numeroPiso: NumeroPiso.create(0).getValue(),
-				descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: pontoMatriz
+				descricaoPiso: DescricaoPiso.create("Ola").getValue(), mapa: mapa
 			},
 			IdPiso.create(2).getValue()
 		).getValue();

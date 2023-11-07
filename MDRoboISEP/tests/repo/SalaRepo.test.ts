@@ -20,6 +20,7 @@ import CategorizacaoSala from "../../src/domain/sala/CategorizacaoSala";
 import DescricaoSala from "../../src/domain/sala/DescricaoSala";
 import NomeSala from "../../src/domain/sala/NomeSala";
 import { ISalaPersistence } from "../../src/dataschema/ISalaPersistence";
+import { Mapa } from "../../src/domain/mapa/Mapa";
 
 
 describe('PassagemRepo', () => {
@@ -208,7 +209,7 @@ function createAllData(): Promise<Result<any>> {
     interface pisoProps {
         numeroPiso: NumeroPiso;
         descricaoPiso: DescricaoPiso;
-        mapa: Ponto[][];
+        mapa: Mapa;
     }
 
     // criar pontos
@@ -219,7 +220,7 @@ function createAllData(): Promise<Result<any>> {
     let lista = [pontoA,pontoB]
 
     // criar mapa
-    let mapa = [[pontoA,pontoB],[pontoA,pontoB]]
+    let mapa;
 
     // criar props pisos
     let pisoPropsA: pisoProps = {

@@ -15,6 +15,7 @@ import { IdPassagem } from "../../src/domain/passagem/IdPassagem";
 import { IdPiso } from "../../src/domain/piso/IdPiso";
 import IPontoRepo from "../../src/services/IRepos/IPontoRepo";
 import { Document } from 'mongoose';
+import { Mapa } from "../../src/domain/mapa/Mapa";
 
 
 describe('PassagemRepo', () => {
@@ -242,7 +243,7 @@ function createAllData(): Promise<Result<any>> {
     interface pisoProps {
         numeroPiso: NumeroPiso;
         descricaoPiso: DescricaoPiso;
-        mapa: Ponto[][];
+        mapa: Mapa;
     }
 
     // criar pontos
@@ -255,18 +256,18 @@ function createAllData(): Promise<Result<any>> {
     let lista = [pontoA,pontoB,pontoC,pontoD]
 
     // criar mapa
-    let mapa = [[pontoA,pontoB],[pontoC,pontoD]]
+    let mapa ;
 
     // criar props pisos
     let pisoPropsA: pisoProps = {
         numeroPiso: NumeroPiso.create(1).getValue(),
         descricaoPiso: DescricaoPiso.create("Piso 1").getValue(),
-        mapa: mapa as any,
+        mapa: mapa,
     }
     let pisoPropsB: pisoProps = {
         numeroPiso: NumeroPiso.create(1).getValue(),
         descricaoPiso: DescricaoPiso.create("Piso 1").getValue(),
-        mapa: mapa as any,
+        mapa: mapa,
     }
 
     // criar pisos

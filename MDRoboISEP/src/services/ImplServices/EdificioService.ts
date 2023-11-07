@@ -16,10 +16,9 @@ import IPisoRepo from '../IRepos/IPisoRepo';
 import IElevadorRepo from '../IRepos/IElevadorRepo';
 import ISalaRepo from '../IRepos/ISalaRepo';
 import IPassagemRepo from '../IRepos/IPassagemRepo';
-import IPontoRepo from '../IRepos/IPontoRepo';
+import IMapaRepo from '../IRepos/IMapaRepo';
 
 @Service()
-
 export default class EdificioService implements IEdificioService {
   constructor(
       @Inject(config.repos.edificio.name) private edificioRepo : IEdificioRepo,
@@ -27,7 +26,7 @@ export default class EdificioService implements IEdificioService {
       @Inject(config.repos.elevador.name) private elevadorRepo : IElevadorRepo,
       @Inject(config.repos.sala.name) private salaRepo : ISalaRepo,
       @Inject(config.repos.passagem.name) private passagemRepo : IPassagemRepo,
-      @Inject(config.repos.ponto.name) private pontoRepo : IPontoRepo
+      @Inject(config.repos.mapa.name) private mapaRepo : IMapaRepo
   ) {}
 
   public async criarEdificio(edificioDTO: IEdificioDTO): Promise<Result<IEdificioDTO>> {
@@ -175,12 +174,9 @@ export default class EdificioService implements IEdificioService {
       for (let passagem of listaPassagens) {
         await this.passagemRepo.delete(await passagem);
       }
-      let listaPontos = pisos.props.mapa;      
-      for(let i = 0; i < listaPontos.length; i++){
-        for(let j = 0; j < listaPontos[i].length; j++){
-          await this.pontoRepo.delete(listaPontos[i][j]);
-        }
-      }  
+      if(pisos.props.mapa !== undefined && pisos.props.mapa !== null){
+        await this.mapaRepo.delete(pisos.props.mapa);
+      }
       await this.pisoRepo.delete(pisos);
     }
     return Result.ok<IEdificioDTO>(EdificioMap.toDTO(edificio));

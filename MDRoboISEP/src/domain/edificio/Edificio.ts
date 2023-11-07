@@ -22,6 +22,7 @@ interface EdificioProps {
 
 export class Edificio extends AggregateRoot<EdificioProps> {
 
+  /*
   public obterPontoSeguinte(pontoProvided: Ponto, numeroPisoA: number, orientacao: string): Promise<Result<Ponto>> {
 
     let listaPisos = this.props.listaPisos;
@@ -66,7 +67,7 @@ export class Edificio extends AggregateRoot<EdificioProps> {
     }
     return Promise.resolve(Result.fail<Ponto>("Não foi possível obter o ponto seguinte"));
   }
-
+  */
   public returnPisoPeloNumero(numeroPisoA: number): Piso {
     let listaPisos = this.props.listaPisos;
     for (let index = 0; index < listaPisos.length; index++) {
@@ -77,7 +78,7 @@ export class Edificio extends AggregateRoot<EdificioProps> {
     }
     return null;
   }
-
+ /*
   alterarPontosPorSala(pontoProvided: Ponto, nPiso: number, orientacao: string) {
     if (pontoProvided == null || pontoProvided == undefined) {
       return Promise.resolve(Result.fail<boolean>("Ponto não pode ser null"));
@@ -122,7 +123,7 @@ export class Edificio extends AggregateRoot<EdificioProps> {
     return Promise.resolve(Result.ok<boolean>(false));
   }
 
-
+ 
   public alterarPontosPorPassagem(pontoProvided: Ponto, nPiso: number, orientacao: string): Promise<Result<boolean>> {
 
     if (pontoProvided == null || pontoProvided == undefined) {
@@ -168,6 +169,7 @@ export class Edificio extends AggregateRoot<EdificioProps> {
     return Promise.resolve(Result.ok<boolean>(false));
   }
 
+  
   public returnPontoDoPisoEspecifico(abcissa: number, ordenada: number, numeroPiso: number): Promise<Result<Ponto>> {
     let listaPisos = this.props.listaPisos;
     for (let index = 0; index < listaPisos.length; index++) {
@@ -200,7 +202,7 @@ export class Edificio extends AggregateRoot<EdificioProps> {
    * @returns true se existir um ponto no limite, false caso contrário
    */
 
-  public existePontoNoLimite(numeroPiso: number, pontos: Ponto): Promise<Result<boolean>> {
+  /*public existePontoNoLimite(numeroPiso: number, pontos: Ponto): Promise<Result<boolean>> {
 
     if (pontos == null || pontos == undefined) {
       return Promise.resolve(Result.fail<boolean>("Ponto não pode ser null"));
@@ -234,7 +236,7 @@ export class Edificio extends AggregateRoot<EdificioProps> {
 
     return Promise.resolve(Result.ok<boolean>(false));
   }
-
+  */
   private constructor(props: EdificioProps, id: UniqueEntityID) {
     super(props, id);
   }

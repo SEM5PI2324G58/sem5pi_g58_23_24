@@ -23,7 +23,8 @@ describe('piso domain', function () {
 		let descricaoPiso = DescricaoPiso.create("Ola").getValue();
 		let idPiso = IdPiso.create(1).getValue();
 		let numeroPiso = NumeroPiso.create(1).getValue();
-		let pontoArray  : Ponto[][] = [];
+		let mapa;
+		/*let pontoArray  : Ponto[][] = [];
 		pontoArray[0] = [];
 		pontoArray[1] = [];
 		pontoArray[2] = [];
@@ -152,27 +153,29 @@ describe('piso domain', function () {
 			mapa: pontoArray5x5Vazio,
 		}, idPiso).getValue();
 		Container.set ('piso5x5Vazio',piso5x5Vazio);
-
+	*/
+	let piso = Piso.create({
+		numeroPiso: numeroPiso,
+		descricaoPiso: descricaoPiso,
+		mapa: mapa,
+	}, idPiso).getValue();
+	
+	Container.set('piso2x2',piso);
 		
     });
+	
 
 	it('piso é criado com sucesso com descrição', async function () {
 		// Arrange
 		let descricaoPiso = DescricaoPiso.create("Ola").getValue();
 		let idPiso = IdPiso.create(1).getValue();
 		let numeroPiso = NumeroPiso.create(1).getValue();
-		let pontoArray  : Ponto[][] = [];
-		let idPonto = IdPonto.create(1).getValue();
-		let tipoPonto = TipoPonto.create(" ").getValue();
-		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
-		let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
-		pontoArray[0] = []
-		pontoArray[0][0] = ponto;
+		let mapa;
 
 		let pisoOuErro = await Piso.create({
             numeroPiso: numeroPiso,
             descricaoPiso: descricaoPiso,
-            mapa: pontoArray,
+            mapa: mapa,
         }, idPiso);
 
 		assert.strictEqual(pisoOuErro.isSuccess, true);
@@ -183,18 +186,13 @@ describe('piso domain', function () {
 		// Arrange
 		let idPiso = IdPiso.create(1).getValue();
 		let numeroPiso = NumeroPiso.create(1).getValue();
-		let pontoArray  : Ponto[][] = [];
-		let idPonto = IdPonto.create(1).getValue();
-		let tipoPonto = TipoPonto.create(" ").getValue();
-		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
-		let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
-		pontoArray[0] = []
-		pontoArray[0][0] = ponto;
+		let mapa;
+	
 		let descricao = null;
 		let pisoOuErro = await Piso.create({
             numeroPiso: numeroPiso,
             descricaoPiso: null,
-            mapa: pontoArray,
+            mapa: mapa,
         }, idPiso);
 
 		assert.strictEqual(pisoOuErro.isSuccess, true);
@@ -204,23 +202,17 @@ describe('piso domain', function () {
 		// Arrange
 		let descricaoPiso = DescricaoPiso.create("Ola").getValue();
 		let idPiso = IdPiso.create(1).getValue();
-		let pontoArray  : Ponto[][] = [];
-		let idPonto = IdPonto.create(1).getValue();
-		let tipoPonto = TipoPonto.create(" ").getValue();
-		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
-		let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
-		pontoArray[0] = []
-		pontoArray[0][0] = ponto;
+		let mapa;
 		let pisoOuErro = await Piso.create({
             numeroPiso: null,
             descricaoPiso: descricaoPiso,
-            mapa: pontoArray,
+            mapa: mapa,
         }, idPiso);
 
 		assert.strictEqual(pisoOuErro.isFailure, true);
 	});
 
-	it('elevador removido 0,0 0,1 com sucesso', async function () {
+	/*it('elevador removido 0,0 0,1 com sucesso', async function () {
 		// Arrange
 		let piso = Container.get("piso2x2") as Piso;
 
@@ -259,7 +251,7 @@ describe('piso domain', function () {
 		assert.strictEqual(piso.props.mapa[2][1].returnTipoPonto(), "Oeste");
 		assert.strictEqual(piso.props.mapa[2][2].returnTipoPonto(), " ");
 	});
-
+	*/
 	it('atualizarNumeroPiso falha se for undefined', async function () {
 		// Arrange
 		let piso = Container.get("piso2x2") as Piso;
@@ -304,7 +296,7 @@ describe('piso domain', function () {
 		assert.strictEqual(piso.returnDescricaoPiso(), "adeus");
 	});
 
-
+	/*
 	it('Return pontos para passagem oeste', async function () {
 		let piso = Container.get("piso5x5") as Piso;
 		let pontos = piso.returnPontosParaPassagem(0,0,"Oeste");
@@ -402,4 +394,5 @@ describe('piso domain', function () {
 		piso.props.mapa[0][0].toElevador();
 		assert.equal(piso.verificarSeMapaVazio(), false);
 	});
+	*/
 });

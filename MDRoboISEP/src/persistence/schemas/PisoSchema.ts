@@ -19,9 +19,8 @@ const PisoSchema = new mongoose.Schema(
       index: true,
     },
 
-    pontos: {
-      type: [[String]],
-      required: [true, 'Introduz os pontos'],
+    mapa: {
+      type: Number,
       index: true,
     },
 

@@ -20,6 +20,7 @@ import { Elevador } from "../../src/domain/elevador/Elevador";
 import { Sala } from "../../src/domain/sala/Sala";
 import ISalaRepo from "../../src/services/IRepos/ISalaRepo";
 import ISalaDTO from "../../src/dto/ISalaDTO";
+import { Mapa } from "../../src/domain/mapa/Mapa";
 
 describe('SalaService ', () => {
 
@@ -182,7 +183,7 @@ function createAllData(codigoEdificioA: string, numeroPisoA: any): Promise<Resul
     interface pisoProps {
         numeroPiso: NumeroPiso;
         descricaoPiso: DescricaoPiso;
-        mapa: Ponto[][];
+        mapa: Mapa;
     }
 
     // criar props edificios
@@ -205,9 +206,7 @@ function createAllData(codigoEdificioA: string, numeroPisoA: any): Promise<Resul
     let pontoD = undefined;
 
     // criar mapa
-    let mapa: any[][] = [];
-    mapa.push([pontoA, pontoB]);
-    mapa.push([pontoC, pontoD]);
+    let mapa;
 
     // criar props pisos
     let pisoPropsA: pisoProps = {

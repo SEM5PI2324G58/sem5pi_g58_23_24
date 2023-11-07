@@ -59,27 +59,13 @@ describe('ElevadorService ', () => {
         
         for (let i = 0; i < 2; i++){
             //Criar o mapa
-            let pontoArray: Ponto[][] = []
-
-
-            for(let j = 0 ; j<2 ; j++){
-                pontoArray[j] = []
-                for(let k = 0; k<2;k++){
-                    
-                    let idPonto = IdPonto.create(1).getValue();
-                    let tipoPonto = TipoPonto.create(" ").getValue();
-                    let coordenadas = Coordenadas.create({abscissa: j , ordenada: k }).getValue();
-                    let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
-                    
-                    pontoArray[j][k] = ponto;
-                }
-            }
+            let mapa;
                 
     
             let piso = Piso.create({
                 numeroPiso:  NumeroPiso.create(i+1).getValue(),
                 descricaoPiso: DescricaoPiso.create("Ola").getValue(),
-                mapa: pontoArray,
+                mapa: mapa,
             }, IdPiso.create(i+1).getValue()).getValue();
 
             // adicionar para a criação do elevador

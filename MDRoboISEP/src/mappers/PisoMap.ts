@@ -13,6 +13,9 @@ import { DescricaoPiso } from "../domain/piso/DescricaoPiso";
 import { IdPiso } from "../domain/piso/IdPiso";
 import { Ponto } from "../domain/ponto/Ponto"
 import PontoRepo from "../repos/PontoRepo";
+import MapaRepo from "../repos/MapaRepo";
+import { MapaMap } from "./MapaMap";
+import { Mapa } from "../domain/mapa/Mapa";
 
 
 export class PisoMap extends Mapper<Piso> {
@@ -44,16 +47,9 @@ export class PisoMap extends Mapper<Piso> {
 
     
     
-    if  (raw.pontos !== null && raw.pontos !== undefined){
-    let ponto: Ponto [][] = [];
-    const repo = Container.get(PontoRepo);
-      for (let i = 0; i < raw.pontos.length; i++) {
-        ponto[i]=[];
-        for (let j = 0; j < raw.pontos[i].length; j++) {
-          ponto[i][j] = await repo.findByDomainId(raw.pontos[i][j]);
-        }
-      }   
-      dadosPiso.mapa = ponto;   
+    if  (raw.mapa !== null && raw.mapa !== undefined){
+      const repo = Container.get(MapaRepo);
+      dadosPiso.mapa = await repo.findByDomainId(raw.mapa);    
     }
     const userOrError = Piso.create(
       dadosPiso, IdPisoError.getValue())
@@ -68,9 +64,11 @@ export class PisoMap extends Mapper<Piso> {
     let dadosPiso : any = {
       domainID: piso.returnIdPiso(),
       numeroPiso: piso.returnNumeroPiso(),
-      pontos: piso.returnListaDeIdDosPontos(),        
     }
 
+    if(piso.props.mapa !== undefined && piso.props.mapa !== null){
+      dadosPiso.mapa = piso.returnIdMapa();
+    }
     
     if(piso.props.descricaoPiso !== undefined && piso.props.descricaoPiso !== null){
       dadosPiso.descricaoPiso = piso.returnDescricaoPiso();

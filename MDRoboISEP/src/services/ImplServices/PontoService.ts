@@ -14,6 +14,8 @@ import { Passagem } from "../../domain/passagem/Passagem";
 import { Sala } from "../../domain/sala/Sala";
 import IElevadorRepo from "../IRepos/IElevadorRepo";
 import { Elevador } from "../../domain/elevador/Elevador";
+
+
 @Service()
 export default class PontoService implements IPontoService{
     constructor(
@@ -24,7 +26,7 @@ export default class PontoService implements IPontoService{
         @Inject(config.repos.passagem.name) private passagemRepo: IPassagemRepo,
         
     ) {}
-
+    /*
     public async carregarMapa(informacaoPiso : ICarregarMapaDTO) : Promise<Result<ICarregarMapaDTO>>{
 
 
@@ -260,4 +262,5 @@ export default class PontoService implements IPontoService{
 
         return listaPontos;
     }
+    */
 }

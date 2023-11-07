@@ -141,25 +141,14 @@ describe('PisoController', () => {
             listaPisos: [],
         };
 
-		let pontoArray  : Ponto[][] = [];
-		let idPonto = IdPonto.create(1).getValue();
-		let tipoPonto = TipoPonto.create(" ").getValue();
-		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
-		let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
-		pontoArray[0] = []
-		pontoArray[0][0] = ponto;
-
         let edificio = Edificio.create(edificioProps,Codigo.create('ED01').getValue()).getValue();
         
         let edificioRepoInstance = Container.get("EdificioRepo");
-        let pontoRepoInstance = Container.get("PontoRepo");
         let pisoRepoInstance = Container.get("PisoRepo");
         sinon.stub(pisoRepoInstance, "save").returns(Promise.resolve(null));
-        sinon.stub(pontoRepoInstance, "save").returns(Promise.resolve(null));
         sinon.stub(edificioRepoInstance, "save").returns(Promise.resolve(null));
         sinon.stub(pisoRepoInstance, "getMaxId").returns(Promise.resolve(1));
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(edificio));
-        sinon.stub(pontoRepoInstance, "getMaxId").returns(Promise.resolve(0));
 
 
         let pisoServiceInstance = Container.get("PisoService");
@@ -186,13 +175,7 @@ describe('PisoController', () => {
             "numeroPiso": 1,
             "descricaoPiso": "ola",
         };
-        let idPonto = IdPonto.create(1).getValue();
-		let tipoPonto = TipoPonto.create(" ").getValue();
-		let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
-		let pontoArray  : Ponto[][] = [];
-        let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
-		pontoArray[0] = []
-		pontoArray[0][0] = ponto;
+        
         let listaPisos : number[] = [];
         
         let edificioDoc  = {
@@ -205,22 +188,14 @@ describe('PisoController', () => {
             save() { return this; }
         }  as unknown as IEdificioPersistence & Document<any, any, any>;
 
-        let pontoId  : String[][] = [[]];
-        pontoId[0][0] = pontoArray[0][0].id.toString()
+        let mapa
 
         const pisoDTO = {
             domainID: 1,
             numeroPiso: 1,
             descricaoPiso: "Ola", 
-            pontos: pontoId,
+            mapa: mapa,
         } as IPisoPersistence;
-
-        const pontoDTO = {
-            domainID: 1,
-            tipoPonto: " ",
-            ordenada: 0,
-            abscissa: 0,
-        } as IPontoPersistence;
 
 
 
@@ -243,9 +218,6 @@ describe('PisoController', () => {
         sinon.stub(pisoSchemaInstance, "findOne").returns(null);
         sinon.stub(pisoSchemaInstance, "create").returns(pisoDTO as IPisoPersistence);
         sinon.stub(edificioSchemaInstance, "create").returns(edificioDoc as IEdificioPersistence);
-        sinon.stub(pontoSchemaInstance, "findOne").returns(null);
-        sinon.stub(pontoSchemaInstance, "create").returns(pontoDTO as IPontoPersistence);
-        sinon.stub(pontoSchemaInstance, "find").returns(null);
 
         let pisoServiceInstance = Container.get("PisoService");
         const pisoServiceSpy = sinon.spy(pisoServiceInstance,'criarPiso');
@@ -326,11 +298,11 @@ describe('PisoController', () => {
             descricao:DescricaoEdificio.create('Edificio A').getValue(),
             listaPisos: [],
         };
-
+        let mapa;
         let piso = Piso.create({
             numeroPiso:  NumeroPiso.create(1).getValue(),
             descricaoPiso: DescricaoPiso.create("Ola").getValue(),
-            mapa: [],
+            mapa: mapa,
         }, IdPiso.create(1).getValue()).getValue();
 
         const edificio = Edificio.create(edificioProps,Codigo.create('as1').getValue()).getValue();
@@ -374,11 +346,12 @@ describe('PisoController', () => {
         };
         let next: Partial<NextFunction> = () => {};
 
+        let mapa;
         const pisoPersistence = {
             domainID: 1,
             numeroPiso: 1,
             descricaoPiso: "Ola",
-            pontos: []
+            mapa: mapa
         } as IPisoPersistence;
 
         const edificioPersistence = {
@@ -486,17 +459,17 @@ describe('PisoController', () => {
             descricao:DescricaoEdificio.create('Edificio A').getValue(),
             listaPisos: [],
         };
-
+        let mapa;
         let piso = Piso.create({
             numeroPiso:  NumeroPiso.create(0).getValue(),
             descricaoPiso: DescricaoPiso.create("Ola").getValue(),
-            mapa: [],
+            mapa: mapa,
         }, IdPiso.create(1).getValue()).getValue();
 
         let piso2 = Piso.create({
             numeroPiso:  NumeroPiso.create(1).getValue(),
             descricaoPiso: DescricaoPiso.create("ola").getValue(),
-            mapa: [],
+            mapa: mapa,
         }, IdPiso.create(1).getValue()).getValue();
 
         const edificio = Edificio.create(edificioProps,Codigo.create('ED01').getValue()).getValue();
@@ -542,12 +515,12 @@ describe('PisoController', () => {
             json: sinon.spy()
         };
         let next: Partial<NextFunction> = () => {};
-
+        let mapa;
         const pisoPersistence = {
             domainID: 1,
             numeroPiso: 0,
             descricaoPiso: "Ola",
-            pontos: [],
+            mapa: mapa,
             save() { return this; }
         } as unknown as IPisoPersistence & Document<any, any, any>;
 

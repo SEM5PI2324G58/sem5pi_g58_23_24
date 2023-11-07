@@ -53,11 +53,11 @@ describe('ElevadorRepo', () => {
             let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
             pontoArray[0] = []
             pontoArray[0][0] = ponto;
-
+            let mapa;
             pisosServidos.push(Piso.create({
                 numeroPiso: numeroPiso,
                 descricaoPiso: descricaoPiso,
-                mapa: pontoArray,
+                mapa: mapa,
             }, idPiso).getValue())
         }
 

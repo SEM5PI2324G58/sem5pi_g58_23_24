@@ -32,14 +32,13 @@ describe('sala domain', function () {
         pontoArray[1] = ponto;
 
 
-        let pontoMatriz: Ponto[][] = [];
-        pontoMatriz[0] = pontoArray;
+        let mapa;
 
         let pisoA = Piso.create(
             {
                 numeroPiso: NumeroPiso.create(0).getValue(),
                 descricaoPiso: DescricaoPiso.create("Ola").getValue(),
-                mapa: pontoMatriz
+                mapa: mapa
             },
             IdPiso.create(1).getValue()
         ).getValue();
@@ -93,14 +92,13 @@ describe('sala domain', function () {
         pontoArray[1] = ponto;
 
 
-        let pontoMatriz: Ponto[][] = [];
-        pontoMatriz[0] = pontoArray;
+        let mapa;
 
         let pisoA = Piso.create(
             {
                 numeroPiso: NumeroPiso.create(0).getValue(),
                 descricaoPiso: DescricaoPiso.create("Ola").getValue(),
-                mapa: pontoMatriz
+                mapa: mapa
             },
             IdPiso.create(1).getValue()
         ).getValue();
@@ -127,14 +125,13 @@ describe('sala domain', function () {
         pontoArray[1] = ponto;
 
 
-        let pontoMatriz: Ponto[][] = [];
-        pontoMatriz[0] = pontoArray;
+        let mapa;
 
         let pisoA = Piso.create(
             {
                 numeroPiso: NumeroPiso.create(0).getValue(),
                 descricaoPiso: DescricaoPiso.create("Ola").getValue(),
-                mapa: pontoMatriz
+                mapa: mapa
             },
             IdPiso.create(1).getValue()
         ).getValue();
@@ -162,14 +159,13 @@ describe('sala domain', function () {
         ponto = await newDummyPonto(2, 2, 3);
         pontoArray[2] = ponto;
 
-        let pontoMatriz: Ponto[][] = [];
-        pontoMatriz[0] = pontoArray;
+        let mapa;
 
         let pisoA = Piso.create(
             {
                 numeroPiso: NumeroPiso.create(0).getValue(),
                 descricaoPiso: DescricaoPiso.create("Ola").getValue(),
-                mapa: pontoMatriz
+                mapa: mapa
             },
             IdPiso.create(1).getValue()
         ).getValue();

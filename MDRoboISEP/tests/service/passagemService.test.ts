@@ -27,6 +27,7 @@ import { IdPiso } from "../../src/domain/piso/IdPiso";
 import { IdPonto } from "../../src/domain/ponto/IdPonto";
 import { IPassagemPersistence } from "../../src/dataschema/IPassagemPersistence";
 import IPisoRepo from "../../src/services/IRepos/IPisoRepo";
+import { Mapa } from "../../src/domain/mapa/Mapa";
 
 describe('PassagemService ', () => {
 
@@ -54,18 +55,18 @@ describe('PassagemService ', () => {
         };
         
         const edificio2 = Edificio.create(edificioProps2,Codigo.create('COD1').getValue()).getValue();
-        
+        let mapa;
         // Criar 2 pisos
         let piso1 = Piso.create({
             numeroPiso:  NumeroPiso.create(1).getValue(),
             descricaoPiso: DescricaoPiso.create("Ola").getValue(),
-            mapa: [],
+            mapa: mapa,
         }, IdPiso.create(1).getValue()).getValue();
 
         let piso2 = Piso.create({
             numeroPiso:  NumeroPiso.create(1).getValue(),
             descricaoPiso: DescricaoPiso.create("Ola").getValue(),
-            mapa: [],
+            mapa: mapa,
         }, IdPiso.create(2).getValue()).getValue();
 
         edificio1.addPiso(piso1);
@@ -465,7 +466,7 @@ function createAllData(codigoEdificioA: string, numeroPisoA: any, codigoEdificio
     interface pisoProps {
         numeroPiso: NumeroPiso;
         descricaoPiso: DescricaoPiso;
-        mapa: Ponto[][];
+        mapa: Mapa;
     }
 
     // criar props edificios
@@ -497,10 +498,7 @@ function createAllData(codigoEdificioA: string, numeroPisoA: any, codigoEdificio
     let pontoD = undefined;
 
     // criar mapa
-    let mapa: any[][] = [];
-    mapa.push([pontoA, pontoB]);
-    mapa.push([pontoC, pontoD]);
-
+    let mapa;
     // criar props pisos
     let pisoPropsA: pisoProps = {
         numeroPiso: NumeroPiso.create(numeroPisoA).getValue(),
