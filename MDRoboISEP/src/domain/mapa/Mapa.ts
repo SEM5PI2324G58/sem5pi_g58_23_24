@@ -11,9 +11,9 @@ import { CoordenadasSala } from "./CoordenadasSala";
 
 interface pisoProps {
     mapa: TipoPonto[][];
-    coordenadasPassagem: CoordenadasPassagem[];
-    coordenadasElevador: CoordenadasElevador;
-    coordenadasSala: CoordenadasSala[]; 
+    coordenadasPassagem?: CoordenadasPassagem[];
+    coordenadasElevador?: CoordenadasElevador;
+    coordenadasSala?: CoordenadasSala[]; 
 
 }
 
@@ -33,11 +33,8 @@ export class Mapa extends AggregateRoot<pisoProps> {
     ];
     
     let guard = Guard.againstNullOrUndefined(id,'Id Mapa');
-    let guard1 = Guard.againstNullOrUndefined(guardedProps[0].argument,guardedProps[0].argumentName);
-    let guard3 = Guard.againstNullOrUndefined(guardedProps[2].argument,guardedProps[2].argumentName);
-    let guard4 = Guard.againstNullOrUndefined(guardedProps[3].argument,guardedProps[3].argumentName);
 
-    let guardResult = Guard.combine([guard,guard1,guard3,guard4]);
+    let guardResult = Guard.combine([guard]);
 
     if (!guardResult.succeeded) {
       return Result.fail<Mapa>(guardResult.message)
@@ -212,16 +209,17 @@ export class Mapa extends AggregateRoot<pisoProps> {
   }
 
   public verificarSeMapaVazio() : boolean{
+    if(!this.props.mapa === false) return true;
     let x = this.props.mapa.length;
     let y = this.props.mapa[0].length;
     for (let i = 0; i < x; i++) {
       for (let j = 0; j < y ; j++) {
         if(this.props.mapa[i][j].returnTipoPonto() !== " "){
-          return false;
+          return true;
         }
       }
     }
-    return true;
+    return false;
   }
 
   public criacaoBermasPiso() : TipoPonto[]{
@@ -298,13 +296,6 @@ export class Mapa extends AggregateRoot<pisoProps> {
 
   public carregarMapaComBermas(){
 
-    for(let i = 0; i < this.returnDimensaoX(); i++){
-      this.props.mapa = [];
-      for(let j = 0; j < this.returnDimensaoY(); j++){
-          this.props.mapa[i][j] = TipoPonto.create(" ").getValue();
-      }
-    }
-
     let x = this.props.mapa[0].length - 1;
     let y = this.props.mapa.length - 1;
 
@@ -362,30 +353,45 @@ export class Mapa extends AggregateRoot<pisoProps> {
     yCoordInf = ordenadaA;
     }
     this.toParedeNorteOeste(xCoordSup,yCoordSup);
-    this.toVazio(xCoordInf,yCoordInf);
     this.carregarCoordenadasSala(nome, xCoordSup, yCoordSup, xCoordInf, yCoordInf, abcissaPorta,
       ordenadaPorta, orientacaoPorta);
 
     this.toPorta(abcissaPorta,ordenadaPorta);
 
     for(let i = xCoordSup + 1; i <= xCoordInf; i++){
-      if(i !== abcissaPorta && yCoordSup != ordenadaPorta){
+      if(!(i === abcissaPorta && yCoordSup === ordenadaPorta)){
+        if(this.props.mapa[i][yCoordSup].returnTipoPonto() === 'Oeste'){
+          this.toParedeNorteOeste(i,yCoordSup);
+        }else{
         this.toParedeNorte(i,yCoordSup);
+        }
       }else{
-        this.toPortaNorte(abcissaPorta,ordenadaPorta);
+        if(this.props.mapa[i][yCoordSup].returnTipoPonto() === 'Oeste'){
+          this.toPortaNorteOeste(abcissaPorta,ordenadaPorta);
+        }else{
+          this.toPortaNorte(abcissaPorta,ordenadaPorta);
+        }
       }
     }
 
     for(let i = xCoordSup; i <= xCoordInf; i++){
-      if(i !== abcissaPorta && yCoordInf + 1 !== ordenadaPorta){
-        this.toParedeNorte(i,yCoordInf + 1);
+      if(!(i === abcissaPorta && yCoordInf + 1 === ordenadaPorta)){
+        if(this.props.mapa[i][yCoordInf + 1].returnTipoPonto() === 'Oeste'){
+          this.toParedeNorteOeste(i,yCoordInf + 1);
+        }else{
+          this.toParedeNorte(i,yCoordInf + 1);
+        }
       }else{
-        this.toPortaNorte(abcissaPorta,ordenadaPorta);
+        if(this.props.mapa[i][yCoordInf + 1].returnTipoPonto() === 'Oeste'){
+          this.toPortaNorteOeste(abcissaPorta,ordenadaPorta);
+        }else{
+          this.toPortaNorte(abcissaPorta,ordenadaPorta);
+        }
       }
     }
 
     for(let i = yCoordSup + 1; i <= yCoordInf; i++){
-      if(xCoordSup !== abcissaPorta && i !== ordenadaPorta){
+      if(!(xCoordSup === abcissaPorta && i === ordenadaPorta)){
         this.toParedeOeste(xCoordSup,i);
       }else{
         this.toPortaOeste(abcissaPorta,ordenadaPorta);
@@ -393,7 +399,7 @@ export class Mapa extends AggregateRoot<pisoProps> {
     }
 
     for(let i = yCoordSup; i <= yCoordInf; i++){
-      if(xCoordInf + 1 !== abcissaPorta && i !== ordenadaPorta){
+      if(!(xCoordInf + 1 === abcissaPorta && i === ordenadaPorta)){
         if(this.props.mapa[xCoordInf + 1][i].returnTipoPonto() === 'Norte'){
           this.toParedeNorteOeste(xCoordInf + 1,i);
         }else{
@@ -445,10 +451,16 @@ export class Mapa extends AggregateRoot<pisoProps> {
   }
 
   public carregarCoordenadasPassagem(id:number, abcissaSup : number, ordenadaSup : number, abcissaInf : number, ordenadaInf, orientacao : string){
+    if (this.props.coordenadasPassagem === undefined || this.props.coordenadasPassagem === null){
+      this.props.coordenadasPassagem = [];
+    }
     this.props.coordenadasPassagem.push(CoordenadasPassagem.create({id: id, abcissaSup: abcissaSup, ordenadaSup: ordenadaSup, abcissaInf : abcissaInf, ordenadaInf : ordenadaInf,orientacao: orientacao}).getValue());
   }
 
   public carregarCoordenadasSala(nome : string, abcissaA : number, ordenadaA : number, abcissaB : number, ordenadaB : number, abcissaPorta : number, ordenadaPorta : number, orientacaoPorta : string){
+    if(this.props.coordenadasSala === undefined || this.props.coordenadasSala === null){
+      this.props.coordenadasSala = [];
+    }
     this.props.coordenadasSala.push(CoordenadasSala.create({nome: nome, abcissaA: abcissaA, ordenadaA: ordenadaA, abcissaB: abcissaB, ordenadaB: ordenadaB, abcissaPorta: abcissaPorta, ordenadaPorta: ordenadaPorta, orientacaoPorta: orientacaoPorta}).getValue());
   }
 }

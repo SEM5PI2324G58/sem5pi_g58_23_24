@@ -5,13 +5,14 @@ import IEdificioRepo from "../IRepos/IEdificioRepo";
 import ICarregarMapaDTO from "../../dto/ICarregarMapaDTO";
 import { Result } from "../../core/logic/Result";
 import { Mapa } from "../../domain/mapa/Mapa";
-import { TipoPonto } from "../../domain/ponto/TipoPonto";
+import { TipoPonto } from "../../domain/mapa/TipoPonto";
 import { Elevador } from "../../domain/elevador/Elevador";
 import { Piso } from "../../domain/piso/Piso";
 import ISalaRepo from "../IRepos/ISalaRepo";
 import { Sala } from "../../domain/sala/Sala";
 import IPassagemRepo from "../IRepos/IPassagemRepo";
 import { Edificio } from "../../domain/edificio/Edificio";
+import { IdMapa } from "../../domain/mapa/IdMapa";
 
 @Service()
 export default class MapaService implements MapaService{
@@ -35,10 +36,16 @@ export default class MapaService implements MapaService{
         let piso = pisoOrError.getValue();
         
         let mapa; // Alterar para Mapa
-        if(mapa !== null && mapa !== undefined){
+        if(mapa !== null && mapa !== undefined && mapa.verificarSeMapaVazio() === false){
             return Result.fail<ICarregarMapaDTO>("O mapa já tem algo carregado."); // Ainda não implementado.
         }
-
+        let mapaTipoPonto : TipoPonto[][] = [];
+        for(let i = 0; i <= edificio.returnDimensaoX(); i++){
+            for(let j = 0; j <= edificio.returnDimensaoY(); j++){
+                mapaTipoPonto[i][j] = TipoPonto.create(" ").getValue();
+            }
+        }
+        mapa = Mapa.create({mapa:mapaTipoPonto}, IdMapa.create(await this.mapaRepo.getMaxId() + 1).getValue()).getValue();
         mapa.carregarMapaComBermas();
     
         // Elevador
