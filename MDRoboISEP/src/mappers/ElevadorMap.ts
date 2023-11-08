@@ -51,13 +51,6 @@ export class ElevadorMap extends Mapper<Elevador>{
 
         dadosElevador.pisosServidos = pisosServido;
 
-        let pontos: Ponto[] = [];
-        for (let i = 0; i< raw.pontos.length; i++){
-            pontos[i] = await pontoRepo.findByDomainId(raw.pontos[i]);
-        }
-        
-        dadosElevador.pontos = pontos;
-
         if(raw.marca !== null && raw.marca !== undefined){
             const marcaOrError = MarcaElevador.create(raw.marca);     
             dadosElevador.marca = marcaOrError.getValue();
@@ -88,7 +81,6 @@ export class ElevadorMap extends Mapper<Elevador>{
         let dadosElevador : any ={
             domainId: elevador.returnIdElevador(),
             pisosServidos: elevador.returnIdPisosServidos(),
-            pontos: elevador.returnIdPontos(),
         }
         
         if(elevador.props.marca !== undefined && elevador.props.marca !== null){
@@ -106,6 +98,5 @@ export class ElevadorMap extends Mapper<Elevador>{
 
         return dadosElevador;
 
-        
     }
 }

@@ -35,9 +35,6 @@ describe('ElevadorRepo', () => {
         let modeloElevador = ModeloElevador.create('123').getValue();
         let numeroSerieElevador = NumeroSerieElevador.create('123').getValue();
         let descricaoElevador = DescricaoElevador.create('123').getValue();
-		
-        //Criar array de pontos vazios
-        let pontos: Ponto[] = [];
 
         // Criar 2 pisos
         let pisosServidos: Piso[]=[];
@@ -63,7 +60,6 @@ describe('ElevadorRepo', () => {
 
         let elevador = Elevador.create({
             pisosServidos: pisosServidos,
-            pontos: pontos,
             marca: marcaElevador,
             modelo: modeloElevador,
             numeroSerie: numeroSerieElevador,
@@ -118,7 +114,6 @@ describe('ElevadorRepo', () => {
 
         expect(answer.returnIdElevador()).to.equal(elevador.returnIdElevador());
         expect(answer.returnIdPisosServidos()).to.deep.equal(elevador.returnIdPisosServidos());
-        expect(answer.returnIdPontos()).to.deep.equal(elevador.returnIdPontos());
         expect(answer.returnMarca()).to.equal(elevador.returnMarca());
         expect(answer.returnModelo()).to.equal(elevador.returnModelo());
         expect(answer.returnNumeroSerie()).to.equal(elevador.returnNumeroSerie());
