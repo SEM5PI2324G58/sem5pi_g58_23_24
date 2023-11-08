@@ -27,11 +27,8 @@ export default ({ mongoConnection, schemas, controllers, repos, services}: {
       Container.set(m.name, repoInstance);
     });
     services.forEach(m => {
-      console.log(m.path);
       let serviceClass = require(m.path).default;
-      console.log(serviceClass);
       let serviceInstance = Container.get(serviceClass)
-      console.log(serviceInstance);
       Container.set(m.name, serviceInstance);
       });
     controllers.forEach(m => {
