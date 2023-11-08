@@ -75,24 +75,8 @@ export class PassagemMap extends Mapper<Passagem> {
 
   public static async toDomain(raw: any): Promise<Passagem> {
     //criar lista de pontos
-    let listaPonto: Ponto[] = [];
     if (raw instanceof Passagem) {
       return raw;
-    }
-    if (raw.listaPontos !== null && raw.listaPontos !== undefined && raw.listaPontos.length > 0) {
-      const repoPonto = Container.get(PontoRepo);
-      for (let i = 0; i < raw.listaPontos.length; i++) {
-        if (raw.listaPontos[i] === null || raw.listaPontos[i] === undefined) {
-          listaPonto.push(undefined);
-        }
-
-        else {
-          listaPonto[i] = await repoPonto.findByDomainId(raw.listaPontos[i]);
-          if (listaPonto[i] === null) {
-            return null;
-          }
-        }
-      }
     }
 
     let id = IdPassagem.create(raw.domainID).getValue();
@@ -108,7 +92,6 @@ export class PassagemMap extends Mapper<Passagem> {
     pisoB = await repoPiso.findByDomainId(raw.pisoB);
 
     const passagemOrError = Passagem.create({
-      listaPontos: listaPonto,
       pisoA: pisoA,
       pisoB: pisoB,
     }, id);
@@ -118,22 +101,8 @@ export class PassagemMap extends Mapper<Passagem> {
 
   public static toPersistence(passagem: Passagem): any {
 
-    //criar lista de number com os ids dos pontos
-    let listaPontos: number[] = [];
-    //passar os id dos pontos para a lista
-    for (let index = 0; index < passagem.props.listaPontos.length; index++) {
-      const element = passagem.props.listaPontos[index];
-      if (element === null || element === undefined) {
-        listaPontos.push(undefined);
-      }
-      else {
-        listaPontos.push(element.returnIdPonto());
-      }
-    }
-
     let dadosPassagem = {
       domainID: Number(passagem.id.toValue()),
-      listaPontos: listaPontos,
       pisoA: passagem.props.pisoA.returnIdPiso(),
       pisoB: passagem.props.pisoB.returnIdPiso(),
     } as unknown as IPassagemPersistence

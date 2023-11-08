@@ -13,10 +13,6 @@ import { Elevador } from '../../src/domain/elevador/Elevador';
 import { DescricaoPiso } from '../../src/domain/piso/DescricaoPiso';
 import { NumeroPiso } from '../../src/domain/piso/NumeroPiso';
 import { Piso } from '../../src/domain/piso/Piso';
-import { Coordenadas } from '../../src/domain/ponto/Coordenadas';
-import { IdPonto } from '../../src/domain/ponto/IdPonto';
-import { Ponto } from '../../src/domain/ponto/Ponto';
-import { TipoPonto } from '../../src/domain/ponto/TipoPonto';
 import { Passagem } from '../../src/domain/passagem/Passagem';
 import IEdificioRepo from '../../src/services/IRepos/IEdificioRepo';
 import IPassagemRepo from '../../src/services/IRepos/IPassagemRepo';
@@ -24,6 +20,7 @@ import { IPassagemPersistence } from '../../src/dataschema/IPassagemPersistence'
 import IListarPassagemDTO from '../../src/dto/IListarPassagemDTO';
 import { IdPiso } from '../../src/domain/piso/IdPiso';
 import { Mapa } from '../../src/domain/mapa/Mapa';
+import { IdPassagem } from '../../src/domain/passagem/IdPassagem';
 
 
 describe('PassagemController', () => {
@@ -45,16 +42,10 @@ describe('PassagemController', () => {
             mapa: mapa,
         }, IdPiso.create(2).getValue()).getValue();
 
-        let idPonto = IdPonto.create(1).getValue();
-        let tipoPonto = TipoPonto.create(" ").getValue();
-        let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
-        let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
-
         let passagem = Passagem.create({
-            listaPontos: [ponto,ponto,ponto,ponto],
             pisoA: piso1,
             pisoB: piso2,
-        }, IdPonto.create(1).getValue()).getValue();
+        }, IdPassagem.create(1).getValue()).getValue();
 
         Container.set("Piso1", piso1);
         Container.set("Piso2", piso2);
@@ -228,20 +219,9 @@ describe('PassagemController', () => {
         const edificioB = data.getValue().edificioB
         const pisoA = data.getValue().pisoA
         const pisoB = data.getValue().pisoB
-        const pontoA = data.getValue().pontoA
-        const pontoB = data.getValue().pontoB
-        const pontoC = data.getValue().pontoC
-        const pontoD = data.getValue().pontoD
-
-        let listaPontos: any[] = [];
-        listaPontos.push(pontoA);
-        listaPontos.push(pontoB);
-        listaPontos.push(pontoC);
-        listaPontos.push(pontoD);
 
         let passagemPersistence = {
             domainID: 1,
-            listaPontos: listaPontos,
             pisoA: pisoA,
             pisoB: pisoB,
         } as IPassagemPersistence;
@@ -363,16 +343,9 @@ describe('PassagemController', () => {
         let body = {
         };
         
-        let pontosList : number[] = [];
-        let ponto: number ;
-        pontosList.push(ponto);
-        pontosList.push(ponto);
-        pontosList.push(ponto);
-        pontosList.push(ponto);
         
         const passagemPersistence = {
             domainID: 1,
-            listaPontos: pontosList,
             pisoA: 1,
             pisoB: 2,
         } as IPassagemPersistence;
@@ -438,15 +411,6 @@ function createAllData(codigoEdificioA: string, numeroPisoA: number, codigoEdifi
         descricaoPiso: DescricaoPiso;
         mapa: Mapa;
     }
-    interface pontoProps {
-        coordenadas: Coordenadas;
-        tipoPonto: TipoPonto;
-    }
-    interface coordenadaProps {
-        abscissa: number;
-        ordenada: number;
-    }
-
 
     // criar props edificios
     let edificioPropsA: edificioPropsA = {
@@ -469,48 +433,6 @@ function createAllData(codigoEdificioA: string, numeroPisoA: number, codigoEdifi
     // criar edificios
     let edificioA = Edificio.create(edificioPropsA, codigoEdificio).getValue();
     let edificioB = Edificio.create(edificiosPropsB, codigoEdificio).getValue();
-
-    // criar props pontos
-    let coordenadasA: coordenadaProps = {
-        abscissa: abcissaA,
-        ordenada: ordenadaA,
-    }
-    let coordenadasB: coordenadaProps = {
-        abscissa: abcissaB,
-        ordenada: ordenadaB,
-    }
-    let coordenadasC: coordenadaProps = {
-        abscissa: abcissaA,
-        ordenada: ordenadaA + 1,
-    }
-    let coordenadasD: coordenadaProps = {
-        abscissa: abcissaA + 1,
-        ordenada: ordenadaA,
-    }
-
-    // criar props pontos
-    let pontoPropsA: pontoProps = {
-        coordenadas: Coordenadas.create(coordenadasA).getValue(),
-        tipoPonto: TipoPonto.create("Norte").getValue(),
-    }
-    let pontoPropsB: pontoProps = {
-        coordenadas: Coordenadas.create(coordenadasB).getValue(),
-        tipoPonto: TipoPonto.create("Norte").getValue(),
-    }
-    let pontoPropsC: pontoProps = {
-        coordenadas: Coordenadas.create(coordenadasC).getValue(),
-        tipoPonto: TipoPonto.create("Norte").getValue(),
-    }
-    let pontoPropsD: pontoProps = {
-        coordenadas: Coordenadas.create(coordenadasD).getValue(),
-        tipoPonto: TipoPonto.create("Norte").getValue(),
-    }
-
-    // criar pontos
-    let pontoA = Ponto.create(pontoPropsA).getValue();
-    let pontoB = Ponto.create(pontoPropsB).getValue();
-    let pontoC = Ponto.create(pontoPropsC).getValue();
-    let pontoD = Ponto.create(pontoPropsD).getValue();
 
     // criar mapa
     let mapa;
@@ -535,8 +457,7 @@ function createAllData(codigoEdificioA: string, numeroPisoA: number, codigoEdifi
     edificioA.addPiso(pisoA);
     edificioB.addPiso(pisoB);
 
-    if (edificioA == null || edificioB == null || pisoA == null || pisoB == null || pontoA == null || pontoB == null
-        || pontoC == null || pontoD == null) {
+    if (edificioA == null || edificioB == null || pisoA == null || pisoB == null) {
         return Promise.resolve(Result.fail<void>("Erro ao criar dados de test"));
     }
 
@@ -545,11 +466,6 @@ function createAllData(codigoEdificioA: string, numeroPisoA: number, codigoEdifi
         "edificioA": edificioA,
         "edificioB": edificioB,
         "pisoA": pisoA,
-        "pisoB": pisoB,
-        "pontoA": pontoA,
-        "pontoB": pontoB,
-        "pontoC": pontoC,
-        "pontoD": pontoD,
+        "pisoB": pisoB
     }));
-
 }

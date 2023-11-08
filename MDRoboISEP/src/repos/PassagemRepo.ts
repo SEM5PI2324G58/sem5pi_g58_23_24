@@ -65,19 +65,7 @@ export default class PassagemRepo implements IPassagemRepo {
         return PassagemMap.toDomain(passagemCreated);
       } else {
         passagemDocument.domainID = Number(passagem.id.toValue());
-        const listaPontos = [];
-        for (let index = 0; index < passagem.props.listaPontos.length; index++) {
-          const element = passagem.props.listaPontos[index];
-          if (element != null) {
-            listaPontos.push(element.id.toString());
-          }
-          else {
-            listaPontos.push(element);
-          }
-        }
-        passagemDocument.listaPontos = listaPontos;
         await passagemDocument.save();
-
         return passagem;
       }
     } catch (err) {

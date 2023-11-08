@@ -15,7 +15,7 @@ import { Sala } from "../../domain/sala/Sala";
 import IElevadorRepo from "../IRepos/IElevadorRepo";
 import { Elevador } from "../../domain/elevador/Elevador";
 
-
+/*
 @Service()
 export default class PontoService implements IPontoService{
     constructor(
@@ -262,5 +262,4 @@ export default class PontoService implements IPontoService{
 
         return listaPontos;
     }
-    */
-}
+}*/

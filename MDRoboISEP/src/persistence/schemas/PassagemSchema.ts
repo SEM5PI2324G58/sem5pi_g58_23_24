@@ -7,11 +7,6 @@ const PassagemSchema = new mongoose.Schema(
             type: Number,
             unique: true
         },
-        listaPontos: {
-            type: [Number],
-            required: [true, 'Introduz os pontos'],
-            index: true,
-        },
         pisoA: {
             type: Number,
             required: [true, 'Introduz o piso A'],

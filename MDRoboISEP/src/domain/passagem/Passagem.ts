@@ -6,7 +6,6 @@ import { Guard } from "../../core/logic/Guard";
 import { Piso } from "../piso/Piso";
 
 interface PassagemProps {
-  listaPontos: Ponto[];
   pisoA: Piso;
   pisoB: Piso;
 }
@@ -18,16 +17,14 @@ export class Passagem extends AggregateRoot<PassagemProps> {
 
   public static create(props: PassagemProps, idPassagem: IdPassagem): Result<Passagem> {
     const guardedProps = [ 
-      { argument: props.listaPontos, argumentName: 'listaPontos'},
       { argument: props.pisoA, argumentName: 'pisoA'},
       { argument: props.pisoB, argumentName: 'pisoB' },
     ];
 
-    let guard1 = Guard.arrayHasSpecificLength(guardedProps[0].argument as any[], 4, guardedProps[0].argumentName);
+    let guard1 = Guard.againstNullOrUndefined(guardedProps[0].argument, guardedProps[0].argumentName);
     let guard2 = Guard.againstNullOrUndefined(guardedProps[1].argument, guardedProps[1].argumentName);
-    let guard3 = Guard.againstNullOrUndefined(guardedProps[2].argument, guardedProps[2].argumentName);
     
-    let guardResult = Guard.combine([guard1,guard2,guard3]);
+    let guardResult = Guard.combine([guard1,guard2]);
     //chamar ao ponto uma função que verifica se dois pontos são do mesmo edificio
 
     if (guardResult.succeeded === false) {
@@ -40,11 +37,5 @@ export class Passagem extends AggregateRoot<PassagemProps> {
 
   public returnIdPassagem() : number{
     return Number(this._id.toValue());
-  }
-
-  public atualizarListaPontos(listaPontos : Ponto[]) : void{
-    for(let i = 0; i < listaPontos.length; i++){
-      this.props.listaPontos[i] = listaPontos[i];
-    }
   }
 }

@@ -28,6 +28,7 @@ import { IdPonto } from "../../src/domain/ponto/IdPonto";
 import { IPassagemPersistence } from "../../src/dataschema/IPassagemPersistence";
 import IPisoRepo from "../../src/services/IRepos/IPisoRepo";
 import { Mapa } from "../../src/domain/mapa/Mapa";
+import { IdPassagem } from "../../src/domain/passagem/IdPassagem";
 
 describe('PassagemService ', () => {
 
@@ -72,16 +73,10 @@ describe('PassagemService ', () => {
         edificio1.addPiso(piso1);
         edificio2.addPiso(piso2);
 
-        let idPonto = IdPonto.create(1).getValue();
-        let tipoPonto = TipoPonto.create(" ").getValue();
-        let coordenadas = Coordenadas.create({abscissa: 0 , ordenada: 0 }).getValue();
-        let ponto = Ponto.create({coordenadas: coordenadas,tipoPonto:tipoPonto},idPonto).getValue();
-
         let passagem = Passagem.create({
-            listaPontos: [ponto,ponto,ponto,ponto],
             pisoA: piso1,
             pisoB: piso2,
-        }, IdPonto.create(1).getValue()).getValue();
+        }, IdPassagem.create(1).getValue()).getValue();
 
         
         Container.set("Edificio1", edificio1);
@@ -414,16 +409,10 @@ describe('PassagemService ', () => {
         let body = {
         } as IListarPassagensPorParDeEdificioDTO
 
-        let pontosList : number[] = [];
-        let ponto: number ;
-        pontosList.push(ponto);
-        pontosList.push(ponto);
-        pontosList.push(ponto);
-        pontosList.push(ponto);
+        
         
         const passagemPersistence = {
             domainID: 1,
-            listaPontos: pontosList,
             pisoA: 1,
             pisoB: 2,
         } as IPassagemPersistence;
@@ -491,12 +480,6 @@ function createAllData(codigoEdificioA: string, numeroPisoA: any, codigoEdificio
     let edificioA = Edificio.create(edificioPropsA, codigoEdificio).getValue();
     let edificioB = Edificio.create(edificiosPropsB, codigoEdificio).getValue();
 
-    // criar pontos
-    let pontoA = undefined;
-    let pontoB = undefined;
-    let pontoC = undefined;
-    let pontoD = undefined;
-
     // criar mapa
     let mapa;
     // criar props pisos
@@ -528,11 +511,7 @@ function createAllData(codigoEdificioA: string, numeroPisoA: any, codigoEdificio
         "edificioA": edificioA,
         "edificioB": edificioB,
         "pisoA": pisoA,
-        "pisoB": pisoB,
-        "pontoA": pontoA,
-        "pontoB": pontoB,
-        "pontoC": pontoC,
-        "pontoD": pontoD,
+        "pisoB": pisoB
     }));
 
 }

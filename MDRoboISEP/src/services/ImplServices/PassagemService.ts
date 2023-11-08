@@ -29,12 +29,10 @@ export default class PassagemService implements IPassagemService {
             if (validacaoResultado.isFailure) {
                 return Result.fail<IPassagemDTO>(validacaoResultado.errorValue());
             }
-            const { pontoA, pontoB, pontoA1, pontoB1, pisoA, pisoB, id }
+            const {pisoA, pisoB, id }
                 = validacaoResultado.getValue();
 
-            const listaPontosOrErr = [pontoA, pontoA1, pontoB, pontoB1]
-
-            const passagemOrError = await this.criarObjetoPassagem(listaPontosOrErr, pisoA, pisoB, id);
+            const passagemOrError = await this.criarObjetoPassagem(pisoA, pisoB, id);
             if (passagemOrError.isFailure) {
                 return Result.fail<IPassagemDTO>(passagemOrError.errorValue());
             }
@@ -79,16 +77,7 @@ export default class PassagemService implements IPassagemService {
         const pisoA = edificioDocumentA.returnPisoPeloNumero(passagemDTO.numeroPisoA);
         const pisoB = edificioDocumentB.returnPisoPeloNumero(passagemDTO.numeroPisoB);
 
-        let pontoA: undefined;
-        let pontoB: undefined;
-        let pontoA1: undefined;
-        let pontoB1: undefined;
-
         return Result.ok<any>({
-            "pontoA": pontoA,
-            "pontoB": pontoB,
-            "pontoA1": pontoA1,
-            "pontoB1": pontoB1,
             "pisoA": pisoA,
             "pisoB": pisoB,
             "id": passagemDTO.id,
@@ -103,12 +92,11 @@ export default class PassagemService implements IPassagemService {
                 return Result.fail<IPassagemDTO>(validacaoResultado.errorValue());
             }
 
-            const { pontoA, pontoB, pontoA1, pontoB1, pisoA, pisoB, id }
+            const {pisoA, pisoB, id }
                 = validacaoResultado.getValue();
 
-            const listaPontosOrErr = [pontoA, pontoA1, pontoB, pontoB1]
 
-            const passagemOrError = await this.criarObjetoPassagem(listaPontosOrErr, pisoA, pisoB, id);
+            const passagemOrError = await this.criarObjetoPassagem(pisoA, pisoB, id);
             if (passagemOrError.isFailure) {
                 return Result.fail<IPassagemDTO>(passagemOrError.errorValue());
             }
@@ -153,28 +141,19 @@ export default class PassagemService implements IPassagemService {
         const pisoA = edificioDocumentA.returnPisoPeloNumero(passagemDTO.numeroPisoA);
         const pisoB = edificioDocumentB.returnPisoPeloNumero(passagemDTO.numeroPisoB);
 
-        let pontoA: undefined;
-        let pontoB: undefined;
-        let pontoA1: undefined;
-        let pontoB1: undefined;
 
         return Result.ok<any>({
-            "pontoA": pontoA,
-            "pontoB": pontoB,
-            "pontoA1": pontoA1,
-            "pontoB1": pontoB1,
             "pisoA": pisoA,
             "pisoB": pisoB,
             "id": passagemDTO.id,
         });
     }
 
-    private async criarObjetoPassagem(listaPontos: Ponto[], pisoA: Piso, pisoB: Piso, id: number): Promise<Result<Passagem>> {
+    private async criarObjetoPassagem(pisoA: Piso, pisoB: Piso, id: number): Promise<Result<Passagem>> {
 
         let idPassagemOuErro = await IdPassagem.create(id);
 
         const passagemOuErro = Passagem.create({
-            listaPontos: listaPontos,
             pisoA: pisoA,
             pisoB: pisoB,
         }, idPassagemOuErro.getValue());
