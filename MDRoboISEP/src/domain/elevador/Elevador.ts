@@ -13,7 +13,6 @@ import { NumeroSerieElevador } from "./NumeroSerieElevador";
 
 interface ElevadorProps{
     pisosServidos: Piso[];
-    pontos : Ponto[];
     marca: MarcaElevador;
     modelo: ModeloElevador;
     numeroSerie: NumeroSerieElevador;
@@ -21,6 +20,35 @@ interface ElevadorProps{
 }
 
 export class Elevador extends AggregateRoot<ElevadorProps>{
+    private constructor (props: ElevadorProps, id: IdElevador){
+        super(props,id);
+    }
+
+    public static create (props: ElevadorProps, id: IdElevador) : Result<Elevador> {
+
+        const guardedProps = [
+            {argument: props.pisosServidos, argumentName: 'Lista de pisos servidos' },
+        ]
+
+        let guardResults : any[] = [];
+        // Tem de ter o array pisos servidos
+        guardResults.push(Guard.againstNullOrUndefined(guardedProps[0].argument,guardedProps[0].argumentName));
+        // Tem de ter mais que um piso servido
+        guardResults.push(Guard.arrayHasGreaterLengthThan(guardedProps[0].argument,1,guardedProps[0].argumentName));
+    
+        const finalGuard = Guard.combine(guardResults);
+
+        if (!finalGuard.succeeded) {
+            return Result.fail<Elevador>(finalGuard.message)
+        }     
+        else {
+            const elevador = new Elevador({
+                ...props
+            }, id);
+
+            return Result.ok<Elevador>(elevador);
+        }
+    }
     public returnIdElevador() : number{
         return Number(this._id.toValue());
     }
@@ -28,13 +56,6 @@ export class Elevador extends AggregateRoot<ElevadorProps>{
         let ids: number[] = [];
         for (let i = 0; i < this.props.pisosServidos.length; i++){
             ids[i] = Number(this.props.pisosServidos[i].id.toValue())
-        }
-        return ids;
-    }
-    public returnIdPontos() : string[]{
-        let ids: string[] = [];
-        for (let i = 0; i < this.props.pontos.length; i++){
-            ids[i] = this.props.pontos[i].id.toString()
         }
         return ids;
     }
@@ -50,109 +71,15 @@ export class Elevador extends AggregateRoot<ElevadorProps>{
     public returnDescricao(): string {
         return this.props.descricao.props.descricao;
     }
-    private constructor (props: ElevadorProps, id: IdElevador){
-        super(props,id);
-    }
-
-    public static create (props: ElevadorProps, id: IdElevador) : Result<Elevador> {
-
-        const guardedProps = [
-            {argument: props.pisosServidos, argumentName: 'Lista de pisos servidos' },
-            {argument: props.pontos, argumentName: 'Lista de pontos do elevador' },
-
-        ]
-
-        let guardResults : any[] = [];
-        // Tem de ter o array pisos servidos
-        guardResults.push(Guard.againstNullOrUndefined(guardedProps[0].argument,guardedProps[0].argumentName));
-        // Tem de ter mais que um piso servido
-        guardResults.push(Guard.arrayHasGreaterLengthThan(guardedProps[0].argument,1,guardedProps[0].argumentName));
-        // Tem de ter o array pontos
-        guardResults.push(Guard.againstNullOrUndefined(guardedProps[1].argument,guardedProps[1].argumentName));
     
-        const finalGuard = Guard.combine(guardResults);
-
-        if (!finalGuard.succeeded) {
-            return Result.fail<Elevador>(finalGuard.message)
-        }     
-        else {
-            const elevador = new Elevador({
-                ...props
-            }, id);
-
-            return Result.ok<Elevador>(elevador);
-        }
-    }
-    /**
-     * Criação de um elevador quando está a ser carregado um mapa de um piso
-     * @param props 
-     * @param id 
-     * @returns Elevador
-     */
-    public static carregarElevadorPiso(props: ElevadorProps, id: IdElevador): Result<Elevador> {
-        const guardedProps = [
-            {argument: props.pisosServidos, argumentName: 'Lista de pisos servidos' },
-            {argument: props.pontos, argumentName: 'Lista de pontos do elevador' },
-
-        ]
-        let guardResults : any[] = [];
-        guardResults.push(Guard.againstNullOrUndefinedBulk(guardedProps));
-        guardResults.push(Guard.arrayHasGreaterLengthThan(guardedProps[1].argument,1,guardedProps[1].argumentName));
-
-        const finalGuard = Guard.combine(guardResults);
-
-        if(!finalGuard.succeeded){
-            return Result.fail<Elevador>(finalGuard.message)
-        }else{
-            const elevador = new Elevador({
-                ...props
-            }, id);
-
-            return Result.ok<Elevador>(elevador);
-        }
-    }
-
     public pisosServidosAtuais() : Piso[]{
         return this.props.pisosServidos;
-    }
-
-    public pontosAtuais() : Ponto[]{
-        return this.props.pontos;
-    }
-    /**
-     * Devolve a posição do elevador no edifício 
-     * @returns array de tamanho 4 com as coordenadas x e y dos dois pontos que representam o elevador([x1,y1,x2,y2])
-     */
-    public posicao() : number[]{
-        let coords: number[] = [];
-        
-        coords.push(this.props.pontos[0].returnAbscissa());
-        coords.push(this.props.pontos[0].returnOrdenada());
-        coords.push(this.props.pontos[1].returnAbscissa());
-        coords.push(this.props.pontos[1].returnOrdenada());
-        
-        return coords;
-    }
-
-    public orientacao(): string{
-        let coords = this.posicao()
-        //y2 > y1
-        if (coords[3] > coords[1]){
-            return "norte"
-        }else{
-            return "oeste"
-        }
-
     }
 
     public updatePisos(novosPisos: Piso[]){
         this.props.pisosServidos = novosPisos;
     }
 
-    public updatePontos(novosPontos: Ponto[]){
-        this.props.pontos = novosPontos;
-    }
-    
     public updateMarca(novaMarca: MarcaElevador){
         this.props.marca = novaMarca;
     }

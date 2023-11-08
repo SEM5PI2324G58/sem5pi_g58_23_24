@@ -79,10 +79,7 @@ describe('ElevadorController', () => {
         edificioComElevador.addPiso(pisosServidos[1]);
         edificioSemElevador.addPiso(pisosServidos[0]);
         edificioSemElevador.addPiso(pisosServidos[1]);
-        
-        //Criar array de pontos vazios
-        let pontos: Ponto[] = [];
-    
+
         //Criar elevador
         let idElevador = IdElevador.create(1).getValue();
         let marcaElevador = MarcaElevador.create('123').getValue();
@@ -92,7 +89,6 @@ describe('ElevadorController', () => {
 
         let elevador =  Elevador.create({
             pisosServidos: pisosServidos,
-            pontos: pontos,
             marca: marcaElevador,
             modelo: modeloElevador,
             numeroSerie: numeroSerieElevador,

@@ -5,9 +5,6 @@ import { DescricaoElevador } from '../../../src/domain/elevador/DescricaoElevado
 import { ModeloElevador } from '../../../src/domain/elevador/ModeloElevador';
 import { MarcaElevador } from '../../../src/domain/elevador/MarcaElevador';
 import {NumeroSerieElevador } from '../../../src/domain/elevador/NumeroSerieElevador';
-import { IdPonto } from '../../../src/domain/ponto/IdPonto';
-import { TipoPonto } from '../../../src/domain/ponto/TipoPonto';
-import { Coordenadas } from '../../../src/domain/ponto/Coordenadas';
 import { Ponto } from '../../../src/domain/ponto/Ponto';
 import { DescricaoPiso } from '../../../src/domain/piso/DescricaoPiso';
 import { IdPiso } from '../../../src/domain/piso/IdPiso';
@@ -27,9 +24,6 @@ describe('Elevador domain', function () {
         let numeroSerieElevador = NumeroSerieElevador.create('123').getValue();
         let descricaoElevador = DescricaoElevador.create('123').getValue();
 		
-        //Criar array de pontos vazios
-        let pontos: Ponto[] = [];
-    
         // Criar 2 pisos
         let pisosServidos: Piso[]=[];
 
@@ -48,7 +42,6 @@ describe('Elevador domain', function () {
 
         let elevadorOrError = await Elevador.create({
             pisosServidos: pisosServidos,
-            pontos: pontos,
             marca: marcaElevador,
             modelo: modeloElevador,
             numeroSerie: numeroSerieElevador,
@@ -86,7 +79,6 @@ describe('Elevador domain', function () {
 
         let elevadorOrError = await Elevador.create({
             pisosServidos: pisosServidos,
-            pontos: pontos,
             marca: marcaElevador,
             modelo: modeloElevador,
             numeroSerie: numeroSerieElevador,

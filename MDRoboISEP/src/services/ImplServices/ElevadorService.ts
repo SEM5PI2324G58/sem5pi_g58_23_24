@@ -11,9 +11,7 @@ import { MarcaElevador } from "../../domain/elevador/MarcaElevador";
 import { ModeloElevador } from "../../domain/elevador/ModeloElevador";
 import { NumeroSerieElevador } from "../../domain/elevador/NumeroSerieElevador";
 import { DescricaoElevador } from "../../domain/elevador/DescricaoElevador";
-import { Ponto } from "../../domain/ponto/Ponto";
 import { Elevador } from "../../domain/elevador/Elevador";
-import IPontoRepo from "../IRepos/IPontoRepo";
 import IElevadorDTO from "../../dto/IElevadorDTO";
 import { ElevadorMap } from "../../mappers/ElevadorMap";
 
@@ -24,7 +22,6 @@ export default class ElevadorService implements IElevadorService{
     constructor(
         @Inject(config.repos.edificio.name) private edificioRepo : IEdificioRepo,
         @Inject(config.repos.elevador.name) private elevadorRepo : IElevadorRepo,
-        @Inject(config.repos.ponto.name) private pontoRepo : IPontoRepo
     ){}
     
     
@@ -49,9 +46,6 @@ export default class ElevadorService implements IElevadorService{
                 return Result.fail<ICriarElevadorDTO>("Foram inseridos pisos inválidos")
             }
 
-            // array de pontos vazio ao criar elevador
-            let pontos: Ponto[] = [];
-
             let id = await this.elevadorRepo.getMaxId();
 
             let idElevadorOrError = IdElevador.create(id+1);
@@ -72,7 +66,6 @@ export default class ElevadorService implements IElevadorService{
             
             const elevadorOuErro = await Elevador.create({
                 pisosServidos: pisosServidos,
-                pontos : pontos,
                 marca: marcaOrError.getValue(),
                 modelo: modeloOrError.getValue(),
                 numeroSerie: numeroSerieOrError.getValue(),

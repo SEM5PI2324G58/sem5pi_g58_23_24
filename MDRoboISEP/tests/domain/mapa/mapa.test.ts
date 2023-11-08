@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { TipoPonto } from '../../../src/domain/mapa/TipoPonto';
-import { Mapa } from '../../../src/domain/mapa/mapa';
+import { Mapa } from '../../../src/domain/mapa/Mapa';
 import { Container } from 'typedi';
 import { IdMapa } from '../../../src/domain/mapa/IdMapa';
 
