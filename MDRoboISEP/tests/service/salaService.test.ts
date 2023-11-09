@@ -10,7 +10,6 @@ import { Codigo } from '../../src/domain/edificio/Codigo';
 import { Dimensao } from '../../src/domain/edificio/Dimensao';
 import { DescricaoEdificio } from '../../src/domain/edificio/DescricaoEdificio';
 import { Nome } from '../../src/domain/edificio/Nome';
-import { Ponto } from "../../src/domain/ponto/Ponto";
 import { Piso } from "../../src/domain/piso/Piso";
 import { DescricaoPiso } from "../../src/domain/piso/DescricaoPiso";
 import { NumeroPiso } from "../../src/domain/piso/NumeroPiso";
@@ -198,12 +197,6 @@ function createAllData(codigoEdificioA: string, numeroPisoA: any): Promise<Resul
     let codigoEdificio = Codigo.create(codigoEdificioA).getValue();
     // criar edificios
     let edificioA = Edificio.create(edificioPropsA, codigoEdificio).getValue();
-
-    // criar pontos
-    let pontoA = undefined;
-    let pontoB = undefined;
-    let pontoC = undefined;
-    let pontoD = undefined;
 
     // criar mapa
     let mapa;

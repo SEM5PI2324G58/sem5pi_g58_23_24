@@ -32,15 +32,9 @@ describe('PassagemRepo', () => {
 
         let salaSchemaInstance = require('../../src/persistence/schemas/SalaSchema').default;
         Container.set("SalaSchema", salaSchemaInstance);
-        let pontoSchemaInstance = require('../../src/persistence/schemas/PontoSchema').default;
-        Container.set("PontoSchema", pontoSchemaInstance);
         let pisoSchemaInstance = require('../../src/persistence/schemas/PisoSchema').default;
         Container.set("PisoSchema", pisoSchemaInstance);
 
-        
-        let pontoRepoClass = require('../../src/repos/PontoRepo').default;
-        let pontoRepoInstance = Container.get(pontoRepoClass);
-        Container.set("PontoRepo", pontoRepoInstance);
         let pisoRepoClass = require('../../src/repos/PisoRepo').default;
         let pisoRepoInstance = Container.get(pisoRepoClass);
         Container.set("PisoRepo", pisoRepoInstance);
@@ -58,7 +52,6 @@ describe('PassagemRepo', () => {
     it('Exists deve retornar true', async function () {
 
         const data = await createAllData();
-        let listaPontos = data.getValue().listaPontos;
         let pisoA = data.getValue().pisoA;
 
         let id = NomeSala.create("B300").getValue();
@@ -67,14 +60,12 @@ describe('PassagemRepo', () => {
             categoria: CategorizacaoSala;
             descricao?: DescricaoSala;
             piso: Piso;
-            listaPontos: Ponto[];
           }
 
         let body = {
             categoria: CategorizacaoSala.create("Laboratorio").getValue(),
             descricao: DescricaoSala.create("Sala B300 - Laboratorio de Informatica").getValue(),
             piso: pisoA,
-            listaPontos: listaPontos,
         } as SalaProps;
 
         let sala = Sala.create(body, id).getValue();
@@ -90,7 +81,6 @@ describe('PassagemRepo', () => {
     it('Save deve retornar sala', async function () {
 
         const data = await createAllData();
-        let listaPontos = data.getValue().listaPontos;
         let pisoA = data.getValue().pisoA;
 
         let id = NomeSala.create("B300").getValue();
@@ -99,14 +89,12 @@ describe('PassagemRepo', () => {
             categoria: CategorizacaoSala;
             descricao: DescricaoSala;
             piso: Piso;
-            listaPontos: Ponto[];
           }
 
         let body = {
             categoria: CategorizacaoSala.create("Laboratorio").getValue(),
             descricao: DescricaoSala.create("Sala B300 - Laboratorio de Informatica").getValue(),
             piso: pisoA,
-            listaPontos: listaPontos,
         } as SalaProps;
 
         let salaPersistence = {
@@ -114,7 +102,6 @@ describe('PassagemRepo', () => {
             categoria: body.categoria.props.categorizacao.toString(),
             descricao: body.descricao.props.descricao.toString(),
             piso: pisoA,
-            listaPontos: listaPontos,
             save() { return this; }
         } as unknown as ISalaPersistence & Document<any, any, any>;
 
@@ -130,7 +117,6 @@ describe('PassagemRepo', () => {
         const salaRepo = new SalaRepo(salaSchemaInstance as any);
         const answer = await salaRepo.save(sala);
         expect(answer.id.toValue()).to.equal(sala.id.toValue());
-        expect(answer.props.listaPontos.length).to.equal(sala.props.listaPontos.length);
         expect(answer.props.piso.returnNumeroPiso()).to.equal(sala.props.piso.returnNumeroPiso());
         expect(answer.props.categoria.props.categorizacao).to.equal(sala.props.categoria.props.categorizacao);
         expect(answer.props.descricao?.props.descricao).to.equal(sala.props.descricao?.props.descricao);
@@ -139,7 +125,6 @@ describe('PassagemRepo', () => {
     it('findByDomainId deve retornar sala quando encontra', async () => {
     
         const data = await createAllData();
-        let listaPontos = data.getValue().listaPontos;
         let pisoA = data.getValue().pisoA;
 
         let id = NomeSala.create("B300").getValue();
@@ -148,14 +133,12 @@ describe('PassagemRepo', () => {
             categoria: CategorizacaoSala;
             descricao?: DescricaoSala;
             piso: Piso;
-            listaPontos: Ponto[];
           }
 
         let body = {
             categoria: CategorizacaoSala.create("Laboratorio").getValue(),
             descricao: DescricaoSala.create("Sala B300 - Laboratorio de Informatica").getValue(),
             piso: pisoA,
-            listaPontos: listaPontos,
         } as SalaProps;
 
         let sala = Sala.create(body, id).getValue();
@@ -166,7 +149,6 @@ describe('PassagemRepo', () => {
         const salaRepo = new SalaRepo(salaSchemaInstance as any);
         const answer = await salaRepo.findByDomainId(id);
         expect(answer.id.toValue()).to.equal(sala.id.toValue());
-        expect(answer.props.listaPontos.length).to.equal(sala.props.listaPontos.length);
         expect(answer.props.piso.returnNumeroPiso()).to.equal(sala.props.piso.returnNumeroPiso());
         expect(answer.props.categoria.props.categorizacao).to.equal(sala.props.categoria.props.categorizacao);
         expect(answer.props.descricao?.props.descricao).to.equal(sala.props.descricao?.props.descricao);
@@ -175,7 +157,6 @@ describe('PassagemRepo', () => {
     it('findByDomainId deve retornar null on fail', async function () {
     
         const data = await createAllData();
-        let listaPontos = data.getValue().listaPontos;
         let pisoA = data.getValue().pisoA;
 
         let id = NomeSala.create("B300").getValue();
@@ -184,14 +165,12 @@ describe('PassagemRepo', () => {
             categoria: CategorizacaoSala;
             descricao?: DescricaoSala;
             piso: Piso;
-            listaPontos: Ponto[];
           }
 
         let body = {
             categoria: CategorizacaoSala.create("Laboratorio").getValue(),
             descricao: DescricaoSala.create("Sala B300 - Laboratorio de Informatica").getValue(),
             piso: pisoA,
-            listaPontos: listaPontos,
         } as SalaProps;
 
         const salaSchemaInstance = Container.get("SalaSchema");
@@ -212,13 +191,6 @@ function createAllData(): Promise<Result<any>> {
         mapa: Mapa;
     }
 
-    // criar pontos
-    let pontoA = undefined;
-    let pontoB = undefined;
-
-    // criar lista de pontos
-    let lista = [pontoA,pontoB]
-
     // criar mapa
     let mapa;
 
@@ -232,7 +204,6 @@ function createAllData(): Promise<Result<any>> {
     let pisoA = Piso.create(pisoPropsA,IdPiso.create(1).getValue()).getValue();
 
     return Promise.resolve(Result.ok<any>({
-        "listaPontos": lista,
         "pisoA": pisoA,
     }));
 

@@ -28,22 +28,6 @@ export class SalaMap extends Mapper<Sala> {
             return raw;
         }
 
-        let listaPonto: Ponto[] = [];
-        if (raw.listaPontos !== null && raw.listaPontos !== undefined && raw.listaPontos.length > 0) {
-            const repoPonto = Container.get(PontoRepo);
-            for (let i = 0; i < raw.listaPontos.length; i++) {
-                if (raw.listaPontos[i] === undefined || raw.listaPontos[i] === null) {
-                    listaPonto[i] = raw.listaPontos[i];
-                }
-                else {
-                    listaPonto[i] = await repoPonto.findByDomainId(raw.listaPontos[i]);
-                    if (listaPonto[i] === null) {
-                        return null;
-                    }
-                }
-            }
-        }
-
         let maxiD = raw.domainID;
         let id = NomeSala.create(maxiD).getValue();
         let categoria: CategorizacaoSala;
@@ -69,7 +53,6 @@ export class SalaMap extends Mapper<Sala> {
         const salaOrError = Sala.create({
             categoria: categoria,
             descricao: descricao,
-            listaPontos: listaPonto,
             piso: piso,
         }, id);
 
@@ -78,29 +61,10 @@ export class SalaMap extends Mapper<Sala> {
 
     public static toPersistence(sala: Sala): any {
 
-        //criar lista de number com os ids dos pontos
-        let listaPontos: any[] = [];
-        //passar os id dos pontos para a lista
-
-        if (sala.props.listaPontos === null || sala.props.listaPontos === undefined || sala.props.listaPontos.length === 0) {
-            return null;
-        }
-
-        for (let index = 0; index < sala.props.listaPontos.length; index++) {
-            const element = sala.props.listaPontos[index];
-            if (element === null || element === undefined) {
-                listaPontos.push(element);
-            }
-            else {
-                listaPontos.push(element.returnIdPonto());
-            }
-        }
-
         let dadosSala = {
             domainID: sala.id.toValue(),
             categoria: sala.props.categoria.props.categorizacao,
             descricao: sala.props.descricao.props.descricao,
-            listaPontos: listaPontos,
             piso: sala.props.piso.returnIdPiso()
         } as unknown as ISalaPersistence
 

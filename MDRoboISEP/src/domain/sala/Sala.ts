@@ -13,7 +13,6 @@ interface SalaProps {
     categoria: CategorizacaoSala;
     descricao?: DescricaoSala;
     piso: Piso;
-    listaPontos: Ponto[];
 }
 
 export class Sala extends AggregateRoot<SalaProps> {
@@ -25,16 +24,14 @@ export class Sala extends AggregateRoot<SalaProps> {
     const guardedProps = [
       { argument: props.categoria, argumentName: 'categoria' },
       { argument: props.descricao, argumentName: 'descricao' },
-      { argument: props.listaPontos, argumentName: 'listaPontos' },
       { argument: props.piso, argumentName: 'piso' },
     ];
 
     const guard = Guard.againstNullOrUndefined(guardedProps[0].argument,guardedProps[0].argumentName);
     const guard2 = Guard.againstNullOrUndefined(guardedProps[1].argument,guardedProps[1].argumentName);
-    const guard3 = Guard.arrayHasSpecificLength(guardedProps[2].argument as any[], 2, guardedProps[2].argumentName);
-    const guard4 = Guard.againstNullOrUndefined(guardedProps[3].argument,guardedProps[3].argumentName);
+    const guard3 = Guard.againstNullOrUndefined(guardedProps[2].argument,guardedProps[2].argumentName);
 
-    let guardResult = Guard.combine([guard,guard2,guard3,guard4]);
+    let guardResult = Guard.combine([guard,guard2,guard3]);
     
     if (!guardResult.succeeded) {
       return Result.fail<Sala>(guardResult.message);
@@ -56,8 +53,5 @@ export class Sala extends AggregateRoot<SalaProps> {
   public returnDescricaoSala() : string{
     return this.props.descricao.toString();
   }
-
-  public atualizarListaPontos(listaPontos: Ponto[]) : void{
-    this.props.listaPontos = listaPontos;
-  }
+  
 }

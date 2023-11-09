@@ -17,11 +17,6 @@ const SalaSchema = new mongoose.Schema(
             required: [true, 'Introduz a descricao'],
             index: true,
         },
-        listaPontos: {
-            type: [Number],
-            required: [true, 'Introduz os pontos'],
-            index: true,
-        },
         piso: {
             type: Number,
             required: [true, 'Introduz o piso'],

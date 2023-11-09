@@ -5,7 +5,6 @@ import ISalaDTO from '../../dto/ISalaDTO';
 import ISalaService from '../IServices/ISalaService';
 import IEdificioRepo from '../IRepos/IEdificioRepo';
 import ISalaRepo from '../IRepos/ISalaRepo';
-import { Ponto } from '../../domain/ponto/Ponto';
 import NomeSala from '../../domain/sala/NomeSala';
 import { Sala } from '../../domain/sala/Sala';
 import CategorizacaoSala from '../../domain/sala/CategorizacaoSala';
@@ -30,14 +29,10 @@ export default class SalaService implements ISalaService {
                 return Result.fail<ISalaDTO>(validacaoResultado.errorValue());
             }
 
-            let {pontoA, pontoB, piso }
+            let {piso }
                 = validacaoResultado.getValue();
 
-            let listaPontosOrErr: any[] = [];
-            listaPontosOrErr[0] = pontoA;
-            listaPontosOrErr[1] = pontoB;
-
-            const salaOrError = await this.criarObjetoSala(listaPontosOrErr, salaDTO.categoria, salaDTO.descricao, piso, salaDTO.id);
+            const salaOrError = await this.criarObjetoSala(salaDTO.categoria, salaDTO.descricao, piso, salaDTO.id);
             if (salaOrError.isFailure) {
                 return Result.fail<ISalaDTO>(salaOrError.errorValue());
             }
@@ -60,7 +55,7 @@ export default class SalaService implements ISalaService {
         }
         return Result.ok<void>();
     }
-    async criarObjetoSala(listaPontosOrErr: Ponto[], categoria: string, descricao: string, piso: Piso, nome: string): Promise<Result<any>> {
+    async criarObjetoSala(categoria: string, descricao: string, piso: Piso, nome: string): Promise<Result<any>> {
 
         let idSalaOuErro = NomeSala.create(nome);
         if (idSalaOuErro.isFailure) {
@@ -80,7 +75,6 @@ export default class SalaService implements ISalaService {
         const salaOuErro = Sala.create({
             categoria: categoriaOuErro.getValue(),
             descricao: descricaoOuErro.getValue(),
-            listaPontos: listaPontosOrErr,
             piso: piso,
         }, idSalaOuErro.getValue());
 
@@ -101,14 +95,10 @@ export default class SalaService implements ISalaService {
         }
        
         const piso = edificioDocument.returnPisoPeloNumero(salaDTO.numeroPiso);
-        let pontoA : null;
-        let pontoB : null;
 
         return Result.ok<any>({
             "edificioDocument": edificioDocument,
             "piso": piso,
-            "pontoA": pontoA,
-            "pontoB": pontoB,
         });
     }
 }

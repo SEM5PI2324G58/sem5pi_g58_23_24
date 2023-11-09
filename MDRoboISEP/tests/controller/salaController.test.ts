@@ -233,14 +233,6 @@ function createAllData(codigoEdificioA: string, numeroPisoA: number): Promise<Re
     // criar edificios
     let edificioA = Edificio.create(edificioPropsA, codigoEdificio).getValue();
 
-    // criar props pontos
-  
-    // criar pontos
-    let pontoA : Ponto;
-    let pontoB : Ponto;
-    let pontoC : Ponto;
-    let pontoD : Ponto;
-
     // criar mapa
     let mapa;
 
@@ -261,16 +253,8 @@ function createAllData(codigoEdificioA: string, numeroPisoA: number): Promise<Re
         return Promise.resolve(Result.fail<void>("Erro ao criar dados de test"));
     }
 
-    let pontoNA : number;
-    let pontoNB : number;
-
-    let listaPontos: number[] = [];
-    listaPontos.push(pontoNA);
-    listaPontos.push(pontoNB);
-
     return Promise.resolve(Result.ok<any>({
         "edificio": edificioA,
-        "listaPontos": listaPontos,
     }));
 
 }

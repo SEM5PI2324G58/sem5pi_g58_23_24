@@ -50,12 +50,6 @@ export default class SalaRepo implements ISalaRepo {
         return SalaMap.toDomain(salaCreated);
       } else {
         salaDocument.id = sala.id;
-        const listaPontos = [];
-        for (let index = 0; index < sala.props.listaPontos.length; index++) {
-          const element = sala.props.listaPontos[index];
-          listaPontos.push(element.id.toString());
-        }
-        salaDocument.listaPontos = listaPontos;
         await salaDocument.save();
 
         return sala;
