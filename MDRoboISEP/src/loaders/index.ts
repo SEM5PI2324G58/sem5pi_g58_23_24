@@ -117,6 +117,11 @@ export default async ({ expressApp }) => {
     name: config.controllers.ponto.name,
     path: config.controllers.ponto.path
   }
+
+  const mapaController = {
+    name: config.controllers.mapa.name,
+    path: config.controllers.mapa.path
+  }
   
   const roleRepo = {
     name: config.repos.role.name,
@@ -215,6 +220,11 @@ export default async ({ expressApp }) => {
     path: config.services.ponto.path
   }
 
+  const mapaService = {
+    name: config.services.mapa.name,
+    path: config.services.mapa.path
+  }
+
   await dependencyInjectorLoader({
     mongoConnection,
     schemas: [
@@ -239,7 +249,7 @@ export default async ({ expressApp }) => {
       passagemController,
       dispositivoController,
       salaController,
-      pontoController,
+      mapaController
     ],
     repos: [
       roleRepo,
@@ -263,7 +273,7 @@ export default async ({ expressApp }) => {
       passagemService,
       dispositivoService,
       salaService,
-      pontoService,
+      mapaService
     ]
   });
   Logger.info('✌️ Schemas, Controllers, Repositories, Services, etc. loaded');
