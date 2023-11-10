@@ -9,8 +9,7 @@ import tipoDispositivo from './routes/tipoDispositivoRoute'
 import passagem from './routes/passagemRoute'
 import dispositivo from './routes/dispositivoRoute'
 import sala from './routes/salaRoute'
-import ponto from './routes/pontoRoute'
-
+import mapa from './routes/mapaRoute'
 
 export default () => {
 	const app = Router();
@@ -25,7 +24,6 @@ export default () => {
 	passagem(app);
 	dispositivo(app);
 	sala(app);
-	ponto(app);
-
+	mapa(app);
 	return app
 }

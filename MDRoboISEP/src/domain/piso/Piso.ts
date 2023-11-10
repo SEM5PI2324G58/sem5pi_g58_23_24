@@ -288,4 +288,13 @@ export class Piso extends AggregateRoot<pisoProps> {
     this.props.descricaoPiso = descricaoPiso;
     return Result.ok<Piso>(this);
   }
+
+  public adicionarMapa(mapa: Mapa): Result<boolean>{
+    let guard = Guard.againstNullOrUndefined(mapa,'mapa');
+    if (!guard.succeeded) {
+      return Result.fail<boolean>(guard.message)
+    }
+    this.props.mapa = mapa;
+    return Result.ok<boolean>(true);
+  }
 }

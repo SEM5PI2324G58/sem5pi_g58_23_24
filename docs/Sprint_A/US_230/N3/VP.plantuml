@@ -2,14 +2,15 @@ autonumber
 
 participant RouteEdificio as route
 participant "carregarMapaDTO" as dto
-participant "controller: PontoController" as ctrl
-participant "service: PontoService" as service
+participant "controller: MapaController" as ctrl
+participant "service: MapaService" as service
 participant "repository: EdificioRepo" as edificioRepo
-participant "Piso" as piso
+participant "Mapa" as mapa
 participant "repository: SalaRepo" as salaRepo
 participant "repository: PassagemRepo" as passagemRepo
-participant "repository: PontoRepo" as pontoRepo
-participant "repository: ElevadorRepo" as elevadorRepo
+participant "Piso" as piso
+participant "repository: MapaRepo" as mapaRepo
+participant "repository: PisoRepo" as pisoRepo
 
 [o-> route: POST(json)
 activate route
@@ -21,34 +22,32 @@ activate service
 service -> edificioRepo: findByDomainId(codigoEdificio)
 activate edificioRepo
 return edificio
-service -> piso: returnPontosParaElevador(xCoord,yCoord, orientacao)
-activate piso
-deactivate piso
+service -> mapa ** : create()
+service -> mapa: carregarMapaComBermas()
+activate mapa
+deactivate mapa
+service -> mapa: criarPontosElevador(x,y,orientacao)
+activate mapa
+deactivate mapa
 service -> salaRepo: findSalasByPiso(idPiso)
 activate salaRepo
 return listaSalas
-service -> piso: returnListaPontosDiagonalSala(xCoord,yCoord)
-activate piso
-deactivate piso
-service -> piso: criarListaPontosSalas(listaSalas)
-activate piso
-deactivate piso
+service -> mapa: carregarSalaMapa(salaInfo)
+activate mapa
+deactivate mapa
 service -> passagemRepo: listarPassagensComUmPiso(idPiso)
 activate passagemRepo
 return listaPassagens
-service -> piso : returnPontosParaPassagem(xCoord,yCoord, orientacao)
+service -> mapa : carregarPassagemMapa(passagemInfo)
+activate mapa
+deactivate mapa
+service -> piso : adicionarMapa(mapa)
 activate piso
 deactivate piso
-service -> pontoRepo: save(pontosMapa)
-activate pontoRepo
-deactivate pontoRepo
-service -> elevadorRepo : save(elevador)
-activate elevadorRepo
-deactivate elevadorRepo
-service -> salaRepo : save(sala)
-activate salaRepo
-deactivate salaRepo
-service -> passagemRepo : save(passagem)
-activate passagemRepo
-deactivate passagemRepo
+service -> mapaRepo: save(mapa)
+activate mapaRepo
+deactivate mapaRepo
+service -> pisoRepo : save(piso)
+activate pisoRepo
+deactivate pisoRepo
 return ok
