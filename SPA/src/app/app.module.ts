@@ -7,6 +7,7 @@ import { GestaoFrotaComponent } from './gestao-frota/gestao-frota.component';
 import { GestaoPlaneamentoComponent } from './gestao-planeamento/gestao-planeamento.component';
 import { AppRoutingModule } from './app-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { SidebarComponent } from './gestao-campus/sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     GestaoCampusComponent,
     GestaoFrotaComponent,
     GestaoPlaneamentoComponent,
-    DashboardComponent
+    DashboardComponent,
+    SidebarComponent
   ],
   imports: [
     BrowserModule,
