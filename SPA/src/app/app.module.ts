@@ -9,6 +9,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SidebarComponent } from './gestao-campus/sidebar/sidebar.component';
 import { SidebarFrotaComponent } from './gestao-frota/sidebar-frota/sidebar-frota.component';
+import { CriarPisoComponent } from './gestao-campus/criar-piso/criar-piso.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { SidebarFrotaComponent } from './gestao-frota/sidebar-frota/sidebar-frot
     GestaoPlaneamentoComponent,
     DashboardComponent,
     SidebarComponent,
-    SidebarFrotaComponent
+    SidebarFrotaComponent,
+    CriarPisoComponent
   ],
   imports: [
     BrowserModule,
