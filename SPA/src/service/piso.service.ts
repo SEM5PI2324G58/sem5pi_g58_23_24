@@ -24,16 +24,19 @@ export class PisoService {
 
   criarPiso(codigo: string,
               numeroPiso: number,
-            descricaoPiso: string): void{
+              descricaoPiso: string): void{
       
-      let piso: Piso;
-      if(descricaoPiso==null || descricaoPiso=="" || descricaoPiso== undefined){
-        piso = {codigo: codigo, numeroPiso: numeroPiso} as Piso;
-      }else{
-        piso = {codigo: codigo, numeroPiso: numeroPiso, descricaoPiso: descricaoPiso} as Piso;
-      }
-
+    let piso: Piso;
+    if(descricaoPiso==null || descricaoPiso=="" || descricaoPiso== undefined){
+      piso = {codigo: codigo, numeroPiso: numeroPiso} as Piso;
+    }else{
+      piso = {codigo: codigo, numeroPiso: numeroPiso, descricaoPiso: descricaoPiso} as Piso;
+    }
+    
+    if(this.validateData(piso.codigo, piso.numeroPiso)){
       this.addPiso(piso);
+    }
+      
   }
   
 
@@ -62,7 +65,7 @@ export class PisoService {
     return (error: any): Observable<T> => {
       
 
-      this.log(`${operation} falhou: ${error.message}`);
+      this.log(`${operation} falhou: ${error.error}`);
 
       return of(result as T);
     };
@@ -70,5 +73,22 @@ export class PisoService {
 
   private log(message: string) {
     this.messageService.add(`${message}`);
+  }
+
+  validateData(codigo: string,
+    numeroPiso: number): boolean{
+
+    let flag:boolean = true;
+
+    if(codigo==null || codigo=="" || codigo== undefined){
+      this.log("ERRO: Código Deve ser preenchido.");
+      flag=false;
+    }
+    if(numeroPiso==null || numeroPiso==undefined){
+      this.log("ERRO: Número do Piso deve ser preenchido.");
+      flag=false;
+    }
+    
+    return flag;
   }
 }
