@@ -51,10 +51,10 @@ export class PisoService {
         next: data=>{codigo=data.codigo;
           numeroPiso=data.numeroPiso;
           if(data.descricaoPiso==null)
-            this.log("Piso com código: "+codigo+" número: "+numeroPiso+" criado com sucesso!");
+            this.log("Piso com código: "+codigo+", número Piso: "+numeroPiso+" criado com sucesso!");
           else{
           descricaoPiso=data.descricaoPiso;
-          this.log("Piso com código: "+codigo+" número: "+numeroPiso+" e descrição: "+descricaoPiso+" criado com sucesso!");
+          this.log("Piso com código: "+codigo+", número Piso: "+numeroPiso+", descrição: "+descricaoPiso+" criado com sucesso!");
           }
           
       }
