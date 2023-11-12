@@ -20,11 +20,12 @@
       </div>
 
       <div class = "button-submit">
-        <button type="button" class="add-button">Criar Piso</button>
+        <button type="button" class="add-button" (click)="add(codigo.value, +numeroPiso.value, descricaoPiso.value);">Criar Piso</button>
       </div>
-
     </div>
-      
+    <div class="message">
+      <app-message></app-message>
+    </div>
   </body>
 </html>
 

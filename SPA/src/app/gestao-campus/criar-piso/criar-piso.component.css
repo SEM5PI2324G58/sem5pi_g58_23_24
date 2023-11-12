@@ -55,3 +55,14 @@
   .add-button:hover {
     background-color: #0056b3; /* Adjust the hover color as needed */
   }
+
+  .message {
+    margin-left: 17%; 
+    margin-right: 0.5%;
+    max-width: calc(100% - 17%); 
+    padding: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
