@@ -1,0 +1,16 @@
+autonumber
+
+actor "Gestor de Campus" as ator
+participant SPA as fe <<Container (C4)>>
+participant MDRoboISEP as md <<Container (C4)>>
+
+ator -> fe: criar piso e insere a informação (codigo, numeroPiso, descricao)
+activate fe
+fe	-> md: POST criarPiso(json)
+activate md
+return resposta
+return resposta
+
+
+
+ 
