@@ -1,6 +1,6 @@
 import { Component, OnInit  } from '@angular/core';
-import { PisoService } from '../../../service/piso.service';
-import { EdificioService } from 'src/service/edificio.service';
+import { PisoService } from '../../../serviceInfo/piso.service';
+import { EdificioService } from 'src/serviceInfo/edificio.service';
 
 @Component({
   selector: 'app-criar-piso',
