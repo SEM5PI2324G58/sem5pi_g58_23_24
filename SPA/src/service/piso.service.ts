@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
-import { Piso } from '../domain/piso';
+import { Piso } from '../dataModel/piso';
 import { MessageService } from './message.service';
 
 
