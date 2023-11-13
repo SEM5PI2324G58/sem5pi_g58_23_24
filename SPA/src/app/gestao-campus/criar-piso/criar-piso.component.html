@@ -4,8 +4,11 @@
       <app-sidebarGestaoCampus></app-sidebarGestaoCampus>
     </div>
     <div class="conteudo">
-      <div class = "input-field"> 
-        <input name="codigo" #codigo placeholder="Código Edifício *" />
+      <div class="input-field">
+        <select id="codigo" name="codigo" #codigo required>
+          <option value="" disabled selected>Codigo Edificio *</option>
+          <option *ngFor="let option of listaCodigos" [value]="option">{{ option }}</option>
+        </select>
         <span></span>
       </div>
 
@@ -25,8 +28,8 @@
       
       <app-message></app-message>
     </div>
-    
   </body>
+  
 </html>
 
 

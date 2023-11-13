@@ -1,5 +1,6 @@
 import { Component, OnInit  } from '@angular/core';
 import { PisoService } from '../../../service/piso.service';
+import { EdificioService } from 'src/service/edificio.service';
 
 @Component({
   selector: 'app-criar-piso',
@@ -8,9 +9,13 @@ import { PisoService } from '../../../service/piso.service';
 })
 export class CriarPisoComponent implements OnInit{
 
-  constructor(private pisoService: PisoService) { }
+  constructor(private pisoService: PisoService,private edificioService: EdificioService) { }
 
-  ngOnInit(): void {  }
+  listaCodigos: string[] = [];
+
+  ngOnInit(): void {  
+    this.listaCodigos = this.edificioService.listarCodEdificios();
+  }
 
   add(codigo: string,
       numeroPiso: number,

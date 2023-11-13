@@ -37,6 +37,18 @@
     border-radius: 5px;
     font-size: 16px;
   }
+
+  .input-field select {
+    width: calc(100% + 21px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+
+  .input-field select:required:invalid {
+    color: #666;
+  }
   
   .button-submit {
     text-align: center;
