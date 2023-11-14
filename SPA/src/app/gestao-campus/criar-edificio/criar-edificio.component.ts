@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { EdificioService } from 'src/service/edificio.service';
-import { MessageService } from 'src/service/message.service';
+import { EdificioService } from 'src/serviceInfo/edificio.service';
+import { MessageService } from 'src/serviceInfo/message.service';
 
 @Component({
   selector: 'app-criar-edificio',

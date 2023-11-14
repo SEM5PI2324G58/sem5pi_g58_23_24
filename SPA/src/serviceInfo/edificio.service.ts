@@ -33,11 +33,11 @@ export class EdificioService {
       return;
     }
 
-    if(this.validateNumber(dimensaoX, "Dimensao X") === false){
+    if(this.validateNumber(dimensaoX, "Dimensão X") === false){
       return;
     }
 
-    if(this.validateNumber(dimensaoY, "Dimensao Y") === false){
+    if(this.validateNumber(dimensaoY, "Dimensão Y") === false){
       return;
     }
 
