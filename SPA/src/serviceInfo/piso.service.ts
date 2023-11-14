@@ -100,18 +100,19 @@ export class PisoService {
     });
   }
 
-  public listarNumeroPisos(codigo: string): string[]{
+  public listarNumeroPisos(codigo: string): number[]{
     return this.listarPisosNumero(codigo) ;
   }
 
-  private listarPisosNumero(codigo: string): string[]{
-    let listaCodigos: string[];
+  private listarPisosNumero(codigo: string): number[]{
+    let listaCodigos: number[];
     listaCodigos = [];
+    let params = new HttpParams().set('codigo', codigo);
 
-    this.http.get<Piso[]>(this.pisoUrl , this.httpOptions)
+    this.http.get<Piso[]>(this.pisoUrl , { params: params, headers: this.httpOptions.headers })
     .pipe(catchError(this.handleError<Piso[]>('Listar Piso')))
     .subscribe(data => {
-      const numeroPiso = data.map(item => item.numeroPiso.toString());
+      const numeroPiso = data.map(item => item.numeroPiso);
       listaCodigos.push(...numeroPiso);
     });
     return listaCodigos;
