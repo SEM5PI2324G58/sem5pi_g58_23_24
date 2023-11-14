@@ -1,0 +1,108 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+import { Observable, of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+
+import { Dispositivo } from '../dataModel/dispositivo';
+import { MessageService } from './message.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DispositivoService {
+
+  private dispositivoUrl = 'http://localhost:4000/api/dispositivo';
+  
+  httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  };
+  
+  constructor(private messageService: MessageService, private http: HttpClient) { }
+
+
+  adicionarDispositivoAFrota(codigo: string,
+      nickname: string,
+      idTipoDispositivo: string,
+      numeroSerie: string,
+      descricao: string): void {
+      
+    let dispositivo: Dispositivo;
+    if(this.validateData(codigo, nickname, idTipoDispositivo, numeroSerie)){
+    if(descricao==null || descricao=="" || descricao== undefined){
+      dispositivo = {codigo: codigo, nickname: nickname, tipoDispositivo: Number(idTipoDispositivo), numeroSerie: numeroSerie} as Dispositivo;
+    }else{
+      dispositivo = {codigo: codigo, nickname: nickname, tipoDispositivo: Number(idTipoDispositivo), numeroSerie: numeroSerie, descricaoDispositivo: descricao} as Dispositivo;
+    }
+      this.addDispositivo(dispositivo);
+    }
+      
+  }
+  
+
+  addDispositivo(dispositivo: Dispositivo): void{
+    let codigo: string;
+    let descricao: string;
+    let estado: boolean;
+    let nickname: string;
+    let numeroSerie: string;
+    
+    this.http.post<Dispositivo>(this.dispositivoUrl, dispositivo, this.httpOptions)
+    .pipe(catchError(this.handleError<Dispositivo>('Adicionar robo à frota')))
+    .subscribe({
+        next: data=>{codigo=data.codigo;
+          estado=data.estado;
+          nickname=data.nickname;
+          numeroSerie=data.numeroSerie;
+          if(data.descricaoDispositivo==null)
+            this.log("Dispositivo com código: "+codigo+", estado: "+estado+", nickname: "+ nickname +", número de Série: "+ numeroSerie + " criado com sucesso!");
+          else{
+          descricao=data.descricaoDispositivo;
+          this.log("Dispositivo com código: "+codigo+", estado: "+estado+", nickname: "+ nickname +", número de Série: "+ numeroSerie +", descrição: \"" + descricao + "\" criado com sucesso!");
+          }
+          
+      }
+    });
+  }
+
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      
+
+      this.log(`${operation} falhou: ${error.error}`);
+
+      return of(result as T);
+    };
+  }
+
+  private log(message: string) {
+    this.messageService.add(`${message}`);
+  }
+
+  validateData(codigo: string,
+    nickname: string,
+    idTipoDispositivo: string,
+    numeroSerie: string): boolean{
+
+    let flag:boolean = true;
+
+    if(codigo==null || codigo=="" || codigo== undefined){
+      this.log("ERRO: Código deve ser preenchido.");
+      flag=false;
+    }
+    if(nickname=="" || nickname==undefined || nickname==null){
+      this.log("ERRO: Nickname deve ser preenchido.");
+      flag=false;
+    }
+    if(idTipoDispositivo=="" || idTipoDispositivo==undefined){
+      this.log("ERRO: Id Tipo Dispositivo deve ser preenchido.");
+      flag=false;
+    }
+    if(numeroSerie=="" || numeroSerie==undefined || numeroSerie==null){
+      this.log("ERRO: Número de Série deve ser preenchido.");
+      flag=false;
+    }
+    
+    return flag;
+  }
+}

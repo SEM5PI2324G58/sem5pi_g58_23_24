@@ -12,12 +12,10 @@ import { SidebarFrotaComponent } from './gestao-frota/sidebar-frota/sidebar-frot
 import { CriarPisoComponent } from './gestao-campus/criar-piso/criar-piso.component';
 import { CriarEdificioComponent } from './gestao-campus/criar-edificio/criar-edificio.component';
 import { EditarEdificioComponent } from './gestao-campus/editar-edificio/editar-edificio.component';
-import { CriarTipoRoboComponent } from './gestao-frota/criar-tipo-robo/criar-tipo-robo.component';
 import { MessageComponent } from './message/message.component';
-import { FormsModule } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule} from '@angular/material/input';
+import { AdicionarDispositivoComponent } from './gestao-frota/adicionar-dispositivo/adicionar-dispositivo.component';
+import { CriarTipoRoboComponent } from './gestao-frota/criar-tipo-robo/criar-tipo-robo.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,6 +28,8 @@ import { MatInputModule} from '@angular/material/input';
     CriarPisoComponent,
     CriarEdificioComponent,
     EditarEdificioComponent,
+    MessageComponent,
+    AdicionarDispositivoComponent,
     CriarTipoRoboComponent,
     MessageComponent
   ],
@@ -37,10 +37,6 @@ import { MatInputModule} from '@angular/material/input';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule,
-    MatSelectModule,
-    MatFormFieldModule,
-    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]
