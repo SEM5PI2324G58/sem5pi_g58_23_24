@@ -13,6 +13,7 @@ import { CriarPisoComponent } from './gestao-campus/criar-piso/criar-piso.compon
 import { CriarEdificioComponent } from './gestao-campus/criar-edificio/criar-edificio.component';
 import { EditarEdificioComponent } from './gestao-campus/editar-edificio/editar-edificio.component';
 import { MessageComponent } from './message/message.component';
+import { AdicionarDispositivoComponent } from './gestao-frota/adicionar-dispositivo/adicionar-dispositivo.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { MessageComponent } from './message/message.component';
     CriarPisoComponent,
     CriarEdificioComponent,
     EditarEdificioComponent,
-    MessageComponent
+    MessageComponent,
+    AdicionarDispositivoComponent
   ],
   imports: [
     BrowserModule,
