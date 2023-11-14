@@ -5,7 +5,7 @@ participant SPA as fe <<Container (C4)>>
 participant MDRoboISEP as md <<Container (C4)>>
 
 
-ator -> fe: Adicionar um novo robot à frota e insere a informação (codigo, nickname, IdTipoDispositivo, descrição)
+ator -> fe: Adicionar um novo robot à frota e insere a informação (codigo, nickname, IdTipoDispositivo, numeroSerie, descrição)
 activate fe
 fe	-> md: POST adicionarDispositivoAFrota(json)
 activate md

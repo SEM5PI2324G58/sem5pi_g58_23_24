@@ -6,7 +6,7 @@ participant "serviceInfo" as serviceInfo
 participant "dataModel" as dataModel
 
 
-ator -> component: Adicionar um novo robot à frota e insere a informação (codigo, nickname, IdTipoDispositivo, descrição)
+ator -> component: Adicionar um novo robot à frota e insere a informação (codigo, nickname, IdTipoDispositivo, numeroSerie, descrição)
 activate component
 component -> serviceInfo: adicionarDispositivoAFrota(codigo,numeroPiso,descricao)
 activate serviceInfo
