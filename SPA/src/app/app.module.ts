@@ -10,6 +10,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { SidebarComponent } from './gestao-campus/sidebar/sidebar.component';
 import { SidebarFrotaComponent } from './gestao-frota/sidebar-frota/sidebar-frota.component';
 import { CriarPisoComponent } from './gestao-campus/criar-piso/criar-piso.component';
+import { CriarEdificioComponent } from './gestao-campus/criar-edificio/criar-edificio.component';
 import { MessageComponent } from './message/message.component';
 
 @NgModule({
@@ -22,6 +23,7 @@ import { MessageComponent } from './message/message.component';
     SidebarComponent,
     SidebarFrotaComponent,
     CriarPisoComponent,
+    CriarEdificioComponent,
     MessageComponent
   ],
   imports: [

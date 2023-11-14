@@ -24,7 +24,41 @@ export class EdificioService {
     return this.listarEdificioCod();
   }
 
+  public criarEdificio(codigo: string, dimensaoX: string, dimensaoY: string,
+    nome?: string, descricao?: string): void {
+    let dimensaoXNumero: number = +dimensaoX;
+    let dimensaoYNumero: number = +dimensaoY;
+    if(this.validateString(codigo) === false){
+      this.log("Código não pode ser vazio");
+      return;
+    }
 
+    if(this.validateNumber(dimensaoX, "Dimensao X") === false){
+      return;
+    }
+
+    if(this.validateNumber(dimensaoY, "Dimensao Y") === false){
+      return;
+    }
+
+    let edificio: any = {
+      codigo: codigo,
+      dimensaoX: dimensaoXNumero,
+      dimensaoY: dimensaoYNumero,
+    };
+    if(nome && this.validateString(nome)){
+      edificio.nome = nome;
+    }
+    if(descricao && this.validateString(descricao)){
+      edificio.descricao = descricao;
+    }
+
+    this.http.post<Edificio>(this.edificioUrl, edificio as Edificio, this.httpOptions)
+    .pipe(catchError(this.handleError<Edificio>('Criar Edificio')))
+    .subscribe(data => {
+      this.log(`Edificio com código: ${data.codigo} criado com sucesso!`);
+    });
+  }
 
   private listarEdificioCod(): string[]{
     let listaCodigos: string[];
@@ -52,5 +86,23 @@ export class EdificioService {
 
   private log(message: string) {
     this.messageService.add(`${message}`);
+  }
+
+  private validateString (data : string): boolean{
+    if(data === null || data === undefined || data === ""){
+      return false;
+    }
+    return true;
+  }
+
+  private validateNumber(data : string, dataName : string): boolean{
+    if(data === null || data === undefined || data === ""){
+      this.log(`${dataName} não pode ser vazio`);
+      return false;
+    }else if(isNaN(+data)){
+      this.log(`${dataName} deve ser um número`);
+      return false;
+    }
+    return true;
   }
 }
