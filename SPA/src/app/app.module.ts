@@ -14,6 +14,7 @@ import { CriarEdificioComponent } from './gestao-campus/criar-edificio/criar-edi
 import { EditarEdificioComponent } from './gestao-campus/editar-edificio/editar-edificio.component';
 import { MessageComponent } from './message/message.component';
 import { AdicionarDispositivoComponent } from './gestao-frota/adicionar-dispositivo/adicionar-dispositivo.component';
+import { CriarTipoRoboComponent } from './gestao-frota/criar-tipo-robo/criar-tipo-robo.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,9 @@ import { AdicionarDispositivoComponent } from './gestao-frota/adicionar-disposit
     CriarEdificioComponent,
     EditarEdificioComponent,
     MessageComponent,
-    AdicionarDispositivoComponent
+    AdicionarDispositivoComponent,
+    CriarTipoRoboComponent,
+    MessageComponent
   ],
   imports: [
     BrowserModule,

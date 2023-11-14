@@ -1,0 +1,35 @@
+<html>
+  <body>
+    <div class="sidebar">
+      <app-sidebar-frota></app-sidebar-frota>
+    </div>
+    <div class="conteudo">
+        
+        <div class = "input-field"> 
+            <input name="marcaTipoRobo" #marcaTipoRobo placeholder="Marca do Tipo de Robô" />
+            <span></span>
+        </div>
+        
+        <div class = "input-field"> 
+            <input name="modeloTipoRobo" #modeloTipoRobo placeholder="Modelo do Tipo de Robô" />
+            <span></span>
+        </div>
+        <label class = "header">Tipos de tarefa:</label>
+        <div class = "checkbox">
+          <div *ngFor="let tipoTarefa of listaTipoTarefa">
+              <label><input type="checkbox" (change)="selecionarCheckBox(tipoTarefa)" />{{ tipoTarefa }}
+              </label>
+            
+          </div>
+        </div>
+
+      <div class = "button-submit">
+        <button type="button" class="add-button" (click)="add(marcaTipoRobo.value, modeloTipoRobo.value);">Criar Tipo de Robot</button>
+      </div>
+      <app-message></app-message>
+    </div>
+  </body>
+  
+</html>
+
+
