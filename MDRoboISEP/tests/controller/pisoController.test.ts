@@ -248,7 +248,7 @@ describe('PisoController', () => {
         } as IPisoDTO;
 
         let req: Partial<Request> = {};
-        req.body = body;
+        req.query = body;
 
         let res: Partial<Response> = {
             status: sinon.spy(),
@@ -284,7 +284,7 @@ describe('PisoController', () => {
             "codigo": "as1",
         };
         let req: Partial<Request> = {};
-        req.body = body;
+        req.query = body;
 
         let res: Partial<Response> = {
             status: sinon.spy(),
@@ -338,7 +338,7 @@ describe('PisoController', () => {
             "codigo": "as1",
         };
         let req: Partial<Request> = {};
-        req.body = body;
+        req.query = body;
     
         let res: Partial<Response> = {
             status: sinon.spy(),

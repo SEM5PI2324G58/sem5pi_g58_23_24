@@ -40,11 +40,11 @@ export default class PisoController implements IPisoController {
 
   public async listarTodosOsPisosDeUmEdificio(req: Request, res: Response, next: NextFunction) {
     try {
-      const pisoOrError = await this.pisoServiceInstance.listarTodosOsPisosDeUmEdificio(req.body.codigo);
+      const pisoOrError = await this.pisoServiceInstance.listarTodosOsPisosDeUmEdificio(req.query.codigo as string);
         
       if (pisoOrError.isFailure) {
         let message = String(pisoOrError.errorValue());
-        if(message === "O edificio com o código " + req.body.codigo +" não existe" || message === "Não existem pisos nesse Edificio"){
+        if(message === "O edificio com o código " + req.query.codigo +" não existe" || message === "Não existem pisos nesse Edificio"){
           return res.status(404).json( pisoOrError.errorValue());
         }
         return res.json( pisoOrError.errorValue()).status(400).send();
