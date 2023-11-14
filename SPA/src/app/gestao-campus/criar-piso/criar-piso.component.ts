@@ -18,9 +18,10 @@ export class CriarPisoComponent implements OnInit{
   }
 
   add(codigo: string,
-      numeroPiso: number,
+      numeroPiso: string,
       descricaoPiso: string): void {
-        
+      
+      
     this.pisoService.criarPiso(codigo, numeroPiso, descricaoPiso);
   }
 

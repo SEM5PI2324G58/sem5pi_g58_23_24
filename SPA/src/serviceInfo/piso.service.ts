@@ -23,17 +23,16 @@ export class PisoService {
 
 
   criarPiso(codigo: string,
-              numeroPiso: number,
+              numeroPiso: string,
               descricaoPiso: string): void{
       
     let piso: Piso;
+    if(this.validateData(codigo, numeroPiso)){
     if(descricaoPiso==null || descricaoPiso=="" || descricaoPiso== undefined){
-      piso = {codigo: codigo, numeroPiso: numeroPiso} as Piso;
+      piso = {codigo: codigo, numeroPiso: Number(numeroPiso)} as Piso;
     }else{
-      piso = {codigo: codigo, numeroPiso: numeroPiso, descricaoPiso: descricaoPiso} as Piso;
+      piso = {codigo: codigo, numeroPiso:  Number(numeroPiso), descricaoPiso: descricaoPiso} as Piso;
     }
-    
-    if(this.validateData(piso.codigo, piso.numeroPiso)){
       this.addPiso(piso);
     }
       
@@ -76,7 +75,7 @@ export class PisoService {
   }
 
   validateData(codigo: string,
-    numeroPiso: number): boolean{
+    numeroPiso: string): boolean{
 
     let flag:boolean = true;
 
@@ -84,7 +83,7 @@ export class PisoService {
       this.log("ERRO: Código Deve ser preenchido.");
       flag=false;
     }
-    if(numeroPiso==null || numeroPiso==undefined){
+    if(numeroPiso=="" || numeroPiso==undefined){
       this.log("ERRO: Número do Piso deve ser preenchido.");
       flag=false;
     }
