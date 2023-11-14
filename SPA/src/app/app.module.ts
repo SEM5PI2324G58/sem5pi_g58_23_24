@@ -14,6 +14,7 @@ import { CriarEdificioComponent } from './gestao-campus/criar-edificio/criar-edi
 import { EditarEdificioComponent } from './gestao-campus/editar-edificio/editar-edificio.component';
 import { MessageComponent } from './message/message.component';
 import { AdicionarDispositivoComponent } from './gestao-frota/adicionar-dispositivo/adicionar-dispositivo.component';
+import { CriarTipoRoboComponent } from './gestao-frota/criar-tipo-robo/criar-tipo-robo.component';
 import { CriarElevadorComponent } from './gestao-campus/criar-elevador/criar-elevador.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
@@ -31,6 +32,8 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     EditarEdificioComponent,
     MessageComponent,
     AdicionarDispositivoComponent,
+    CriarTipoRoboComponent,
+    MessageComponent,
     CriarElevadorComponent
   ],
   imports: [

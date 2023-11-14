@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { Piso } from '../dataModel/piso';
 import { MessageService } from './message.service';
+import { EditarPiso } from 'src/dataModel/editarPiso';
+import { EdificioService } from './edificio.service';
 
 
 @Injectable({
@@ -59,6 +61,63 @@ export class PisoService {
       }
     });
   }
+
+  editarPiso(codigo: string,
+              numeroPiso: string,
+              novoNumeroPiso: string,
+              descricaoPiso: string): void{
+              
+  if(this.validateData(codigo, numeroPiso)){
+    let piso: EditarPiso = {codigoEdificio: codigo, numeroPiso: Number(numeroPiso)} as EditarPiso;
+    if(!(descricaoPiso==null || descricaoPiso=="" || descricaoPiso== undefined)){
+      piso.descricaoPiso = descricaoPiso;
+    }
+    if(!(novoNumeroPiso==null || novoNumeroPiso=="" || novoNumeroPiso== undefined)){
+      piso.novoNumeroPiso = Number(novoNumeroPiso);
+    }
+      this.updatePiso(piso);
+    }           
+  }
+  
+  private updatePiso(update: EditarPiso): void{
+    let codigo: string;
+    let numeroPiso: number;
+    let descricaoPiso: string;
+    
+    this.http.put<Piso>(this.pisoUrl, update, this.httpOptions)
+    .pipe(catchError(this.handleError<Piso>('Criar Piso')))
+    .subscribe({
+        next: data=>{codigo=data.codigo;
+          numeroPiso=data.numeroPiso;
+          if(data.descricaoPiso==null)
+            this.log("Piso com código: "+codigo+", número Piso: "+numeroPiso+" atualizado com sucesso!");
+          else{
+          descricaoPiso=data.descricaoPiso;
+          this.log("Piso com código: "+codigo+", número Piso: "+numeroPiso+", descrição: "+descricaoPiso+" atualizado com sucesso!");
+          }
+          
+      }
+    });
+  }
+
+  public listarNumeroPisos(codigo: string): number[]{
+    return this.listarPisosNumero(codigo) ;
+  }
+
+  private listarPisosNumero(codigo: string): number[]{
+    let listaCodigos: number[];
+    listaCodigos = [];
+    let params = new HttpParams().set('codigo', codigo);
+
+    this.http.get<Piso[]>(this.pisoUrl , { params: params, headers: this.httpOptions.headers })
+    .pipe(catchError(this.handleError<Piso[]>('Listar Piso')))
+    .subscribe(data => {
+      const numeroPiso = data.map(item => item.numeroPiso);
+      listaCodigos.push(...numeroPiso);
+    });
+    return listaCodigos;
+  }
+
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {

@@ -25,11 +25,12 @@ export default (app: Router) => {
   
     route.get('',
     celebrate({
-      body: Joi.object({
-        codigo: Joi.string().required()
+      query: Joi.object({
+        codigo: Joi.string().required(),
       })
     }),
-    (req, res, next) => ctrl.listarTodosOsPisosDeUmEdificio(req, res, next) );
+    (req, res, next) => ctrl.listarTodosOsPisosDeUmEdificio(req, res, next)
+  );
 
     route.put('',
     celebrate({
