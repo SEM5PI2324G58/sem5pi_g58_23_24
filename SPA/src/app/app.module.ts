@@ -11,6 +11,7 @@ import { SidebarComponent } from './gestao-campus/sidebar/sidebar.component';
 import { SidebarFrotaComponent } from './gestao-frota/sidebar-frota/sidebar-frota.component';
 import { CriarPisoComponent } from './gestao-campus/criar-piso/criar-piso.component';
 import { CriarEdificioComponent } from './gestao-campus/criar-edificio/criar-edificio.component';
+import { EditarEdificioComponent } from './gestao-campus/editar-edificio/editar-edificio.component';
 import { MessageComponent } from './message/message.component';
 
 @NgModule({
@@ -24,6 +25,7 @@ import { MessageComponent } from './message/message.component';
     SidebarFrotaComponent,
     CriarPisoComponent,
     CriarEdificioComponent,
+    EditarEdificioComponent,
     MessageComponent
   ],
   imports: [

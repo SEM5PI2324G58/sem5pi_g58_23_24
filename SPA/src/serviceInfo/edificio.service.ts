@@ -74,6 +74,38 @@ export class EdificioService {
   }
 
   
+
+  public editarEdificio(codigo: string, nome?: string, descricao?: string): void {
+    if(this.validateString(codigo) === false){
+      this.log("Código não pode ser vazio");
+      return;
+    }
+
+    let edificio: any = {
+      codigo: codigo,
+    };
+    let um = false;
+    if(nome && this.validateString(nome)){
+      edificio.nome = nome;
+      um = true;
+    }
+    if(descricao && this.validateString(descricao)){
+      edificio.descricao = descricao;
+      um = true;
+    }
+
+    if(um === false){
+      this.log("Nenhum campo para atualizar");
+      return;
+    }
+
+    this.http.put<Edificio>(this.edificioUrl, edificio as Edificio, this.httpOptions)
+    .pipe(catchError(this.handleError<Edificio>('Editar Edificio')))
+    .subscribe(data => {
+      this.log(`Edificio com código: ${data.codigo} editado com sucesso!`);
+    });
+  }
+  
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       
