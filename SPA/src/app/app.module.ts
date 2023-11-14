@@ -14,6 +14,8 @@ import { CriarEdificioComponent } from './gestao-campus/criar-edificio/criar-edi
 import { EditarEdificioComponent } from './gestao-campus/editar-edificio/editar-edificio.component';
 import { MessageComponent } from './message/message.component';
 import { AdicionarDispositivoComponent } from './gestao-frota/adicionar-dispositivo/adicionar-dispositivo.component';
+import { CriarElevadorComponent } from './gestao-campus/criar-elevador/criar-elevador.component';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 @NgModule({
   declarations: [
@@ -28,12 +30,14 @@ import { AdicionarDispositivoComponent } from './gestao-frota/adicionar-disposit
     CriarEdificioComponent,
     EditarEdificioComponent,
     MessageComponent,
-    AdicionarDispositivoComponent
+    AdicionarDispositivoComponent,
+    CriarElevadorComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]
