@@ -14,7 +14,11 @@ export class CriarPassagemComponent {
   listaCodigos: string[] = [];
 
   ngOnInit(): void {  
-    this.listaCodigos = this.edificioService.listarCodEdificios();
+    this.edificioService.listarCodEdificios().subscribe({
+      next: data => {
+        this.listaCodigos = data;
+      }
+    });
   }
 
   onCodigoChange(selectedCodigo: string) {

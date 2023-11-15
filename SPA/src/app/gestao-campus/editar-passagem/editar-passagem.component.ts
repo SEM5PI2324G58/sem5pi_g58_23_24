@@ -21,8 +21,11 @@ export class EditarPassagemComponent {
     listaNumeroPisosB: number[] = [];
 
   ngOnInit(): void {  
-    this.listaCodigos = this.edificioService.listarCodEdificios();
-  }
+    this.edificioService.listarCodEdificios().subscribe({
+      next: data => {
+        this.listaCodigos = data;
+      }
+    });  }
 
   listarNumeroPisosA(codigoEdificioInput: string): void {
     const codigo = codigoEdificioInput
