@@ -76,4 +76,55 @@ export class ElevadorService {
         }
     });
   }
+
+  public editarElevador(codigoEd: string, pisosServidos: number[], marca: string,modelo:string, numSerie:string, descricao: string): void{
+    let elevador: Elevador = {} as Elevador;
+    if (this.validarDadosEdicao(codigoEd, pisosServidos)){
+
+      elevador.edificio = codigoEd;
+
+      if (pisosServidos.length >= 2){
+        elevador.pisosServidos = pisosServidos;
+      }
+      
+      if (marca != null && marca != undefined && marca != ""){
+        elevador.marca = marca;
+      }
+      if (modelo != null && modelo != undefined && modelo != ""){
+        elevador.modelo = modelo;
+      }
+      if (numSerie != null && numSerie != undefined && numSerie != ""){
+        elevador.numeroSerie = numSerie;
+      }
+      if (descricao != null && descricao != undefined && descricao != ""){
+        elevador.descricao = descricao;
+      }
+      this.putElevador(elevador);
+    }
+  }
+  
+  private validarDadosEdicao(codigoEd: string, pisosServidos: number[]) : boolean {
+    if(codigoEd === null || codigoEd === undefined || codigoEd === ""){
+      this.log("Código de edifício não pode ser vazio!");
+      return false;
+    }
+    // pisosServidos.length !== 1 porque o array pode vir vazio (pisosServidos.length === 0 não é para ser alterado) 
+    // ou com os novos pisos (pisosServidos.length >=2)
+    if(pisosServidos === null || pisosServidos === undefined || pisosServidos.length === 1 ){
+      this.log("Tem que selecionar pelo menos 2 pisos!");
+      return false;
+    }
+    
+    return true;
+  }
+  
+  private putElevador(elevador: Elevador) {
+    this.http.put<Elevador>(this.elevadorUrl, elevador, this.httpOptions)
+    .pipe(catchError(this.handleError<Elevador>('Editar Elevador')))
+    .subscribe({
+        next: data =>{
+          this.log("Elevador no edifício "+ data.edificio +" editado com sucesso!");
+        }
+    });
+  }
 }
