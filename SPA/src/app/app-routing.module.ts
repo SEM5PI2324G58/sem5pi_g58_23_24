@@ -10,6 +10,8 @@ import { EditarEdificioComponent } from './gestao-campus/editar-edificio/editar-
 import { CriarTipoRoboComponent } from './gestao-frota/criar-tipo-robo/criar-tipo-robo.component';
 import { AdicionarDispositivoComponent } from './gestao-frota/adicionar-dispositivo/adicionar-dispositivo.component';
 import { CriarElevadorComponent } from './gestao-campus/criar-elevador/criar-elevador.component';
+import { EditarPisoComponent } from './gestao-campus/editar-piso/editar-piso.component';
+
 import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.component';
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full'},
@@ -23,6 +25,7 @@ const routes: Routes = [
   { path: 'criarTipoRobo', component: CriarTipoRoboComponent},
   { path: 'criarElevador', component: CriarElevadorComponent},
   { path: 'adicionarDispositivo', component: AdicionarDispositivoComponent},
+  { path: 'editarPiso', component: EditarPisoComponent},
   { path: 'visualizacao3D', component: Visualizacao3DComponent}
 ];
 

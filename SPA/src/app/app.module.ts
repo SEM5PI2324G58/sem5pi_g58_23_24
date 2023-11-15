@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms'; // Import FormsModule
+import { ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { GestaoCampusComponent } from './gestao-campus/gestao-campus.component';
 import { GestaoFrotaComponent } from './gestao-frota/gestao-frota.component';
@@ -17,6 +19,7 @@ import { AdicionarDispositivoComponent } from './gestao-frota/adicionar-disposit
 import { CriarTipoRoboComponent } from './gestao-frota/criar-tipo-robo/criar-tipo-robo.component';
 import { CriarElevadorComponent } from './gestao-campus/criar-elevador/criar-elevador.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { EditarPisoComponent } from './gestao-campus/editar-piso/editar-piso.component';
 import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.component';
 
 @NgModule({
@@ -36,12 +39,15 @@ import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.compo
     CriarTipoRoboComponent,
     MessageComponent,
     CriarElevadorComponent,
+    EditarPisoComponent,
     Visualizacao3DComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
     NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [],
