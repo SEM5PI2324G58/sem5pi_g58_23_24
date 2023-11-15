@@ -113,20 +113,17 @@ export class PisoService {
       );
   }
 
-  public listarPisos(codigo: string): Piso[]{
-    return this.listPisos(codigo) ;
+  public listarPisos(codigo: string): Observable<Piso[]> {
+    return this.listPisos(codigo);
   }
-
-  private listPisos(codigo: string): Piso[]{
-    let listaPisos: Piso[] = [];
+  
+  private listPisos(codigo: string): Observable<Piso[]> {
     let params = new HttpParams().set('codigo', codigo);
-
-    this.http.get<Piso[]>(this.pisoUrl , { params: params, headers: this.httpOptions.headers })
-    .pipe(catchError(this.handleError<Piso[]>('Listar Piso')))
-    .subscribe(data => {
-      listaPisos.push(...data);
-    });
-    return listaPisos;
+  
+    return this.http.get<Piso[]>(this.pisoUrl, { params: params, headers: this.httpOptions.headers })
+      .pipe(
+        catchError(this.handleError<Piso[]>('Listar Piso'))
+      );
   }
 
 
