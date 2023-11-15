@@ -27,7 +27,7 @@ export default (app: Router) => {
 
     route.get('/listarMinEMaxPisos',
     celebrate({
-      body: Joi.object({
+      query: Joi.object({
         minPisos: Joi.number().required(),
         maxPisos: Joi.number().required(),
       })

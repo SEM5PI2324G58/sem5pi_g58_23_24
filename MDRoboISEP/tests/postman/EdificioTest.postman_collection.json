@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "53766eed-c2f3-48a6-8528-8099ccbad07c",
+		"_postman_id": "6e6a19f7-5406-4528-9fa9-7d08b1d282a7",
 		"name": "EdificioTest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "30690787"
+		"_exporter_id": "30673359"
 	},
 	"item": [
 		{
@@ -39,9 +39,31 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"minPisos\": 1000,\r\n    \"maxPisos\": 10000\r\n}"
+					"raw": ""
 				},
-				"url": "http://localhost:4000/api/edificio/listarMinEMaxPisos"
+				"url": {
+					"raw": "http://localhost:4000/api/edificio/listarMinEMaxPisos?minPisos=1000&maxPisos=10000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"edificio",
+						"listarMinEMaxPisos"
+					],
+					"query": [
+						{
+							"key": "minPisos",
+							"value": "1000"
+						},
+						{
+							"key": "maxPisos",
+							"value": "10000"
+						}
+					]
+				}
 			},
 			"response": []
 		},
@@ -78,9 +100,31 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"minPisos\": -1,\r\n    \"maxPisos\": 5\r\n}"
+					"raw": ""
 				},
-				"url": "http://localhost:4000/api/edificio/listarMinEMaxPisos"
+				"url": {
+					"raw": "http://localhost:4000/api/edificio/listarMinEMaxPisos?minPisos=-1&maxPisos=5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"edificio",
+						"listarMinEMaxPisos"
+					],
+					"query": [
+						{
+							"key": "minPisos",
+							"value": "-1"
+						},
+						{
+							"key": "maxPisos",
+							"value": "5"
+						}
+					]
+				}
 			},
 			"response": []
 		},
@@ -117,9 +161,31 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"minPisos\": 5,\r\n    \"maxPisos\": 1\r\n}"
+					"raw": ""
 				},
-				"url": "http://localhost:4000/api/edificio/listarMinEMaxPisos"
+				"url": {
+					"raw": "http://localhost:4000/api/edificio/listarMinEMaxPisos?minPisos=5&maxPisos=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"edificio",
+						"listarMinEMaxPisos"
+					],
+					"query": [
+						{
+							"key": "minPisos",
+							"value": "5"
+						},
+						{
+							"key": "maxPisos",
+							"value": "1"
+						}
+					]
+				}
 			},
 			"response": []
 		},
@@ -158,9 +224,31 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"minPisos\": 0,\r\n    \"maxPisos\": 2\r\n}"
+					"raw": ""
 				},
-				"url": "http://localhost:4000/api/edificio/listarMinEMaxPisos"
+				"url": {
+					"raw": "http://localhost:4000/api/edificio/listarMinEMaxPisos?minPisos=0&maxPisos=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"edificio",
+						"listarMinEMaxPisos"
+					],
+					"query": [
+						{
+							"key": "minPisos",
+							"value": "0"
+						},
+						{
+							"key": "maxPisos",
+							"value": "2"
+						}
+					]
+				}
 			},
 			"response": []
 		},
@@ -645,9 +733,31 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"minPisos\": 0,\r\n    \"maxPisos\": 2\r\n}"
+					"raw": ""
 				},
-				"url": "http://localhost:4000/api/edificio/listarMinEMaxPisos"
+				"url": {
+					"raw": "http://localhost:4000/api/edificio/listarMinEMaxPisos?minPisos=0&maxPisos=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"edificio",
+						"listarMinEMaxPisos"
+					],
+					"query": [
+						{
+							"key": "minPisos",
+							"value": "0"
+						},
+						{
+							"key": "maxPisos",
+							"value": "2"
+						}
+					]
+				}
 			},
 			"response": []
 		},
@@ -685,9 +795,31 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"minPisos\": 0,\r\n    \"maxPisos\": 2\r\n}"
+					"raw": ""
 				},
-				"url": "http://localhost:4000/api/edificio/listarMinEMaxPisos"
+				"url": {
+					"raw": "http://localhost:4000/api/edificio/listarMinEMaxPisos?minPisos=0&maxPisos=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"edificio",
+						"listarMinEMaxPisos"
+					],
+					"query": [
+						{
+							"key": "minPisos",
+							"value": "0"
+						},
+						{
+							"key": "maxPisos",
+							"value": "2"
+						}
+					]
+				}
 			},
 			"response": []
 		},

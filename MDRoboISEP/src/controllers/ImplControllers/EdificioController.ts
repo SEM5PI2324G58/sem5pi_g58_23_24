@@ -31,7 +31,8 @@ export default class EdificioController implements IEdificioController /* TODO: 
   
   public async listarEdificioMinEMaxPisos(req: Request, res: Response, next: NextFunction) {
     try{
-      const edificioOrError = await this.edificioServiceInstance.listarEdificioMinEMaxPisos(req.body as IListarEdMinEMaxPisosDTO) as Result<IEdificioDTO[]>;
+      let props ={ minPisos: Number(req.query.minPisos), maxPisos: Number(req.query.maxPisos) };
+      const edificioOrError = await this.edificioServiceInstance.listarEdificioMinEMaxPisos(props as IListarEdMinEMaxPisosDTO) as Result<IEdificioDTO[]>;
       if (edificioOrError.isFailure) {
         if(String(edificioOrError.errorValue()) === "Não existem edificios com o número de pisos pretendido"){
           res.status(404);

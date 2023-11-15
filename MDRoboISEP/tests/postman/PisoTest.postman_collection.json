@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "b1bc9ab0-f13a-41e8-b52a-644ea63c1e12",
+		"_postman_id": "b524300a-01d7-4dad-b303-80718f69536f",
 		"name": "PisoTest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "30695664"
+		"_exporter_id": "30673359"
 	},
 	"item": [
 		{
@@ -39,10 +39,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"codigo\": \"Teste\"\r\n}"
+					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:4000/api/piso",
+					"raw": "http://localhost:4000/api/piso?codigo=Teste",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -54,8 +54,12 @@
 					],
 					"query": [
 						{
+							"key": "codigo",
+							"value": "Teste"
+						},
+						{
 							"key": "",
-							"value": null,
+							"value": "",
 							"disabled": true
 						}
 					]
@@ -178,10 +182,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"codigo\": \"Teste\"\r\n}"
+					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:4000/api/piso",
+					"raw": "http://localhost:4000/api/piso?codigo=Teste",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -193,8 +197,12 @@
 					],
 					"query": [
 						{
+							"key": "codigo",
+							"value": "Teste"
+						},
+						{
 							"key": "",
-							"value": null,
+							"value": "",
 							"disabled": true
 						}
 					]
@@ -283,10 +291,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"codigo\": \"Teste\"\r\n}"
+					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:4000/api/piso",
+					"raw": "http://localhost:4000/api/piso?codigo=Teste",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -298,8 +306,12 @@
 					],
 					"query": [
 						{
+							"key": "codigo",
+							"value": "Teste"
+						},
+						{
 							"key": "",
-							"value": null,
+							"value": "",
 							"disabled": true
 						}
 					]
@@ -388,10 +400,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"codigo\": \"Teste\"\r\n}"
+					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:4000/api/piso",
+					"raw": "http://localhost:4000/api/piso?codigo=Teste",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -403,8 +415,12 @@
 					],
 					"query": [
 						{
+							"key": "codigo",
+							"value": "Teste"
+						},
+						{
 							"key": "",
-							"value": null,
+							"value": "",
 							"disabled": true
 						}
 					]

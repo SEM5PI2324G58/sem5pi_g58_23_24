@@ -348,13 +348,16 @@ it('EdificioController + EdificioService + EdificioRepo criar edificio', async f
             "maxPisos": 1,
         };
 
-        let req: Partial<Request> = {};req.body = body;
+        let req: Partial<Request> = {};
+        req.query = body as any;
         let res: Partial<Response> = {
             status: sinon.spy(),
             json: sinon.spy()
         };
         let next: Partial<NextFunction> = () => {};
         let edificioServiceInstance = Container.get("EdificioService");
+
+
         sinon.stub(edificioServiceInstance, 'listarEdificioMinEMaxPisos').returns(Promise.resolve(Result.ok<IEdificioDTO[]>(listaDTO)));
 
         let edificioController = new EdificioController(edificioServiceInstance as IEdificioService);
@@ -397,7 +400,7 @@ it('EdificioController + EdificioService + EdificioRepo criar edificio', async f
                                 
         };
 
-        let req: Partial<Request> = {};req.body = body;
+        let req: Partial<Request> = {};req.query = body as any;
         let res: Partial<Response> = {
             status: sinon.spy(),
             json: sinon.spy()
@@ -457,7 +460,8 @@ it('EdificioController + EdificioService + EdificioRepo criar edificio', async f
             save() { return this; }
         } as IEdificioPersistence & Document<any, any, any>;
 
-        let req: Partial<Request> = {};req.body = body;
+        let req: Partial<Request> = {};
+        req.query = body as any;
         let res: Partial<Response> = {
             status: sinon.spy(),
             json: sinon.spy()
