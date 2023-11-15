@@ -24,6 +24,22 @@ export class EdificioService {
     return this.listarEdificioCod();
   }
 
+  listarCodEdificio(selectedCodigo: string): Edificio {
+    return this.listarEdificio(selectedCodigo);
+  }
+
+  private listarEdificio(codigo: string): Edificio {
+    let edificio: Edificio;
+    edificio = {codigo: "", dimensaoX: 0, dimensaoY: 0	}
+    this.http.get<Edificio>(`${this.edificioUrl}/${codigo}`, this.httpOptions)
+    .pipe(catchError(this.handleError<Edificio>('Listar Edificio')))
+    .subscribe(data => {
+      edificio = data;
+    });
+    return edificio;
+  }
+
+
   public criarEdificio(codigo: string, dimensaoX: string, dimensaoY: string,
     nome?: string, descricao?: string): void {
     let dimensaoXNumero: number = +dimensaoX;

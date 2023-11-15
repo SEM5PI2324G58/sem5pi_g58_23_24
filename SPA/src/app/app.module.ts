@@ -21,6 +21,9 @@ import { CriarElevadorComponent } from './gestao-campus/criar-elevador/criar-ele
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { EditarPisoComponent } from './gestao-campus/editar-piso/editar-piso.component';
 import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.component';
+import { CriarPassagemComponent } from './gestao-campus/criar-passagem/criar-passagem.component';
+import { CriarSalaComponent } from './gestao-campus/criar-sala/criar-sala.component';
+import { EditarPassagemComponent } from './gestao-campus/editar-passagem/editar-passagem.component';
 import { CarregarMapaComponent } from './gestao-campus/carregar-mapa/carregar-mapa.component';
 import { ListarEdificiosComponent } from './gestao-campus/listar-edificios/listar-edificios.component';
 import { TableModule } from 'primeng/table';
@@ -45,6 +48,9 @@ import { TableModule } from 'primeng/table';
     CriarElevadorComponent,
     EditarPisoComponent,
     Visualizacao3DComponent,
+    CriarPassagemComponent,
+    CriarSalaComponent,
+    EditarPassagemComponent,
     CarregarMapaComponent,
     ListarEdificiosComponent
   ],
