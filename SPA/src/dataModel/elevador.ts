@@ -1,8 +1,8 @@
 export interface Elevador {
-    codigoEd: string;
+    edificio: string;
     pisosServidos: number[];
     marca: string;
     modelo: string;
-    numSerie: string;
+    numeroSerie: string;
     descricao: string;
 }
