@@ -12,7 +12,7 @@ activate md
 return resposta
 ator <-- fe: lista de codigos de edificios
 ator -> fe: escolhe o edificio e introduz o numero piso e descrição
-fe -> md: GET listarTodosOsPisosDeUmEdificio(json)
+fe -> md: GET listarTodosOsPisosDeUmEdificio()
 activate md
 return resposta
 ator <-- fe: lista de numeros de pisos

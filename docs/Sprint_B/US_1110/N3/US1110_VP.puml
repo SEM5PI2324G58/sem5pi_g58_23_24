@@ -16,9 +16,9 @@ return listaCodigos
 ator <-- component: lista de codigos de edificios
 ator -> component: escolhe o edificio e introduz o numero piso e descrição
 
-component -> serviceInfo: listarPisos(codigo)
+component -> serviceInfo: listarNumeroPisos(codigo)
 activate serviceInfo
-serviceInfo ->o] : GET listarPisos(codigo)
+serviceInfo ->o] : GET listarTodosOsPisosDeUmEdificio()
 serviceInfo<-- : resposta
 return listaNumeroPisos
 ator <-- component: lista de numeros de pisos
