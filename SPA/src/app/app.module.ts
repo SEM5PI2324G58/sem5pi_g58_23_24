@@ -23,6 +23,7 @@ import { EditarPisoComponent } from './gestao-campus/editar-piso/editar-piso.com
 import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.component';
 import { CriarPassagemComponent } from './gestao-campus/criar-passagem/criar-passagem.component';
 import { CriarSalaComponent } from './gestao-campus/criar-sala/criar-sala.component';
+import { EditarPassagemComponent } from './gestao-campus/editar-passagem/editar-passagem.component';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { CriarSalaComponent } from './gestao-campus/criar-sala/criar-sala.compon
     EditarPisoComponent,
     Visualizacao3DComponent,
     CriarPassagemComponent,
-    CriarSalaComponent
+    CriarSalaComponent,
+    EditarPassagemComponent
   ],
   imports: [
     BrowserModule,

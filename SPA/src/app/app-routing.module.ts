@@ -13,6 +13,7 @@ import { CriarElevadorComponent } from './gestao-campus/criar-elevador/criar-ele
 import { EditarPisoComponent } from './gestao-campus/editar-piso/editar-piso.component';
 import { CriarPassagemComponent } from './gestao-campus/criar-passagem/criar-passagem.component';
 import { CriarSalaComponent } from './gestao-campus/criar-sala/criar-sala.component';
+import { EditarPassagemComponent } from './gestao-campus/editar-passagem/editar-passagem.component';
 
 
 import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.component';
@@ -31,7 +32,8 @@ const routes: Routes = [
   { path: 'editarPiso', component: EditarPisoComponent},
   { path: 'visualizacao3D', component: Visualizacao3DComponent},
   { path: 'criarPassagem', component: CriarPassagemComponent},
-  { path: 'criarSala', component: CriarSalaComponent}
+  { path: 'criarSala', component: CriarSalaComponent},
+  { path: 'editarPassagem', component: EditarPassagemComponent}
   
 ];
 

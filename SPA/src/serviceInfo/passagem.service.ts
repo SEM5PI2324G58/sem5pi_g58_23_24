@@ -10,9 +10,11 @@ import Passagem from 'src/dataModel/passagem';
 @Injectable({
   providedIn: 'root'
 })
+
 export class PassagemService {
 
   private passagemUrl = 'http://localhost:4000/api/passagem';
+  private passagemUrl2 = 'http://localhost:4000/api/passagem/editarPassagens';
   
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -20,6 +22,57 @@ export class PassagemService {
   
   constructor(private messageService: MessageService, private http: HttpClient) { }
 
+
+  editarPassagem(
+    id: number, 
+    codigoEdificioA: string,
+    codigoEdificioB: string,
+    numeroPisoA: number, 
+    numeroPisoB: number) {
+
+      let passagem: Passagem;
+
+      passagem = {
+          id: id, 
+          codigoEdificioA: codigoEdificioA,
+          codigoEdificioB: codigoEdificioB, 
+          numeroPisoA: numeroPisoA, 
+          numeroPisoB: numeroPisoB
+      } as Passagem;
+
+      if(this.validateData(codigoEdificioA, codigoEdificioB, numeroPisoA, numeroPisoB)){
+   
+        this.editar(passagem);
+      }
+  }
+ 
+  editar(passagem: Passagem): void{
+    let id: number;
+    let codigoEdificioA: string;
+    let codigoEdificioB: string;
+    let numeroPisoA: number;
+    let numeroPisoB: number;
+    
+    this.http.put<Passagem>(this.passagemUrl2, passagem, this.httpOptions)
+    .pipe(catchError(this.handleError<Passagem>('Editar passagem entre pisos')))
+    .subscribe({
+        next: data=>{ 
+            id = data.id;
+            codigoEdificioA = data.codigoEdificioA;
+            codigoEdificioB = data.codigoEdificioB;
+            numeroPisoA = data.numeroPisoA;
+            numeroPisoB = data.numeroPisoB;
+
+          if(data.id==null || data.codigoEdificioA == null || data.codigoEdificioB == null || data.numeroPisoA == null || data.numeroPisoB == null){
+            this.log("Erro ao editar passagem porque existem parametros nulos!");
+          }
+          else{
+          this.log("passagem com id: "+id+", codigoEdificioA: "+codigoEdificioA+", codigoEdificioB: "+ codigoEdificioB +", numeroPisoA: "+ numeroPisoA + ", numeroPisoB: "+ numeroPisoB + " editado com sucesso!");
+          }
+          
+      }
+    });
+  }
 
     criarPassagem(
         id: number,
@@ -77,10 +130,11 @@ export class PassagemService {
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
-      
-
-      this.log(`${operation} falhou: ${error.error}`);
-
+      // Log the full error
+      console.error(`${operation} failed:`, error); // Log the full error object
+  
+      this.log(`${operation} falhou: ${error.message || error}`); // Display a more informative message
+  
       return of(result as T);
     };
   }
