@@ -69,7 +69,8 @@ export default class PisoController implements IPisoController {
               message === "O piso com o número " + req.body.numeroPiso +" não existe"){
           return res.status(404).json( pisoOrError.errorValue());
         }
-        return res.json( pisoOrError.errorValue()).status(400).send();
+        res.status(400);
+        return res.json( pisoOrError.errorValue()).send();
 
       }
 
