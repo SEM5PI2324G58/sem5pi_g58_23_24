@@ -175,7 +175,7 @@ export default class MapaService implements IMapaService{
         return Result.fail<Piso>("O piso que inseriu não existe.")
     }
 
-    public async exportarMapaPiso(mapaDTO : IExportarMapaDTO){
+    public async exportarMapa(mapaDTO : IExportarMapaDTO) : Promise<Result<IExportarMapaDTO>>{
         let edificioOrError = await this.verificarSeEdificioExiste(mapaDTO.codigoEdificio);
         if(edificioOrError.isFailure){
             return Result.fail<IExportarMapaDTO>(edificioOrError.errorValue());

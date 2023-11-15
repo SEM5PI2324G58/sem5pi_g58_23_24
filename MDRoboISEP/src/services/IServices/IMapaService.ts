@@ -4,5 +4,5 @@ import IExportarMapaDTO from "../../dto/IExportarMapaDTO";
 
 export default interface IMapaService{
     carregarMapa(json : ICarregarMapaDTO) : Promise<Result<ICarregarMapaDTO>>;
-    exportarMapa(json : IExportarMapaDTO) : Promise<Result<IExportarMapaDTO>>;
+    exportarMapa(mapaDTO : IExportarMapaDTO) : Promise<Result<IExportarMapaDTO>>;
 }
