@@ -17,6 +17,7 @@ import { AdicionarDispositivoComponent } from './gestao-frota/adicionar-disposit
 import { CriarTipoRoboComponent } from './gestao-frota/criar-tipo-robo/criar-tipo-robo.component';
 import { CriarElevadorComponent } from './gestao-campus/criar-elevador/criar-elevador.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     AdicionarDispositivoComponent,
     CriarTipoRoboComponent,
     MessageComponent,
-    CriarElevadorComponent
+    CriarElevadorComponent,
+    Visualizacao3DComponent
   ],
   imports: [
     BrowserModule,

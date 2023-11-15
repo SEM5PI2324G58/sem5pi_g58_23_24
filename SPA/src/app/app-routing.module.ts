@@ -10,6 +10,7 @@ import { EditarEdificioComponent } from './gestao-campus/editar-edificio/editar-
 import { CriarTipoRoboComponent } from './gestao-frota/criar-tipo-robo/criar-tipo-robo.component';
 import { AdicionarDispositivoComponent } from './gestao-frota/adicionar-dispositivo/adicionar-dispositivo.component';
 import { CriarElevadorComponent } from './gestao-campus/criar-elevador/criar-elevador.component';
+import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.component';
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full'},
   { path: 'dashboard', component: DashboardComponent },
@@ -21,7 +22,8 @@ const routes: Routes = [
   { path: 'editarEdificio', component: EditarEdificioComponent},
   { path: 'criarTipoRobo', component: CriarTipoRoboComponent},
   { path: 'criarElevador', component: CriarElevadorComponent},
-  { path: 'adicionarDispositivo', component: AdicionarDispositivoComponent}
+  { path: 'adicionarDispositivo', component: AdicionarDispositivoComponent},
+  { path: 'visualizacao3D', component: Visualizacao3DComponent}
 ];
 
 @NgModule({
