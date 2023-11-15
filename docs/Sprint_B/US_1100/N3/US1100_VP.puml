@@ -1,7 +1,7 @@
 autonumber
 
 actor "Gestor de campus" as ator
-participant "editar-piso" as component
+participant "listar-piso" as component
 participant "serviceInfo" as serviceInfo
 participant "dataModel" as dataModel
 

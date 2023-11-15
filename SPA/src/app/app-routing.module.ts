@@ -14,6 +14,7 @@ import { EditarPisoComponent } from './gestao-campus/editar-piso/editar-piso.com
 import { CriarPassagemComponent } from './gestao-campus/criar-passagem/criar-passagem.component';
 import { CriarSalaComponent } from './gestao-campus/criar-sala/criar-sala.component';
 import { EditarPassagemComponent } from './gestao-campus/editar-passagem/editar-passagem.component';
+import { ListarPisoComponent } from './gestao-campus/listar-piso/listar-piso.component';
 import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.component';
 import { CarregarMapaComponent } from './gestao-campus/carregar-mapa/carregar-mapa.component';
 import { ListarEdificiosComponent } from './gestao-campus/listar-edificios/listar-edificios.component';
@@ -39,6 +40,7 @@ const routes: Routes = [
   { path: 'editarPassagem', component: EditarPassagemComponent},
   { path: 'carregarMapa', component: CarregarMapaComponent},
   { path: 'listarEdificios', component: ListarEdificiosComponent},
+  { path: 'listarPiso', component : ListarPisoComponent}
 ];
 
 @NgModule({
