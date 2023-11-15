@@ -3,6 +3,7 @@ import config from "../../../config";
 import IMapaRepo from "../IRepos/IMapaRepo";
 import IEdificioRepo from "../IRepos/IEdificioRepo";
 import ICarregarMapaDTO from "../../dto/ICarregarMapaDTO";
+import IExportarMapaDTO from "../../dto/IExportarMapaDTO";
 import { Result } from "../../core/logic/Result";
 import { Mapa } from "../../domain/mapa/Mapa";
 import { TipoPonto } from "../../domain/mapa/TipoPonto";
@@ -174,4 +175,34 @@ export default class MapaService implements IMapaService{
         return Result.fail<Piso>("O piso que inseriu não existe.")
     }
 
+    public async exportarMapaPiso(mapaDTO : IExportarMapaDTO){
+        let edificioOrError = await this.verificarSeEdificioExiste(mapaDTO.codigoEdificio);
+        if(edificioOrError.isFailure){
+            return Result.fail<IExportarMapaDTO>(edificioOrError.errorValue());
+        }
+        let edificio = edificioOrError.getValue();
+        let pisoOrError = await this.verificarSePisoExiste(edificio, mapaDTO.numeroPiso);
+        if(pisoOrError.isFailure){
+            return Result.fail<IExportarMapaDTO>(pisoOrError.errorValue());
+        }
+        let piso = pisoOrError.getValue();
+
+        let mapa = piso.props.mapa;
+
+        if(mapa === null || mapa === undefined || mapa.verificarSeMapaVazio() === true){
+            return Result.fail<IExportarMapaDTO>("O mapa não tem nada para importar.");
+        }
+
+        let informcaoMapa = mapa.exportarMapa();
+        let informacaoMapaDTO : IExportarMapaDTO = {
+            codigoEdificio: mapaDTO.codigoEdificio,
+            numeroPiso : mapaDTO.numeroPiso,
+            matriz : informcaoMapa.matriz,
+            passagens : informcaoMapa.passagens,
+            elevador : informcaoMapa.elevador,
+            salas : informcaoMapa.salas,
+        }
+        return Result.ok<IExportarMapaDTO>(informacaoMapaDTO);
+    }
+    
 }
