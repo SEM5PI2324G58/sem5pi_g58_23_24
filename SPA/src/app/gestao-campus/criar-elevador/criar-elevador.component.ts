@@ -19,7 +19,7 @@ export class CriarElevadorComponent {
   ngOnInit() : void {
 
   
-  this.listaCodEd = this.edificioService.listarCodEdificios();
+    //this.listaCodEd = this.edificioService.listarCodEdificios();
 
     this.pisosEd = [
       { item_id: 1, item_text: '1' },

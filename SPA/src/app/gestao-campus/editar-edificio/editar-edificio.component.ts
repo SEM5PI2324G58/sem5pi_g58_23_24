@@ -11,7 +11,11 @@ export class EditarEdificioComponent {
   listaCodigos: string[] = [];
 
   ngOnInit(): void {  
-    this.listaCodigos = this.edificioService.listarCodEdificios();
+    this.edificioService.listarCodEdificios().subscribe({
+      next: data => {
+        this.listaCodigos = data;
+      }
+    });
   }
   edit(codigo:string, nome?:string, descricao?:string): void {
     this.edificioService.editarEdificio(codigo, nome, descricao);

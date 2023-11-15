@@ -21,8 +21,13 @@ export class EditarPisoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {  
-    this.listaCodigos = this.edificioService.listarCodEdificios();
 
+    this.edificioService.listarCodEdificios().subscribe({
+      next: data => {
+        this.listaCodigos = data;
+      }
+    });
+  
     this.myForm = this.fb.group({
       codigo: ['', Validators.required],
       numeroPiso: ['', Validators.required],

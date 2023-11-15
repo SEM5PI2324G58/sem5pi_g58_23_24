@@ -20,7 +20,7 @@ export class EdificioService {
   
   constructor(private messageService: MessageService, private http: HttpClient) { }
 
-  public listarCodEdificios(): string[]{
+  public listarCodEdificios(): Observable<string[]>{
     return this.listarEdificioCod();
   }
 
@@ -60,17 +60,12 @@ export class EdificioService {
     });
   }
 
-  private listarEdificioCod(): string[]{
-    let listaCodigos: string[];
-    listaCodigos = [];
-    
-    this.http.get<Edificio[]>(this.edificioUrl, this.httpOptions)
-    .pipe(catchError(this.handleError<Edificio[]>('Listar Edificio')))
-    .subscribe(data => {
-        const codigos = data.map(item => item.codigo);
-        listaCodigos.push(...codigos);
-    });
-    return listaCodigos; 
+  private listarEdificioCod(): Observable<string[]> {
+    return this.http.get<Edificio[]>(this.edificioUrl, this.httpOptions)
+      .pipe(
+        catchError(this.handleError<Edificio[]>('Listar Edificio')),
+        map(data => data.map(item => item.codigo))
+      );
   }
 
   
