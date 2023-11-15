@@ -1,0 +1,79 @@
+import { Injectable } from '@angular/core';
+import { MessageService } from './message.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, catchError, of } from 'rxjs';
+import { Elevador } from 'src/dataModel/elevador';
+import { devEnvironment } from 'src/environments/environment.development';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ElevadorService {
+
+  private elevadorUrl = devEnvironment.MDRI_API_URL + 'elevador';
+  
+  httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  };
+  
+  constructor(private messageService: MessageService, private http: HttpClient) { }
+
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      
+
+      this.log(`${operation} falhou: ${error.error}`);
+
+      return of(result as T);
+    };
+  }
+
+  private log(message: string) {
+    this.messageService.add(`${message}`);
+  }
+
+  public criarElevador(codigoEd: string, pisosServidos: number[], marca: string,modelo:string, numSerie:string, descricao: string): void{
+    let elevador: Elevador = {} as Elevador;
+    if (this.validarDadosCriacao(codigoEd, pisosServidos)){
+      elevador.edificio = codigoEd;
+      elevador.pisosServidos = pisosServidos;
+      if (marca != null && marca != undefined && marca != ""){
+        elevador.marca = marca;
+      }
+      if (modelo != null && modelo != undefined && modelo != ""){
+        elevador.modelo = modelo;
+      }
+      if (numSerie != null && numSerie != undefined && numSerie != ""){
+        elevador.numeroSerie = numSerie;
+      }
+      if (descricao != null && descricao != undefined && descricao != ""){
+        elevador.descricao = descricao;
+      }
+      this.postElevador(elevador);
+    }
+  }
+  
+  private validarDadosCriacao(codigoEd: string, pisosServidos: number[]) : boolean {
+    if(codigoEd === null || codigoEd === undefined || codigoEd === ""){
+      this.log("Código de edifício não pode ser vazio!");
+      return false;
+    }
+    
+    if(pisosServidos === null || pisosServidos === undefined || pisosServidos.length < 2 ){
+      this.log("Tem que selecionar pelo menos 2 pisos!");
+      return false;
+    }
+    
+    return true;
+  }
+  
+  private postElevador(elevador: Elevador) {
+    this.http.post<Elevador>(this.elevadorUrl, elevador, this.httpOptions)
+    .pipe(catchError(this.handleError<Elevador>('Criar Elevador')))
+    .subscribe({
+        next: data =>{
+          this.log("Elevador no edifício "+ data.edificio +" criado com sucesso!");
+        }
+    });
+  }
+}
