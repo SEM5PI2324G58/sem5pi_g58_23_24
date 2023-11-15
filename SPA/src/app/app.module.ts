@@ -21,6 +21,10 @@ import { CriarElevadorComponent } from './gestao-campus/criar-elevador/criar-ele
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { EditarPisoComponent } from './gestao-campus/editar-piso/editar-piso.component';
 import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.component';
+import { CarregarMapaComponent } from './gestao-campus/carregar-mapa/carregar-mapa.component';
+import { ListarEdificiosComponent } from './gestao-campus/listar-edificios/listar-edificios.component';
+import { TableModule } from 'primeng/table';
+
 
 @NgModule({
   declarations: [
@@ -40,7 +44,9 @@ import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.compo
     MessageComponent,
     CriarElevadorComponent,
     EditarPisoComponent,
-    Visualizacao3DComponent
+    Visualizacao3DComponent,
+    CarregarMapaComponent,
+    ListarEdificiosComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +54,8 @@ import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.compo
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    NgMultiSelectDropDownModule.forRoot()
+    NgMultiSelectDropDownModule.forRoot(),
+    TableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

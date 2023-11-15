@@ -137,4 +137,14 @@ export class EdificioService {
     }
     return true;
   }
+
+  public listarEdificios(): Edificio[] {
+    let listaEdificios : Edificio[] = [];
+    this.http.get<Edificio[]>(this.edificioUrl, this.httpOptions)
+    .pipe(catchError(this.handleError<Edificio[]>('Listar Edificio')))
+    .subscribe(data => {
+        listaEdificios.push(...data);
+    });
+    return listaEdificios;
+  }
 }
