@@ -24,6 +24,9 @@ import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.compo
 import { CriarPassagemComponent } from './gestao-campus/criar-passagem/criar-passagem.component';
 import { CriarSalaComponent } from './gestao-campus/criar-sala/criar-sala.component';
 import { EditarPassagemComponent } from './gestao-campus/editar-passagem/editar-passagem.component';
+import { CarregarMapaComponent } from './gestao-campus/carregar-mapa/carregar-mapa.component';
+import { ListarEdificiosComponent } from './gestao-campus/listar-edificios/listar-edificios.component';
+import { TableModule } from 'primeng/table';
 
 
 @NgModule({
@@ -47,7 +50,9 @@ import { EditarPassagemComponent } from './gestao-campus/editar-passagem/editar-
     Visualizacao3DComponent,
     CriarPassagemComponent,
     CriarSalaComponent,
-    EditarPassagemComponent
+    EditarPassagemComponent,
+    CarregarMapaComponent,
+    ListarEdificiosComponent
   ],
   imports: [
     BrowserModule,
@@ -55,7 +60,8 @@ import { EditarPassagemComponent } from './gestao-campus/editar-passagem/editar-
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    NgMultiSelectDropDownModule.forRoot()
+    NgMultiSelectDropDownModule.forRoot(),
+    TableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

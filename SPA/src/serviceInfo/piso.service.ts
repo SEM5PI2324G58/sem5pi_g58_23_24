@@ -99,22 +99,34 @@ export class PisoService {
     });
   }
 
-  public listarNumeroPisos(codigo: string): number[]{
-    return this.listarPisosNumero(codigo) ;
+  public listarNumeroPisos(codigo: string): Observable<number[]> {
+    return this.listarPisosNumero(codigo);
+  }
+  
+  private listarPisosNumero(codigo: string): Observable<number[]> {
+    let params = new HttpParams().set('codigo', codigo);
+  
+    return this.http.get<Piso[]>(this.pisoUrl, { params: params, headers: this.httpOptions.headers })
+      .pipe(
+        catchError(this.handleError<Piso[]>('Listar Piso')),
+        map(data => data.map(item => item.numeroPiso))
+      );
   }
 
-  private listarPisosNumero(codigo: string): number[]{
-    let listaCodigos: number[];
-    listaCodigos = [];
+  public listarPisos(codigo: string): Piso[]{
+    return this.listPisos(codigo) ;
+  }
+
+  private listPisos(codigo: string): Piso[]{
+    let listaPisos: Piso[] = [];
     let params = new HttpParams().set('codigo', codigo);
 
     this.http.get<Piso[]>(this.pisoUrl , { params: params, headers: this.httpOptions.headers })
     .pipe(catchError(this.handleError<Piso[]>('Listar Piso')))
     .subscribe(data => {
-      const numeroPiso = data.map(item => item.numeroPiso);
-      listaCodigos.push(...numeroPiso);
+      listaPisos.push(...data);
     });
-    return listaCodigos;
+    return listaPisos;
   }
 
 

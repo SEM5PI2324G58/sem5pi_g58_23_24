@@ -17,6 +17,8 @@ import { EditarPassagemComponent } from './gestao-campus/editar-passagem/editar-
 
 
 import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.component';
+import { CarregarMapaComponent } from './gestao-campus/carregar-mapa/carregar-mapa.component';
+import { ListarEdificiosComponent } from './gestao-campus/listar-edificios/listar-edificios.component';
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full'},
   { path: 'dashboard', component: DashboardComponent },
@@ -33,8 +35,9 @@ const routes: Routes = [
   { path: 'visualizacao3D', component: Visualizacao3DComponent},
   { path: 'criarPassagem', component: CriarPassagemComponent},
   { path: 'criarSala', component: CriarSalaComponent},
-  { path: 'editarPassagem', component: EditarPassagemComponent}
-  
+  { path: 'editarPassagem', component: EditarPassagemComponent},
+  { path: 'carregarMapa', component: CarregarMapaComponent},
+  { path: 'listarEdificios', component: ListarEdificiosComponent},
 ];
 
 @NgModule({
