@@ -34,8 +34,21 @@ export class EditarPisoComponent implements OnInit {
 
   listarNumeroPisos(): void {
     const codigo = this.myForm.get('codigo')?.value;
-    if(codigo == ""){this.listaNumeroPisos = []}
-    else{this.listaNumeroPisos = this.pisoService.listarNumeroPisos(codigo);}
+  
+    if (codigo === "") {
+      this.listaNumeroPisos = [];
+    } else {
+      this.pisoService.listarNumeroPisos(codigo).subscribe({
+        next: data => {
+          this.listaNumeroPisos = data;
+        },
+        error: error => {
+          console.error('Error fetching floor numbers:', error);
+        },
+        complete: () => {
+        }
+      });
+    }
   }
 
   editarPiso(): void {
