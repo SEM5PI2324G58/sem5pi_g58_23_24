@@ -1,0 +1,29 @@
+import { Component } from '@angular/core';
+import { EdificioService } from 'src/serviceInfo/edificio.service';
+import { PassagemService } from 'src/serviceInfo/passagem.service';
+
+@Component({
+  selector: 'app-criar-passagem',
+  templateUrl: './criar-passagem.component.html',
+  styleUrls: ['./criar-passagem.component.css']
+})
+export class CriarPassagemComponent {
+
+  constructor(private passagemService: PassagemService, private edificioService: EdificioService) {}
+
+  listaCodigos: string[] = [];
+
+  ngOnInit(): void {  
+    this.listaCodigos = this.edificioService.listarCodEdificios();
+  }
+
+  onCodigoChange(selectedCodigo: string) {
+    // Aquí puedes manejar el código seleccionado    
+    // Realiza otras acciones según sea necesario
+  }
+
+  add(id: number, codigoEdificioA: string, codigoEdificioB: string, numeroPisoA: number, numeroPisoB: number): void {
+    this.passagemService.criarPassagem(id, codigoEdificioA, codigoEdificioB, numeroPisoA, numeroPisoB);
+  }
+}
+

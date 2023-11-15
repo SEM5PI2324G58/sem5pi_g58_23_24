@@ -13,6 +13,8 @@ import { MessageService } from './message.service';
 export class DispositivoService {
 
   private dispositivoUrl = 'http://localhost:4000/api/dispositivo';
+  private dispositivoInibirUrl = 'http://localhost:4000/api/dispositivo/inibir';
+
   
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -38,7 +40,6 @@ export class DispositivoService {
     }
       
   }
-  
 
   addDispositivo(dispositivo: Dispositivo): void{
     let codigo: string;
@@ -64,6 +65,59 @@ export class DispositivoService {
       }
     });
   }
+
+
+  inibirRobo(descricaoDispositivo: string,
+    estado: boolean,
+    nickname: string,
+    numeroSerie: string,
+    tipoDeDispositivo: number,
+    codigo: string): void {
+
+    let robo: Dispositivo;
+  
+    robo = {     
+      tipoDispositivo: tipoDeDispositivo,
+      codigo: codigo,
+      descricaoDispositivo: descricaoDispositivo,
+      estado: estado,
+      nickname: nickname,
+      numeroSerie: numeroSerie 
+    } as Dispositivo;
+
+
+    if (this.validateData(codigo, nickname, tipoDeDispositivo.toString(), numeroSerie)) {
+        this.inibir(robo);
+    }
+
+}
+
+inibir(robo: Dispositivo): void {
+    let descricaoDispositivo: string;
+    let estado: boolean;
+    let nickname: string;
+    let numeroSerie: string;
+    let tipoDeDispositivo: number;
+
+    this.http.patch<Dispositivo>(this.dispositivoUrl, robo, this.httpOptions)
+        .pipe(catchError(this.handleError<Dispositivo>('Inibir Robo')))
+        .subscribe({
+            next: data => {
+                descricaoDispositivo = data.descricaoDispositivo;
+                estado = data.estado;
+                nickname = data.nickname;
+                numeroSerie = data.numeroSerie;
+                tipoDeDispositivo = data.tipoDispositivo;
+
+                if (data.estado == false)
+                    this.log("Estado alterado com sucesso!");
+                else {
+                    this.log("Estado não foi alterado!");
+                }
+
+            }
+        });
+}
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {

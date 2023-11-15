@@ -21,6 +21,9 @@ import { CriarElevadorComponent } from './gestao-campus/criar-elevador/criar-ele
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { EditarPisoComponent } from './gestao-campus/editar-piso/editar-piso.component';
 import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.component';
+import { CriarPassagemComponent } from './gestao-campus/criar-passagem/criar-passagem.component';
+import { CriarSalaComponent } from './gestao-campus/criar-sala/criar-sala.component';
+
 
 @NgModule({
   declarations: [
@@ -40,7 +43,9 @@ import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.compo
     MessageComponent,
     CriarElevadorComponent,
     EditarPisoComponent,
-    Visualizacao3DComponent
+    Visualizacao3DComponent,
+    CriarPassagemComponent,
+    CriarSalaComponent
   ],
   imports: [
     BrowserModule,

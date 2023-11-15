@@ -11,6 +11,9 @@ import { CriarTipoRoboComponent } from './gestao-frota/criar-tipo-robo/criar-tip
 import { AdicionarDispositivoComponent } from './gestao-frota/adicionar-dispositivo/adicionar-dispositivo.component';
 import { CriarElevadorComponent } from './gestao-campus/criar-elevador/criar-elevador.component';
 import { EditarPisoComponent } from './gestao-campus/editar-piso/editar-piso.component';
+import { CriarPassagemComponent } from './gestao-campus/criar-passagem/criar-passagem.component';
+import { CriarSalaComponent } from './gestao-campus/criar-sala/criar-sala.component';
+
 
 import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.component';
 const routes: Routes = [
@@ -26,7 +29,10 @@ const routes: Routes = [
   { path: 'criarElevador', component: CriarElevadorComponent},
   { path: 'adicionarDispositivo', component: AdicionarDispositivoComponent},
   { path: 'editarPiso', component: EditarPisoComponent},
-  { path: 'visualizacao3D', component: Visualizacao3DComponent}
+  { path: 'visualizacao3D', component: Visualizacao3DComponent},
+  { path: 'criarPassagem', component: CriarPassagemComponent},
+  { path: 'criarSala', component: CriarSalaComponent}
+  
 ];
 
 @NgModule({
