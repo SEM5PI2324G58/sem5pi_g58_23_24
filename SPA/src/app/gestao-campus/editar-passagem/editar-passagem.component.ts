@@ -27,12 +27,12 @@ export class EditarPassagemComponent {
   listarNumeroPisosA(codigoEdificioInput: string): void {
     const codigo = codigoEdificioInput
     if(codigo == ""){this.listaNumeroPisosA = []}
-    else{this.listaNumeroPisosA = this.pisoService.listarNumeroPisos(codigo);}
+    else{this.pisoService.listarNumeroPisos(codigo).subscribe(pisos => this.listaNumeroPisosA = pisos);}
   }
   listarNumeroPisosB(codigoEdificioInput: string): void {
     const codigo = codigoEdificioInput
     if(codigo == ""){this.listaNumeroPisosB = []}
-    else{this.listaNumeroPisosB = this.pisoService.listarNumeroPisos(codigo);}
+    else{this.pisoService.listarNumeroPisos(codigo).subscribe(pisos => this.listaNumeroPisosB = pisos);}
   }
 
   editarPassagem(id: number, codigoEdificioA: string, codigoEdificioB: string, numeroPisoA: number, numeroPisoB: number): void {
