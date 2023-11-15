@@ -1,3 +1,3 @@
 export const devEnvironment = {
-    url: 'http://localhost:4000/api/',
+    MDRI_API_URL: 'http://localhost:4000/api/',
 };
