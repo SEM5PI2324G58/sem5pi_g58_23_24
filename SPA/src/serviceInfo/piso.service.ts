@@ -80,20 +80,19 @@ export class PisoService {
   }
   
   private updatePiso(update: EditarPiso): void{
-    let codigo: string;
     let numeroPiso: number;
     let descricaoPiso: string;
     
     this.http.put<Piso>(this.pisoUrl, update, this.httpOptions)
-    .pipe(catchError(this.handleError<Piso>('Criar Piso')))
+    .pipe(catchError(this.handleError<Piso>('Editar Piso')))
     .subscribe({
-        next: data=>{codigo=data.codigo;
+        next: data=>{
           numeroPiso=data.numeroPiso;
           if(data.descricaoPiso==null)
-            this.log("Piso com código: "+codigo+", número Piso: "+numeroPiso+" atualizado com sucesso!");
+            this.log("Número Piso: "+numeroPiso+" atualizado com sucesso!");
           else{
-          descricaoPiso=data.descricaoPiso;
-          this.log("Piso com código: "+codigo+", número Piso: "+numeroPiso+", descrição: "+descricaoPiso+" atualizado com sucesso!");
+            descricaoPiso=data.descricaoPiso;
+            this.log("Número Piso: "+numeroPiso+", descrição: "+descricaoPiso+" atualizado com sucesso!");
           }
           
       }
@@ -139,7 +138,7 @@ export class PisoService {
     let flag:boolean = true;
 
     if(codigo==null || codigo=="" || codigo== undefined){
-      this.log("ERRO: Código Deve ser preenchido.");
+      this.log("ERRO: Código deve ser preenchido.");
       flag=false;
     }
     if(numeroPiso=="" || numeroPiso==undefined){
