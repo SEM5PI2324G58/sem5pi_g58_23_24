@@ -41,6 +41,9 @@ export class ListarPassagemPorEdificiosComponent implements OnInit {
     this.passagemService.listarPassagensPorEdificios(cod1, cod2).subscribe({
       next: data => {
         this.listaPassagens = data;
+      },
+      error: error => {
+        this.listaPassagens = [];
       }
     });
   }
