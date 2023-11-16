@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { MessageService } from './message.service';
 import Passagem from 'src/dataModel/passagem';
+import { ListarPassagem } from 'src/dataModel/listarPassagem';
+import { devEnvironment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +17,8 @@ export class PassagemService {
 
   private passagemUrl = 'http://localhost:4000/api/passagem';
   private passagemUrl2 = 'http://localhost:4000/api/passagem/editarPassagens';
+
+  private passagemUrlMain = devEnvironment.MDRI_API_URL + '/passagem';
   
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -133,7 +137,7 @@ export class PassagemService {
       // Log the full error
       console.error(`${operation} failed:`, error); // Log the full error object
   
-      this.log(`${operation} falhou: ${error.message || error}`); // Display a more informative message
+      this.log(`${operation} falhou: ${error.error}`); // Display a more informative message
   
       return of(result as T);
     };
@@ -170,5 +174,19 @@ export class PassagemService {
     }
     
     return flag;
+  }
+
+  public listarPassagensPorEdificios(cod1: string, cod2: string){
+
+    let params = new HttpParams().set('edificioACod', cod1);
+    params = params.append('edificioBCod', cod2);
+
+
+    return this.http.get<ListarPassagem[]>(this.passagemUrlMain +'/listarPassagensPorParDeEdificios' , 
+    { params: params, headers: this.httpOptions.headers })
+    .pipe(
+      catchError(this.handleError<ListarPassagem[]>('Listar passagens por par de edificios')),
+      map(data => data.map(item => item))
+    );
   }
 }
