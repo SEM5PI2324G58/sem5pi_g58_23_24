@@ -23,6 +23,7 @@ import { InibirDispositivoComponent } from './gestao-frota/inibir-dispositivo/in
 import { ListarDispositivosFrotaComponent } from './gestao-frota/listar-dispositivos-frota/listar-dispositivos-frota.component';
 import { ListarEdificioMinMaxPisosComponent } from './gestao-campus/listar-edificio-min-max-pisos/listar-edificio-min-max-pisos.component';
 import { ListarElevadorComponent } from './gestao-campus/listar-elevador/listar-elevador.component';
+import { ListarPassagemPorEdificiosComponent } from './gestao-campus/listar-passagem-por-edificios/listar-passagem-por-edificios.component';
  
 
 const routes: Routes = [
@@ -49,7 +50,9 @@ const routes: Routes = [
   { path: 'listarEdificios', component: ListarEdificiosComponent},
   { path: 'listarPiso', component : ListarPisoComponent},
   { path: 'inibirDispositivo', component: InibirDispositivoComponent},
-  { path: 'listarEdificioMinMaxPisos', component: ListarEdificioMinMaxPisosComponent}
+  { path: 'listarEdificioMinMaxPisos', component: ListarEdificioMinMaxPisosComponent},
+  { path: 'listarPassagensPorEdificio', component: ListarPassagemPorEdificiosComponent},
+
 ];
 
 @NgModule({
