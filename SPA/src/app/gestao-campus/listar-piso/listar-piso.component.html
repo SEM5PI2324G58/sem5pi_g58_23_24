@@ -60,9 +60,9 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-piso let-i>
                     <tr>
-                        <td style="max-width: 10px;border: 1px solid #000000;padding: 8px;">
+                        <td style="max-width: 10px;border-bottom: 1px solid #000000;border-right: 1px solid #000000;padding: 8px;">
                             {{ piso.numeroPiso || "-"}}</td>
-                        <td style="max-width: 50px;border: 1px solid #000000;padding: 8px;overflow-wrap: break-word;">
+                        <td style="max-width: 50px;border-bottom: 1px solid #000000;border-left: 1px solid #000000;padding: 8px;overflow-wrap: break-word;">
                             <span *ngIf="piso.descricaoPiso">{{ piso.descricaoPiso }}</span>
                             <span *ngIf="!piso.descricaoPiso">-</span></td>
                     </tr>
