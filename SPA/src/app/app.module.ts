@@ -29,6 +29,7 @@ import { ListarEdificiosComponent } from './gestao-campus/listar-edificios/lista
 import { TableModule } from 'primeng/table';
 import { ListarPisoComponent } from './gestao-campus/listar-piso/listar-piso.component';
 import { EditarElevadorComponent } from './gestao-campus/editar-elevador/editar-elevador.component';
+import { InibirDispositivoComponent } from './gestao-frota/inibir-dispositivo/inibi-dispositivo.component';
 
 
 @NgModule({
@@ -56,7 +57,8 @@ import { EditarElevadorComponent } from './gestao-campus/editar-elevador/editar-
     CarregarMapaComponent,
     ListarEdificiosComponent,
     ListarPisoComponent,
-    EditarElevadorComponent
+    EditarElevadorComponent,
+    InibirDispositivoComponent
   ],
   imports: [
     BrowserModule,

@@ -19,6 +19,7 @@ import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.compo
 import { CarregarMapaComponent } from './gestao-campus/carregar-mapa/carregar-mapa.component';
 import { ListarEdificiosComponent } from './gestao-campus/listar-edificios/listar-edificios.component';
 import { EditarElevadorComponent } from './gestao-campus/editar-elevador/editar-elevador.component';
+import { InibirDispositivoComponent } from './gestao-frota/inibir-dispositivo/inibi-dispositivo.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full'},
@@ -40,7 +41,8 @@ const routes: Routes = [
   { path: 'editarPassagem', component: EditarPassagemComponent},
   { path: 'carregarMapa', component: CarregarMapaComponent},
   { path: 'listarEdificios', component: ListarEdificiosComponent},
-  { path: 'listarPiso', component : ListarPisoComponent}
+  { path: 'listarPiso', component : ListarPisoComponent},
+  { path: 'inibirDispositivo', component: InibirDispositivoComponent}
 ];
 
 @NgModule({

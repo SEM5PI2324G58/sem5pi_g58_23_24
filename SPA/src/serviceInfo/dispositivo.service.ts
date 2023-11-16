@@ -15,113 +15,108 @@ export class DispositivoService {
   private dispositivoUrl = 'http://localhost:4000/api/dispositivo';
   private dispositivoInibirUrl = 'http://localhost:4000/api/dispositivo/inibir';
 
-  
+
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
-  
+
   constructor(private messageService: MessageService, private http: HttpClient) { }
 
 
   adicionarDispositivoAFrota(codigo: string,
-      nickname: string,
-      idTipoDispositivo: string,
-      numeroSerie: string,
-      descricao: string): void {
-      
+    nickname: string,
+    idTipoDispositivo: string,
+    numeroSerie: string,
+    descricao: string): void {
+
     let dispositivo: Dispositivo;
-    if(this.validateData(codigo, nickname, idTipoDispositivo, numeroSerie)){
-    if(descricao==null || descricao=="" || descricao== undefined){
-      dispositivo = {codigo: codigo, nickname: nickname, tipoDispositivo: Number(idTipoDispositivo), numeroSerie: numeroSerie} as Dispositivo;
-    }else{
-      dispositivo = {codigo: codigo, nickname: nickname, tipoDispositivo: Number(idTipoDispositivo), numeroSerie: numeroSerie, descricaoDispositivo: descricao} as Dispositivo;
-    }
+    if (this.validateData(codigo, nickname, idTipoDispositivo, numeroSerie)) {
+      if (descricao == null || descricao == "" || descricao == undefined) {
+        dispositivo = { codigo: codigo, nickname: nickname, tipoDispositivo: Number(idTipoDispositivo), numeroSerie: numeroSerie } as Dispositivo;
+      } else {
+        dispositivo = { codigo: codigo, nickname: nickname, tipoDispositivo: Number(idTipoDispositivo), numeroSerie: numeroSerie, descricaoDispositivo: descricao } as Dispositivo;
+      }
       this.addDispositivo(dispositivo);
     }
-      
+
   }
 
-  addDispositivo(dispositivo: Dispositivo): void{
+  addDispositivo(dispositivo: Dispositivo): void {
     let codigo: string;
     let descricao: string;
     let estado: boolean;
     let nickname: string;
     let numeroSerie: string;
-    
+
     this.http.post<Dispositivo>(this.dispositivoUrl, dispositivo, this.httpOptions)
-    .pipe(catchError(this.handleError<Dispositivo>('Adicionar robo à frota')))
-    .subscribe({
-        next: data=>{codigo=data.codigo;
-          estado=data.estado;
-          nickname=data.nickname;
-          numeroSerie=data.numeroSerie;
-          if(data.descricaoDispositivo==null)
-            this.log("Dispositivo com código: "+codigo+", estado: "+estado+", nickname: "+ nickname +", número de Série: "+ numeroSerie + " criado com sucesso!");
-          else{
-          descricao=data.descricaoDispositivo;
-          this.log("Dispositivo com código: "+codigo+", estado: "+estado+", nickname: "+ nickname +", número de Série: "+ numeroSerie +", descrição: \"" + descricao + "\" criado com sucesso!");
+      .pipe(catchError(this.handleError<Dispositivo>('Adicionar robo à frota')))
+      .subscribe({
+        next: data => {
+          codigo = data.codigo;
+          estado = data.estado;
+          nickname = data.nickname;
+          numeroSerie = data.numeroSerie;
+          if (data.descricaoDispositivo == null)
+            this.log("Dispositivo com código: " + codigo + ", estado: " + estado + ", nickname: " + nickname + ", número de Série: " + numeroSerie + " criado com sucesso!");
+          else {
+            descricao = data.descricaoDispositivo;
+            this.log("Dispositivo com código: " + codigo + ", estado: " + estado + ", nickname: " + nickname + ", número de Série: " + numeroSerie + ", descrição: \"" + descricao + "\" criado com sucesso!");
           }
-          
-      }
-    });
+
+        }
+      });
   }
 
 
-  inibirRobo(descricaoDispositivo: string,
-    estado: boolean,
-    nickname: string,
-    numeroSerie: string,
-    tipoDeDispositivo: number,
-    codigo: string): void {
+  inibirDispositivo(codigo: string): void {
 
     let robo: Dispositivo;
-  
-    robo = {     
-      tipoDispositivo: tipoDeDispositivo,
+
+    robo = {
       codigo: codigo,
-      descricaoDispositivo: descricaoDispositivo,
-      estado: estado,
-      nickname: nickname,
-      numeroSerie: numeroSerie 
     } as Dispositivo;
 
 
-    if (this.validateData(codigo, nickname, tipoDeDispositivo.toString(), numeroSerie)) {
-        this.inibir(robo);
+    if (this.validateDataInibir(codigo)) {
+      this.inibir(robo);
     }
 
-}
+  }
 
-inibir(robo: Dispositivo): void {
-    let descricaoDispositivo: string;
-    let estado: boolean;
-    let nickname: string;
-    let numeroSerie: string;
-    let tipoDeDispositivo: number;
+  inibir(robo: Dispositivo): void {
+    let codigo: string;
 
-    this.http.patch<Dispositivo>(this.dispositivoUrl, robo, this.httpOptions)
-        .pipe(catchError(this.handleError<Dispositivo>('Inibir Robo')))
-        .subscribe({
-            next: data => {
-                descricaoDispositivo = data.descricaoDispositivo;
-                estado = data.estado;
-                nickname = data.nickname;
-                numeroSerie = data.numeroSerie;
-                tipoDeDispositivo = data.tipoDispositivo;
+    this.http.patch<Dispositivo>(this.dispositivoInibirUrl, robo, this.httpOptions)
+      .pipe(catchError(this.handleError<Dispositivo>('Inibir Robo')))
+      .subscribe({
+        next: data => {
+          codigo = data.codigo;
 
-                if (data.estado == false)
-                    this.log("Estado alterado com sucesso!");
-                else {
-                    this.log("Estado não foi alterado!");
-                }
+          if (data.estado == false)
+            this.log("Estado alterado com sucesso!");
+          else {
+            this.log("Estado não foi alterado!");
+          }
+        }
+      });
+  }
 
-            }
-        });
-}
+
+  public listarCod(): Observable<string[]> {
+    return this.listarCodDispositivos();
+  }
+
+  private listarCodDispositivos() {
+    return this.http.get<Dispositivo[]>(this.dispositivoUrl, this.httpOptions)
+      .pipe(
+        catchError(this.handleError<Dispositivo[]>('Listar Dispositivos')),
+        map(data => data.map(item => item.codigo))
+      );
+  }
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
-      
+
 
       this.log(`${operation} falhou: ${error.error}`);
 
@@ -136,27 +131,40 @@ inibir(robo: Dispositivo): void {
   validateData(codigo: string,
     nickname: string,
     idTipoDispositivo: string,
-    numeroSerie: string): boolean{
+    numeroSerie: string): boolean {
 
-    let flag:boolean = true;
+    let flag: boolean = true;
 
-    if(codigo==null || codigo=="" || codigo== undefined){
+    if (codigo == null || codigo == "" || codigo == undefined) {
       this.log("ERRO: Código deve ser preenchido.");
-      flag=false;
+      flag = false;
     }
-    if(nickname=="" || nickname==undefined || nickname==null){
+    if (nickname == "" || nickname == undefined || nickname == null) {
       this.log("ERRO: Nickname deve ser preenchido.");
-      flag=false;
+      flag = false;
     }
-    if(idTipoDispositivo=="" || idTipoDispositivo==undefined){
+    if (idTipoDispositivo == "" || idTipoDispositivo == undefined) {
       this.log("ERRO: Id Tipo Dispositivo deve ser preenchido.");
-      flag=false;
+      flag = false;
     }
-    if(numeroSerie=="" || numeroSerie==undefined || numeroSerie==null){
+    if (numeroSerie == "" || numeroSerie == undefined || numeroSerie == null) {
       this.log("ERRO: Número de Série deve ser preenchido.");
-      flag=false;
+      flag = false;
     }
-    
+
     return flag;
   }
+
+  validateDataInibir(codigo: string): boolean {
+
+    let flag: boolean = true;
+
+    if (codigo == null || codigo == "" || codigo == undefined) {
+      this.log("ERRO: Código deve ser preenchido.");
+      flag = false;
+    }
+
+    return flag;
+  }
+
 }
