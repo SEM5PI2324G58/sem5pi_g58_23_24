@@ -29,6 +29,7 @@ import { ListarEdificiosComponent } from './gestao-campus/listar-edificios/lista
 import { TableModule } from 'primeng/table';
 import { ListarPisoComponent } from './gestao-campus/listar-piso/listar-piso.component';
 import { EditarElevadorComponent } from './gestao-campus/editar-elevador/editar-elevador.component';
+import { InibirDispositivoComponent } from './gestao-frota/inibir-dispositivo/inibi-dispositivo.component';
 import { ListarDispositivosFrotaComponent } from './gestao-frota/listar-dispositivos-frota/listar-dispositivos-frota.component';
 
 
@@ -58,6 +59,7 @@ import { ListarDispositivosFrotaComponent } from './gestao-frota/listar-disposit
     ListarEdificiosComponent,
     ListarPisoComponent,
     EditarElevadorComponent,
+    InibirDispositivoComponent,
     ListarDispositivosFrotaComponent
   ],
   imports: [
