@@ -19,6 +19,7 @@ import { Visualizacao3DComponent } from './visualizacao3-d/visualizacao3-d.compo
 import { CarregarMapaComponent } from './gestao-campus/carregar-mapa/carregar-mapa.component';
 import { ListarEdificiosComponent } from './gestao-campus/listar-edificios/listar-edificios.component';
 import { EditarElevadorComponent } from './gestao-campus/editar-elevador/editar-elevador.component';
+import { ListarDispositivosFrotaComponent } from './gestao-frota/listar-dispositivos-frota/listar-dispositivos-frota.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full'},
@@ -32,7 +33,8 @@ const routes: Routes = [
   { path: 'criarTipoRobo', component: CriarTipoRoboComponent},
   { path: 'criarElevador', component: CriarElevadorComponent},
   { path: 'editarElevador', component: EditarElevadorComponent},
-  { path: 'adicionarDispositivo', component: AdicionarDispositivoComponent},
+  { path: 'adicionarDispositivo', component: AdicionarDispositivoComponent},  
+  { path: 'listarDispositivosFrota', component: ListarDispositivosFrotaComponent},  
   { path: 'editarPiso', component: EditarPisoComponent},
   { path: 'visualizacao3D', component: Visualizacao3DComponent},
   { path: 'criarPassagem', component: CriarPassagemComponent},
