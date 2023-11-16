@@ -1,11 +1,12 @@
 autonumber
 
-participant MD as md <<Container (C4)>>
+actor "Gestor de campus" as actor
+participant SPA as container <<Container (C4)>>
 
-[o-> md: pede para listar todos os edificios
-activate md
+actor -> container: pede para listar todos os edificios
+activate container
 alt
-<-- md: lista de edificios
+actor <-- container: lista de edificios
 else "Erro"
-<-- md: Erro
+actor <-- container: Erro
 end alt
