@@ -1,10 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Dispositivo } from 'src/dataModel/dispositivo';
+import { DispositivoService } from 'src/serviceInfo/dispositivo.service';
 
 @Component({
   selector: 'app-listar-dispositivos-frota',
   templateUrl: './listar-dispositivos-frota.component.html',
   styleUrls: ['./listar-dispositivos-frota.component.css']
 })
-export class ListarDispositivosFrotaComponent {
-
+export class ListarDispositivosFrotaComponent implements OnInit{
+  
+  listaDispositivos: Dispositivo[] = [];
+  
+  constructor(private dipositivoService: DispositivoService) { }
+  
+  ngOnInit(): void {
+    this.dipositivoService.listarDispositivosFrota().subscribe({
+      next: data => {
+        this.listaDispositivos = data;
+      }
+    });
+  }
 }

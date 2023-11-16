@@ -114,6 +114,15 @@ export class DispositivoService {
       );
   }
 
+  public listarDispositivosFrota(): Observable<Dispositivo[]> {
+    return this.http.get<Dispositivo[]>(this.dispositivoUrl, this.httpOptions)
+    .pipe(
+      catchError(this.handleError<Dispositivo[]>('Listar Dispositivos da frota')),
+      map(data => data.map(item => item))
+    );
+  }
+
+
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
 
