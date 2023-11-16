@@ -60,7 +60,7 @@ export default class ElevadorController implements IElevadorController{
 
     public async listarElevadoresDoEdificio(req: Request, res: Response, next: NextFunction) {
         try {
-            const listaElevadoresOrErro = await this.elevadorServiceInstance.listarElevadoresDoEdificio(req.body.edificio);
+            const listaElevadoresOrErro = await this.elevadorServiceInstance.listarElevadoresDoEdificio(req.query.edificio as string);
               
             if (listaElevadoresOrErro.isFailure) {
                 let erro = String(listaElevadoresOrErro.errorValue());
