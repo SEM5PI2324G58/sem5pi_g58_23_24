@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, query } from 'express';
 import { Inject, Service } from 'typedi';
 import config from "../../../config";
 import { Result } from "../../core/logic/Result";
@@ -71,7 +71,10 @@ export default class PassagemController implements IPassagemController /* TODO: 
   public async listarPassagensPorParDeEdificios(req: Request, res: Response, next: NextFunction) {
     try{
       
-      const passagemOrError = await this.passagemServiceInstance.listarPassagensPorParDeEdificios(req.body as IListarPassagensPorParDeEdificioDTO) as Result<IListarPassagemDTO[]>;
+      const edificioACodParam = req.query.edificioACod as string;
+      const edificioBCodParam = req.query.edificioBCod as string;
+
+      const passagemOrError = await this.passagemServiceInstance.listarPassagensPorParDeEdificios({edificioACod: edificioACodParam, edificioBCod: edificioBCodParam} as IListarPassagensPorParDeEdificioDTO) as Result<IListarPassagemDTO[]>;
       
       if (passagemOrError.isFailure) {
         let erro = String(passagemOrError.errorValue());
