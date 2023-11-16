@@ -21,6 +21,8 @@ import { ListarEdificiosComponent } from './gestao-campus/listar-edificios/lista
 import { EditarElevadorComponent } from './gestao-campus/editar-elevador/editar-elevador.component';
 import { InibirDispositivoComponent } from './gestao-frota/inibir-dispositivo/inibi-dispositivo.component';
 import { ListarDispositivosFrotaComponent } from './gestao-frota/listar-dispositivos-frota/listar-dispositivos-frota.component';
+import { ListarEdificioMinMaxPisosComponent } from './gestao-campus/listar-edificio-min-max-pisos/listar-edificio-min-max-pisos.component';
+ 
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full'},
@@ -44,7 +46,8 @@ const routes: Routes = [
   { path: 'carregarMapa', component: CarregarMapaComponent},
   { path: 'listarEdificios', component: ListarEdificiosComponent},
   { path: 'listarPiso', component : ListarPisoComponent},
-  { path: 'inibirDispositivo', component: InibirDispositivoComponent}
+  { path: 'inibirDispositivo', component: InibirDispositivoComponent},
+  { path: 'listarEdificioMinMaxPisos', component: ListarEdificioMinMaxPisosComponent}
 ];
 
 @NgModule({

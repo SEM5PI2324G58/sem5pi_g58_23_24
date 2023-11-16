@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map, min, tap } from 'rxjs/operators';
 import { Edificio } from '../dataModel/edificio';
 
 import { MessageService } from './message.service';
@@ -158,4 +158,25 @@ export class EdificioService {
     });
     return listaEdificios;
   }
+
+  public listarEdificioMinMaxPisos(minPisos: string, maxPisos: string): Observable<Edificio[]> {
+    if(minPisos === null || minPisos === undefined || minPisos === ""){
+      this.log(`O numero minimo de pisos não pode ser vazio`);
+      return of([]);
+    }else if(maxPisos === null || maxPisos === undefined || maxPisos === ""){
+      this.log(`O numero maximo de pisos deve ser um número`);
+      return of([]);
+    }
+    return this.listEdificioMinMaxPisos(Number(minPisos), Number(maxPisos));
+  }
+  
+  private listEdificioMinMaxPisos(minPisos: number, maxPisos:number): Observable<Edificio[]> {
+    let params = new HttpParams().set('minPisos', minPisos);
+    params = params.append('maxPisos', maxPisos);
+  
+    return this.http.get<Edificio[]>(this.edificioUrl+"/listarMinEMaxPisos", { params: params, headers: this.httpOptions.headers })
+      .pipe(
+        catchError(this.handleError<Edificio[]>('Listar Edificio com Min e Max Pisos'))
+      );
+  }  
 }
