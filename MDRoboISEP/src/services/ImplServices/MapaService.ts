@@ -193,14 +193,11 @@ export default class MapaService implements IMapaService{
             return Result.fail<IExportarMapaDTO>("O mapa não tem nada para importar.");
         }
 
-        let informcaoMapa = mapa.exportarMapa();
+        let informcaoMapa = mapa.exportarMatrizMapa();
         let informacaoMapaDTO : IExportarMapaDTO = {
             codigoEdificio: mapaDTO.codigoEdificio,
             numeroPiso : mapaDTO.numeroPiso,
-            matriz : informcaoMapa.matriz,
-            passagens : informcaoMapa.passagens,
-            elevador : informcaoMapa.elevador,
-            salas : informcaoMapa.salas,
+            matriz : informcaoMapa,
         }
         return Result.ok<IExportarMapaDTO>(informacaoMapaDTO);
     }
