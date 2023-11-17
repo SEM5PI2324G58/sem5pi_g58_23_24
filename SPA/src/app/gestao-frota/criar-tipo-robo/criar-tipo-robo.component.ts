@@ -9,7 +9,7 @@ import { TipoRoboService } from 'src/serviceInfo/tipo-robo.service';
 })
 export class CriarTipoRoboComponent {
   constructor(private tipoRoboService: TipoRoboService) {}
-  listaTipoTarefa: string[] = ["Vigilancia", "PickUp/Delivery"];
+  listaTipoTarefa: string[] = ["Vigilância", "PickUp/Delivery"];
   listaTipoTarefaSelecionados: string[] = [];
   add(marca:string, modelo:string): void {
     this.tipoRoboService.criarTipoRobo(this.listaTipoTarefaSelecionados, marca, modelo);
