@@ -6,6 +6,15 @@ import { catchError, map, tap } from 'rxjs/operators';
 
 import { MessageService } from './message.service';
 import Passagem from 'src/dataModel/passagem';
+import ListarPisoComPassagem from 'src/dataModel/listarPisoPassagem';
+
+
+interface TabelaInfo {
+  idPassagem: string;
+  passagem: string;
+  pisoInfo: string;
+  edificio: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +24,7 @@ export class PassagemService {
 
   private passagemUrl = 'http://localhost:4000/api/passagem';
   private passagemUrl2 = 'http://localhost:4000/api/passagem/editarPassagens';
+  private passagemUrl3 = 'http://localhost:4000/api/passagem/listarPisosComPassagens';
   
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -126,6 +136,61 @@ export class PassagemService {
           
       }
     });
+  }
+
+  listarPisoComPassagem() : Observable<TabelaInfo[]>{
+    return this.http.get<ListarPisoComPassagem>(this.passagemUrl3, this.httpOptions) // Substitua any com o tipo correto se disponível
+      .pipe(
+        catchError(this.handleError<ListarPisoComPassagem>('Listar Pisos com passagens')), // Substitua any com o tipo correto se disponível
+        map(data => this.processarDadosParaTabela(data))
+      );
+  }
+  
+  private processarDadosParaTabela(data: ListarPisoComPassagem): TabelaInfo[] {
+
+  let tabelaInfo: TabelaInfo[] = [];
+
+  let idPassagem: string[] = [];
+  let passagem: string[] = [];
+  let pisoInfo: string[] = [];
+  let edificio: string[] = [];
+
+  let i = 0;
+
+    // Mapeando passagens para pares de pisos
+    data.mapIdPassagemPairIdPiso.forEach(item => {
+        idPassagem.push(item.first.toString());
+        passagem.push(item.second.first.toString() + " -> " + item.second.second.toString());
+        i++;
+    });
+
+    // Mapeando números e IDs de pisos para descrições
+    data.pairNumeroPisoIdPisoPairDescricao.forEach(item => {
+        pisoInfo.push(item.first.first.toString() + " - " + item.first.second.toString()+": "+item.second);
+    });
+
+    // Mapeando IDs de piso para IDs de edifícios
+    data.pairIdPisoIdEdificio.forEach(item => {
+        edificio.push(item.first.toString() + "-" + item.second);
+    });
+
+    if (i==0) {return tabelaInfo}
+
+    let g = 0;
+    for (let j = 0; j < i; j++) {
+      
+      let dado = {
+        idPassagem: idPassagem[j],
+        passagem: passagem[j],
+        pisoInfo: pisoInfo[g] + ";" + pisoInfo[g+1],
+        edificio: edificio[g] + ";" + edificio[g+1]
+      }
+      tabelaInfo.push(dado);
+
+      g = g+2;
+    } 
+
+    return tabelaInfo;
   }
 
   private handleError<T>(operation = 'operation', result?: T) {

@@ -32,6 +32,7 @@ import { EditarElevadorComponent } from './gestao-campus/editar-elevador/editar-
 import { InibirDispositivoComponent } from './gestao-frota/inibir-dispositivo/inibi-dispositivo.component';
 import { ListarDispositivosFrotaComponent } from './gestao-frota/listar-dispositivos-frota/listar-dispositivos-frota.component';
 import { ListarEdificioMinMaxPisosComponent } from './gestao-campus/listar-edificio-min-max-pisos/listar-edificio-min-max-pisos.component';
+import { ListarPisoPassagemComponent } from './gestao-campus/listar-piso-passagem/listar-piso-passagem.component';
 
 
 @NgModule({
@@ -62,7 +63,8 @@ import { ListarEdificioMinMaxPisosComponent } from './gestao-campus/listar-edifi
     EditarElevadorComponent,
     InibirDispositivoComponent,
     ListarDispositivosFrotaComponent,
-    ListarEdificioMinMaxPisosComponent
+    ListarEdificioMinMaxPisosComponent,
+    ListarPisoPassagemComponent
   ],
   imports: [
     BrowserModule,
