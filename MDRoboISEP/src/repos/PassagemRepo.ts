@@ -65,6 +65,8 @@ export default class PassagemRepo implements IPassagemRepo {
         return PassagemMap.toDomain(passagemCreated);
       } else {
         passagemDocument.domainID = Number(passagem.id.toValue());
+        passagemDocument.pisoA = Number(passagem.props.pisoA.id.toValue());
+        passagemDocument.pisoB = Number(passagem.props.pisoB.id.toValue());
         await passagemDocument.save();
         return passagem;
       }

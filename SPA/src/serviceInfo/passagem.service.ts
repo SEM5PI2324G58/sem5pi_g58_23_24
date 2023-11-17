@@ -51,9 +51,9 @@ export class PassagemService {
       } as Passagem;
 
       if(this.validateData(codigoEdificioA, codigoEdificioB, numeroPisoA, numeroPisoB)){
-   
         this.editar(passagem);
       }
+    
   }
  
   editar(passagem: Passagem): void{
@@ -217,19 +217,19 @@ export class PassagemService {
 
     let flag:boolean = true;
 
-    if(codigoEdificioA==null || codigoEdificioA==""){
+    if(codigoEdificioA==null || codigoEdificioA=="" || codigoEdificioA==undefined){
       this.log("Código do edifício A não pode ser vazio!");
       flag=false;
     }
-    if(codigoEdificioB==null || codigoEdificioB==""){
+    if(codigoEdificioB==null || codigoEdificioB=="" || codigoEdificioB==undefined){
       this.log("Código do edifício B não pode ser vazio!");
       flag=false;
     }
-    if(numeroPisoA==null || numeroPisoA<0){
+    if(numeroPisoA==null || numeroPisoA == undefined){
       this.log("Número do piso A não pode ser vazio!");
       flag=false;
     }
-    if(numeroPisoB==null || numeroPisoB<0){
+    if(numeroPisoB==null || numeroPisoB == undefined){
       this.log("Número do piso B não pode ser vazio!");
       flag=false;
     }
