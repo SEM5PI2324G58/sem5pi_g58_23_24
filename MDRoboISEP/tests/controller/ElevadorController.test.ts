@@ -336,7 +336,7 @@ describe('ElevadorController', () => {
         } as IElevadorDTO;
 
         let req: Partial<Request> = {};
-        req.body = body;
+        req.query = body;
 
         let res: Partial<Response> = {
             status: sinon.spy(),
@@ -371,7 +371,7 @@ describe('ElevadorController', () => {
         };
 
         let req: Partial<Request> = {};
-        req.body = body;
+        req.query = body;
 
         let res: Partial<Response> = {
             status: sinon.spy(),

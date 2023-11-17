@@ -40,7 +40,7 @@ export default (app: Router) => {
 
         route.get('/elevadoresPorEdificio',
         celebrate({
-            body: Joi.object({
+            query: Joi.object({
                 edificio: Joi.string().required(),
             })
         }),

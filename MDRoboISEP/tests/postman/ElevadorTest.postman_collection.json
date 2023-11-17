@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ac5a82dc-5784-4ed7-b785-314c2a483263",
+		"_postman_id": "a8212550-f83e-48e9-bdc2-6fbfd1e1417a",
 		"name": "ElevadorTest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "30695664"
@@ -161,9 +161,27 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"edificio\": \"Teste\"\r\n}"
+					"raw": ""
 				},
-				"url": "http://localhost:4000/api/elevador/elevadoresPorEdificio"
+				"url": {
+					"raw": "http://localhost:4000/api/elevador/elevadoresPorEdificio?edificio=Teste",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"elevador",
+						"elevadoresPorEdificio"
+					],
+					"query": [
+						{
+							"key": "edificio",
+							"value": "Teste"
+						}
+					]
+				}
 			},
 			"response": []
 		},
@@ -252,9 +270,27 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"edificio\": \"Teste\"\r\n}"
+					"raw": ""
 				},
-				"url": "http://localhost:4000/api/elevador/elevadoresPorEdificio"
+				"url": {
+					"raw": "http://localhost:4000/api/elevador/elevadoresPorEdificio?edificio=Teste",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"elevador",
+						"elevadoresPorEdificio"
+					],
+					"query": [
+						{
+							"key": "edificio",
+							"value": "Teste"
+						}
+					]
+				}
 			},
 			"response": []
 		},
@@ -339,9 +375,27 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"edificio\": \"Teste\"\r\n}"
+					"raw": ""
 				},
-				"url": "http://localhost:4000/api/elevador/elevadoresPorEdificio"
+				"url": {
+					"raw": "http://localhost:4000/api/elevador/elevadoresPorEdificio?edificio=Teste",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"elevador",
+						"elevadoresPorEdificio"
+					],
+					"query": [
+						{
+							"key": "edificio",
+							"value": "Teste"
+						}
+					]
+				}
 			},
 			"response": []
 		},

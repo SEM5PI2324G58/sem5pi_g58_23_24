@@ -3,6 +3,9 @@
     <div class="sidebar">
       <app-sidebarGestaoCampus></app-sidebarGestaoCampus>
     </div>
+    <div class="header">
+      <h1>Editar Piso</h1>
+    </div>
     <form class="conteudo" [formGroup]="myForm">
         <div class="input-field">
           <select formControlName="codigo" id="codigo" (change)="listarNumeroPisos()" required>

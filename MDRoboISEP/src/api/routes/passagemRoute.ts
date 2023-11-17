@@ -27,9 +27,9 @@ export default (app: Router) => {
 
   route.get('/listarPassagensPorParDeEdificios',
     celebrate({
-      body: Joi.object({
-        edificioACod: Joi.string(),
-        edificioBCod: Joi.string(),
+      query: Joi.object({
+        edificioACod: Joi.string().required(),
+        edificioBCod: Joi.string().required(),
       })
     }),
     (req, res, next) => ctrl.listarPassagensPorParDeEdificios(req, res, next));

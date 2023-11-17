@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { MessageService } from './message.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, catchError, of } from 'rxjs';
 import { Elevador } from 'src/dataModel/elevador';
 import { devEnvironment } from 'src/environments/environment.development';
+import { ListarElevador } from 'src/dataModel/listarElevador';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ import { devEnvironment } from 'src/environments/environment.development';
 export class ElevadorService {
 
   private elevadorUrl = devEnvironment.MDRI_API_URL + 'elevador';
+  private listarElevadorUrl = this.elevadorUrl + '/elevadoresPorEdificio';
   
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -126,5 +128,14 @@ export class ElevadorService {
           this.log("Elevador no edifício "+ data.edificio +" editado com sucesso!");
         }
     });
+  }
+
+  public listarElevador(codigoEd: string): Observable<ListarElevador>{
+    let params = new HttpParams().set('edificio', codigoEd);
+
+    return this.http.get<ListarElevador>(this.listarElevadorUrl, { params: params, headers: this.httpOptions.headers })
+    .pipe(
+      catchError(this.handleError<ListarElevador>('Listar Elevador'))
+    );
   }
 }

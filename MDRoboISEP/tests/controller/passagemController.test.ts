@@ -274,8 +274,8 @@ describe('PassagemController', () => {
         listaDTO.push(passagemDTO);
 
         let req: Partial<Request> = {};
-        req.body = body;
-
+        req.query = body;
+        
         let res: Partial<Response> = {
             status: sinon.spy(),
             json: sinon.spy()
@@ -314,7 +314,7 @@ describe('PassagemController', () => {
         listaDTO.push(passagemDTO);
 
         let req: Partial<Request> = {};
-        req.body = body;
+        req.query = body;
 
         let res: Partial<Response> = {
             status: sinon.spy(),
@@ -364,7 +364,7 @@ describe('PassagemController', () => {
         listaDTO.push(passagemDTO);
 
         let req: Partial<Request> = {};
-        req.body = body;
+        req.query = body;
 
         let res: Partial<Response> = {
             status: sinon.spy(),
