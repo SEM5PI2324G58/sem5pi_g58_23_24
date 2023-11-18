@@ -3,8 +3,8 @@
     <div class="sidebar">
       <app-sidebarGestaoCampus></app-sidebarGestaoCampus>
     </div>
-    <div class = "titulo">
-        <h1>Lista de Edificios</h1>
+    <div class = "header">
+        <h1>Lista de Edifícios</h1>
     </div>
     <div class = "conteudo" *ngIf="listaEdificios.length === 0">
         <p>Não existem Edifícios</p>
@@ -23,8 +23,8 @@
             <ng-template pTemplate="body" let-edificio>
                 <tr>
                     <td>{{ edificio.codigo }}</td>
-                    <td>{{ edificio.nome }}</td>
-                    <td>{{ edificio.descricao }}</td>
+                    <td>{{ edificio.nome || "-" }}</td>
+                    <td>{{ edificio.descricao || "-" }}</td>
                     <td>{{ edificio.dimensaoX }}</td>
                     <td>{{ edificio.dimensaoY }}</td>
                 </tr>

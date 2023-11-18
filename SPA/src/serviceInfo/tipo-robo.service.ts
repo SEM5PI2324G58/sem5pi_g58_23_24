@@ -31,6 +31,12 @@ export class TipoRoboService {
       return;
     }
 
+    for(let i = 0; i < tipoTarefa.length; i++){
+      if(tipoTarefa[i] === "Vigilância"){
+        tipoTarefa[i] = "Vigilancia";
+      }
+    }
+    
     let tipoRobo: TipoRobo = {
       tipoTarefa: tipoTarefa,
       marca: marca,
