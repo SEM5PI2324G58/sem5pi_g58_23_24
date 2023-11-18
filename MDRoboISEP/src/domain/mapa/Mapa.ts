@@ -464,45 +464,7 @@ export class Mapa extends AggregateRoot<pisoProps> {
     this.props.coordenadasSala.push(CoordenadasSala.create({nome: nome, abcissaA: abcissaA, ordenadaA: ordenadaA, abcissaB: abcissaB, ordenadaB: ordenadaB, abcissaPorta: abcissaPorta, ordenadaPorta: ordenadaPorta, orientacaoPorta: orientacaoPorta}).getValue());
   }
 
-  private obterInformacaoSalas() : any[]{
-    let dados : any[] = [];
-    if(!this.props.coordenadasElevador){
-      return dados;
-    }
-    for(let sala of this.props.coordenadasSala){
-      dados.push({nome: sala.returnNome(), abcissaA: sala.returnAbcissaA(), ordenadaA: sala.returnOrdenadaA(), abcissaB: sala.returnAbcissaB(), ordenadaB: sala.returnOrdenadaB(), abcissaPorta: sala.returnAbcissaPorta(), ordenadaPorta: sala.returnOrdenadaPorta(), orientacaoPorta: sala.returnOrientacaoPorta()});
-    }
-    return dados;
-  }
-
-  private obterInformacaoPassagens() : any[]{
-    let dados : any[] = [];
-    if(!this.props.coordenadasElevador){
-      return dados;
-    }
-    for(let passagem of this.props.coordenadasPassagem){
-      dados.push({id: passagem.returnId(), abcissa: passagem.returnAbcissaSup(), ordenada: passagem.returnOrdenadaSup(), orientacao: passagem.returnOrientacao()});
-    }
-    return dados;
-  }
-
-  private obterInformcaoElevador() : any{
-    if(!this.props.coordenadasElevador){
-      return null;
-    }
-    return {xCoord: this.props.coordenadasElevador.returnXCoord(), yCoord: this.props.coordenadasElevador.returnYCoord(), orientacao: this.props.coordenadasElevador.returnOrientacao()};
-  }
-
-  public exportarMapa() : any{
-    let matriz = this.returnTipoDePontos();
-    let passagens = this.obterInformacaoPassagens();
-    let elevador = this.obterInformcaoElevador();
-    let salas = this.obterInformacaoSalas();
-    return {
-      matriz : matriz,
-      passagens : passagens,
-      elevador : elevador,
-      salas : salas,
-    }
+  public exportarMatrizMapa() : string[][]{
+    return this.returnTipoDePontos();
   }
 }

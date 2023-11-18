@@ -1,13 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-
 import { MessageService } from './message.service';
 import Passagem from 'src/dataModel/passagem';
+import ListarPisoComPassagem from 'src/dataModel/listarPisoPassagem';
 import { ListarPassagem } from 'src/dataModel/listarPassagem';
 import { devEnvironment } from 'src/environments/environment.development';
+
+interface TabelaInfo {
+  idPassagem: string;
+  passagem: string;
+  pisoInfo: string;
+  edificio: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +23,7 @@ export class PassagemService {
 
   private passagemUrl = 'http://localhost:4000/api/passagem';
   private passagemUrl2 = 'http://localhost:4000/api/passagem/editarPassagens';
-
+  private passagemUrl3 = 'http://localhost:4000/api/passagem/listarPisosComPassagens';
   private passagemUrlMain = devEnvironment.MDRI_API_URL + '/passagem';
   
   httpOptions = {
@@ -45,9 +51,9 @@ export class PassagemService {
       } as Passagem;
 
       if(this.validateData(codigoEdificioA, codigoEdificioB, numeroPisoA, numeroPisoB)){
-   
         this.editar(passagem);
       }
+    
   }
  
   editar(passagem: Passagem): void{
@@ -132,6 +138,61 @@ export class PassagemService {
     });
   }
 
+  listarPisoComPassagem() : Observable<TabelaInfo[]>{
+    return this.http.get<ListarPisoComPassagem>(this.passagemUrl3, this.httpOptions) // Substitua any com o tipo correto se disponível
+      .pipe(
+        catchError(this.handleError<ListarPisoComPassagem>('Listar Pisos com passagens')), // Substitua any com o tipo correto se disponível
+        map(data => this.processarDadosParaTabela(data))
+      );
+  }
+  
+  private processarDadosParaTabela(data: ListarPisoComPassagem): TabelaInfo[] {
+
+  let tabelaInfo: TabelaInfo[] = [];
+
+  let idPassagem: string[] = [];
+  let passagem: string[] = [];
+  let pisoInfo: string[] = [];
+  let edificio: string[] = [];
+
+  let i = 0;
+
+    // Mapeando passagens para pares de pisos
+    data.mapIdPassagemPairIdPiso.forEach(item => {
+        idPassagem.push(item.first.toString());
+        passagem.push(item.second.first.toString() + " -> " + item.second.second.toString());
+        i++;
+    });
+
+    // Mapeando números e IDs de pisos para descrições
+    data.pairNumeroPisoIdPisoPairDescricao.forEach(item => {
+        pisoInfo.push(item.first.first.toString() + " - " + item.first.second.toString()+": "+item.second);
+    });
+
+    // Mapeando IDs de piso para IDs de edifícios
+    data.pairIdPisoIdEdificio.forEach(item => {
+        edificio.push(item.first.toString() + "-" + item.second);
+    });
+
+    if (i==0) {return tabelaInfo}
+
+    let g = 0;
+    for (let j = 0; j < i; j++) {
+      
+      let dado = {
+        idPassagem: idPassagem[j],
+        passagem: passagem[j],
+        pisoInfo: pisoInfo[g] + ";" + pisoInfo[g+1],
+        edificio: edificio[g] + ";" + edificio[g+1]
+      }
+      tabelaInfo.push(dado);
+
+      g = g+2;
+    } 
+
+    return tabelaInfo;
+  }
+
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       // Log the full error
@@ -156,19 +217,19 @@ export class PassagemService {
 
     let flag:boolean = true;
 
-    if(codigoEdificioA==null || codigoEdificioA==""){
+    if(codigoEdificioA==null || codigoEdificioA=="" || codigoEdificioA==undefined){
       this.log("Código do edifício A não pode ser vazio!");
       flag=false;
     }
-    if(codigoEdificioB==null || codigoEdificioB==""){
+    if(codigoEdificioB==null || codigoEdificioB=="" || codigoEdificioB==undefined){
       this.log("Código do edifício B não pode ser vazio!");
       flag=false;
     }
-    if(numeroPisoA==null || numeroPisoA<0){
+    if(numeroPisoA==null || numeroPisoA == undefined){
       this.log("Número do piso A não pode ser vazio!");
       flag=false;
     }
-    if(numeroPisoB==null || numeroPisoB<0){
+    if(numeroPisoB==null || numeroPisoB == undefined){
       this.log("Número do piso B não pode ser vazio!");
       flag=false;
     }

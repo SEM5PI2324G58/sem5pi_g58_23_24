@@ -269,10 +269,23 @@ export default class PassagemService implements IPassagemService {
             let pairNumeroIdPisoPairDescricao: Pair<Pair<number, number>, string>[] = [];
         
             for (let piso of pisoList){
-                const pair: Pair<Pair<number, number>, string> = {
+
+                let pair : Pair<Pair<number, number>, string>;
+                if(
+                    piso.props.descricaoPiso == null || piso.props.descricaoPiso.props.descricao == null|| 
+                    piso.props.descricaoPiso.props.descricao == undefined || piso.props.descricaoPiso == undefined
+                ){
+                    pair = {
+                        first: {first: piso.returnIdPiso(), second: piso.returnNumeroPiso()},
+                        second: ""
+                    };   
+                }
+                else{
+                    pair = {
                     first: {first: piso.returnIdPiso(), second: piso.returnNumeroPiso()},
                     second: piso.props.descricaoPiso.props.descricao.toString()
                   };
+                }
                 pairNumeroIdPisoPairDescricao.push(pair);
             }
 
