@@ -37,7 +37,7 @@ export default class Player {
     public object!: THREE.Object3D;
     public animations!: THREE.AnimationClip[];
     private radius!: number;
-    private eyeHeight!: number;
+    public eyeHeight!: number;
     private scale: THREE.Vector3;
     private initialDirection: number;
     private keyStates: Record<string, boolean>;
@@ -51,6 +51,7 @@ export default class Player {
         this.onError = this.onError.bind(this);
         this.url = parameters.url;
         this.scale = parameters.scale;
+        this.eyeHeight = 1;
 
         
 

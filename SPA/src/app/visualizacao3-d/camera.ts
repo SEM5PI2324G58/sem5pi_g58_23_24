@@ -168,7 +168,6 @@ export default class Camera {
 
   setActiveProjection(projection: string) {
     this.projection = projection;
-    console.log(this.projection);
     if (this.projection != "orthographic") {
       this.object = this.perspective;
     } else {

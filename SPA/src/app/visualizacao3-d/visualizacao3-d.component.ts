@@ -35,6 +35,10 @@ export class Visualizacao3DComponent implements AfterViewInit{
   projection: any;
   reset!: any;
   resetAll!: any;
+  gameRunning: any;
+  maze!: Maze;
+  light!: Lights;
+  clock!: THREE.Clock;
   
   
   private get canvas(): HTMLCanvasElement {
@@ -105,8 +109,7 @@ export class Visualizacao3DComponent implements AfterViewInit{
       exitLocation: [-0.5, 6]
       }
 
-      let maze = new Maze(mazeData);
-      this.scene3D.add(maze.object);
+      this.maze = new Maze(mazeData);
 
       const playerData = {
         url: "assets/RobotExpressive/RobotExpressive.glb",
@@ -123,14 +126,13 @@ export class Visualizacao3DComponent implements AfterViewInit{
       this.player = new Player(playerData);
 
 
-      let light = new Lights({
+      this.light = new Lights({
         ambientLight: { color: 0xffffff, intensity: 1.0 },
         pointLight1: { color: 0xffffff, intensity: 1.0, distance: 0.0, position: new THREE.Vector3(0.0, 0.0, 0.0) },
         pointLight2: { color: 0xffffff, intensity: 1.0, distance: 0.0, position: new THREE.Vector3(0.0, 0.0, 0.0) },
         spotLight: { color: 0xffffff, intensity: 1.0, distance: 0.0, angle: Math.PI / 3.0, penumbra: 0.0, position: new THREE.Vector3(0.0, 0.0, 0.0), direction: 0.0 } // angle and direction expressed in radians
         })
       
-      this.scene3D.add(light.object);
 
       const cameraData = {
         view: "fixed", // Fixed view: "fixed"; first-person view: "first-person"; third-person view: "third-person"; top view: "top"; mini-map: "mini-map"
@@ -170,6 +172,7 @@ export class Visualizacao3DComponent implements AfterViewInit{
 
       this.changeCameraDistance = false;
       this.changeCameraOrientation = false;
+      this.gameRunning = false;
       
       this.viewsPanel = document.getElementById("views-panel");
       this.view = document.getElementById("view");
@@ -188,11 +191,6 @@ export class Visualizacao3DComponent implements AfterViewInit{
 
 
       this.setActiveViewCamera(this.fixedViewCamera);
-
-      // Create the camera corresponding to the 2D scene
-      await this.sleep(5000);
-      this.scene3D.add(this.player.object);
-      this.player.object.position.set(maze.initialPosition.x, maze.initialPosition.y, maze.initialPosition.z);
 
       
 
@@ -227,7 +225,7 @@ export class Visualizacao3DComponent implements AfterViewInit{
     
     private render() {
       requestAnimationFrame(() => this.render());
-      this.renderer.render(this.scene3D, this.activeViewCamera.object);
+      this.update();
     }
 
     displayPanel() {
@@ -438,7 +436,149 @@ export class Visualizacao3DComponent implements AfterViewInit{
       this.displayPanel();
     }
   }
-    
-    
+
+  update() {
+    if (!this.gameRunning) {
+        if (this.maze.loaded && this.player.loaded) { // If all resources have been loaded
+            // Add the maze, the player and the lights to the scene
+            this.scene3D.add(this.maze.object);
+            this.scene3D.add(this.player.object);
+            this.scene3D.add(this.light.object);
+
+            // Create the clock
+            this.clock = new THREE.Clock();
+
+            // Create model animations (states, emotes and expressions)
+            //this.animations = new Animations(this.player.object, this.player.animations);
+            
+            // Set the player's position and direction
+            this.player.object.position.set(this.maze.initialPosition.x, this.maze.initialPosition.y, this.maze.initialPosition.z);
+            this.player.object.direction = this.maze.initialDirection;
+
+            // Create the user interface
+            //this.userInterface = new UserInterface(this.scene3D, this.renderer, this.light, this.fog, this.player.object, this.animations);
+            console.log("Game started");
+            // Start the game
+            this.gameRunning = true;
+        }
+    } else {
+        // Update the model animations
+        //const deltaT = this.clock.getDelta();
+        //this.animations.update(deltaT);
+
+        // Update the player
+        /*if (!this.animations.actionInProgress) {
+            // Check if the player found the exit
+            if (this.maze.foundExit(this.player.position)) {
+                this.finalSequence();
+            }
+            else {
+                let coveredDistance = this.player.walkingSpeed * deltaT;
+                let directionIncrement = this.player.turningSpeed * deltaT;
+                if (this.player.keyStates.run) {
+                    coveredDistance *= this.player.runningFactor;
+                    directionIncrement *= this.player.runningFactor;
+                }
+                if (this.player.keyStates.left) {
+                    this.player.direction += directionIncrement;
+                }
+                else if (this.player.keyStates.right) {
+                    this.player.direction -= directionIncrement;
+                }
+                const direction = THREE.MathUtils.degToRad(this.player.direction);
+                if (this.player.keyStates.backward) {
+                    const newPosition = new THREE.Vector3(-coveredDistance * Math.sin(direction), 0.0, -coveredDistance * Math.cos(direction)).add(this.player.position);
+                    if (this.collision(newPosition)) {
+                        this.animations.fadeToAction("Death", 0.2);
+                    }
+                    else {
+                        this.animations.fadeToAction(this.player.keyStates.run ? "Running" : "Walking", 0.2);
+                        this.player.position = newPosition;
+                    }
+                }
+                else if (this.player.keyStates.forward) {
+                    const newPosition = new THREE.Vector3(coveredDistance * Math.sin(direction), 0.0, coveredDistance * Math.cos(direction)).add(this.player.position);
+                    if (this.collision(newPosition)) {
+                        this.animations.fadeToAction("Death", 0.2);
+                    }
+                    else {
+                        this.animations.fadeToAction(this.player.keyStates.run ? "Running" : "Walking", 0.2);
+                        this.player.position = newPosition;
+                    }
+                }
+                else if (this.player.keyStates.jump) {
+                    this.animations.fadeToAction("Jump", 0.2);
+                }
+                else if (this.player.keyStates.yes) {
+                    this.animations.fadeToAction("Yes", 0.2);
+                }
+                else if (this.player.keyStates.no) {
+                    this.animations.fadeToAction("No", 0.2);
+                }
+                else if (this.player.keyStates.wave) {
+                    this.animations.fadeToAction("Wave", 0.2);
+                }
+                else if (this.player.keyStates.punch) {
+                    this.animations.fadeToAction("Punch", 0.2);
+                }
+                else if (this.player.keyStates.thumbsUp) {
+                    this.animations.fadeToAction("ThumbsUp", 0.2);
+                }
+                else {
+                    this.animations.fadeToAction("Idle", this.animations.activeName != "Death" ? 0.2 : 0.6);
+                }
+                this.player.object.position.set(this.player.position.x, this.player.position.y, this.player.position.z);
+                this.player.object.rotation.y = direction - this.player.initialDirection;
+            }
+        }*/
+
+        // Update first-person, third-person and top view cameras parameters (player direction and target)
+        this.firstPersonViewCamera.playerDirection = this.player.object.direction;
+        this.thirdPersonViewCamera.playerDirection = this.player.object.direction;
+        this.topViewCamera.playerDirection = this.player.object.direction;
+        const target = new THREE.Vector3(this.player.object.position.x, this.player.object.position.y + this.player.eyeHeight, this.player.object.position.z);
+        this.firstPersonViewCamera.setTarget(target);
+        this.thirdPersonViewCamera.setTarget(target);
+        this.topViewCamera.setTarget(target);
+
+        // Update statistics
+        //this.statistics.update();
+
+        // Render primary viewport(s)
+        //this.renderer.clear();
+
+        /*if (this.fog.enabled) {
+            this.scene3D.fog = this.fog.object;
+        }
+        else {
+            this.scene3D.fog = null;
+        }*/
+        let cameras;
+        /*if (this.multipleViewsCheckBox.checked) {
+            cameras = [this.fixedViewCamera, this.firstPersonViewCamera, this.thirdPersonViewCamera, this.topViewCamera];
+        }
+        else {
+        }*/
+        cameras = [this.activeViewCamera];
+        for (const camera of cameras) {
+            this.player.object.visible = (camera != this.firstPersonViewCamera);
+            const viewport = camera.getViewport();
+            //this.renderer.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+            this.renderer.render(this.scene3D, camera.object);
+            //this.renderer.render(this.scene2D, this.camera2D);
+            //this.renderer.clearDepth();
+        }
+
+        // Render secondary viewport (mini-map)
+        /*if (this.miniMapCheckBox.checked) {
+            this.scene3D.fog = null;
+            this.player.object.visible = true;
+            const viewport = this.miniMapCamera.getViewport();
+            this.renderer.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+            this.renderer.render(this.scene3D, this.miniMapCamera.object);
+            this.renderer.render(this.scene2D, this.camera2D);
+        }*/
+    }
+}
     
 }
