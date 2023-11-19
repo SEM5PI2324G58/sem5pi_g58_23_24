@@ -65,6 +65,7 @@ export default class Camera {
     this.initialFov = parameters.initialFov;
     this.near = parameters.near;
     this.far = parameters.far;
+    this.projection = "perspective";
 
     this.viewport = this.multipleViewsViewport.clone();
     this.target = parameters.target.clone();
@@ -167,7 +168,7 @@ export default class Camera {
 
   setActiveProjection(projection: string) {
     this.projection = projection;
-
+    console.log(this.projection);
     if (this.projection != "orthographic") {
       this.object = this.perspective;
     } else {

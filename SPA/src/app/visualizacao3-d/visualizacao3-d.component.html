@@ -1,2 +1,54 @@
-<canvas #myCanvas id="myCanvas" style="width: 100%;height: 100%;"></canvas>
+<body style="margin: 0">
+    <div class="views-panel">
+        <table class="views">
+            <tr>
+                <td>
+                    <label>View:</label>
+                    <select id="view">
+                        <option value="fixed">Fixed</option>
+                        <option value="first">First-person</option>
+                        <option value="third">Third-person</option>
+                        <option value="top">Top</option>
+                    </select>
+                </td>
+                <td>
+                    <label>Orientation (h):</label>
+                    <input type="number" id="horizontal" required>
+                </td>
+                <td>
+                    <label>Orientation (v):</label>
+                    <input type="number" id="vertical" required>
+                </td>
+                <td>
+                    <input type="button" id="reset" value="Reset view">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Projection:</label>
+                    <select id="projection">
+                        <option value="perspective">Perspective</option>
+                        <option value="orthographic">Orthographic</option>
+                    </select>
+                </td>
+                <td>
+                    <label>Distance:</label>
+                    <input type="number" id="distance" required>
+                </td>
+                <td>
+                    <label>Zoom:</label>
+                    <input type="number" id="zoom" required>
+                </td>
+                <td>
+                    <input type="button" id="reset-all" value="Reset all views">
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="piso">
+        <canvas #myCanvas id="myCanvas" style="display: block;"></canvas>
+    </div>
+</body>
+
+
 
