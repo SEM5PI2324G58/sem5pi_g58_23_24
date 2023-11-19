@@ -190,14 +190,19 @@ export default class MapaService implements IMapaService{
         let mapa = piso.props.mapa;
 
         if(mapa === null || mapa === undefined || mapa.verificarSeMapaVazio() === true){
-            return Result.fail<IExportarMapaDTO>("O mapa não tem nada para importar.");
+            return Result.fail<IExportarMapaDTO>("O mapa não tem nada para exportar.");
         }
 
-        let informcaoMapa = mapa.exportarMatrizMapa();
+        let informcaoMapa = mapa.exportarMapa();
         let informacaoMapaDTO : IExportarMapaDTO = {
+            texturaChao: "assets/ground.jpg",
+            texturaParede: "assets/wall.jpg",
             codigoEdificio: mapaDTO.codigoEdificio,
             numeroPiso : mapaDTO.numeroPiso,
-            matriz : informcaoMapa,
+            matriz : informcaoMapa.matriz,
+            elevador : informcaoMapa.elevador,
+            passagens : informcaoMapa.passagens,
+            portas : informcaoMapa.portas,
         }
         return Result.ok<IExportarMapaDTO>(informacaoMapaDTO);
     }

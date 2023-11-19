@@ -513,7 +513,7 @@ export class Mapa extends AggregateRoot<pisoProps> {
     return dados;
   }
 
-  public exportarMatrizMapa() : any {
+  public exportarMapa() : any {
     let mapa = {
       matriz : this.returnTipoDePontos(),
       passagens : this.obterInformacaoPassagens(),
