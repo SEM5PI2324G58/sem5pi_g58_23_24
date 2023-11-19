@@ -287,7 +287,10 @@ export class Mapa extends AggregateRoot<pisoProps> {
   public toPortaNorte(x:number, y:number) {
     this.props.mapa[x][y] = TipoPonto.create("PortaNorte").getValue();
   }
-  public toPortaNorteOeste(x:number, y:number) {
+  public toPortaOesteNorteOeste(x:number, y:number) {
+    this.props.mapa[x][y] = TipoPonto.create("PortaNorteOeste").getValue();
+  }
+  public toPortaNorteNorteOeste(x:number, y:number) {
     this.props.mapa[x][y] = TipoPonto.create("PortaNorteOeste").getValue();
   }
   public toPortaOeste(x:number, y:number) {
@@ -320,11 +323,11 @@ export class Mapa extends AggregateRoot<pisoProps> {
     let yCoordInf;
 
     if (orientacao === 'Norte') {
-      xCoordInf = xCoordSup;
-      yCoordInf = yCoordSup + 1;
-    }else if (orientacao === 'Oeste') {
       xCoordInf = xCoordSup + 1;
       yCoordInf = yCoordSup;
+    }else if (orientacao === 'Oeste') {
+      xCoordInf = xCoordSup;
+      yCoordInf = yCoordSup + 1;
     }
 
     this.toElevador(xCoordSup,yCoordSup, orientacao);
@@ -355,9 +358,11 @@ export class Mapa extends AggregateRoot<pisoProps> {
     this.toParedeNorteOeste(xCoordSup,yCoordSup);
     this.carregarCoordenadasSala(nome, xCoordSup, yCoordSup, xCoordInf, yCoordInf, abcissaPorta,
       ordenadaPorta, orientacaoPorta);
-
-    this.toPorta(abcissaPorta,ordenadaPorta);
-
+    if(orientacaoPorta === 'Norte'){
+      this.toPortaNorte(abcissaPorta,ordenadaPorta);
+    }else {
+      this.toPortaOeste(abcissaPorta,ordenadaPorta);
+    }
     for(let i = xCoordSup + 1; i <= xCoordInf; i++){
       if(!(i === abcissaPorta && yCoordSup === ordenadaPorta)){
         if(this.props.mapa[i][yCoordSup].returnTipoPonto() === 'Oeste'){
@@ -367,7 +372,11 @@ export class Mapa extends AggregateRoot<pisoProps> {
         }
       }else{
         if(this.props.mapa[i][yCoordSup].returnTipoPonto() === 'Oeste'){
-          this.toPortaNorteOeste(abcissaPorta,ordenadaPorta);
+          if(orientacaoPorta === 'Norte'){
+            this.toPortaNorteNorteOeste(abcissaPorta,ordenadaPorta);
+          }else{
+            this.toPortaOesteNorteOeste(abcissaPorta,ordenadaPorta);
+          }
         }else{
           this.toPortaNorte(abcissaPorta,ordenadaPorta);
         }
@@ -383,7 +392,11 @@ export class Mapa extends AggregateRoot<pisoProps> {
         }
       }else{
         if(this.props.mapa[i][yCoordInf + 1].returnTipoPonto() === 'Oeste'){
-          this.toPortaNorteOeste(abcissaPorta,ordenadaPorta);
+          if(orientacaoPorta === 'Norte'){
+            this.toPortaNorteNorteOeste(abcissaPorta,ordenadaPorta);
+          }else{
+            this.toPortaOesteNorteOeste(abcissaPorta,ordenadaPorta);
+          }
         }else{
           this.toPortaNorte(abcissaPorta,ordenadaPorta);
         }
@@ -407,7 +420,11 @@ export class Mapa extends AggregateRoot<pisoProps> {
         }
       }else{
         if(this.props.mapa[xCoordInf + 1][i].returnTipoPonto() === 'Norte'){
-          this.toPortaNorteOeste(abcissaPorta,ordenadaPorta);
+          if(orientacaoPorta === 'Norte'){
+            this.toPortaNorteNorteOeste(abcissaPorta,ordenadaPorta);
+          }else{
+            this.toPortaOesteNorteOeste(abcissaPorta,ordenadaPorta);
+          }
         }else{
           this.toPortaOeste(abcissaPorta,ordenadaPorta);
         }
@@ -464,7 +481,45 @@ export class Mapa extends AggregateRoot<pisoProps> {
     this.props.coordenadasSala.push(CoordenadasSala.create({nome: nome, abcissaA: abcissaA, ordenadaA: ordenadaA, abcissaB: abcissaB, ordenadaB: ordenadaB, abcissaPorta: abcissaPorta, ordenadaPorta: ordenadaPorta, orientacaoPorta: orientacaoPorta}).getValue());
   }
 
-  public exportarMatrizMapa() : string[][]{
-    return this.returnTipoDePontos();
+  private obterInformacaoPassagens() : any[]{
+    let dados : any[] = [];
+    if(!this.props.coordenadasPassagem){
+      return null;
+    }
+    for(let passagem of this.props.coordenadasPassagem){
+      dados.push({id: passagem.returnId(), abcissaA: passagem.returnAbcissaSup(), ordenadaA: passagem.returnOrdenadaSup(),
+        abcissaB:passagem.returnAbcissaInf, ordenadaB: passagem.returnOrdenadaInf,orientacao: passagem.returnOrientacao()});
+    }
+    return dados;
+  }
+
+  private obterInformcaoElevador() : any{
+    if(!this.props.coordenadasElevador){
+      return null;
+    }
+    
+    return {xCoord: this.props.coordenadasElevador.returnXCoord(), yCoord: this.props.coordenadasElevador.returnYCoord(),
+       orientacao: this.props.coordenadasElevador.returnOrientacao()};
+  }
+
+  private obterInformacaoPortas() : any[]{
+    let dados : any[] = [];
+    if(!this.props.coordenadasSala){
+      return null;
+    }
+    for(let sala of this.props.coordenadasSala){
+      dados.push({abcissa: sala.returnAbcissaPorta(), ordenada: sala.returnOrdenadaPorta(), orientacao: sala.returnOrientacaoPorta()});
+    }
+    return dados;
+  }
+
+  public exportarMatrizMapa() : any {
+    let mapa = {
+      matriz : this.returnTipoDePontos(),
+      passagens : this.obterInformacaoPassagens(),
+      elevador : this.obterInformcaoElevador(),
+      portas : this.obterInformacaoPortas(),
+    }
+    return mapa;
   }
 }
