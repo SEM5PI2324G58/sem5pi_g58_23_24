@@ -47,7 +47,7 @@ export class MapaMap extends Mapper<Mapa> {
       }
     }
     let coordenadasElevador : CoordenadasElevador;
-    if  (raw.xCoord !== null && raw.xCoord !== undefined){
+    if  (raw.xCoordElevador !== null && raw.xCoordElevador !== undefined){
       let propsElevador= {
         xCoord : [raw.xCoordElevador[0],raw.xCoordElevador[1]],
         yCoord : [raw.yCoordElevador[0],raw.yCoordElevador[1]],
@@ -56,8 +56,8 @@ export class MapaMap extends Mapper<Mapa> {
       coordenadasElevador = CoordenadasElevador.create(propsElevador).getValue();
     }
     let coordenadasSala: CoordenadasSala [] = [];
-    if  (raw.nome !== null && raw.nome !== undefined){
-      for (let i = 0; i < raw.nome.length; i++) {
+    if  (raw.nomeSala !== null && raw.nomeSala !== undefined){
+      for (let i = 0; i < raw.nomeSala.length; i++) {
         let propsSala= {
           nome : raw.nomeSala[i],
           abcissaA : raw.abcissaASala[i],
