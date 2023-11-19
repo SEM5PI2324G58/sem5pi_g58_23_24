@@ -40,4 +40,13 @@ export default (app: Router) => {
             })
         }),
         (req, res, next) => ctrl.carregarMapa(req, res, next));
+
+        route.get('',
+        celebrate({
+            query: Joi.object({
+                codEdificio: Joi.string().required(),
+                numPiso : Joi.string().required()
+            })
+        }),
+        (req, res, next) => ctrl.exportarMapa(req, res, next));
     };

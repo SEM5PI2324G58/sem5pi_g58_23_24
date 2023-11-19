@@ -209,17 +209,19 @@ export class Mapa extends AggregateRoot<pisoProps> {
   }
 
   public verificarSeMapaVazio() : boolean{
-    if(!this.props.mapa === false) return true;
+    if(this.props.mapa === undefined || this.props.mapa === null){
+      return true;
+    }
     let x = this.props.mapa.length;
     let y = this.props.mapa[0].length;
     for (let i = 0; i < x; i++) {
       for (let j = 0; j < y ; j++) {
         if(this.props.mapa[i][j].returnTipoPonto() !== " "){
-          return true;
+          return false;
         }
       }
     }
-    return false;
+    return true;
   }
 
   public criacaoBermasPiso() : TipoPonto[]{
@@ -249,7 +251,13 @@ export class Mapa extends AggregateRoot<pisoProps> {
 
   public toElevador(x:number, y:number, orientacao:string) {
     this.props.mapa[x][y] = TipoPonto.create("Elevador").getValue();
-    this.props.coordenadasElevador = CoordenadasElevador.create({xCoord: [x], yCoord: [y], orientacao: orientacao}).getValue();
+    if(this.props.coordenadasElevador === undefined || this.props.coordenadasElevador === null){
+      this.props.coordenadasElevador = CoordenadasElevador.create({xCoord: [x], yCoord: [y], orientacao: orientacao}).getValue();
+    }else{
+      let antigoXCoord = this.props.coordenadasElevador.returnXCoord()[0];
+      let antigoYCoord = this.props.coordenadasElevador.returnYCoord()[0];
+      this.props.coordenadasElevador = CoordenadasElevador.create({xCoord: [antigoXCoord, x], yCoord: [antigoYCoord, y], orientacao: orientacao}).getValue();
+    }
   }
 
   public toParedeNorteOeste(x:number, y:number) {
@@ -488,7 +496,7 @@ export class Mapa extends AggregateRoot<pisoProps> {
     }
     for(let passagem of this.props.coordenadasPassagem){
       dados.push({id: passagem.returnId(), abcissaA: passagem.returnAbcissaSup(), ordenadaA: passagem.returnOrdenadaSup(),
-        abcissaB:passagem.returnAbcissaInf, ordenadaB: passagem.returnOrdenadaInf,orientacao: passagem.returnOrientacao()});
+        abcissaB:passagem.returnAbcissaInf(), ordenadaB: passagem.returnOrdenadaInf(),orientacao: passagem.returnOrientacao()});
     }
     return dados;
   }

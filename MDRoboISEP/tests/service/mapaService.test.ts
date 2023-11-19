@@ -30,6 +30,8 @@ import { NumeroSerieElevador } from '../../src/domain/elevador/NumeroSerieElevad
 import { DescricaoElevador } from '../../src/domain/elevador/DescricaoElevador';
 import { IdElevador } from '../../src/domain/elevador/IdElevador';
 import { IdMapa } from '../../src/domain/mapa/IdMapa';
+import { TipoPonto } from '../../src/domain/mapa/TipoPonto';
+import IExportarMapaDTO from '../../src/dto/IExportarMapaDTO';
 
 describe('Mapa Service', () => {
     const sandbox = sinon.createSandbox();
@@ -85,13 +87,25 @@ describe('Mapa Service', () => {
         let idPiso4 = IdPiso.create(4).getValue();
         let numeroPiso4 = NumeroPiso.create(0).getValue();
 
-
+        let mapaTipoPonto : TipoPonto[][] = [];
+        for(let i = 0; i <= 5; i++){
+            mapaTipoPonto[i] = [];
+            for(let j = 0; j <= 5; j++){
+                mapaTipoPonto[i][j] = TipoPonto.create(" ").getValue();
+            }
+        }
         let mapa;
+        let mapaCompleto = Mapa.create({mapa: mapaTipoPonto}, IdMapa.create(1).getValue()).getValue();
+
+        mapaCompleto.carregarMapaComBermas();
+        mapaCompleto.criarPontosElevador(3,3,"Norte");
+        mapaCompleto.carregarSalaMapa("sala1",0,0,2,2,1,0,"Norte");
+        mapaCompleto.carregarPassagemMapa({id:1,abcissa:5,ordenada:3,orientacao:"Oeste"});
 
 		let piso5x5 = Piso.create({
 			numeroPiso: numeroPiso,
 			descricaoPiso: descricaoPiso,
-			mapa: mapa,
+			mapa: mapaCompleto,
 		}, idPiso).getValue();
 		Container.set ('piso5x5',piso5x5);
 
@@ -553,4 +567,103 @@ describe('Mapa Service', () => {
         expect(answer.errorValue()).to.equal("O elevador não serve este piso.");
     });
 
+    it('Exportar Mapa', async () => {
+
+        let body = {
+            "codigoEdificio": "ED01",
+            "numeroPiso" : 0,
+        }
+
+        let edificioProps : any = {
+            nome: Nome.create('ED01 A').getValue(),
+            dimensao: Dimensao.create(4,4).getValue(),
+            listaPisos: [Container.get('piso5x5')],
+        };
+        
+        let edificioRepoInstance = Container.get("EdificioRepo") as IEdificioRepo;
+        let salaRepoInstance = Container.get("SalaRepo") as ISalaRepo;
+        let passagemRepoInstance = Container.get("PassagemRepo") as IPassagemRepo;
+        let mapaRepoInstance = Container.get("MapaRepo") as IMapaRepo;
+        let pisoRepoInstance = Container.get("PisoRepo") as IPisoRepo;
+
+        
+        let edificio = Edificio.create(edificioProps, Codigo.create(body.codigoEdificio).getValue()).getValue();
+        sinon.stub(edificioRepoInstance, 'findByDomainId').returns(Promise.resolve(edificio));
+
+        const mapaService = new MapaService(mapaRepoInstance, edificioRepoInstance, salaRepoInstance, passagemRepoInstance, pisoRepoInstance);
+        let answer = await mapaService.exportarMapa(body as IExportarMapaDTO);
+
+
+        expect(answer.getValue().codigoEdificio).to.equal(body.codigoEdificio);
+        expect(answer.getValue().numeroPiso).to.equal(body.numeroPiso);
+        expect(answer.getValue().texturaChao).to.equal("assets/ground.jpg");
+        expect(answer.getValue().texturaParede).to.equal("assets/wall.jpg");
+        expect(answer.getValue().texturaPorta).to.equal("assets/door.jpg");
+        expect(answer.getValue().texturaElevador).to.equal("assets/elevator.jpg");
+        expect(answer.getValue().portas).to.deep.equal([{abcissa: 1, ordenada: 0, orientacao: "Norte"}]);
+        expect(answer.getValue().elevador).to.deep.equal({xCoord: [3,4], yCoord: [3,3], orientacao: "Norte"});
+        expect(answer.getValue().passagens).to.deep.equal([{id: 1, abcissaA: 5, ordenadaA: 3, abcissaB:5, ordenadaB:4, orientacao: "Oeste"}]);
+
+    });
+
+    it('Exportar Mapa com edificio inexistente', async () => {
+
+        let body = {
+            "codigoEdificio": "ED01",
+            "numeroPiso" : 0,
+        }
+
+        let edificioProps : any = {
+            nome: Nome.create('ED01 A').getValue(),
+            dimensao: Dimensao.create(4,4).getValue(),
+            listaPisos: [Container.get('piso5x5')],
+        };
+        
+        let edificioRepoInstance = Container.get("EdificioRepo") as IEdificioRepo;
+        let salaRepoInstance = Container.get("SalaRepo") as ISalaRepo;
+        let passagemRepoInstance = Container.get("PassagemRepo") as IPassagemRepo;
+        let mapaRepoInstance = Container.get("MapaRepo") as IMapaRepo;
+        let pisoRepoInstance = Container.get("PisoRepo") as IPisoRepo;
+
+        
+        let edificio = Edificio.create(edificioProps, Codigo.create(body.codigoEdificio).getValue()).getValue();
+        sinon.stub(edificioRepoInstance, 'findByDomainId').returns(Promise.resolve(null));
+        sinon.stub()
+
+        const mapaService = new MapaService(mapaRepoInstance, edificioRepoInstance, salaRepoInstance, passagemRepoInstance, pisoRepoInstance);
+        let answer = await mapaService.exportarMapa(body as IExportarMapaDTO);
+
+
+        expect(answer.errorValue()).to.equal("O Edifício que inseriu não existe.");
+    });
+
+    it('Exportar Mapa com mapa vazio', async () => {
+
+        let body = {
+            "codigoEdificio": "ED01",
+            "numeroPiso" : 0,
+        }
+
+        let edificioProps : any = {
+            nome: Nome.create('ED01 A').getValue(),
+            dimensao: Dimensao.create(4,4).getValue(),
+            listaPisos: [Container.get('piso5x5Vazio')],
+        };
+        
+        let edificioRepoInstance = Container.get("EdificioRepo") as IEdificioRepo;
+        let salaRepoInstance = Container.get("SalaRepo") as ISalaRepo;
+        let passagemRepoInstance = Container.get("PassagemRepo") as IPassagemRepo;
+        let mapaRepoInstance = Container.get("MapaRepo") as IMapaRepo;
+        let pisoRepoInstance = Container.get("PisoRepo") as IPisoRepo;
+
+        
+        let edificio = Edificio.create(edificioProps, Codigo.create(body.codigoEdificio).getValue()).getValue();
+        sinon.stub(edificioRepoInstance, 'findByDomainId').returns(Promise.resolve(edificio));
+        sinon.stub()
+
+        const mapaService = new MapaService(mapaRepoInstance, edificioRepoInstance, salaRepoInstance, passagemRepoInstance, pisoRepoInstance);
+        let answer = await mapaService.exportarMapa(body as IExportarMapaDTO);
+
+        expect(answer.errorValue()).to.equal("O mapa não tem nada para exportar.");
+    });
 });
