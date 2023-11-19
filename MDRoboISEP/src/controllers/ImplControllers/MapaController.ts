@@ -5,13 +5,16 @@ import config from "../../../config";
 import { Inject, Service } from "typedi";
 import ICarregarMapaDTO from "../../dto/ICarregarMapaDTO";
 import { Result } from "../../core/logic/Result";
+import { ParamsDictionary } from "express-serve-static-core";
+import { ParsedQs } from "qs";
+import IExportarMapaDTO from "../../dto/IExportarMapaDTO";
 
 @Service()
 export default class MapaController implements IMapaController {
     constructor(
         @Inject(config.services.mapa.name) private mapaServiceInstance : IMapaService
     ) {}
-
+    
     public async carregarMapa(req: Request, res: Response, next: NextFunction) {
         try{
             let mapaOrError = await this.mapaServiceInstance.carregarMapa(req.body as ICarregarMapaDTO);
@@ -29,6 +32,26 @@ export default class MapaController implements IMapaController {
             }
             const mapaDTO = mapaOrError.getValue();
             res.status(201);
+            return res.json(mapaDTO).send();
+        }catch(e){
+            return next(e);
+        }
+    }
+    public async exportarMapa(req: Request, res: Response, next: NextFunction) {
+        try{
+            let mapaOrError = await this.mapaServiceInstance.exportarMapa({codigoEdificio:req.query.codEdificio as string,
+                    numeroPiso: +(req.query.numPiso as string)}as IExportarMapaDTO);
+            if(mapaOrError.isFailure){
+                let erro = String(mapaOrError.errorValue());
+                if(erro === "O Edifício que inseriu não existe." || erro === "O piso que inseriu não existe."){
+                    res.status(404);
+                }else{
+                    res.status(400);
+                }
+                return res.json(mapaOrError.errorValue());
+            }
+            const mapaDTO = mapaOrError.getValue();
+            res.status(200);
             return res.json(mapaDTO).send();
         }catch(e){
             return next(e);
