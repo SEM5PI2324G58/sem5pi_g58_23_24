@@ -6,7 +6,7 @@ import Lights from './lights';
 import Camera from './camera';
 import Orientation from './orientation';
 import Player from './player';
-
+import UserInterface from './userInterface';
 
 @Component({
   selector: 'app-visualizacao3-d',
@@ -39,6 +39,7 @@ export class Visualizacao3DComponent implements AfterViewInit{
   maze!: Maze;
   light!: Lights;
   clock!: THREE.Clock;
+ userInterface!: UserInterface;
   
   
   private get canvas(): HTMLCanvasElement {
@@ -125,13 +126,17 @@ export class Visualizacao3DComponent implements AfterViewInit{
 
       this.player = new Player(playerData);
 
-
-      this.light = new Lights({
-        ambientLight: { color: 0xffffff, intensity: 1.0 },
-        pointLight1: { color: 0xffffff, intensity: 1.0, distance: 0.0, position: new THREE.Vector3(0.0, 0.0, 0.0) },
-        pointLight2: { color: 0xffffff, intensity: 1.0, distance: 0.0, position: new THREE.Vector3(0.0, 0.0, 0.0) },
+      let lightParam = {
+        ambientLight: { color: 0xffffff, intensity: 0.1 },
+        pointLight1: { color: 0xffffff, intensity: 50.0, distance: 20.0, position: new THREE.Vector3(-3.5, 10.0, 2.5) },
+        pointLight2: { color: 0xffffff, intensity: 50.0, distance: 20.0, position: new THREE.Vector3(3.5, 10.0, -2.5) },
         spotLight: { color: 0xffffff, intensity: 1.0, distance: 0.0, angle: Math.PI / 3.0, penumbra: 0.0, position: new THREE.Vector3(0.0, 0.0, 0.0), direction: 0.0 } // angle and direction expressed in radians
-        })
+        }
+    
+          
+     
+
+      this.light = new Lights(lightParam);
       
 
       const cameraData = {
@@ -166,9 +171,9 @@ export class Visualizacao3DComponent implements AfterViewInit{
       this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true });
       this.renderer.setSize(window.innerWidth, window.innerHeight);
       this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      this.renderer.shadowMap.enabled = true;
+      this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     
-      
-      
 
       this.changeCameraDistance = false;
       this.changeCameraOrientation = false;
@@ -403,11 +408,13 @@ export class Visualizacao3DComponent implements AfterViewInit{
                 }
             }
             break;
+        case "user-interface":
+            if ('checked' in target) {
+                this.setUserInterfaceVisibility((target as any)['checked']);
+            }
+            break;
           /*case "multiple-views":
               this.setViewMode(event.target.checked);
-              break;
-          case "user-interface":
-              this.setUserInterfaceVisibility(event.target.checked);
               break;
           case "help":
               this.setHelpVisibility(event.target.checked);
@@ -437,6 +444,13 @@ export class Visualizacao3DComponent implements AfterViewInit{
     }
   }
 
+  setUserInterfaceVisibility(visible: boolean) {
+    //this.userInterfaceCheckBox.checked = visible;
+    //this.viewsPanel.style.visibility = visible ? "visible" : "hidden";
+    //this.subwindowsPanel.style.visibility = visible ? "visible" : "hidden";
+    this.userInterface.setVisibility(visible);
+    }
+
   update() {
     if (!this.gameRunning) {
         if (this.maze.loaded && this.player.loaded) { // If all resources have been loaded
@@ -456,7 +470,9 @@ export class Visualizacao3DComponent implements AfterViewInit{
             this.player.object.direction = this.maze.initialDirection;
 
             // Create the user interface
-            //this.userInterface = new UserInterface(this.scene3D, this.renderer, this.light, this.fog, this.player.object, this.animations);
+            this.userInterface = new UserInterface(this.scene3D, this.renderer, {object: {ambientLight: this.light.ambientLight,
+                                                                                        pointLight1: this.light.pointLight1,
+                                                                                        pointLight2: this.light.pointLight2} }, /*this.fog,*/ this.player.object/*, this.animations*/);
             console.log("Game started");
             // Start the game
             this.gameRunning = true;
@@ -566,7 +582,7 @@ export class Visualizacao3DComponent implements AfterViewInit{
             //this.renderer.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
             this.renderer.render(this.scene3D, camera.object);
             //this.renderer.render(this.scene2D, this.camera2D);
-            //this.renderer.clearDepth();
+            this.renderer.clearDepth();
         }
 
         // Render secondary viewport (mini-map)

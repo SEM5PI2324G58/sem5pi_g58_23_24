@@ -49,9 +49,9 @@ export default class Lights {
     this.pointLight1 = new THREE.PointLight(
       parameters.pointLight1.color,
       parameters.pointLight1.intensity,
-      parameters.pointLight1.distance
+      parameters.pointLight1.distance,
     );
-    parameters.pointLight1.position.copy(this.pointLight1.position);
+    this.pointLight1.position.copy(parameters.pointLight1.position);
     this.pointLight1.castShadow = true;
 
     // Set up shadow properties for this light
@@ -67,7 +67,7 @@ export default class Lights {
       parameters.pointLight2.intensity,
       parameters.pointLight2.distance
     );
-    this.pointLight2.position.copy(this.pointLight2.position);
+    this.pointLight2.position.copy(parameters.pointLight2.position);
     this.pointLight2.castShadow = true;
 
     // Set up shadow properties for this light
