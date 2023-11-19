@@ -32,6 +32,8 @@ import { IdElevador } from "../../src/domain/elevador/IdElevador";
 import { DescricaoPiso } from "../../src/domain/piso/DescricaoPiso";
 import { IdPiso } from "../../src/domain/piso/IdPiso";
 import { NumeroPiso } from "../../src/domain/piso/NumeroPiso";
+import { TipoPonto } from "../../src/domain/mapa/TipoPonto";
+import IExportarMapaDTO from "../../src/dto/IExportarMapaDTO";
 
 
 describe('Mapa Controller', () => {
@@ -93,10 +95,24 @@ describe('Mapa Controller', () => {
 
         let mapa;
 
+        let mapaTipoPonto : TipoPonto[][] = [];
+        for(let i = 0; i <= 5; i++){
+            mapaTipoPonto[i] = [];
+            for(let j = 0; j <= 5; j++){
+                mapaTipoPonto[i][j] = TipoPonto.create(" ").getValue();
+            }
+        }
+        let mapaCompleto = Mapa.create({mapa: mapaTipoPonto}, IdMapa.create(1).getValue()).getValue();
+
+        mapaCompleto.carregarMapaComBermas();
+        mapaCompleto.criarPontosElevador(3,3,"Norte");
+        mapaCompleto.carregarSalaMapa("sala1",0,0,2,2,1,0,"Norte");
+        mapaCompleto.carregarPassagemMapa({id:1,abcissa:5,ordenada:3,orientacao:"Oeste"});
+
 		let piso5x5 = Piso.create({
 			numeroPiso: numeroPiso,
 			descricaoPiso: descricaoPiso,
-			mapa: mapa,
+			mapa: mapaCompleto,
 		}, idPiso).getValue();
 		Container.set ('piso5x5',piso5x5);
 
@@ -273,4 +289,112 @@ describe('Mapa Controller', () => {
         sinon.assert.calledWith(res.json as sinon.SinonSpy, body as ICarregarMapaDTO);
     });
 
+    it('Exportar mapa retorna exportarMapaDTO', async function(){
+        let body = {
+        }
+
+        let exportarMapaDTO : IExportarMapaDTO = {
+            codigoEdificio: "ED01",
+            numeroPiso: 0,
+            matriz: [
+                [" ", " ", " ", " ", " ", " "],
+                [" ", " ", " ", " ", " ", " "],
+                [" ", " ", " ", " ", " ", " "],
+            ],
+            texturaChao: "/assets/floor.jpg",
+            texturaParede: "/assets/wall.jpg",
+
+        }
+
+        let req: Partial<Request> = {};
+        req.query = body;
+
+        let res: Partial<Response> = {
+            status: sinon.spy(),
+            json: sinon.spy()
+        };
+
+        let next: Partial<NextFunction> = () => {};
+
+        let mapaServiceInstance = Container.get("MapaService");
+        sinon.stub(mapaServiceInstance, "exportarMapa").returns(Promise.resolve(Result.ok<IExportarMapaDTO>(exportarMapaDTO)));
+
+        const mapaController = new MapaController(mapaServiceInstance as IMapaService);
+        await mapaController.exportarMapa(req as Request, res as Response, next as NextFunction);
+
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, sinon.match({
+            codigoEdificio: "ED01",
+            numeroPiso: 0,
+            matriz: [
+                [" ", " ", " ", " ", " ", " "],
+                [" ", " ", " ", " ", " ", " "],
+                [" ", " ", " ", " ", " ", " "],
+            ],
+            texturaChao: "/assets/floor.jpg",
+            texturaParede: "/assets/wall.jpg",
+        }));
+    });
+
+    it('MapaController + MapaService exportarMapa', async function(){
+        let body = {
+            codEdificio: "ED01",
+            numPiso: "0",
+        }
+
+        let exportarMapaDTO : IExportarMapaDTO = {
+            codigoEdificio: "ED01",
+            numeroPiso: 0,
+            matriz: [
+                [" ", " ", " ", " ", " ", " "],
+                [" ", " ", " ", " ", " ", " "],
+                [" ", " ", " ", " ", " ", " "],
+            ],
+            texturaChao: "/assets/floor.jpg",
+            texturaParede: "/assets/wall.jpg",
+        }
+        let edificioProps : any = {
+            nome: Nome.create('ED01 A').getValue(),
+            dimensao: Dimensao.create(4,4).getValue(),
+            listaPisos: [Container.get('piso5x5')],
+        };
+
+        let req: Partial<Request> = {};
+        req.query = body;
+
+        let res: Partial<Response> = {
+            status: sinon.spy(),
+            json: sinon.spy()
+        };
+
+        let next: Partial<NextFunction> = () => {};
+
+        let mapaServiceInstance = Container.get("MapaService");
+
+
+        let edificioRepoInstance = Container.get("EdificioRepo") as IEdificioRepo;
+
+        let edificio = Edificio.create(edificioProps, Codigo.create(exportarMapaDTO.codigoEdificio).getValue()).getValue();
+        sinon.stub(edificioRepoInstance, 'findByDomainId').returns(Promise.resolve(edificio));
+
+
+        const mapaController = new MapaController(mapaServiceInstance as IMapaService);
+        await mapaController.exportarMapa(req as Request, res as Response, next as NextFunction);
+
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, sinon.match({
+            codigoEdificio: "ED01",
+            elevador: { orientacao: "Norte", xCoord: [3, 4], yCoord: [3, 3] },
+            matriz:[["NorteOeste", "Oeste", "Oeste", "NorteOeste", "Oeste", "Norte"], ["PortaNorte", " ", " ", "Norte", " ", "Norte"], ["Norte", " ", " ", "Norte", " ", "Norte"], ["NorteOeste", "Oeste", "Oeste", "Elevador", " ", "Norte"], ["Norte", " ", " ", "Elevador", " ", "Norte"], ["Oeste", "Oeste", "Oeste", "Passagem", "Passagem", " "]],
+            numeroPiso: 0,
+            passagens: [{ abcissaA: 5, abcissaB: 5, id: 1, ordenadaA: 3, ordenadaB: 4, orientacao: "Oeste" }],
+            portas: [{ abcissa: 1, ordenada: 0, orientacao: "Norte" }],
+            texturaChao: "assets/ground.jpg",
+            texturaParede: "assets/wall.jpg",
+        }));
+    });
 });
