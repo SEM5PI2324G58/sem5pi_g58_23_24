@@ -303,7 +303,8 @@ describe('Mapa Controller', () => {
             ],
             texturaChao: "/assets/floor.jpg",
             texturaParede: "/assets/wall.jpg",
-
+            texturaPorta: "/assets/door.jpg",
+            texturaElevador: "/assets/elevator.jpg",
         }
 
         let req: Partial<Request> = {};
@@ -335,6 +336,8 @@ describe('Mapa Controller', () => {
             ],
             texturaChao: "/assets/floor.jpg",
             texturaParede: "/assets/wall.jpg",
+            texturaPorta: "/assets/door.jpg",
+            texturaElevador: "/assets/elevator.jpg",
         }));
     });
 
@@ -395,6 +398,8 @@ describe('Mapa Controller', () => {
             portas: [{ abcissa: 1, ordenada: 0, orientacao: "Norte" }],
             texturaChao: "assets/ground.jpg",
             texturaParede: "assets/wall.jpg",
+            texturaPorta: "assets/door.jpg",
+            texturaElevador: "assets/elevator.jpg"
         }));
     });
 });
