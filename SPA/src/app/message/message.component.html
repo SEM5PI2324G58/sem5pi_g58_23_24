@@ -3,6 +3,6 @@
     <h2>Mensagens</h2>
     <button type="button" class="clear"
             (click)="messageService.clear()">Limpar mensagens</button>
-    <div *ngFor='let message of messageService.messages'> {{message}} </div>
+    <div name='app-message' *ngFor='let message of messageService.messages'> {{message}} </div>
   
   </div>
