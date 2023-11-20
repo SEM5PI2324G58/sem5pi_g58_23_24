@@ -8,7 +8,6 @@ import Orientation from './orientation';
 import Player from './player';
 import UserInterface from './userInterface';
 import { PisoService } from 'src/serviceInfo/piso.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EdificioService } from 'src/serviceInfo/edificio.service';
 
 
@@ -19,7 +18,6 @@ import { EdificioService } from 'src/serviceInfo/edificio.service';
 })
 export class Visualizacao3DComponent implements AfterViewInit{
 
-    myForm!: FormGroup;
     listaCodigos: string[] = [];
     listaNumeroPisos: number[] = [];
     codigo: any;
@@ -27,7 +25,6 @@ export class Visualizacao3DComponent implements AfterViewInit{
     constructor(
         private pisoService: PisoService,
         private edificioService: EdificioService,
-        private fb: FormBuilder
       ) { }
 
     ngOnInit(): void {  
@@ -52,6 +49,7 @@ export class Visualizacao3DComponent implements AfterViewInit{
         },
         error: error => {
             console.error('Error fetching floor numbers:', error);
+            this.listaNumeroPisos= [];
         },
         complete: () => {
         }
