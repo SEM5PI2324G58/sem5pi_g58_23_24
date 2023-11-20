@@ -1,5 +1,6 @@
 <body style="margin: 0">
     <div class="views-panel">
+        
         <table class="views">
             <tr>
                 <td>
@@ -43,10 +44,32 @@
                     <input type="button" id="reset-all" value="Reset all views">
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <label>Codigo Edificio:</label>
+                    <select id="codigo">
+                        <option value="" disabled selected></option>
+                        <option *ngFor="let option of listaCodigos" [value]="option">{{ option }}</option>
+                    </select>
+                </td>
+                <td>
+                    <label>Numero Piso:</label>
+                    <select id="numeroPiso">
+                        <option value="" disabled selected></option>
+                        <option *ngFor="let option of listaNumeroPisos" [value]="option">{{ option }}</option>
+                    </select>
+                </td>
+            </tr>    
         </table>
+    </div>
+    <div>
+
     </div>
     <div class="piso">
         <canvas #myCanvas id="myCanvas" style="display: block;"></canvas>
+    </div>
+    <div class="mes">
+        <app-message></app-message>
     </div>
 </body>
 
