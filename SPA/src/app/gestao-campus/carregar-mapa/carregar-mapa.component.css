@@ -81,4 +81,13 @@
   .titulo {
     margin-left : 17%;
   }
+
+  .header{
+    margin-left: 17%; 
+    margin-right: 0.5%;
+    margin-top: 1%;
+    max-width: calc(100% - 17%); 
+    padding: 0px;
+    text-align: center;
+  }
   

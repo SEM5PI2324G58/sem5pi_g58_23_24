@@ -98,8 +98,7 @@ describe('ElevadorService ', () => {
         let edificioSchemaInstance = require('../../src/persistence/schemas/EdificioSchema').default;
         Container.set("EdificioSchema", edificioSchemaInstance);
 
-        let pontoSchemaInstance = require('../../src/persistence/schemas/PontoSchema').default;
-        Container.set("PontoSchema", pontoSchemaInstance);
+  
 
         let edificioRepoClass = require('../../src/repos/EdificioRepo').default;
         let edificioRepoInstance = Container.get(edificioRepoClass);
@@ -109,9 +108,6 @@ describe('ElevadorService ', () => {
         let elevadorRepoInstance = Container.get(elevadorRepoClass);
         Container.set("ElevadorRepo", elevadorRepoInstance);
 
-        let pontoRepoClass = require('../../src/repos/pontoRepo').default;
-        let pontoRepoInstance = Container.get(pontoRepoClass);
-        Container.set("PontoRepo", pontoRepoInstance);
 
     });
     
