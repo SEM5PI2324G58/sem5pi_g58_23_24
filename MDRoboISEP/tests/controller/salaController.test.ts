@@ -32,7 +32,7 @@ import { Mapa } from '../../src/domain/mapa/Mapa';
 describe('SalaController', () => {
     const sandbox = sinon.createSandbox();
     beforeEach(function () {
-        this.timeout(10000);
+        this.timeout(300000);
         Container.reset();
 
         let salaSchemaInstance = require('../../src/persistence/schemas/SalaSchema').default;

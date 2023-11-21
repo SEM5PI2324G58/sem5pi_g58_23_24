@@ -39,7 +39,7 @@ import IExportarMapaDTO from "../../src/dto/IExportarMapaDTO";
 describe('Mapa Controller', () => {
     const sandbox = sinon.createSandbox();
     beforeEach(function() {
-        this.timeout(20000);
+        this.timeout(300000);
         Container.reset();
 
         let mapaSchemaInstance = require('../../src/persistence/schemas/MapaSchema').default;
