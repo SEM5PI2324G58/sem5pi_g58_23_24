@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "c389ac1a-5277-4fe4-9ca7-8be0ea301028",
+		"_postman_id": "8d2c8958-9c3d-4b1c-8ae0-46369100aeaa",
 		"name": "TipoDispositivoTest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "30690787"
@@ -168,18 +168,29 @@
 			],
 			"request": {
 				"method": "DELETE",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"idTipoDispositivo\" : {{id}}\r\n}"
+					"raw": ""
 				},
-				"url": "http://localhost:4000/api/tipoDispositivo"
+				"url": {
+					"raw": "http://localhost:4000/api/tipoDispositivo?idTipoDispositivo={{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"tipoDispositivo"
+					],
+					"query": [
+						{
+							"key": "idTipoDispositivo",
+							"value": "{{id}}"
+						}
+					]
+				}
 			},
 			"response": []
 		}
