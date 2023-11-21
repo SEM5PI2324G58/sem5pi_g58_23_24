@@ -1,7 +1,6 @@
 describe('Edificio', () => {
 
     beforeEach(() => {
-        
         cy.intercept('POST', '/api/edificio').as('createEdificio');
     });
     
@@ -19,6 +18,8 @@ describe('Edificio', () => {
     })
 
     afterEach(() => {
-        //TODO: apagar edificio
+        cy.visit('/apagarEdificio');
+        cy.get('[name="codigo"]').type('T1');
+        cy.get('button').click();
     });
 })

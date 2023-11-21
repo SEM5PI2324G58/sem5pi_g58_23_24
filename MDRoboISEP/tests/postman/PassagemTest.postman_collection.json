@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "6f06d363-12dc-4a99-8a8a-dd3636919040",
+		"_postman_id": "db73c7bd-98f0-43e3-b43f-70659b484695",
 		"name": "PassagemTest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "30921552"
+		"_exporter_id": "30690787"
 	},
 	"item": [
 		{
@@ -519,18 +519,29 @@
 			"name": "Delete EdificioA",
 			"request": {
 				"method": "DELETE",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"codigo\": \"Teste\"\r\n}"
+					"raw": ""
 				},
-				"url": "http://localhost:4000/api/edificio"
+				"url": {
+					"raw": "http://localhost:4000/api/edificio?codEdificio=Teste",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"edificio"
+					],
+					"query": [
+						{
+							"key": "codEdificio",
+							"value": "Teste"
+						}
+					]
+				}
 			},
 			"response": []
 		},
@@ -538,18 +549,29 @@
 			"name": "Delete EdificioB",
 			"request": {
 				"method": "DELETE",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"codigo\": \"Test1\"\r\n}"
+					"raw": ""
 				},
-				"url": "http://localhost:4000/api/edificio"
+				"url": {
+					"raw": "http://localhost:4000/api/edificio?codEdificio=Test1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"edificio"
+					],
+					"query": [
+						{
+							"key": "codEdificio",
+							"value": "Test1"
+						}
+					]
+				}
 			},
 			"response": []
 		}

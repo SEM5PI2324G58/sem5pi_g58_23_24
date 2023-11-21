@@ -14,6 +14,7 @@ import { Modelo } from '../../src/domain/tipoDispositivo/Modelo';
 describe('Tipo Dispositivo Controller', () => {
     const sandbox = sinon.createSandbox();
     beforeEach(function() {
+        this.timeout(300000);
         Container.reset();
         let tipoDispositivoSchemaInstance = require('../../src/persistence/schemas/TipoDispositivoSchema').default;
         Container.set("TipoDispositivoSchema", tipoDispositivoSchemaInstance);

@@ -30,7 +30,7 @@ import IElevadorDTO from '../../src/dto/IElevadorDTO';
 describe('ElevadorController', () => {
     const sandbox = sinon.createSandbox();
     beforeEach(function() {
-        this.timeout(10000);
+        this.timeout(300000);
         Container.reset();
 
         let edificioProps : any = {

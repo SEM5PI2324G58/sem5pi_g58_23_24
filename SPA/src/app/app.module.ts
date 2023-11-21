@@ -35,6 +35,8 @@ import { ListarEdificioMinMaxPisosComponent } from './gestao-campus/listar-edifi
 import { ListarPisoPassagemComponent } from './gestao-campus/listar-piso-passagem/listar-piso-passagem.component';
 import { ListarElevadorComponent } from './gestao-campus/listar-elevador/listar-elevador.component';
 import { ListarPassagemPorEdificiosComponent } from './gestao-campus/listar-passagem-por-edificios/listar-passagem-por-edificios.component';
+import { ApagarEdificioComponent } from './gestao-campus/apagar-edificio/apagar-edificio.component';
+import { ApagarTipoRoboComponent } from './gestao-frota/apagar-tipo-robo/apagar-tipo-robo.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +69,9 @@ import { ListarPassagemPorEdificiosComponent } from './gestao-campus/listar-pass
     ListarEdificioMinMaxPisosComponent,
     ListarPisoPassagemComponent,
     ListarElevadorComponent,
-    ListarPassagemPorEdificiosComponent
+    ListarPassagemPorEdificiosComponent,
+    ApagarEdificioComponent,
+    ApagarTipoRoboComponent
   ],
   imports: [
     BrowserModule,

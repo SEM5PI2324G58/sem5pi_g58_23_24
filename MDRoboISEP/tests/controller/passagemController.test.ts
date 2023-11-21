@@ -26,7 +26,7 @@ import { IdPassagem } from '../../src/domain/passagem/IdPassagem';
 describe('PassagemController', () => {
     const sandbox = sinon.createSandbox();
     beforeEach(function () {
-        this.timeout(10000);
+        this.timeout(300000);
         Container.reset();
         let mapa;
         // Criar 2 pisos

@@ -16,7 +16,18 @@ describe('Tipo de Robo', () => {
         cy.wait('@createTipoRobo').then((interception) => {
             expect(interception?.response?.statusCode).to.eq(201); // Adjust the status code as needed
         });
-       
+        cy.get('[name="app-message"]').invoke('text').then((text) => {
+            const regex = /Tipo de Robot com id (\w+) criado com sucesso!/;
+            const match = text.match(regex);
+            if (match) {
+              let id = match[1];
+              cy.visit('/apagarTipoRobo');
+              cy.get('[name="id"]').type(id);
+              cy.get('button').click();
+            } else {
+              cy.log('Erro');
+            }
+        });
     })
 
     afterEach(() => {

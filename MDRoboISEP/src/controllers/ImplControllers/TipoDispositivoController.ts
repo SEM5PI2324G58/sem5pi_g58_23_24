@@ -29,7 +29,12 @@ export default class TipoDispositivoController implements ITipoDispositivoContro
 
   public async deleteTipoDispositivo(req: Request, res: Response, next: NextFunction) {
     try{
-      const tipoDispositivoOrError = await this.tipoDispositivoServiceInstance.deleteTipoDispositivo(req.body.idTipoDispositivo);
+      let props = +req.query.idTipoDispositivo;
+      if(isNaN(props)){
+        res.status(400);
+        return res.json("Id do tipo de dispositivo inválido");
+      }
+      const tipoDispositivoOrError = await this.tipoDispositivoServiceInstance.deleteTipoDispositivo(props);
       if (tipoDispositivoOrError.isFailure) {
         if (String(tipoDispositivoOrError.errorValue()) === "Tipo de dispositivo não existe") {
           res.status(404);
