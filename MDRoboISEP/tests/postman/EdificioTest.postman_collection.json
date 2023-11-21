@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "6e6a19f7-5406-4528-9fa9-7d08b1d282a7",
+		"_postman_id": "52f9a0db-eecc-4a0c-9159-4e6a64e03916",
 		"name": "EdificioTest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "30673359"
+		"_exporter_id": "30690787"
 	},
 	"item": [
 		{
@@ -852,18 +852,29 @@
 			],
 			"request": {
 				"method": "DELETE",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n    \"codigo\": \"Teste\"\r\n}"
 				},
-				"url": "http://localhost:4000/api/edificio"
+				"url": {
+					"raw": "http://localhost:4000/api/edificio?codEdificio=Teste",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"edificio"
+					],
+					"query": [
+						{
+							"key": "codEdificio",
+							"value": "Teste"
+						}
+					]
+				}
 			},
 			"response": []
 		}

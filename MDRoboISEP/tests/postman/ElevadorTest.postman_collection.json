@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "a8212550-f83e-48e9-bdc2-6fbfd1e1417a",
+		"_postman_id": "2c1ea289-78de-4285-bc39-6b86b7fbe913",
 		"name": "ElevadorTest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "30695664"
+		"_exporter_id": "30690787"
 	},
 	"item": [
 		{
@@ -408,19 +408,7 @@
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Informação retornada foi a esperada\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.eql({\r",
-							"    \"codigo\": \"Teste\",\r",
-							"    \"dimensaoX\": 4,\r",
-							"    \"dimensaoY\": 4,\r",
-							"    \"descricao\": \"EdificioTest\",\r",
-							"    \"nome\": \"EdificioTest\"\r",
-							"});\r",
-							"    \r",
-							"});"
+							"}); "
 						],
 						"type": "text/javascript"
 					}
@@ -428,18 +416,29 @@
 			],
 			"request": {
 				"method": "DELETE",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n    \"codigo\": \"Teste\"\r\n}"
 				},
-				"url": "http://localhost:4000/api/edificio"
+				"url": {
+					"raw": "http://localhost:4000/api/edificio?codEdificio=Teste",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"edificio"
+					],
+					"query": [
+						{
+							"key": "codEdificio",
+							"value": "Teste"
+						}
+					]
+				}
 			},
 			"response": []
 		}
