@@ -1,6 +1,9 @@
 import * as THREE from "three";
 import Ground from "./ground";
 import Wall from "./wall";
+import Door from "./door";
+import { publishFacade } from "@angular/compiler";
+import Elevador from "./elevador";
 
 
 interface mazeData {
@@ -29,14 +32,18 @@ export default class Maze {
     public wall: Wall;
     public scale: THREE.Vector3;
     public loaded: boolean;
+    public door!: Door[];
+    public elevador!: Elevador[];
 
-    constructor(mapaData: mazeData) {
-        
-        this.scale = new THREE.Vector3(1.0, 0.5, 1.0);
+    constructor(mapaData: mazeData, scene: THREE.Scene) {
+        this.loaded = false;
+        this.scale = new THREE.Vector3(1.0, 0.8, 1.0);
         this.map = mapaData.map;
         this.size = mapaData.size;
         this.initialPosition = this.cellToCartesian(mapaData.initialPosition);
         this.initialDirection = mapaData.initialDirection;
+        this.door = [];
+        this.elevador = [];
 
         this.exitLocation = this.cellToCartesian(mapaData.exitLocation);
         this.object = new THREE.Group();
@@ -45,20 +52,30 @@ export default class Maze {
         this.object.add(this.ground.object);
         
         this.wall = new Wall({ textureUrl: mapaData.wallTextureUrl });
-
+                
         let wallObject: THREE.Object3D;
+        let doorObject: THREE.Object3D;
             for (let i = 0; i <= this.size.width; i++) {
                 for (let j = 0; j <= this.size.height; j++) {
-                    if (this.map[j][i] == "Norte" || this.map[j][i] == "NorteOeste") {
+                    if (this.map[j][i] == "Norte" || this.map[j][i] == "NorteOeste" || this.map[j][i] == "PortaOesteNorteOeste") {
                         wallObject = this.wall.object.clone();
                         wallObject.position.set(i - this.size.width / 2.0 + 0.5, 0.5, j - this.size.height / 2.0);
                         this.object.add(wallObject);
                     }
-                    if (this.map[j][i] == "Oeste" || this.map[j][i] == "NorteOeste") {
+                    if (this.map[j][i] == "Oeste" || this.map[j][i] == "NorteOeste" || this.map[j][i] == "PortaNorteNorteOeste") {
                         wallObject = this.wall.object.clone();
                         wallObject.rotateY(Math.PI / 2.0);
                         wallObject.position.set(i - this.size.width / 2.0, 0.5, j - this.size.height / 2.0 + 0.5);
                         this.object.add(wallObject);
+                    }
+                    if(this.map[j][i] == "PortaNorte" || this.map[j][i] == "PortaNorteNorteOeste"){
+                        this.door.push(new Door({ url: "assets/door/door.glb", scale: new THREE.Vector3(0.9, 0.4, 0.5), initialDirection: 180 , position: new THREE.Vector3(i - this.size.width / 2.0 + 0.5, 0, j - this.size.height / 2.0), scene: scene}));
+                    }
+                    if(this.map[j][i] == "PortaOeste" || this.map[j][i] == "PortaOesteNorteOeste"){
+                        this.door.push(new Door({ url: "assets/door/door.glb", scale: new THREE.Vector3(0.9, 0.4, 0.5), initialDirection: 90 , position: new THREE.Vector3(i - this.size.width / 2.0, 0, j - this.size.height / 2.0 + 0.5), scene: scene}));
+                    }
+                    if(this.map[j][i] == "Elevador"){
+                        this.elevador.push(new Elevador({ url: "assets/elevador/Elevator.glb", scale: new THREE.Vector3(0.242, 0.2, 0.242), initialDirection: -180 , position: new THREE.Vector3(i - this.size.width / 2.0 + 0.5, 0, j - this.size.height / 2.0 + 0.5), scene: scene}));
                     }
                 }
             }
