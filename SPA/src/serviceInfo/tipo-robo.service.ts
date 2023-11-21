@@ -46,7 +46,7 @@ export class TipoRoboService {
     this.http.post<TipoRobo>(this.tipoRoboUrl, tipoRobo as TipoRobo, this.httpOptions)
     .pipe(catchError(this.handleError<TipoRobo>('Criar Tipo de Robô')))
     .subscribe({next: data => {
-      this.log(`Tipo de Robô com id ${data.idTipoDispositivo} criado com sucesso!`);
+      this.log(`Tipo de Robot com id ${data.idTipoDispositivo} criado com sucesso!`);
     }
     });
   
