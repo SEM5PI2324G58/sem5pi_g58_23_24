@@ -62,6 +62,8 @@ describe('Criar elevador', () => {
     })
 
     afterEach(() => {
-        //TODO: apagar edificio
+        cy.visit('/apagarEdificio');
+        cy.get('[name="codigo"]').type('T1');
+        cy.get('button').click();
     });
 })

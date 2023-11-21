@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError} from 'rxjs/operators';
 import { TipoRobo } from '../dataModel/tipoRobo';
@@ -46,7 +46,7 @@ export class TipoRoboService {
     this.http.post<TipoRobo>(this.tipoRoboUrl, tipoRobo as TipoRobo, this.httpOptions)
     .pipe(catchError(this.handleError<TipoRobo>('Criar Tipo de Robô')))
     .subscribe({next: data => {
-      this.log(`Tipo de Robô com id ${data.idTipoDispositivo} criado com sucesso!`);
+      this.log(`Tipo de Robot com id ${data.idTipoDispositivo} criado com sucesso!`);
     }
     });
   
@@ -81,5 +81,19 @@ export class TipoRoboService {
       return false;
     }
     return true;
+  }
+
+  public apagarTipoRobo(id: string): void {
+    if(this.validateString(id) === false){
+      this.log("Id não pode ser vazio");
+      return;
+    }
+
+    let params = new HttpParams().set('idTipoDispositivo', id);
+    this.http.delete<TipoRobo>(this.tipoRoboUrl, { params: params, headers: this.httpOptions.headers })
+    .pipe(catchError(this.handleError<TipoRobo>('Apagar Tipo de Robot')))
+    .subscribe(data => {
+      this.log(`Tipo de robot: ${data.idTipoDispositivo} apagado com sucesso!`);
+    });
   }
 }

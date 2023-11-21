@@ -179,4 +179,18 @@ export class EdificioService {
         catchError(this.handleError<Edificio[]>('Listar Edificio com Min e Max Pisos'))
       );
   }  
+
+  public apagarEdificio(codigo: string): void {
+    if(this.validateString(codigo) === false){
+      this.log("Código não pode ser vazio");
+      return;
+    }
+
+    let params = new HttpParams().set('codEdificio', codigo);
+    this.http.delete<Edificio>(this.edificioUrl, { params: params, headers: this.httpOptions.headers })
+    .pipe(catchError(this.handleError<Edificio>('Apagar Edifício')))
+    .subscribe(data => {
+      this.log(`Edificio com código: ${data.codigo} apagado com sucesso!`);
+    });
+  }
 }
