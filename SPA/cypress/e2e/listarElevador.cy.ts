@@ -1,4 +1,4 @@
-describe('Criar elevador', () => {
+describe('Listar elevador', () => {
 
     beforeEach(() => {
         
@@ -7,6 +7,7 @@ describe('Criar elevador', () => {
         cy.intercept('POST', '/api/piso').as('createPiso');
         cy.intercept('GET', '/api/piso?codigo=T1').as('getPisosEdificio');
         cy.intercept('POST', '/api/elevador').as('createElevador');
+        cy.intercept('GET', '/api/elevador/elevadoresPorEdificio?edificio=T1').as('listarElevador');
         
         //Criar um edificio
         cy.visit('/criarEdificio')
@@ -35,9 +36,6 @@ describe('Criar elevador', () => {
         cy.get('button').click({ multiple: true });
         cy.wait('@createPiso');
 
-    });
-    
-    it('Criar elevador sucesso e2e', () => {
         //Criar elevdor
         cy.visit('/criarElevador');
         cy.wait('@getEdificio');
@@ -57,8 +55,20 @@ describe('Criar elevador', () => {
     
         cy.get('button').click();
         cy.wait('@createElevador');
+    });
     
-        cy.get('[name="app-message"]').contains('Elevador no edifício T1 criado com sucesso!');
+    it('listar elevador sucesso e2e', () => {
+        //Criar elevdor
+        cy.visit('/listarElevador');
+        cy.wait('@getEdificio');
+    
+        cy.get('[id="codigo"]').select('T1');
+        cy.wait('@listarElevador');
+        
+        cy.get('p-table').contains('Marca1');
+        cy.get('p-table').contains('Modelo1');
+        cy.get('p-table').contains('1234');
+        cy.get('p-table').contains('Descricao1');
     })
 
     afterEach(() => {

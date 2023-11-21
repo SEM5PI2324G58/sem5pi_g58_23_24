@@ -1,4 +1,4 @@
-describe('Elevador', () => {
+describe('Editar elevador', () => {
 
     beforeEach(() => {
         
