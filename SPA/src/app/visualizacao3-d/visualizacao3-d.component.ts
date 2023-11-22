@@ -15,6 +15,8 @@ import Animations from './player_animations';
 import UserInterface from './userInterface';
 import { PisoService } from 'src/serviceInfo/piso.service';
 import { EdificioService } from 'src/serviceInfo/edificio.service';
+import ExportarMapa from 'src/dataModel/exportarMapa';
+import { initial } from 'lodash';
 
 @Component({
   selector: 'app-visualizacao3-d',
@@ -131,8 +133,50 @@ export class Visualizacao3DComponent implements AfterViewInit {
 
     // Create a 3D scene (the game itself)
     this.scene3D = new THREE.Scene();
+    let mazeData : ExportarMapa;
+    mazeData = {
+      texturaChao: 'assets/ground.png',
+      texturaParede: 'assets/wall.jpg',
+      modeloPorta: 'assets/door/door.glb',
+      modeloElevador: 'assets/elevador/Elevator.glb',
+      codigoEdificio: 'Teste1',
+      numeroPiso: 1,
+      matriz: [
+        ['NorteOeste','PassagemOeste','Passagem','NorteOeste','Norte','NorteOeste','Norte','Norte','Norte','Norte','Oeste',],
+        ['Oeste','Oeste',' ','Oeste',' ','Oeste',' ',' ',' ',' ','Oeste',],
+        ['Oeste','PortaOeste',' ','PortaNorte','Norte','Norte','PortaNorte','Norte','PortaOesteNorteOeste','Norte','Oeste',],
+        ['Oeste', 'Oeste', ' ', ' ', ' ', ' ', ' ', ' ', 'Oeste', ' ', 'Oeste'],
+        ['NorteOeste','Norte','Norte','PortaNorteNorteOeste','Norte','Norte','Oeste',' ','Oeste',' ','Oeste',],
+        ['Oeste',' ',' ','Oeste',' ',' ','Oeste',' ','Oeste',' ','Oeste',],
+        ['Oeste',' ',' ','Oeste',' ',' ','Oeste',' ','Oeste',' ','Oeste',],
+        ['Oeste','',' ','Oeste',' ',' ','Oeste',' ','Oeste',' ','Oeste',],
+        ['NorteOeste','PortaNorte','Norte','Norte' /*elevador*/,'Norte','Norte',' ',' ','Oeste',' ','Oeste',],
+        ['Elevador',' ',' ','',' ',' ',' ',' ','Oeste',' ','Oeste',],
+        ['Norte','Norte','Norte','Norte','Norte','Norte','Norte','Norte','Norte','Norte',' ',],
+      ],
+      elevador: {xCoord: 0,
+        yCoord: 9,
+        orientacao: 'Este'},
+      passagens: [{
+        id: 1,
+        abcissaA: 0,
+        ordenadaA: 1,
+        abcissaB: 0,
+        ordenadaB: 2,
+        orientacao: 'Oeste'
+      }],
+      portas: [{
+        abcissa : 2,
+        ordenada: 3,
+        orientacao: 'Oeste'
+      }],
+      posicaoInicialRobo: {
+        x: 7,
+        y: 6,
+      }
+    }
 
-    let mazeData = {
+    let mazeData1 = {
       groundTextureUrl: 'assets/ground.png',
       wallTextureUrl: 'assets/wall.jpg',
       size: { width: 10, height: 10 },
@@ -151,10 +195,9 @@ export class Visualizacao3DComponent implements AfterViewInit {
       ],
       initialPosition: [7, 6],
       initialDirection: 0.0,
-      exitLocation: [-0.5, 6],
     };
 
-    this.maze = new Maze(mazeData, this.scene3D);
+    this.maze = new Maze(mazeData, this.scene3D, 0.0);
 
     const playerData = {
       url: 'assets/RobotExpressive/RobotExpressive.glb',
