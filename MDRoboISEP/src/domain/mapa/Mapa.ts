@@ -250,7 +250,16 @@ export class Mapa extends AggregateRoot<pisoProps> {
   }
 
   public toElevador(x:number, y:number, orientacao:string) {
-    this.props.mapa[x][y] = TipoPonto.create("Elevador").getValue();
+    if(this.props.mapa[x][y].returnTipoPonto() === 'Norte'){
+      this.props.mapa[x][y] = TipoPonto.create("ElevadorNorte").getValue();
+    } else if(this.props.mapa[x][y].returnTipoPonto() === 'Oeste'){
+      this.props.mapa[x][y] = TipoPonto.create("ElevadorOeste").getValue();
+    } else if(this.props.mapa[x][y].returnTipoPonto() === 'NorteOeste'){
+      this.props.mapa[x][y] = TipoPonto.create("ElevadorNorteOeste").getValue();
+    } else{
+      this.props.mapa[x][y] = TipoPonto.create("Elevador").getValue();
+    }
+
     if(this.props.coordenadasElevador === undefined || this.props.coordenadasElevador === null){
       this.props.coordenadasElevador = CoordenadasElevador.create({xCoord: [x], yCoord: [y], orientacao: orientacao}).getValue();
     }else{
@@ -261,15 +270,27 @@ export class Mapa extends AggregateRoot<pisoProps> {
   }
 
   public toParedeNorteOeste(x:number, y:number) {
-    this.props.mapa[x][y] = TipoPonto.create("NorteOeste").getValue();
+    if(this.props.mapa[x][y].returnTipoPonto() === 'Elevador'){
+      this.props.mapa[x][y] = TipoPonto.create("ElevadorNorteOeste").getValue();
+    }else{
+      this.props.mapa[x][y] = TipoPonto.create("ElevadorNorteOeste").getValue();
+    }
   }
 
   public toParedeNorte(x:number, y:number) {
+    if(this.props.mapa[x][y].returnTipoPonto() === 'Elevador'){
+      this.props.mapa[x][y] = TipoPonto.create("ElevadorNorte").getValue();
+    }else{
     this.props.mapa[x][y] = TipoPonto.create("Norte").getValue();
+    }
   }
 
   public toParedeOeste(x:number, y:number) {
-    this.props.mapa[x][y] = TipoPonto.create("Oeste").getValue();
+    if(this.props.mapa[x][y].returnTipoPonto() === 'Elevador'){
+      this.props.mapa[x][y] = TipoPonto.create("ElevadorOeste").getValue();
+    }else{
+      this.props.mapa[x][y] = TipoPonto.create("Oeste").getValue();
+    }
   }
 
   public toVazio(x:number, y:number) {
@@ -327,21 +348,10 @@ export class Mapa extends AggregateRoot<pisoProps> {
   }
 
   public criarPontosElevador(xCoordSup: number, yCoordSup: number, orientacao : string): boolean{
-    let xCoordInf;
-    let yCoordInf;
-
-    if (orientacao === 'Norte') {
-      xCoordInf = xCoordSup + 1;
-      yCoordInf = yCoordSup;
-    }else if (orientacao === 'Oeste') {
-      xCoordInf = xCoordSup;
-      yCoordInf = yCoordSup + 1;
-    }
-    if(this.props.mapa.length <= xCoordInf || this.props.mapa[0].length <= yCoordInf){
+    if(this.props.mapa.length <= xCoordSup || this.props.mapa[0].length <= yCoordSup){
       return false;
     }
     this.toElevador(xCoordSup,yCoordSup, orientacao);
-    this.toElevador(xCoordInf,yCoordInf, orientacao);
     return true;    
   }
 
