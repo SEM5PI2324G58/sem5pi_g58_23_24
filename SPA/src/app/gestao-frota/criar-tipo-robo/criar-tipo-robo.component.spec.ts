@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CriarTipoRoboComponent } from './criar-tipo-robo.component';
+import { MapaService } from '../../../serviceInfo/mapa.service';
+import {SidebarFrotaComponent} from '../sidebar-frota/sidebar-frota.component';
+import {MessageComponent} from '../../message/message.component';
+import { TipoRoboService } from 'src/serviceInfo/tipo-robo.service';
 
 describe('CriarTipoRoboComponent', () => {
   let component: CriarTipoRoboComponent;
@@ -8,7 +12,9 @@ describe('CriarTipoRoboComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CriarTipoRoboComponent]
+      declarations: [CriarTipoRoboComponent, SidebarFrotaComponent, MessageComponent],
+      imports: [HttpClientTestingModule],
+      providers: [MapaService],
     })
     .compileComponents();
     
@@ -19,5 +25,17 @@ describe('CriarTipoRoboComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('Método add chama o método criarTipoRobo do tipoRoboService', () => {
+    const marca = "marca";
+    const modelo = "modelo";
+    const tipoTarefa = ["tipoTarefa1", "tipoTarefa2"];
+
+    let tipoRoboService = TestBed.inject(TipoRoboService);
+    spyOn(component['tipoRoboService'], 'criarTipoRobo');
+    component.listaTipoTarefaSelecionados = tipoTarefa;
+    component.add(marca, modelo);
+    expect(tipoRoboService.criarTipoRobo).toHaveBeenCalledWith(tipoTarefa, marca, modelo);
   });
 });
