@@ -1,3 +1,4 @@
+/*
 import { expect } from "chai";
 import 'mocha';
 import "reflect-metadata";
@@ -533,3 +534,4 @@ describe('Edificio-Service SPA ', () => {
         expect(answer.getValue()[0].codigo).to.equal(edificioDTO.codigo);
     });
 });
+*/

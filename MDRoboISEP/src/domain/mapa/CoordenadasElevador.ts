@@ -5,8 +5,8 @@ import { Guard } from "../../core/logic/Guard";
 
 
 interface coordenadasElevadorProps {
-    xCoord: number[];
-    yCoord: number[];
+    xCoord: number;
+    yCoord: number;
     orientacao: string;
 }
 
@@ -32,10 +32,10 @@ export class CoordenadasElevador extends ValueObject<coordenadasElevadorProps> {
     }
   }
 
-  public returnXCoord(): number[] {
+  public returnXCoord(): number {
     return this.props.xCoord;
   }
-  public returnYCoord(): number[] {
+  public returnYCoord(): number {
     return this.props.yCoord;
   }
   public returnOrientacao(): string {

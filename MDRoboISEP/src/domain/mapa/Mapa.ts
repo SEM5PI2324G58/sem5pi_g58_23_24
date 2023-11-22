@@ -125,11 +125,11 @@ export class Mapa extends AggregateRoot<pisoProps> {
     return false;
   }
 
-  public returnXCoordElevador(): number[] {
+  public returnXCoordElevador(): number {
     return this.props.coordenadasElevador.returnXCoord();
   }
 
-  public returnYCoordElevador(): number[] {
+  public returnYCoordElevador(): number {
     return this.props.coordenadasElevador.returnYCoord();
   }
 
@@ -260,20 +260,14 @@ export class Mapa extends AggregateRoot<pisoProps> {
       this.props.mapa[x][y] = TipoPonto.create("Elevador").getValue();
     }
 
-    if(this.props.coordenadasElevador === undefined || this.props.coordenadasElevador === null){
-      this.props.coordenadasElevador = CoordenadasElevador.create({xCoord: [x], yCoord: [y], orientacao: orientacao}).getValue();
-    }else{
-      let antigoXCoord = this.props.coordenadasElevador.returnXCoord()[0];
-      let antigoYCoord = this.props.coordenadasElevador.returnYCoord()[0];
-      this.props.coordenadasElevador = CoordenadasElevador.create({xCoord: [antigoXCoord, x], yCoord: [antigoYCoord, y], orientacao: orientacao}).getValue();
-    }
+    this.props.coordenadasElevador = CoordenadasElevador.create({xCoord: x, yCoord: y, orientacao: orientacao}).getValue();
   }
 
   public toParedeNorteOeste(x:number, y:number) {
     if(this.props.mapa[x][y].returnTipoPonto() === 'Elevador'){
       this.props.mapa[x][y] = TipoPonto.create("ElevadorNorteOeste").getValue();
     }else{
-      this.props.mapa[x][y] = TipoPonto.create("ElevadorNorteOeste").getValue();
+      this.props.mapa[x][y] = TipoPonto.create("NorteOeste").getValue();
     }
   }
 
@@ -547,13 +541,49 @@ export class Mapa extends AggregateRoot<pisoProps> {
     return dados;
   }
 
-  public exportarMapa() : any {
+  public exportarMapa() : {matriz:any, passagens:any, elevador:any, portas:any, posicaoInicialRobo:any} {
     let mapa = {
       matriz : this.returnTipoDePontos(),
       passagens : this.obterInformacaoPassagens(),
       elevador : this.obterInformcaoElevador(),
       portas : this.obterInformacaoPortas(),
+      posicaoInicialRobo : this.posicaoIncicialRobo(),
     }
     return mapa;
+  }
+
+  private posicaoIncicialRobo() : {x: number, y: number}{
+    let posicaoInicialRobo : {
+      x: number,
+      y: number,
+    }
+    
+    if(!this.props.coordenadasSala){
+      return null;
+    }
+    for(let i = 0; i < this.props.mapa.length; i++){
+      for(let j = 0; j < this.props.mapa[i].length; j++){
+        if(this.props.mapa[i][j].returnTipoPonto() === " "){
+          if(!this.pontoEstaDentroDeSala(i,j)){
+            posicaoInicialRobo = {x: i, y: j};
+            return posicaoInicialRobo;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  private pontoEstaDentroDeSala(x : number, y : number): boolean{
+    if(!this.props.coordenadasSala){
+      return false;
+    }
+    let coordenadasSalas = this.props.coordenadasSala;
+    for(let sala of coordenadasSalas){
+      if(x >= sala.returnAbcissaA() && x <= sala.returnAbcissaB() && y >= sala.returnOrdenadaA() && y <= sala.returnOrdenadaB()){
+        return true;
+      }
+    }
+    return false;
   }
 }

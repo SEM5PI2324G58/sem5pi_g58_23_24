@@ -203,16 +203,16 @@ export default class MapaService implements IMapaService{
         let informacaoMapaDTO : IExportarMapaDTO = {
             texturaChao: "assets/ground.jpg",
             texturaParede: "assets/wall.jpg",
-            texturaPorta: "assets/door.jpg",
-            texturaElevador: "assets/elevator.jpg",
+            modeloPorta: "assets/door.glb",
+            modeloElevador: "assets/elevator.glb",
             codigoEdificio: mapaDTO.codigoEdificio,
             numeroPiso : mapaDTO.numeroPiso,
             matriz : informcaoMapa.matriz,
             elevador : informcaoMapa.elevador,
             passagens : informcaoMapa.passagens,
             portas : informcaoMapa.portas,
+            posicaoInicialRobo : informcaoMapa.posicaoInicialRobo
         }
         return Result.ok<IExportarMapaDTO>(informacaoMapaDTO);
     }
-    
 }
