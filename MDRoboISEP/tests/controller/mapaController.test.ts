@@ -303,8 +303,8 @@ describe('Mapa Controller', () => {
             ],
             texturaChao: "/assets/floor.jpg",
             texturaParede: "/assets/wall.jpg",
-            texturaPorta: "/assets/door.jpg",
-            texturaElevador: "/assets/elevator.jpg",
+            modeloPorta: "/assets/door.glb",
+            modeloElevador: "/assets/elevator.glb",
         }
 
         let req: Partial<Request> = {};
@@ -328,17 +328,13 @@ describe('Mapa Controller', () => {
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
         sinon.assert.calledWith(res.json as sinon.SinonSpy, sinon.match({
             codigoEdificio: "ED01",
+            matriz: [[" ", " ", " ", " ", " ", " "], [" ", " ", " ", " ", " ", " "], [" ", " ", " ", " ", " ", " "]],
+            modeloElevador: "/assets/elevator.glb",
+            modeloPorta: "/assets/door.glb",
             numeroPiso: 0,
-            matriz: [
-                [" ", " ", " ", " ", " ", " "],
-                [" ", " ", " ", " ", " ", " "],
-                [" ", " ", " ", " ", " ", " "],
-            ],
             texturaChao: "/assets/floor.jpg",
-            texturaParede: "/assets/wall.jpg",
-            texturaPorta: "/assets/door.jpg",
-            texturaElevador: "/assets/elevator.jpg",
-        }));
+            texturaParede: "/assets/wall.jpg"
+          }));
     });
 
     it('MapaController + MapaService exportarMapa', async function(){
@@ -385,13 +381,9 @@ describe('Mapa Controller', () => {
 
         const mapaController = new MapaController(mapaServiceInstance as IMapaService);
         await mapaController.exportarMapa(req as Request, res as Response, next as NextFunction);
-
-        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
-        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
-        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
-        sinon.assert.calledWith(res.json as sinon.SinonSpy, sinon.match({
+        let propsE = {
             codigoEdificio: "ED01",
-            elevador: { orientacao: "Norte", xCoord: [3, 4], yCoord: [3, 3] },
+            elevador: { orientacao: "Norte", xCoord: 3, yCoord: 3 },
             matriz:[["NorteOeste", "Oeste", "Oeste", "NorteOeste", "Oeste", "Norte"], ["PortaNorte", " ", " ", "Norte", " ", "Norte"], ["Norte", " ", " ", "Norte", " ", "Norte"], ["NorteOeste", "Oeste", "Oeste", "Elevador", " ", "Norte"], ["Norte", " ", " ", "Elevador", " ", "Norte"], ["Oeste", "Oeste", "Oeste", "Passagem", "Passagem", " "]],
             numeroPiso: 0,
             passagens: [{ abcissaA: 5, abcissaB: 5, id: 1, ordenadaA: 3, ordenadaB: 4, orientacao: "Oeste" }],
@@ -400,6 +392,24 @@ describe('Mapa Controller', () => {
             texturaParede: "assets/wall.jpg",
             texturaPorta: "assets/door.jpg",
             texturaElevador: "assets/elevator.jpg"
+        }
+        console.log(propsE);
+
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, sinon.match({
+            codigoEdificio: "ED01",
+            elevador: { orientacao: "Norte", xCoord: 3, yCoord: 3 },
+            matriz: [["NorteOeste", "Oeste", "Oeste", "NorteOeste", "Oeste", "Norte"], ["PortaNorte", " ", " ", "Norte", " ", "Norte"], ["Norte", " ", " ", "Norte", " ", "Norte"], ["NorteOeste", "Oeste", "Oeste", "Elevador", " ", "Norte"], ["Norte", " ", " ", " ", " ", "Norte"], ["Oeste", "Oeste", "Oeste", "Passagem", "Passagem", " "]],
+            modeloElevador: "assets/elevator.glb",
+            modeloPorta: "assets/door.glb",
+            numeroPiso: 0,
+            passagens: [{ abcissaA: 5, abcissaB: 5, id: 1, ordenadaA: 3, ordenadaB: 4, orientacao: "Oeste" }],
+            portas: [{ abcissa: 1, ordenada: 0, orientacao: "Norte" }],
+            posicaoInicialRobo: { x: 1, y: 4 },
+            texturaChao: "assets/ground.jpg",
+            texturaParede: "assets/wall.jpg"
         }));
     });
 });

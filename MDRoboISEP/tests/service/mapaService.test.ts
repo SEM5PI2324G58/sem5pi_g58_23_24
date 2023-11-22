@@ -598,10 +598,10 @@ describe('Mapa Service', () => {
         expect(answer.getValue().numeroPiso).to.equal(body.numeroPiso);
         expect(answer.getValue().texturaChao).to.equal("assets/ground.jpg");
         expect(answer.getValue().texturaParede).to.equal("assets/wall.jpg");
-        expect(answer.getValue().texturaPorta).to.equal("assets/door.jpg");
-        expect(answer.getValue().texturaElevador).to.equal("assets/elevator.jpg");
+        expect(answer.getValue().modeloPorta).to.equal("assets/door.glb");
+        expect(answer.getValue().modeloElevador).to.equal("assets/elevator.glb");
         expect(answer.getValue().portas).to.deep.equal([{abcissa: 1, ordenada: 0, orientacao: "Norte"}]);
-        expect(answer.getValue().elevador).to.deep.equal({xCoord: [3,4], yCoord: [3,3], orientacao: "Norte"});
+        expect(answer.getValue().elevador).to.deep.equal({xCoord: 3, yCoord: 3, orientacao: "Norte"});
         expect(answer.getValue().passagens).to.deep.equal([{id: 1, abcissaA: 5, ordenadaA: 3, abcissaB:5, ordenadaB:4, orientacao: "Oeste"}]);
 
     });
