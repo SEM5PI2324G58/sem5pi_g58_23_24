@@ -785,13 +785,11 @@ export class Visualizacao3DComponent implements AfterViewInit {
   }
 
   collision(position: THREE.Vector3) {
-    return false;
-    /* TODO #24 - Check if the player collided with a wall
-            - assume that a collision is detected if the distance between the player position and any of the walls is less than the player radius.
-            - player position: position
-            - player radius: this.player.radius
-            - remove the previous instruction and replace it with the following one (after completing it)
-        return this.maze.distanceToWestWall(position) < ... || ... || ... || ...; */
+
+    return this.maze.distanceToWestWall(position) < this.player.radius 
+    || this.maze.distanceToEastWall(position) < this.player.radius 
+    || this.maze.distanceToNorthWall(position) < this.player.radius 
+    || this.maze.distanceToSouthWall(position) < this.player.radius;
   }
 
   update() {
