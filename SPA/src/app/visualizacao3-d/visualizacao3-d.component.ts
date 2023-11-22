@@ -151,7 +151,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
         ['Oeste',' ',' ','Oeste',' ',' ','Oeste',' ','Oeste',' ','Oeste',],
         ['Oeste','',' ','Oeste',' ',' ','Oeste',' ','Oeste',' ','Oeste',],
         ['NorteOeste','PortaNorte','Norte','Norte' /*elevador*/,'Norte','Norte',' ',' ','Oeste',' ','Oeste',],
-        ['Elevador',' ',' ','',' ',' ',' ',' ','Oeste',' ','Oeste',],
+        ['ElevadorOeste',' ',' ','',' ',' ',' ',' ','Oeste',' ','Oeste',],
         ['Norte','Norte','Norte','Norte','Norte','Norte','Norte','Norte','Norte','Norte',' ',],
       ],
       elevador: {xCoord: 0,
@@ -173,6 +173,44 @@ export class Visualizacao3DComponent implements AfterViewInit {
       posicaoInicialRobo: {
         x: 7,
         y: 6,
+      }
+    }
+
+    let mazeDataTesteElevador : ExportarMapa;
+    mazeDataTesteElevador = {
+      texturaChao: 'assets/ground.png',
+      texturaParede: 'assets/wall.jpg',
+      modeloPorta: 'assets/door/door.glb',
+      modeloElevador: 'assets/elevador/Elevator.glb',
+      codigoEdificio: 'Teste1',
+      numeroPiso: 1,
+      matriz: [
+        ['NorteOeste','Norte','Norte','Norte','Norte','Oeste'],
+        ['Oeste',' ',' ',' ',' ','Oeste'],
+        ['Oeste',' ','Elevador',' ',' ','Oeste'],
+        ['Oeste',' ',' ',' ',' ','Oeste'],
+        ['Oeste',' ',' ',' ',' ','Oeste'],
+        ['Norte','Norte','Norte','Norte','Norte',''],
+      ],
+      elevador: {xCoord: 0,
+        yCoord: 9,
+        orientacao: 'Oeste'},
+      passagens: [{
+        id: 1,
+        abcissaA: 0,
+        ordenadaA: 1,
+        abcissaB: 0,
+        ordenadaB: 2,
+        orientacao: 'Oeste'
+      }],
+      portas: [{
+        abcissa : 2,
+        ordenada: 3,
+        orientacao: 'Oeste'
+      }],
+      posicaoInicialRobo: {
+        x: 1,
+        y: 1,
       }
     }
 
@@ -828,11 +866,15 @@ export class Visualizacao3DComponent implements AfterViewInit {
   }
 
   collision(position: THREE.Vector3) {
-
+    console.log(this.maze.distanceToSouthElevador(position))
     return this.maze.distanceToWestWall(position) < this.player.radius 
     || this.maze.distanceToEastWall(position) < this.player.radius 
     || this.maze.distanceToNorthWall(position) < this.player.radius 
-    || this.maze.distanceToSouthWall(position) < this.player.radius;
+    || this.maze.distanceToSouthWall(position) < this.player.radius
+    || this.maze.distanceToWestElevador(position) < this.player.radius
+    || this.maze.distanceToEastElevador(position) < this.player.radius
+    || this.maze.distanceToNorthElevador(position) < this.player.radius
+    || this.maze.distanceToSouthElevador(position) < this.player.radius;
   }
 
   update() {

@@ -58,7 +58,7 @@ export default class Maze {
         this.loaded = false;
         this.scale = new THREE.Vector3(1.0, 0.8, 1.0);
         this.map = mapaData.matriz;
-        this.size = { width: mapaData.matriz.length -1 ,height: mapaData.matriz[0].length-1};
+        this.size = { width: mapaData.matriz[0].length -1 ,height: mapaData.matriz.length-1};
         this.initialPosition = this.cellToCartesian([mapaData.posicaoInicialRobo.x, mapaData.posicaoInicialRobo.y]);
         this.initialDirection = initialDirection;
         this.portasCoord = mapaData.portas;
@@ -157,6 +157,101 @@ export default class Maze {
             return this.cellToCartesian(indices).z - this.scale.z / 2.0 - position.z;
         }
         return Infinity;
+    }
+
+    public distanceToWestElevador(position: THREE.Vector3): number {
+        const indices = this.cartesianToCell(position);
+        // Se estiver no limite oeste do mapa
+        if(indices[1] < 1){
+            return Infinity;
+        }
+
+        if (this.map[indices[0]][indices[1]-1] == "ElevadorNorte" 
+        || this.map[indices[0]][indices[1]-1] == "ElevadorOeste" 
+        || this.map[indices[0]][indices[1]-1] == "ElevadorNorteOeste"
+        || this.map[indices[0]][indices[1]-1] == "Elevador"
+        ) {
+            // Se for um elevador com a porta para este
+            if (this.elevadorCoord.orientacao == "Este") {
+                return Infinity;
+            }else{
+                return position.x - this.cellToCartesian(indices).x + this.scale.x / 2.0;
+            }
+        } else {
+            return Infinity;
+        }
+        
+    }
+
+    public distanceToEastElevador(position: THREE.Vector3): number {
+        const indices = this.cartesianToCell(position);
+
+        // Se estiver no limite oeste do mapa
+        if(indices[1] > this.size.width - 1){
+            return Infinity;
+        }
+        
+        if (this.map[indices[0]][indices[1]+1] == "ElevadorNorte" 
+        || this.map[indices[0]][indices[1]+1] == "ElevadorOeste" 
+        || this.map[indices[0]][indices[1]+1] == "ElevadorNorteOeste"
+        || this.map[indices[0]][indices[1]+1] == "Elevador") {
+            // Se for um elevador com a porta para este
+            if (this.elevadorCoord.orientacao == "Oeste") {
+                return Infinity;
+            }else{
+                indices[1]++;
+                return this.cellToCartesian(indices).x - this.scale.x / 2.0 - position.x;
+            }
+        } else {
+            return Infinity;
+        }
+    }
+
+    public distanceToNorthElevador(position: THREE.Vector3): number {
+        const indices = this.cartesianToCell(position);
+
+        if(indices[0] < 1){
+            return Infinity;
+        }
+
+        if (this.map[indices[0]-1][indices[1]] == "ElevadorNorte" 
+        || this.map[indices[0]-1][indices[1]] == "ElevadorOeste" 
+        || this.map[indices[0]-1][indices[1]] == "ElevadorNorteOeste"
+        || this.map[indices[0]-1][indices[1]] == "Elevador"
+        ) {
+            // Se for um elevador com a porta para Sul
+            if (this.elevadorCoord.orientacao == "Sul") {
+                return Infinity;
+            }else{
+                return position.z - this.cellToCartesian(indices).z + this.scale.z / 2.0;
+            }
+        } else {
+            return Infinity;
+        }
+    }
+
+    public distanceToSouthElevador(position: THREE.Vector3): number {
+        const indices = this.cartesianToCell(position);
+        
+        if(indices[0] > this.size.height - 1){
+            return Infinity;
+        }
+
+        if ( this.map[indices[0]+1][indices[1]] == "Elevador"
+        || this.map[indices[0]+1][indices[1]] == "ElevadorNorte" 
+        || this.map[indices[0]+1][indices[1]] == "ElevadorOeste" 
+        || this.map[indices[0]+1][indices[1]] == "ElevadorNorteOeste") {
+            // Se for um elevador com a porta para Sul
+            if (this.elevadorCoord.orientacao == "Norte") {
+                return Infinity;
+            }else{
+                indices[0]++;
+                return this.cellToCartesian(indices).z - this.scale.z / 2.0 - position.z;
+            }
+        } else {
+            return Infinity;
+        }
+    
     }
 
     foundExit(position: THREE.Vector3): boolean {
