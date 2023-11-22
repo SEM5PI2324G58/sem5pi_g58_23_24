@@ -54,4 +54,11 @@ export default (app: Router) => {
       })
     }),
     (req, res, next) => ctrl.deleteEdificio(req, res, next));
+
+    route.get('/getInformacaoPlaneamento',
+    celebrate({
+      body: Joi.object({
+      })
+    }),
+    (req, res, next) => ctrl.getInformacaoPlaneamento(req, res, next));
 };

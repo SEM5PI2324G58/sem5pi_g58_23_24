@@ -16,6 +16,9 @@ interface pisoProps {
 }
 
 export class Piso extends AggregateRoot<pisoProps> {
+  returnMapa() {
+    return this.props.mapa;
+  }
 
   public returnIdPiso() : number{
     return Number(this._id.toValue());
