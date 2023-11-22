@@ -131,28 +131,28 @@ export class Visualizacao3DComponent implements AfterViewInit{
         this.scene3D = new THREE.Scene();
 
         let mazeData = {
-            groundTextureUrl: "assets/ground.jpg",
+            groundTextureUrl: "assets/ground.png",
             wallTextureUrl: "assets/wall.jpg",
             size: { width: 10, height: 10 },
             map: [
-            ["NorteOeste", "NorteOeste", "Norte", "Norte", "Norte", "Norte", "Oeste", "Norte", "Norte", "NorteOeste", "Oeste"],
-            ["Oeste", "Oeste", "NorteOeste", "Norte", "Oeste", "Oeste", "Norte", "Norte", "Oeste", "Oeste", "Oeste"],
-            ["Oeste", "Oeste", "Norte", "Oeste","Oeste", "Norte", "Norte", "Oeste", "Oeste", " ", "Oeste"],
-            ["Oeste", "Norte", "NorteOeste", "Oeste", "Norte", "Norte", "Oeste", "Oeste", "Norte", " ","Oeste"],
-            ["NorteOeste", " ", " ", "NorteOeste", "Oeste", "Norte", " ", "NorteOeste", "Oeste", "Norte", "Oeste"],
-            ["Oeste", "NorteOeste", " ", " ", " ", "NorteOeste", "Oeste", " ", "Oeste", "Oeste", "Oeste"],
-            ["Oeste", "Norte", "Oeste", "NorteOeste", "Norte", " ", "Norte", "Norte", "Oeste", "Oeste", "Oeste"],
-            ["NorteOeste", "Norte", " ", "Norte", "Oeste", "Oeste", "NorteOeste", "Oeste", "Norte", "Oeste", "Oeste"],
-            ["Oeste", "NorteOeste", " ", "Oeste", "Norte", "Norte", " ", "Oeste", "Norte", " ", "Oeste"],
-            ["Oeste", "Norte", "Norte", "Oeste", "Oeste", "Norte", "NorteOeste", " ", " ", "Norte", "Oeste"],
-            ["Norte", "Norte", "Norte", "Norte", "Norte", "Norte", "Norte", "Norte", "Norte", "Norte", " "]
+            ["NorteOeste", "Oeste", " ", "NorteOeste", "Norte", "NorteOeste", "Norte", "Norte", "Norte", "Norte", "Oeste"],
+            ["Oeste", "Oeste", " ", "Oeste", " ", "Oeste", " ", " ", " ", " ", "Oeste"],
+            ["Oeste", "PortaOeste", " ", "PortaNorte","Norte", "Norte", "PortaNorte", "Norte", "PortaOesteNorteOeste", "Norte", "Oeste"],
+            ["Oeste", "Oeste", " ", " ", " ", " ", " ", " ", "Oeste", " ","Oeste"],
+            ["NorteOeste", "Norte", "Norte", "PortaNorteNorteOeste", "Norte", "Norte", "Oeste", " ", "Oeste", " ", "Oeste"],
+            ["Oeste", " ", " ", "Oeste", " ", " ", "Oeste", " ", "Oeste", " ", "Oeste"],
+            ["Oeste", " ", " ", "Oeste", " ", " ", "Oeste", " ", "Oeste", " ", "Oeste"],
+            ["Oeste", "", " ", "Oeste", " ", " ", "Oeste", " ", "Oeste", " ", "Oeste"],
+            ["NorteOeste", "PortaNorte", "Norte", "Norte"/*elevador*/, "Norte", "Norte", " ", " ", "Oeste", " ", "Oeste"],
+            ["Elevador", "Elevador", " ", "", " ", " ", " ", " ", "Oeste", " ", "Oeste"],
+            ["Norte", "Norte", "Norte", " ", " ", "Norte", "Norte", "Norte", "Norte", "Norte", " "]
         ],
         initialPosition: [7, 6],
         initialDirection: 0.0,
         exitLocation: [-0.5, 6]
         }
 
-        this.maze = new Maze(mazeData);
+        this.maze = new Maze(mazeData, this.scene3D);
 
         const playerData = {
             url: "assets/RobotExpressive/RobotExpressive.glb",

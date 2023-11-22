@@ -1,83 +1,39 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
 
-interface PlayerParameters {
+interface doorParameters {
     url: string;
-    credits: string;
     scale: THREE.Vector3;
-    walkingSpeed: number;
     initialDirection: number;
-    turningSpeed: number;
-    runningFactor: number;
-    keyCodes: {
-        fixedView: string;
-        firstPersonView: string;
-        thirdPersonView: string;
-        topView: string;
-        viewMode: string;
-        userInterface: string;
-        miniMap: string;
-        help: string;
-        statistics: string;
-        run: string;
-        left: string;
-        right: string;
-        backward: string;
-        forward: string;
-        jump: string;
-        yes: string;
-        no: string;
-        wave: string;
-        punch: string;
-        thumbsUp: string;
-    };
+    scene: THREE.Scene;
+    position: THREE.Vector3;
 }
 
-export default class Player {
+export default class Door {
     public object!: THREE.Object3D;
     public animations!: THREE.AnimationClip[];
     private radius!: number;
     public eyeHeight!: number;
     private scale: THREE.Vector3;
     private initialDirection: number;
-    private keyStates: Record<string, boolean>;
     public loaded: boolean;
     private url: string;
+    scene: THREE.Scene;
+    position: THREE.Vector3;
     
 
-    constructor(parameters: PlayerParameters) {
+    constructor(parameters: doorParameters) {
         this.onLoad = this.onLoad.bind(this);
         this.onProgress = this.onProgress.bind(this);
         this.onError = this.onError.bind(this);
         this.url = parameters.url;
         this.scale = parameters.scale;
         this.eyeHeight = 1;
-
+        this.scene = parameters.scene;
+        this.position = parameters.position;
         
 
         this.initialDirection = THREE.MathUtils.degToRad(parameters.initialDirection);
-        this.keyStates = {
-            fixedView: false,
-            firstPersonView: false,
-            thirdPersonView: false,
-            topView: false,
-            viewMode: false,
-            miniMap: false,
-            statistics: false,
-            userInterface: false,
-            help: false,
-            run: false,
-            left: false,
-            right: false,
-            backward: false,
-            forward: false,
-            jump: false,
-            yes: false,
-            no: false,
-            wave: false,
-            punch: false,
-            thumbsUp: false,
-        };
         this.loaded = false;
 
         // Create a resource .gltf or .glb file loader
@@ -104,25 +60,28 @@ export default class Player {
         this.animations = description.animations;
         // Turn on shadows for this object
         this.setShadow(this.object);
-
-        // Get the object's axis-aligned bounding box (AABB) in 3D space
-        const box = new THREE.Box3();
-        box.setFromObject(this.object);
-
-        // Compute the object size
-        const size = new THREE.Vector3();
-        box.getSize(size);
-
-        // Adjust the object's oversized dimensions (hard-coded; see previous comments)
-        size.x = 3.0;
-        size.y = 4.4;
-        size.z = 2.6;
-
-        // Set the object's radius and eye height
-        this.radius = size.x / 2.0 * this.scale.x;
-        this.eyeHeight *= size.y * this.scale.y;
-
+        
+        this.object.rotateY(this.initialDirection);
+        this.object.position.set(this.position.x, this.position.y, this.position.z);
         this.object.scale.set(this.scale.x, this.scale.y, this.scale.z);
+
+
+        
+        this.scene.add(this.object);
+
+        /*let actions;
+        let mixer = new THREE.AnimationMixer(this.object);
+        console.log(this.animations.length);
+        for (let i = 0; i < this.animations.length; i++) {
+            const clip = this.animations[i];
+            const action = mixer.clipAction(clip);
+            actions = action;
+            actions.reset()
+            .setEffectiveTimeScale(1)
+            .setEffectiveWeight(1)
+            .fadeIn(5);
+
+        }*/
         this.loaded = true;
     }
 
