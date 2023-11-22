@@ -866,7 +866,6 @@ export class Visualizacao3DComponent implements AfterViewInit {
   }
 
   collision(position: THREE.Vector3) {
-    console.log(this.maze.distanceToSouthElevador(position))
     return this.maze.distanceToWestWall(position) < this.player.radius 
     || this.maze.distanceToEastWall(position) < this.player.radius 
     || this.maze.distanceToNorthWall(position) < this.player.radius 
