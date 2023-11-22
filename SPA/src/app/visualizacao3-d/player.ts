@@ -41,7 +41,7 @@ export default class Player {
     private scale: THREE.Vector3;
     private initialDirection: number;
     private keyStates: Record<string, boolean>;
-    private loaded: boolean;
+    public loaded: boolean;
     private url: string;
     
 

@@ -78,7 +78,9 @@ export default class MapaService implements IMapaService{
             if(elevador.returnIdPisosServidos().includes(piso.returnIdPiso()) === false){
                 return Result.fail<ICarregarMapaDTO>("O elevador não serve este piso.");
             };
-            mapa.criarPontosElevador(mapaDTO.elevador.xCoord, mapaDTO.elevador.yCoord, mapaDTO.elevador.orientacao);
+            if(mapa.criarPontosElevador(mapaDTO.elevador.xCoord, mapaDTO.elevador.yCoord, mapaDTO.elevador.orientacao) === false){
+                return Result.fail<ICarregarMapaDTO>("O elevador está fora dos limites do edifício.");
+            }
         }
         // Salas
         if(salasVaoSerCriadas){
@@ -86,8 +88,10 @@ export default class MapaService implements IMapaService{
                 return Result.fail<ICarregarMapaDTO>("Não existem salas que satisfaçam os dados inseridos");
             }
             for(let salaInfo of mapaDTO.salas){
-                mapa.carregarSalaMapa(salaInfo.nome,salaInfo.abcissaA, salaInfo.ordenadaA, salaInfo.abcissaB,
-                    salaInfo.ordenadaB, salaInfo.abcissaPorta, salaInfo.ordenadaPorta, salaInfo.orientacaoPorta);
+                if(mapa.carregarSalaMapa(salaInfo.nome,salaInfo.abcissaA, salaInfo.ordenadaA, salaInfo.abcissaB,
+                    salaInfo.ordenadaB, salaInfo.abcissaPorta, salaInfo.ordenadaPorta, salaInfo.orientacaoPorta) === false){
+                    return Result.fail<ICarregarMapaDTO>("A sala está fora dos limites do edifício.");
+                    }
             }
 
         }
@@ -99,7 +103,9 @@ export default class MapaService implements IMapaService{
             }
             
             for(let passagemInfo of mapaDTO.passagens){
-                mapa.carregarPassagemMapa(passagemInfo);
+                if(mapa.carregarPassagemMapa(passagemInfo) === false){
+                    return Result.fail<ICarregarMapaDTO>("A passagem está fora dos limites do edifício.");
+                }
             }
         }
 

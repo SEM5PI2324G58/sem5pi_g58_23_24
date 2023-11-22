@@ -1,4 +1,3 @@
-import { describe } from "node:test";
 import { NumeroSerieElevador } from '../../../src/domain/elevador/NumeroSerieElevador'
 import * as assert from 'assert';
 

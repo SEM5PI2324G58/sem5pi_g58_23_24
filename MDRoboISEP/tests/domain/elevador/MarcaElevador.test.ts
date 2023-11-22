@@ -1,4 +1,3 @@
-import { describe } from "node:test";
 import { MarcaElevador } from '../../../src/domain/elevador/MarcaElevador'
 import * as assert from 'assert';
 

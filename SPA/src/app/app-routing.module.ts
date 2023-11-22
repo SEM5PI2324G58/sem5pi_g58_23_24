@@ -7,7 +7,9 @@ import { GestaoPlaneamentoComponent } from './gestao-planeamento/gestao-planeame
 import { CriarPisoComponent } from './gestao-campus/criar-piso/criar-piso.component';
 import { CriarEdificioComponent } from './gestao-campus/criar-edificio/criar-edificio.component';
 import { EditarEdificioComponent } from './gestao-campus/editar-edificio/editar-edificio.component';
+import { ApagarEdificioComponent } from './gestao-campus/apagar-edificio/apagar-edificio.component';
 import { CriarTipoRoboComponent } from './gestao-frota/criar-tipo-robo/criar-tipo-robo.component';
+import { ApagarTipoRoboComponent } from './gestao-frota/apagar-tipo-robo/apagar-tipo-robo.component';
 import { AdicionarDispositivoComponent } from './gestao-frota/adicionar-dispositivo/adicionar-dispositivo.component';
 import { CriarElevadorComponent } from './gestao-campus/criar-elevador/criar-elevador.component';
 import { EditarPisoComponent } from './gestao-campus/editar-piso/editar-piso.component';
@@ -36,7 +38,9 @@ const routes: Routes = [
   { path: 'criarPiso', component: CriarPisoComponent},
   { path: 'criarEdificio', component: CriarEdificioComponent},
   { path: 'editarEdificio', component: EditarEdificioComponent},
+  { path: 'apagarEdificio', component: ApagarEdificioComponent},
   { path: 'criarTipoRobo', component: CriarTipoRoboComponent},
+  { path: 'apagarTipoRobo', component: ApagarTipoRoboComponent},
   { path: 'criarElevador', component: CriarElevadorComponent},
   { path: 'editarElevador', component: EditarElevadorComponent},
   { path: 'listarElevador', component: ListarElevadorComponent},

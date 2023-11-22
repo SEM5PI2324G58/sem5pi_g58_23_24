@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import CarregarMapa from 'src/dataModel/carregarMapa';
 import { MessageService } from './message.service';
+import ExportarMapa from 'src/dataModel/exportarMapa';
 
 
 @Injectable({
@@ -28,6 +29,17 @@ export class MapaService {
       this.log(`Mapa do piso ${data.numeroPiso} do Edifício ${data.codigoEdificio} carregado com sucesso!`);
     });
   }
+
+  public exportarMapa(codigo: string,numeroPiso: number): Observable<ExportarMapa> {
+    let params = new HttpParams().set('codEdificio', codigo);
+    params = params.append('numPiso', numeroPiso.toString());
+    
+    return this.http.get<ExportarMapa>(this.mapaUrl, { params: params, headers: this.httpOptions.headers })
+      .pipe(
+        catchError(this.handleError<ExportarMapa>('Exportar Mapa'))
+      );
+  }
+
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       

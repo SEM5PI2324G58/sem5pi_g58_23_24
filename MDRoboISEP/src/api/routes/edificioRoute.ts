@@ -49,8 +49,8 @@ export default (app: Router) => {
 
     route.delete('',
     celebrate({
-      body: Joi.object({
-        codigo: Joi.string().required(),
+      query: Joi.object({
+        codEdificio: Joi.string().required(),
       })
     }),
     (req, res, next) => ctrl.deleteEdificio(req, res, next));

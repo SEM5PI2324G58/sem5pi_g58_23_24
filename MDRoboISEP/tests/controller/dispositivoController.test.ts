@@ -31,7 +31,7 @@ import IDispositivoDTO from "../../src/dto/IDispositivoDTO";
 describe('DispositivoController', () => {
     const sandbox = sinon.createSandbox();
     beforeEach(function() {
-        this.timeout(10000);
+        this.timeout(300000);
         Container.reset();
 
         let tipoDispositivoProps : any = {

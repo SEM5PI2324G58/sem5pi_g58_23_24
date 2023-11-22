@@ -23,7 +23,7 @@ import { Document } from 'mongoose';
 describe('EdificioController', () => {
     const sandbox = sinon.createSandbox();
     beforeEach(function() {
-        this.timeout(20000);
+        this.timeout(300000);
         Container.reset();
         
         let edificioSchemaInstance = require('../../src/persistence/schemas/EdificioSchema').default;

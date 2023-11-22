@@ -105,9 +105,11 @@ export default class EdificioController implements IEdificioController /* TODO: 
 
   public async deleteEdificio(req: Request, res: Response, next: NextFunction){
     try{
-      const edificioOrError = await this.edificioServiceInstance.deleteEdificio(req.body.codigo) as Result<IEdificioDTO>;
+      let props = req.query.codEdificio as string;
+      const edificioOrError = await this.edificioServiceInstance.deleteEdificio(props) as Result<IEdificioDTO>;
       if (edificioOrError.isFailure) {
-        return res.json(edificioOrError.errorValue()).status(402).send();
+        res.status(402);
+        return res.json(edificioOrError.errorValue());
       }
       const edificioDTO = edificioOrError.getValue();
       return res.json( edificioDTO );
