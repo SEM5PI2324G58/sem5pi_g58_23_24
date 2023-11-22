@@ -326,7 +326,7 @@ export class Mapa extends AggregateRoot<pisoProps> {
     }  
   }
 
-  public criarPontosElevador(xCoordSup: number, yCoordSup: number, orientacao : string){
+  public criarPontosElevador(xCoordSup: number, yCoordSup: number, orientacao : string): boolean{
     let xCoordInf;
     let yCoordInf;
 
@@ -337,13 +337,16 @@ export class Mapa extends AggregateRoot<pisoProps> {
       xCoordInf = xCoordSup;
       yCoordInf = yCoordSup + 1;
     }
-
+    if(this.props.mapa.length <= xCoordInf || this.props.mapa[0].length <= yCoordInf){
+      return false;
+    }
     this.toElevador(xCoordSup,yCoordSup, orientacao);
-    this.toElevador(xCoordInf,yCoordInf, orientacao);    
+    this.toElevador(xCoordInf,yCoordInf, orientacao);
+    return true;    
   }
 
   public carregarSalaMapa(nome:string, abcissaA : number, ordenadaA : number, abcissaB : number, ordenadaB : number,
-    abcissaPorta : number, ordenadaPorta : number, orientacaoPorta : string){
+    abcissaPorta : number, ordenadaPorta : number, orientacaoPorta : string) : boolean{
     let xCoordSup;
     let yCoordSup;
     let xCoordInf;
@@ -362,6 +365,10 @@ export class Mapa extends AggregateRoot<pisoProps> {
     }else{
     yCoordSup = ordenadaB;
     yCoordInf = ordenadaA;
+    }
+
+    if(this.props.mapa.length <= xCoordInf || this.props.mapa[0].length <= yCoordInf){
+      return false;
     }
     this.toParedeNorteOeste(xCoordSup,yCoordSup);
     this.carregarCoordenadasSala(nome, xCoordSup, yCoordSup, xCoordInf, yCoordInf, abcissaPorta,
@@ -438,19 +445,25 @@ export class Mapa extends AggregateRoot<pisoProps> {
         }
       }
     }
+    return true;
   }
 
   public carregarPassagemMapa(passagem : any){
     let xCoordSup = passagem.abcissa;
     let yCoordSup = passagem.ordenada;
     let orientacao = passagem.orientacao;
-
+    if(this.props.mapa.length <= xCoordSup || this.props.mapa[0].length <= yCoordSup){
+      return false;
+    }
     if (orientacao === 'Norte'){
       
       if(this.props.mapa[xCoordSup][yCoordSup].returnTipoPonto() === 'Oeste' || this.props.mapa[xCoordSup][yCoordSup].returnTipoPonto() === 'NorteOeste'){
         this.toPassagemOeste(xCoordSup,yCoordSup);
       }else{
         this.toPassagem(xCoordSup,yCoordSup);
+      }
+      if(this.props.mapa.length <= xCoordSup + 1){
+        return false;
       }
       this.toPassagem(xCoordSup + 1,yCoordSup);
       this.carregarCoordenadasPassagem(passagem.id, xCoordSup,yCoordSup,xCoordSup + 1, yCoordSup, orientacao);
@@ -461,10 +474,13 @@ export class Mapa extends AggregateRoot<pisoProps> {
       }else{
         this.toPassagem(xCoordSup,yCoordSup);
       }
+      if(this.props.mapa[0].length <= yCoordSup + 1){
+        return false;
+      }
       this.toPassagem(xCoordSup,yCoordSup + 1);
       this.carregarCoordenadasPassagem(passagem.id, xCoordSup,yCoordSup, xCoordSup, yCoordSup + 1, orientacao);
     }
-
+    return true;
   }
 
   public returnDimensaoX() : number{
