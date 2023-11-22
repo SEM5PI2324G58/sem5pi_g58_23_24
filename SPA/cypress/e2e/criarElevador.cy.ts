@@ -16,34 +16,34 @@ describe('Criar elevador', () => {
         cy.get('[name="dimensaoX"]').type('3');
         cy.get('[name="dimensaoY"]').type('3');
         cy.get('button').click();
-        cy.wait('@createEdificio');
+        cy.wait('@createEdificio')
 
 
         //Criar 2 pisos
         cy.visit('/criarPiso');
-        cy.wait('@getEdificio');
+        cy.wait('@getEdificio')
 
         cy.get('[id="codigo"]').select('T1');
         cy.get('[name="numeroPiso"]').type('1');
         cy.get('[name="descricaoPiso"]').type('Descricao1');
 
         cy.get('button').click({ multiple: true });
-        cy.wait('@createPiso');
+        cy.wait('@createPiso')
 
         cy.get('[name="numeroPiso"]').clear().type('2');
         
         cy.get('button').click({ multiple: true });
-        cy.wait('@createPiso');
+        cy.wait('@createPiso')
 
     });
     
     it('Criar elevador sucesso e2e', () => {
-        //Criar elevdor
+        //Criar elevador
         cy.visit('/criarElevador');
-        cy.wait('@getEdificio');
+        cy.wait('@getEdificio')
     
         cy.get('[id="codigo"]').select('T1');
-        cy.wait('@getPisosEdificio');
+        cy.wait('@getPisosEdificio')
     
     
         cy.get('.multiselect').click(); 
@@ -56,7 +56,9 @@ describe('Criar elevador', () => {
         cy.get('[name="descricao"]').type('Descricao1');
     
         cy.get('button').click();
-        cy.wait('@createElevador');
+        cy.wait('@createElevador').then((interception) => {
+            expect(interception?.response?.statusCode).to.eq(201);
+        });
     
         cy.get('[name="app-message"]').contains('Elevador no edifício T1 criado com sucesso!');
     })
