@@ -95,7 +95,7 @@ export default class Maze {
         return [Math.floor(position.z / this.scale.z + this.size.height / 2.0), Math.floor(position.x / this.scale.x + this.size.width / 2.0)];
     }
 
-    private distanceToWestWall(position: THREE.Vector3): number {
+    public distanceToWestWall(position: THREE.Vector3): number {
         const indices = this.cartesianToCell(position);
         if (this.map[indices[0]][indices[1]] == "Oeste" || this.map[indices[0]][indices[1]] == "NorteOeste") {
             return position.x - this.cellToCartesian(indices).x + this.scale.x / 2.0;
@@ -103,7 +103,7 @@ export default class Maze {
         return Infinity;
     }
 
-    private distanceToEastWall(position: THREE.Vector3): number {
+    public distanceToEastWall(position: THREE.Vector3): number {
         const indices = this.cartesianToCell(position);
         indices[1]++;
         if (this.map[indices[0]][indices[1]] == "Oeste" || this.map[indices[0]][indices[1]] == "NorteOeste") {
@@ -112,7 +112,7 @@ export default class Maze {
         return Infinity;
     }
 
-    private distanceToNorthWall(position: THREE.Vector3): number {
+    public distanceToNorthWall(position: THREE.Vector3): number {
         const indices = this.cartesianToCell(position);
         if (this.map[indices[0]][indices[1]] == "Norte" || this.map[indices[0]][indices[1]] == "NorteOeste") {
             return position.z - this.cellToCartesian(indices).z + this.scale.z / 2.0;
@@ -120,7 +120,7 @@ export default class Maze {
         return Infinity;
     }
 
-    private distanceToSouthWall(position: THREE.Vector3): number {
+    public distanceToSouthWall(position: THREE.Vector3): number {
         const indices = this.cartesianToCell(position);
         indices[0]++;
         if (this.map[indices[0]][indices[1]] == "Norte" || this.map[indices[0]][indices[1]] == "NorteOeste") {

@@ -6,12 +6,30 @@ import IEdificioController from '../IControllers/IEdificioController';
 import IEdificioService from '../../services/IServices/IEdificioService';
 import IEdificioDTO from '../../dto/IEdificioDTO';
 import IListarEdMinEMaxPisosDTO from '../../dto/IListarEdMinEMaxPisosDTO';
+import { ParamsDictionary } from 'express-serve-static-core';
+import { ParsedQs } from 'qs';
+import IPlaneamentoInfoDTO from '../../dto/IPlaneamentoInfoDTO';
 
 @Service()
 export default class EdificioController implements IEdificioController /* TODO: extends ../core/infra/BaseController */ {
   constructor(
       @Inject(config.services.edificio.name) private edificioServiceInstance : IEdificioService
   ) {}
+  public async getInformacaoPlaneamento(req: Request, res: Response, next: NextFunction) {
+    try{
+      const edificioOrError = await this.edificioServiceInstance.getInformacaoPlaneamento() as Result<IPlaneamentoInfoDTO>;
+      if (edificioOrError.isFailure) {
+        res.status(400);
+        return res.json(edificioOrError.errorValue());
+      }
+      const edificioDTO = edificioOrError.getValue();
+      res.status(200);
+      return res.json( edificioDTO );
+    }
+    catch(e){
+      return next(e);
+    }
+  }
 
   public async criarEdificio(req: Request, res: Response, next: NextFunction) {
     try{

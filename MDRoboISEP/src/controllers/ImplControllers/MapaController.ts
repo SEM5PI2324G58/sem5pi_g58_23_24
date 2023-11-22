@@ -52,7 +52,7 @@ export default class MapaController implements IMapaController {
             }
             const mapaDTO = mapaOrError.getValue();
             res.status(200);
-            return res.json(mapaDTO).send();
+            return res.json(mapaDTO);
         }catch(e){
             return next(e);
         }

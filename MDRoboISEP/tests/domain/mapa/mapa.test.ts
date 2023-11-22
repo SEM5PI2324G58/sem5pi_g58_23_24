@@ -91,7 +91,6 @@ describe('teste de mapa', () => {
         mapa.criarPontosElevador(5,5,"Norte");
 
         expect(mapa.props.mapa[5][5].returnTipoPonto()).to.equal("Elevador");
-        expect(mapa.props.mapa[6][5].returnTipoPonto()).to.equal("Elevador");
     });
 
     it('Carregar pontos para sala',async function(){

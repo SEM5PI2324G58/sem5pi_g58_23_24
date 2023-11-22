@@ -1,12 +1,31 @@
 export default interface IExportarMapaDTO{
     texturaChao?: string,
     texturaParede?: string,
-    texturaPorta?: string,
-    texturaElevador?: string,
+    modeloPorta?: string,
+    modeloElevador?: string,
     codigoEdificio: string,
     numeroPiso : number,
     matriz ?: string[][],
-    elevador ?: any,
-    passagens ?: any[],
-    portas ?: any[],
+    elevador ?: {
+        xCoord: number,
+        yCoord: number,
+        orientacao: string
+    },
+    passagens ?: [{
+        id: number,
+        abcissaA: number,
+        ordenadaA: number,
+        abcissaB: number,
+        ordenadaB: number,
+        orientacao: string
+    }],
+    portas ?: [{
+        abcissa : number,
+        ordenada: number,
+        orientacao: string
+    }],
+    posicaoInicialRobo ?: {
+        x: number,
+        y: number,
+    }
 }

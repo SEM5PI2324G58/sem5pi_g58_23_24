@@ -34,16 +34,40 @@ interface PlayerParameters {
 }
 
 export default class Player {
-    public object!: THREE.Object3D;
-    public animations!: THREE.AnimationClip[];
-    private radius!: number;
-    public eyeHeight!: number;
-    private scale: THREE.Vector3;
-    private initialDirection: number;
-    private keyStates: Record<string, boolean>;
-    public loaded: boolean;
-    private url: string;
-    
+    object!: THREE.Object3D;
+    animations!: THREE.AnimationClip[];
+    radius!: number;
+    eyeHeight!: number;
+    scale: THREE.Vector3;
+    initialDirection: number;
+    keyStates: Record<string, boolean>;
+    loaded: boolean;
+    url: string;
+    keyCodes: {
+        fixedView: string;
+        firstPersonView: string;
+        thirdPersonView: string;
+        topView: string;
+        viewMode: string;
+        userInterface: string;
+        miniMap: string;
+        help: string;
+        statistics: string;
+        run: string;
+        left: string;
+        right: string;
+        backward: string;
+        forward: string;
+        jump: string;
+        yes: string;
+        no: string;
+        wave: string;
+        punch: string;
+        thumbsUp: string;
+    }; 
+    walkingSpeed: number;
+    runningFactor: number;
+    turningSpeed: number;
 
     constructor(parameters: PlayerParameters) {
         this.onLoad = this.onLoad.bind(this);
@@ -52,9 +76,6 @@ export default class Player {
         this.url = parameters.url;
         this.scale = parameters.scale;
         this.eyeHeight = 1;
-
-        
-
         this.initialDirection = THREE.MathUtils.degToRad(parameters.initialDirection);
         this.keyStates = {
             fixedView: false,
@@ -79,6 +100,10 @@ export default class Player {
             thumbsUp: false,
         };
         this.loaded = false;
+        this.keyCodes = parameters.keyCodes;
+        this.walkingSpeed = parameters.walkingSpeed;
+        this.runningFactor = parameters.runningFactor;
+        this.turningSpeed = parameters.turningSpeed;
 
         // Create a resource .gltf or .glb file loader
         const loader = new GLTFLoader();

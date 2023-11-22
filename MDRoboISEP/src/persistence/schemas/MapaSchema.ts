@@ -44,12 +44,12 @@ const MapaSchema = new mongoose.Schema(
     },
 
     xCoordElevador: {
-        type: [Number],
+        type: Number,
         index: true,
     },
 
     yCoordElevador: {
-        type: [Number],
+        type: Number,
         index: true,
     },
     orientacaoElevador: {

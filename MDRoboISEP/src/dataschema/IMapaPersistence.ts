@@ -7,8 +7,8 @@ export interface IMapaPersistence {
     abcissaInfPassagem : number[];
     ordenadaInfPassagem : number[];
     orientacaoPassagem : string[];
-    xCoordElevador: number[];
-    yCoordElevador: number[];
+    xCoordElevador: number;
+    yCoordElevador: number;
     orientacaoElevador: string;
     nomeSala: string[];
     abcissaASala : number[];

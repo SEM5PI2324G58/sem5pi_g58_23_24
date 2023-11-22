@@ -49,8 +49,8 @@ export class MapaMap extends Mapper<Mapa> {
     let coordenadasElevador : CoordenadasElevador;
     if  (raw.xCoordElevador !== null && raw.xCoordElevador !== undefined){
       let propsElevador= {
-        xCoord : [raw.xCoordElevador[0],raw.xCoordElevador[1]],
-        yCoord : [raw.yCoordElevador[0],raw.yCoordElevador[1]],
+        xCoord : raw.xCoordElevador,
+        yCoord : raw.yCoordElevador,
         orientacao : raw.orientacaoElevador
       }
       coordenadasElevador = CoordenadasElevador.create(propsElevador).getValue();
