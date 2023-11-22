@@ -27,11 +27,7 @@ describe('Listar dispositivos da frota', () => {
             cy.get('[name="descricao"]').type('Desc1');
             cy.get('button').click();
             cy.wait('@createDispositivo');
-
         });
-        
-
-
     });
 
 
@@ -39,7 +35,9 @@ describe('Listar dispositivos da frota', () => {
         cy.intercept('GET', '/api/dispositivo').as('getDispositivosFrota');
 
         cy.visit('/listarDispositivosFrota');
-        cy.wait('@getDispositivosFrota')
+        cy.wait('@getDispositivosFrota').then((interception) => {
+            expect(interception?.response?.statusCode).to.eq(200);
+        });
 
         cy.get('p-table').contains('COD1');
         cy.get('p-table').contains('NICK');
@@ -49,7 +47,9 @@ describe('Listar dispositivos da frota', () => {
     })
 
     afterEach(() => {
-        //TODO: apagar tipo de dispositivo
+        cy.visit('/apagarTipoRobo');
+        cy.get('[name="id"]').type(id);
+        cy.get('button').click();
     });
     
 });

@@ -7,6 +7,7 @@ describe('Editar elevador', () => {
         cy.intercept('POST', '/api/piso').as('createPiso');
         cy.intercept('GET', '/api/piso?codigo=T1').as('getPisosEdificio');
         cy.intercept('POST', '/api/elevador').as('createElevador');
+        cy.intercept('PUT', '/api/elevador').as('editElevador');
         
         //Criar um edificio
         cy.visit('/criarEdificio')
@@ -34,8 +35,7 @@ describe('Editar elevador', () => {
         
         cy.get('button').click({ multiple: true });
         cy.wait('@createPiso');
-
-        //Criar elevdor
+        //Criar elevador
         cy.visit('/criarElevador');
         cy.wait('@getEdificio');
     
@@ -57,7 +57,7 @@ describe('Editar elevador', () => {
     });
     
     it('Editar elevador sucesso e2e', () => {
-        //Criar elevdor
+        //Editar elevador
         cy.visit('/editarElevador');
         cy.wait('@getEdificio');
     
@@ -76,6 +76,9 @@ describe('Editar elevador', () => {
     
         cy.get('button').click();
 
+        cy.wait('@editElevador').then((interception) => {
+            expect(interception?.response?.statusCode).to.eq(200);
+        });
         cy.get('[name="app-message"]').contains('Elevador no edifício T1 editado com sucesso!');
         
     })
