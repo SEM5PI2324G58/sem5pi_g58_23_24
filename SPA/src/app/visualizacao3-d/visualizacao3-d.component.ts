@@ -6,6 +6,7 @@ import Lights from './lights';
 import Camera from './camera';
 import Orientation from './orientation';
 import Player from './player';
+import Animations from './player_animations';
 import UserInterface from './userInterface';
 import { PisoService } from 'src/serviceInfo/piso.service';
 import { EdificioService } from 'src/serviceInfo/edificio.service';
@@ -39,7 +40,7 @@ export class Visualizacao3DComponent implements AfterViewInit{
 
     listarNumeroPisos(): void {
     const codigo = this.codigo.options.item(this.codigo.selectedIndex)?.value;
-    console.log(codigo);
+
     if (codigo === "") {
         this.listaNumeroPisos = [];
     } else {
@@ -81,6 +82,7 @@ export class Visualizacao3DComponent implements AfterViewInit{
     maze!: Maze;
     light!: Lights;
     clock!: THREE.Clock;
+    animations!: Animations;
     userInterface!: UserInterface;
     
     
@@ -106,16 +108,16 @@ export class Visualizacao3DComponent implements AfterViewInit{
         @Input('nearClipping') public nearClippingPlane: number = 1;
         @Input('farClipping') public farClippingPlane: number = 1000;
         
-        private renderer!: THREE.WebGLRenderer;
-        private scene2D!: THREE.Scene;
-        private square!: THREE.LineLoop;
-        private camera2D!: THREE.OrthographicCamera;
-        private scene3D!: THREE.Scene;
-        private camera!: THREE.PerspectiveCamera;
-        private fixedViewCamera: any;
-        private firstPersonViewCamera: any;
-        private thirdPersonViewCamera: any;
-        private topViewCamera: any;
+        renderer!: THREE.WebGLRenderer;
+        scene2D!: THREE.Scene;
+        square!: THREE.LineLoop;
+        camera2D!: THREE.OrthographicCamera;
+        scene3D!: THREE.Scene;
+        camera!: THREE.PerspectiveCamera;
+        fixedViewCamera: any;
+        firstPersonViewCamera: any;
+        thirdPersonViewCamera: any;
+        topViewCamera: any;
 
         async createScene(){
         
@@ -244,6 +246,12 @@ export class Visualizacao3DComponent implements AfterViewInit{
 
         window.addEventListener("resize", event => this.windowResize(event));
 
+                // Register the event handler to be called on key down
+                document.addEventListener("keydown", event => this.keyChange(event, true));
+
+                // Register the event handler to be called on key release
+                document.addEventListener("keyup", event => this.keyChange(event, false));
+
         this.renderer.domElement.addEventListener("mousedown", event => this.mouseDown(event));
 
         this.renderer.domElement.addEventListener("mousemove", event => this.mouseMove(event));
@@ -295,6 +303,86 @@ export class Visualizacao3DComponent implements AfterViewInit{
         this.thirdPersonViewCamera.updateWindowSize(window.innerWidth, window.innerHeight);
         this.topViewCamera.updateWindowSize(window.innerWidth, window.innerHeight);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        keyChange(event: KeyboardEvent, state: boolean) {
+            if (event.target != null) {
+
+                
+                // Allow digit and arrow keys to be used when entering numbers
+                if (["horizontal", "vertical", "distance", "zoom"].indexOf((event.target as any).id) < 0) {
+                    (event.target as any).blur();
+                }
+                if (document.activeElement === document.body) {
+                    // Prevent the "Space" and "Arrow" keys from scrolling the document's content
+                    if (event.code == "Space" || event.code == "ArrowLeft" || event.code == "ArrowRight" || event.code == "ArrowDown" || event.code == "ArrowUp") {
+                        event.preventDefault();
+                    }
+                    
+                    if (event.code == this.player.keyCodes.fixedView && state) { // Select fixed view
+                        this.setActiveViewCamera(this.fixedViewCamera);
+                    }
+                    else if (event.code == this.player.keyCodes.firstPersonView && state) { // Select first-person view
+                        this.setActiveViewCamera(this.firstPersonViewCamera);
+                    }
+                    else if (event.code == this.player.keyCodes.thirdPersonView && state) { // Select third-person view
+                        this.setActiveViewCamera(this.thirdPersonViewCamera);
+                    }
+                    else if (event.code == this.player.keyCodes.topView && state) { // Select top view
+                        this.setActiveViewCamera(this.topViewCamera);
+                    }
+                    /*
+                    if (event.code == this.player.keyCodes.viewMode && state) { // Single-view mode / multiple-views mode
+                        this.setViewMode(!this.multipleViewsCheckBox.checked);
+                    }
+                    if (event.code == this.player.keyCodes.userInterface && state) { // Display / hide user interface
+                        this.setUserInterfaceVisibility(!this.userInterfaceCheckBox.checked);
+                    }
+                    if (event.code == this.player.keyCodes.miniMap && state) { // Display / hide mini-map
+                        this.setMiniMapVisibility(!this.miniMapCheckBox.checked);
+                    }
+                    if (event.code == this.player.keyCodes.help && state) { // Display / hide help
+                        this.setHelpVisibility(!this.helpCheckBox.checked);
+                    }
+                    if (event.code == this.player.keyCodes.statistics && state) { // Display / hide statistics
+                        this.setStatisticsVisibility(!this.statisticsCheckBox.checked);
+                    }
+                    */
+                    if (event.code == this.player.keyCodes.run) {
+                        this.player.keyStates.run = state;
+                    }
+                    if (event.code == this.player.keyCodes.left) {
+                        this.player.keyStates.left = state;
+                    }
+                    else if (event.code == this.player.keyCodes.right) {
+                        this.player.keyStates.right = state;
+                    }
+                    if (event.code == this.player.keyCodes.backward) {
+                        this.player.keyStates.backward = state;
+                    }
+                    else if (event.code == this.player.keyCodes.forward) {
+                        this.player.keyStates.forward = state;
+                    }
+                    if (event.code == this.player.keyCodes.jump) {
+                        this.player.keyStates.jump = state;
+                    }
+                    else if (event.code == this.player.keyCodes.yes) {
+                        this.player.keyStates.yes = state;
+                    }
+                    else if (event.code == this.player.keyCodes.no) {
+                        this.player.keyStates.no = state;
+                    }
+                    else if (event.code == this.player.keyCodes.wave) {
+                        this.player.keyStates.wave = state;
+                    }
+                    else if (event.code == this.player.keyCodes.punch) {
+                        this.player.keyStates.punch = state;
+                    }
+                    else if (event.code == this.player.keyCodes.thumbsUp) {
+                        this.player.keyStates.thumbsUp = state;
+                    }
+                }
+            }
         }
 
         mouseDown(event : MouseEvent) {
@@ -499,7 +587,18 @@ export class Visualizacao3DComponent implements AfterViewInit{
         //this.subwindowsPanel.style.visibility = visible ? "visible" : "hidden";
         this.userInterface.setVisibility(visible);
         }
-
+    
+    collision(position: THREE.Vector3) {
+        return false;
+        /* TODO #24 - Check if the player collided with a wall
+            - assume that a collision is detected if the distance between the player position and any of the walls is less than the player radius.
+            - player position: position
+            - player radius: this.player.radius
+            - remove the previous instruction and replace it with the following one (after completing it)
+        return this.maze.distanceToWestWall(position) < ... || ... || ... || ...; */
+    }
+    
+    
     update() {
         if (!this.gameRunning) {
             if (this.maze.loaded && this.player.loaded) { // If all resources have been loaded
@@ -512,7 +611,7 @@ export class Visualizacao3DComponent implements AfterViewInit{
                 this.clock = new THREE.Clock();
 
                 // Create model animations (states, emotes and expressions)
-                //this.animations = new Animations(this.player.object, this.player.animations);
+                this.animations = new Animations(this.player.object, this.player.animations);
                 
                 // Set the player's position and direction
                 this.player.object.position.set(this.maze.initialPosition.x, this.maze.initialPosition.y, this.maze.initialPosition.z);
@@ -527,48 +626,49 @@ export class Visualizacao3DComponent implements AfterViewInit{
                 this.gameRunning = true;
             }
         } else {
+            
             // Update the model animations
-            //const deltaT = this.clock.getDelta();
-            //this.animations.update(deltaT);
+            const deltaT = this.clock.getDelta();
+            this.animations.update(deltaT);
 
-            // Update the player
-            /*if (!this.animations.actionInProgress) {
+            if (!this.animations.actionInProgress) {
                 // Check if the player found the exit
-                if (this.maze.foundExit(this.player.position)) {
-                    this.finalSequence();
-                }
-                else {
+                //if (this.maze.foundExit(this.player.position)) {
+                    //this.finalSequence();
+                //} else {
+                
                     let coveredDistance = this.player.walkingSpeed * deltaT;
+                    
                     let directionIncrement = this.player.turningSpeed * deltaT;
                     if (this.player.keyStates.run) {
                         coveredDistance *= this.player.runningFactor;
                         directionIncrement *= this.player.runningFactor;
                     }
                     if (this.player.keyStates.left) {
-                        this.player.direction += directionIncrement;
+                        this.player.object.direction += directionIncrement;
                     }
                     else if (this.player.keyStates.right) {
-                        this.player.direction -= directionIncrement;
+                        this.player.object.direction -= directionIncrement;
                     }
-                    const direction = THREE.MathUtils.degToRad(this.player.direction);
+                    const direction = THREE.MathUtils.degToRad(this.player.object.direction);
                     if (this.player.keyStates.backward) {
-                        const newPosition = new THREE.Vector3(-coveredDistance * Math.sin(direction), 0.0, -coveredDistance * Math.cos(direction)).add(this.player.position);
+                        const newPosition = new THREE.Vector3(-coveredDistance * Math.sin(direction), 0.0, -coveredDistance * Math.cos(direction)).add(this.player.object.position);
                         if (this.collision(newPosition)) {
                             this.animations.fadeToAction("Death", 0.2);
                         }
                         else {
                             this.animations.fadeToAction(this.player.keyStates.run ? "Running" : "Walking", 0.2);
-                            this.player.position = newPosition;
+                            this.player.object.position.set(newPosition.x, newPosition.y, newPosition.z)
                         }
                     }
                     else if (this.player.keyStates.forward) {
-                        const newPosition = new THREE.Vector3(coveredDistance * Math.sin(direction), 0.0, coveredDistance * Math.cos(direction)).add(this.player.position);
+                        const newPosition = new THREE.Vector3(coveredDistance * Math.sin(direction), 0.0, coveredDistance * Math.cos(direction)).add(this.player.object.position);
                         if (this.collision(newPosition)) {
                             this.animations.fadeToAction("Death", 0.2);
                         }
                         else {
                             this.animations.fadeToAction(this.player.keyStates.run ? "Running" : "Walking", 0.2);
-                            this.player.position = newPosition;
+                            this.player.object.position.set(newPosition.x, newPosition.y, newPosition.z)
                         }
                     }
                     else if (this.player.keyStates.jump) {
@@ -592,10 +692,10 @@ export class Visualizacao3DComponent implements AfterViewInit{
                     else {
                         this.animations.fadeToAction("Idle", this.animations.activeName != "Death" ? 0.2 : 0.6);
                     }
-                    this.player.object.position.set(this.player.position.x, this.player.position.y, this.player.position.z);
+                    this.player.object.position.set(this.player.object.position.x, this.player.object.position.y, this.player.object.position.z);
                     this.player.object.rotation.y = direction - this.player.initialDirection;
-                }
-            }*/
+                //}
+            }
 
             // Update first-person, third-person and top view cameras parameters (player direction and target)
             this.firstPersonViewCamera.playerDirection = this.player.object.direction;
@@ -645,5 +745,4 @@ export class Visualizacao3DComponent implements AfterViewInit{
             }*/
         }
     }
-        
-    }
+}
