@@ -32,8 +32,27 @@ describe('Listar Edificio com Minimo e Max Pisos', () => {
 
     });
 
-    it('Listar piso sucesso e2e', () => {
-        //Criar piso
+    it('Listar Edificio Min e Max pisos input load de pagina', () => {
+        cy.visit('/listarEdificioMinMaxPisos');
+
+        cy.get('[name="minPiso"]').should('have.attr', 'placeholder', 'Numero mínimo pisos*');
+        cy.get('[name="maxPiso"]').should('have.attr', 'placeholder','Numero máximo pisos*');
+        
+    });
+
+    it('Listar Edificio Min e Max com dados invalidos falha e2e', () => {
+        cy.visit('/listarEdificioMinMaxPisos');
+
+        cy.get('[name="minPiso"]').type('1');
+        cy.get('[name="maxPiso"]').type('0');
+
+        cy.get('button').click();
+
+        cy.get('[name="app-message"]').contains("Listar Edificio com Min e Max Pisos falhou: O número mínimo de pisos não pode ser superior ao máximo");
+        
+    })
+
+    it('Listar Edificio Min e Max pisos sucesso e2e', () => {
         cy.visit('/listarEdificioMinMaxPisos');
     
         cy.get('[name="minPiso"]').type('0');
