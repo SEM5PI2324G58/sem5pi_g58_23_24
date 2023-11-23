@@ -41,7 +41,7 @@ export class PisoService {
   }
   
 
-  addPiso(piso: Piso): void{
+  private addPiso(piso: Piso): void{
     let codigo: string;
     let numeroPiso: number;
     let descricaoPiso: string;
