@@ -11,12 +11,13 @@ import Lights from './lights';
 import Camera from './camera';
 import Orientation from './orientation';
 import Player from './player';
-import Animations from './player_animations';
+import PlayerAnimations from './player_animations';
 import UserInterface from './userInterface';
 import { PisoService } from 'src/serviceInfo/piso.service';
 import { EdificioService } from 'src/serviceInfo/edificio.service';
 import ExportarMapa from 'src/dataModel/exportarMapa';
 import { initial } from 'lodash';
+import DoorAnimations from './doorAnimations';
 
 @Component({
   selector: 'app-visualizacao3-d',
@@ -83,7 +84,9 @@ export class Visualizacao3DComponent implements AfterViewInit {
   maze!: Maze;
   light!: Lights;
   clock!: THREE.Clock;
-  animations!: Animations;
+  animations!: PlayerAnimations;
+  doorAnimations!: DoorAnimations;
+  //elevadorAnimations!: ElevadorAnimations;
   userInterface!: UserInterface;
 
   private get canvas(): HTMLCanvasElement {

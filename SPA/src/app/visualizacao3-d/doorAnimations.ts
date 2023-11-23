@@ -1,16 +1,14 @@
 import * as THREE from "three";
 
-export default class PlayerAnimations {
+export default class DoorAnimations {
     states: string[];
-    emotes: string[];
     mixer: THREE.AnimationMixer;
     actionInProgress: boolean;
     actions: { [name: string]: THREE.AnimationAction };
     activeName: string;
 
     constructor(object: any, animations: THREE.AnimationClip[]) {
-        this.states = [];
-        this.emotes = [];
+        this.states = ['Close'];
 
         this.mixer = new THREE.AnimationMixer(object);
         this.actionInProgress = false;
@@ -20,7 +18,7 @@ export default class PlayerAnimations {
             const clip = animations[i];
             const action = this.mixer.clipAction(clip);
             this.actions[clip.name] = action;
-            if (this.states.indexOf(clip.name) >= 4 || this.emotes.indexOf(clip.name) >= 0) {
+            if (this.states.indexOf(clip.name) >= 4) {
                 action.clampWhenFinished = true;
                 action.loop = THREE.LoopOnce;
             }
