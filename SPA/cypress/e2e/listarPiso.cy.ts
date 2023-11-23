@@ -31,8 +31,15 @@ describe('Listar Piso', () => {
 
     });
 
+    it('Listar piso input load de pagina e2e', () => {
+        cy.visit('/listarPiso');
+        cy.wait('@getEdificio');
+    
+        cy.get('[id="codigo"]').find('option:first-child').should('have.text', 'Codigo Edificio*');;
+
+    });
+
     it('Listar piso sucesso e2e', () => {
-        //Criar piso
         cy.visit('/listarPiso');
         cy.wait('@getEdificio');
     
@@ -41,7 +48,7 @@ describe('Listar Piso', () => {
 
         cy.get('p-table').contains('1');
         cy.get('p-table').contains('Descricao1'); 
-    })
+    });
 
 
     afterEach(() => {
