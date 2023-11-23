@@ -27,8 +27,28 @@ describe('Listar dispositivos da frota', () => {
 
     });
 
+    it('Criar dispositivo input load de pagina', () => {
+        cy.visit('/adicionarDispositivo');
+        cy.get('[name="codigo"]').should('have.attr', 'placeholder', 'Código *');
+        cy.get('[name="nickname"]').should('have.attr', 'placeholder', 'Nickname *');
+        cy.get('[name="idTipoDispositivo"]').should('have.attr', 'placeholder', 'Id do Tipo de Dispositivo *');
+        cy.get('[name="numeroSerie"]').should('have.attr', 'placeholder', 'Número de Série *');
+        cy.get('[name="descricao"]').should('have.attr', 'placeholder', 'Descrição');
+    })
 
-    it('listar dispositivos da frota sucesso e2e', () => {
+    it('criar dispositivos sem dados falha e2e', () => {
+        cy.visit('/adicionarDispositivo');
+        cy.get('button').click();
+            
+
+        cy.get('[name="app-message"]').contains("ERRO: Código deve ser preenchido.");
+        cy.get('[name="app-message"]').contains("ERRO: Nickname deve ser preenchido.");
+        cy.get('[name="app-message"]').contains("ERRO: Id Tipo Dispositivo deve ser preenchido.");
+        cy.get('[name="app-message"]').contains("ERRO: Número de Série deve ser preenchido.");
+        
+    })
+
+    it('criar dispositivos sucesso e2e', () => {
         cy.visit('/adicionarDispositivo');
             cy.get('[name="codigo"]').type('COD1');
             cy.get('[name="nickname"]').type('NICK');
