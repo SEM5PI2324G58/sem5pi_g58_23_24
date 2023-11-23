@@ -127,7 +127,7 @@ export default class Maze {
 
     public distanceToWestWall(position: THREE.Vector3): number {
         const indices = this.cartesianToCell(position);
-        if (this.map[indices[0]][indices[1]] == "Oeste" || this.map[indices[0]][indices[1]] == "NorteOeste") {
+        if (this.map[indices[0]][indices[1]] == "Oeste" || this.map[indices[0]][indices[1]] == "NorteOeste" || this.map[indices[0]][indices[1]] == "PortaNorteNorteOeste") {
             return position.x - this.cellToCartesian(indices).x + this.scale.x / 2.0;
         }
         return Infinity;
@@ -136,7 +136,7 @@ export default class Maze {
     public distanceToEastWall(position: THREE.Vector3): number {
         const indices = this.cartesianToCell(position);
         indices[1]++;
-        if (this.map[indices[0]][indices[1]] == "Oeste" || this.map[indices[0]][indices[1]] == "NorteOeste") {
+        if (this.map[indices[0]][indices[1]] == "Oeste" || this.map[indices[0]][indices[1]] == "NorteOeste" || this.map[indices[0]][indices[1]] == "PortaNorteNorteOeste") {
             return this.cellToCartesian(indices).x - this.scale.x / 2.0 - position.x;
         }
         return Infinity;
@@ -144,7 +144,7 @@ export default class Maze {
 
     public distanceToNorthWall(position: THREE.Vector3): number {
         const indices = this.cartesianToCell(position);
-        if (this.map[indices[0]][indices[1]] == "Norte" || this.map[indices[0]][indices[1]] == "NorteOeste") {
+        if (this.map[indices[0]][indices[1]] == "Norte" || this.map[indices[0]][indices[1]] == "NorteOeste" || this.map[indices[0]][indices[1]] == "PortaOesteNorteOeste") {
             return position.z - this.cellToCartesian(indices).z + this.scale.z / 2.0;
         }
         return Infinity;
@@ -153,7 +153,7 @@ export default class Maze {
     public distanceToSouthWall(position: THREE.Vector3): number {
         const indices = this.cartesianToCell(position);
         indices[0]++;
-        if (this.map[indices[0]][indices[1]] == "Norte" || this.map[indices[0]][indices[1]] == "NorteOeste") {
+        if (this.map[indices[0]][indices[1]] == "Norte" || this.map[indices[0]][indices[1]] == "NorteOeste" || this.map[indices[0]][indices[1]] == "PortaOesteNorteOeste") {
             return this.cellToCartesian(indices).z - this.scale.z / 2.0 - position.z;
         }
         return Infinity;
