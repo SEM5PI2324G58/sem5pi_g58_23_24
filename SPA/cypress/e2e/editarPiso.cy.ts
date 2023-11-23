@@ -32,6 +32,37 @@ describe('Editar Piso', () => {
 
     });
 
+
+    it('Editar piso input load de pagina', () => {
+        
+        cy.visit('/editarPiso');
+        cy.wait('@getEdificio');
+
+        cy.get('[formControlName="codigo"]').find('option:first-child').should('have.text', 'Codigo Edificio*');
+        cy.get('[formControlName="numeroPiso"]').find('option:first-child').should('have.text', 'Numero Piso*');
+        cy.get('[id="novoNumeroPiso"]').should('have.attr', 'placeholder', 'Novo Numero do Piso');
+        cy.get('[id="descricaoPiso"]').should('have.attr', 'placeholder', 'Nova Descrição do Piso');
+        
+    })
+
+    it('Editar piso sem dados falho', () => {
+        cy.visit('/editarPiso');
+        cy.wait('@getEdificio');
+
+        cy.get('[formControlName="codigo"]').find('option:first-child').should('have.text', 'Codigo Edificio*');
+        cy.get('[formControlName="numeroPiso"]').find('option:first-child').should('have.text', 'Numero Piso*');
+        cy.get('[id="novoNumeroPiso"]').should('have.attr', 'placeholder', 'Novo Numero do Piso');
+        cy.get('[id="descricaoPiso"]').should('have.attr', 'placeholder', 'Nova Descrição do Piso');~
+
+        cy.get('button').click();
+
+        cy.get('[name="app-message"]').contains("ERRO: Código deve ser preenchido.");
+        cy.get('[name="app-message"]').contains("ERRO: Número do Piso deve ser preenchido.");
+
+        
+    })
+
+
     it('Editar piso sucesso e2e', () => {
         //Criar piso
         cy.visit('/editarPiso');
