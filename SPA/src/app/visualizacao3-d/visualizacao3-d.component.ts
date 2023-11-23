@@ -873,10 +873,17 @@ export class Visualizacao3DComponent implements AfterViewInit {
     || this.maze.distanceToEastWall(position) < this.player.radius 
     || this.maze.distanceToNorthWall(position) < this.player.radius 
     || this.maze.distanceToSouthWall(position) < this.player.radius
+    // Colisões Elevador
     || this.maze.distanceToWestElevador(position) < this.player.radius
     || this.maze.distanceToEastElevador(position) < this.player.radius
     || this.maze.distanceToNorthElevador(position) < this.player.radius
-    || this.maze.distanceToSouthElevador(position) < this.player.radius;
+    || this.maze.distanceToSouthElevador(position) < this.player.radius
+    // Colisões Portas
+    || this.maze.distanceToWestDoor(position) < this.player.radius
+    || this.maze.distanceToEastDoor(position) < this.player.radius
+    || this.maze.distanceToNorthDoor(position) < this.player.radius
+    || this.maze.distanceToSouthDoor(position) < this.player.radius
+    ;
   }
 
   update() {
