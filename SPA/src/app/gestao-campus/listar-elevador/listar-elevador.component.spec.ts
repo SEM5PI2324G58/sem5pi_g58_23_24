@@ -33,18 +33,19 @@ describe('ListarElevadorComponent', () => {
 
   it('Método listarElevador chama o método listarElevador do elevadorService', () => {
     const cod = 'cod1';
-    const listaCodEdificios = 
+    const elevador = 
       {    id: '1',
         marca: '1',
         modelo: '1',
         numeroSerie: '1',
         descricao: '1'
       } as unknown as ListarElevador
-;
+
+      const listaCodEdificios = [elevador];
 
     let elevadorService = TestBed.inject(ElevadorService);
 
-    spyOn(component['elevadorService'], 'listarElevador').and.returnValue(of(listaCodEdificios));
+    spyOn(component['elevadorService'], 'listarElevador').and.returnValue(of(elevador));
 
     component.myForm.controls['codigo'].setValue(cod);
 
@@ -53,6 +54,7 @@ describe('ListarElevadorComponent', () => {
     expect(elevadorService.listarElevador).toHaveBeenCalledWith(
       cod
     );
+    expect(component.listaElevadores).toEqual(listaCodEdificios);
   });
 
   it('Método ngOnInit chama o método listarCodEdificios do edificioService', () => {
