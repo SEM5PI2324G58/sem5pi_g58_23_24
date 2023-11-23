@@ -6,6 +6,8 @@ import {SidebarComponent} from '../sidebar/sidebar.component';
 import {MessageComponent} from '../../message/message.component';
 import { EdificioService } from 'src/serviceInfo/edificio.service';
 import { Edificio } from 'src/dataModel/edificio';
+import { of } from 'rxjs';
+
 
 describe('ListarEdificiosComponent', () => {
   let component: ListarEdificiosComponent;
@@ -15,7 +17,6 @@ describe('ListarEdificiosComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ListarEdificiosComponent, SidebarComponent, MessageComponent],
       imports: [HttpClientTestingModule],
-      providers: [MapaService],
     });
     fixture = TestBed.createComponent(ListarEdificiosComponent);
     component = fixture.componentInstance;
@@ -26,7 +27,7 @@ describe('ListarEdificiosComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('', ()=>{
+  it('Método ngOnInit chama o método listarEdificios', ()=>{
     const listaEdificios = [{
       codigo: "cod",
       nome: "nome",
@@ -35,7 +36,7 @@ describe('ListarEdificiosComponent', () => {
       dimensaoY: 1,
     }] as Edificio[];
     let edificioService = TestBed.inject(EdificioService);
-    spyOn(component['edificioService'], 'listarEdificios').and.returnValue(listaEdificios);
+    spyOn(component['edificioService'], 'listarEdificios').and.returnValue(of(listaEdificios));
     component.ngOnInit();
     expect(edificioService.listarEdificios).toHaveBeenCalled();
     expect(component.listaEdificios).toEqual(listaEdificios);

@@ -14,6 +14,10 @@ export class ListarEdificiosComponent implements OnInit{
   listaEdificios: Edificio[] = [];
 
   ngOnInit(): void {  
-    this.listaEdificios = this.edificioService.listarEdificios();
+    this.edificioService.listarEdificios().subscribe(
+      data => {
+        this.listaEdificios = data;
+      },
+    );
   }
 }
