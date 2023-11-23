@@ -195,14 +195,14 @@ cria_grafo(Col,Lin):-cria_grafo_lin(Col,Lin),Lin1 is Lin-1,cria_grafo(Col,Lin1).
 
 cria_grafo_lin(0,_):-!.
 cria_grafo_lin(Col,Lin):-m(Col,Lin,0),!,ColS is Col+1, ColA is Col-1, LinS is Lin+1,LinA is Lin-1,
-    ((m(ColS,Lin,0),assertz(ligacel(cel(Col,Lin),cel(ColS,Lin), 1));true)),
-    ((m(ColA,Lin,0),assertz(ligacel(cel(Col,Lin),cel(ColA,Lin), 1));true)),
-    ((m(Col,LinS,0),assertz(ligacel(cel(Col,Lin),cel(Col,LinS), 1));true)),
-    ((m(Col,LinA,0),assertz(ligacel(cel(Col,Lin),cel(Col,LinA), 1));true)),
-    ((m(ColA,LinA,0),assertz(ligacel(cel(Col,Lin),cel(ColA,LinA), sqrt(2)));true)),
-    ((m(ColS,LinS,0),assertz(ligacel(cel(Col,Lin),cel(ColS,LinS), sqrt(2)));true)),
-    ((m(ColA,LinS,0),assertz(ligacel(cel(Col,Lin),cel(ColA,LinS), sqrt(2)));true)),
-    ((m(ColS,LinA,0),assertz(ligacel(cel(Col,Lin),cel(ColS,LinA), sqrt(2)));true)),
+    ((m(ColS,Lin,0),assertz(cel(Col,Lin)),assertz(cel(ColS,Lin)),assertz(ligacel(cel(Col,Lin), cel(ColS,Lin),1));true)),
+    ((m(ColA,Lin,0),assertz(cel(Col,Lin)),assertz(cel(ColA,Lin)),assertz(ligacel(cel(Col,Lin), cel(ColA,Lin),1));true)),
+    ((m(Col,LinS,0),assertz(cel(Col,Lin)),assertz(cel(Col,LinS)),assertz(ligacel(cel(Col,Lin), cel(Col,LinS),1));true)),
+    ((m(Col,LinA,0),assertz(cel(Col,Lin)),assertz(cel(Col,LinA)),assertz(ligacel(cel(Col,Lin), cel(Col,LinA),1));true)),
+    ((m(ColA,LinA,0),assertz(cel(Col,Lin)),assertz(cel(ColA,LinA)),assertz(ligacel(cel(Col,Lin), cel(ColA,LinA),sqrt(2)));true)),
+    ((m(ColS,LinS,0),assertz(cel(Col,Lin)),assertz(cel(ColS,LinS)),assertz(ligacel(cel(Col,Lin), cel(ColS,LinS),sqrt(2)));true)),
+    ((m(ColA,LinS,0),assertz(cel(Col,Lin)),assertz(cel(ColA,LinS)),assertz(ligacel(cel(Col,Lin), cel(ColA,LinS),sqrt(2)));true)),
+    ((m(ColS,LinA,0),assertz(cel(Col,Lin)),assertz(cel(ColS,LinA)),assertz(ligacel(cel(Col,Lin), cel(ColS,LinA),sqrt(2)));true)),
     Col1 is Col-1,
     cria_grafo_lin(Col1,Lin).
 cria_grafo_lin(Col,Lin):-Col1 is Col-1,cria_grafo_lin(Col1,Lin).
