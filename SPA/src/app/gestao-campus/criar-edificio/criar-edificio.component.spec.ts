@@ -14,7 +14,6 @@ describe('CriarEdificioComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [CriarEdificioComponent, SidebarComponent, MessageComponent],
       imports: [HttpClientTestingModule],
-      providers: [MapaService],
     })
     .compileComponents();
     

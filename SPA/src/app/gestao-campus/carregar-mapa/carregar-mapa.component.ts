@@ -9,21 +9,24 @@ import { MapaService } from 'src/serviceInfo/mapa.service';
   styleUrls: ['./carregar-mapa.component.css']
 })
 export class CarregarMapaComponent {
-  constructor(private mapaService : MapaService) { }
+  constructor(private mapaService : MapaService, private messageService : MessageService) { }
   file:any;
 
   getFile(event: any) {
     const reader = new FileReader();
     this.file = event.target.files[0];
 
-    let mapaData: CarregarMapa | undefined; // Declare a variable to store the parsed JSON data
+    let mapaData: CarregarMapa | undefined;
     reader.readAsText(this.file);
      reader.onload = () => {
       try {
         mapaData = JSON.parse(reader.result as string) as CarregarMapa;
+        if(mapaData === undefined){
+          throw new Error();
+        }
         this.mapaService.carregarMapa(mapaData);
       } catch (error) {
-        
+        this.messageService.add("Erro: Ficheiro JSON não segue as regras de formatação.");
       }
     };
   }

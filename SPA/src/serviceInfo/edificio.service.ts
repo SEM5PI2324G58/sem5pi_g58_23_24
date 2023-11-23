@@ -134,14 +134,10 @@ export class EdificioService {
     return true;
   }
 
-  public listarEdificios(): Edificio[] {
+  public listarEdificios(): Observable<Edificio[]> {
     let listaEdificios : Edificio[] = [];
-    this.http.get<Edificio[]>(this.edificioUrl, this.httpOptions)
-    .pipe(catchError(this.handleError<Edificio[]>('Listar Edificio')))
-    .subscribe(data => {
-        listaEdificios.push(...data);
-    });
-    return listaEdificios;
+    return this.http.get<Edificio[]>(this.edificioUrl, this.httpOptions)
+    .pipe(catchError(this.handleError<Edificio[]>('Listar Edificio')));
   }
 
   public listarEdificioMinMaxPisos(minPisos: string, maxPisos: string): Observable<Edificio[]> {

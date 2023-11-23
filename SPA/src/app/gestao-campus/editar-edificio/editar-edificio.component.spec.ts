@@ -16,7 +16,6 @@ describe('EditarEdificioComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [EditarEdificioComponent, SidebarComponent, MessageComponent],
       imports: [HttpClientTestingModule],
-      providers: [MapaService],
     })
     .compileComponents();
     
