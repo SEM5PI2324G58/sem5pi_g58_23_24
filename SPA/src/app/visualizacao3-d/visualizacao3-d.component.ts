@@ -238,12 +238,12 @@ export class Visualizacao3DComponent implements AfterViewInit {
     this.maze = new Maze(mazeData, this.scene3D, 0.0);
 
     const playerData = {
-      url: 'assets/RobotExpressive/RobotExpressive.glb',
+      url: 'assets/robotDelivery/starship_delivery_robot_model.glb',
       credits:
         "Model and related code snippets created by <a href='https://www.patreon.com/quaternius' target='_blank' rel='noopener'>Tomás Laulhé</a>. CC0 1.0. Modified by <a href='https://donmccurdy.com/' target='_blank' rel='noopener'>Don McCurdy</a>.",
       eyeHeight: 0.8, // fraction of character height
-      scale: new THREE.Vector3(0.1, 0.1, 0.1),
-      walkingSpeed: 0.75,
+      scale: new THREE.Vector3(0.05, 0.05, 0.05),
+      walkingSpeed: 0.85,
       initialDirection: 0.0, // Expressed in degrees
       turningSpeed: 75.0, // Expressed in degrees / second
       runningFactor: 2.0, // Affects walking speed and turning speed
@@ -889,10 +889,13 @@ export class Visualizacao3DComponent implements AfterViewInit {
         this.clock = new THREE.Clock();
 
         // Create model animations (states, emotes and expressions)
+        /*
         this.animations = new Animations(
           this.player.object,
           this.player.animations
         );
+        */
+        
 
         // Set the player's position and direction
         this.player.object.position.set(
@@ -922,9 +925,9 @@ export class Visualizacao3DComponent implements AfterViewInit {
     } else {
       // Update the model animations
       const deltaT = this.clock.getDelta();
-      this.animations.update(deltaT);
+      // this.animations.update(deltaT);
 
-      if (!this.animations.actionInProgress) {
+      //if (!this.animations.actionInProgress) {
         // Check if the player found the exit
         //if (this.maze.foundExit(this.player.position)) {
         //this.finalSequence();
@@ -952,12 +955,8 @@ export class Visualizacao3DComponent implements AfterViewInit {
             -coveredDistance * Math.cos(direction)
           ).add(this.player.object.position);
           if (this.collision(newPosition)) {
-            this.animations.fadeToAction('Death', 0.2);
+            
           } else {
-            this.animations.fadeToAction(
-              this.player.keyStates.run ? 'Running' : 'Walking',
-              0.2
-            );
             this.player.object.position.set(
               newPosition.x,
               newPosition.y,
@@ -971,18 +970,14 @@ export class Visualizacao3DComponent implements AfterViewInit {
             coveredDistance * Math.cos(direction)
           ).add(this.player.object.position);
           if (this.collision(newPosition)) {
-            this.animations.fadeToAction('Death', 0.2);
           } else {
-            this.animations.fadeToAction(
-              this.player.keyStates.run ? 'Running' : 'Walking',
-              0.2
-            );
             this.player.object.position.set(
               newPosition.x,
               newPosition.y,
               newPosition.z
             );
           }
+          /*
         } else if (this.player.keyStates.jump) {
           this.animations.fadeToAction('Jump', 0.2);
         } else if (this.player.keyStates.yes) {
@@ -1000,6 +995,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
             'Idle',
             this.animations.activeName != 'Death' ? 0.2 : 0.6
           );
+          */
         }
         this.player.object.position.set(
           this.player.object.position.x,
@@ -1009,7 +1005,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
         this.player.object.rotation.y =
           direction - this.player.initialDirection;
         //}
-      }
+      //}
 
       // Update first-person, third-person and top view cameras parameters (player direction and target)
       this.firstPersonViewCamera.playerDirection = this.player.object.direction;

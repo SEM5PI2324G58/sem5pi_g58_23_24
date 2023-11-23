@@ -9,8 +9,8 @@ export default class Animations {
     activeName: string;
 
     constructor(object: any, animations: THREE.AnimationClip[]) {
-        this.states = ["Idle", "Walking", "Running", "Dance", "Death", "Sitting", "Standing"];
-        this.emotes = ["Jump", "Yes", "No", "Wave", "Punch", "ThumbsUp"];
+        this.states = [];
+        this.emotes = [];
 
         this.mixer = new THREE.AnimationMixer(object);
         this.actionInProgress = false;
