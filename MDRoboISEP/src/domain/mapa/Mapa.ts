@@ -549,8 +549,10 @@ export class Mapa extends AggregateRoot<pisoProps> {
 
   private exportarTipoDePontos(): string[][] {
     let dados : string[][] = [];
+    for(let i = 0; i < this.props.mapa[0].length; i++){
+      dados[i] = [];
+    }
     for (let i = 0; i < this.props.mapa.length; i++) {
-      dados[i]=[];
       for (let j = 0; j < this.props.mapa[i].length; j++) {
         dados[j][i] = this.props.mapa[i][j].returnTipoPonto();
       }
