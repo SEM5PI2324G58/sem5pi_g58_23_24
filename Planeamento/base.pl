@@ -280,8 +280,8 @@ segue_pisos(PisoAct,PisoDest,[EdAct,EdSeg|LOutrosEd],[elev(PisoAct,PisoAct1),cor
 % Solução esperada é do memso tipo da solução do predicado caminho_pisos(j2,g4,LEdCam,LLig) (linha 94 e 95)
 
 caminho_pontos_piso(XOrig,YOrig,PisoOrig,XDest,YDest,PisoDest,LEdCam,LLig):-
-    ponto_valido(XOrig,YOrig,PisoOrig),
-    ponto_valido(XDest,YDest,PisoDest),
+    %ponto_valido(XOrig,YOrig,PisoOrig),
+    %ponto_valido(XDest,YDest,PisoDest),
     caminho_pisos(PisoOrig,PisoDest,LEdCam,LLig).
 
 % piso correspondente a uma sala
