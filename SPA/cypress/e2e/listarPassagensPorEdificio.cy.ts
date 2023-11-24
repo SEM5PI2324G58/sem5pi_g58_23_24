@@ -69,7 +69,9 @@ describe('Listar passagens por par de edifícios', () => {
         cy.get('[id="cod2"]').select('T2');
 
         cy.get('button').click();
-        cy.wait('@getPassagensPorEdificio');
+        cy.wait('@getPassagensPorEdificio').then((interception) => {
+            expect(interception?.response?.statusCode).to.eq(200);
+        });
 
         cy.get('p-table').contains('999999');
     })

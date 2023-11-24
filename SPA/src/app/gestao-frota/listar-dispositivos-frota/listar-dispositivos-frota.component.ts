@@ -11,10 +11,10 @@ export class ListarDispositivosFrotaComponent implements OnInit{
   
   listaDispositivos: Dispositivo[] = [];
   
-  constructor(private dipositivoService: DispositivoService) { }
+  constructor(private dispositivoService: DispositivoService) { }
   
   ngOnInit(): void {
-    this.dipositivoService.listarDispositivosFrota().subscribe({
+    this.dispositivoService.listarDispositivosFrota().subscribe({
       next: data => {
         this.listaDispositivos = data;
       }

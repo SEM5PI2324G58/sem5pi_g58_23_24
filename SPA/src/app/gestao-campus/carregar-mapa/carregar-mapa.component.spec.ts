@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CarregarMapaComponent } from './carregar-mapa.component';
+import {SidebarComponent} from '../sidebar/sidebar.component';
+import {MessageComponent} from '../../message/message.component';
 
 describe('CarregarMapaComponent', () => {
   let component: CarregarMapaComponent;
@@ -8,7 +10,8 @@ describe('CarregarMapaComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CarregarMapaComponent]
+      declarations: [CarregarMapaComponent, SidebarComponent, MessageComponent],
+      imports: [HttpClientTestingModule],
     });
     fixture = TestBed.createComponent(CarregarMapaComponent);
     component = fixture.componentInstance;

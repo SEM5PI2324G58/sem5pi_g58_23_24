@@ -24,21 +24,6 @@ export class EdificioService {
     return this.listarEdificioCod();
   }
 
-  listarCodEdificio(selectedCodigo: string): Edificio {
-    return this.listarEdificio(selectedCodigo);
-  }
-
-  private listarEdificio(codigo: string): Edificio {
-    let edificio: Edificio;
-    edificio = {codigo: "", dimensaoX: 0, dimensaoY: 0	}
-    this.http.get<Edificio>(`${this.edificioUrl}/${codigo}`, this.httpOptions)
-    .pipe(catchError(this.handleError<Edificio>('Listar Edificio')))
-    .subscribe(data => {
-      edificio = data;
-    });
-    return edificio;
-  }
-
 
   public criarEdificio(codigo: string, dimensaoX: string, dimensaoY: string,
     nome?: string, descricao?: string): void {
@@ -149,14 +134,10 @@ export class EdificioService {
     return true;
   }
 
-  public listarEdificios(): Edificio[] {
+  public listarEdificios(): Observable<Edificio[]> {
     let listaEdificios : Edificio[] = [];
-    this.http.get<Edificio[]>(this.edificioUrl, this.httpOptions)
-    .pipe(catchError(this.handleError<Edificio[]>('Listar Edificio')))
-    .subscribe(data => {
-        listaEdificios.push(...data);
-    });
-    return listaEdificios;
+    return this.http.get<Edificio[]>(this.edificioUrl, this.httpOptions)
+    .pipe(catchError(this.handleError<Edificio[]>('Listar Edificio')));
   }
 
   public listarEdificioMinMaxPisos(minPisos: string, maxPisos: string): Observable<Edificio[]> {

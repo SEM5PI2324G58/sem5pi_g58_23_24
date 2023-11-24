@@ -204,14 +204,14 @@ cria_grafo(Col,Lin):-cria_grafo_lin(Col,Lin),Lin1 is Lin-1,cria_grafo(Col,Lin1).
 
 cria_grafo_lin(0,_):-!.
 cria_grafo_lin(Col,Lin):-m(Col,Lin,0),!,ColS is Col+1, ColA is Col-1, LinS is Lin+1,LinA is Lin-1,
-    ((m(ColS,Lin,0),assertz(ligacel(cel(Col,Lin),cel(ColS,Lin), 1));true)),
-    ((m(ColA,Lin,0),assertz(ligacel(cel(Col,Lin),cel(ColA,Lin), 1));true)),
-    ((m(Col,LinS,0),assertz(ligacel(cel(Col,Lin),cel(Col,LinS), 1));true)),
-    ((m(Col,LinA,0),assertz(ligacel(cel(Col,Lin),cel(Col,LinA), 1));true)),
-    ((m(ColA,LinA,0),assertz(ligacel(cel(Col,Lin),cel(ColA,LinA), sqrt(2)));true)),
-    ((m(ColS,LinS,0),assertz(ligacel(cel(Col,Lin),cel(ColS,LinS), sqrt(2)));true)),
-    ((m(ColA,LinS,0),assertz(ligacel(cel(Col,Lin),cel(ColA,LinS), sqrt(2)));true)),
-    ((m(ColS,LinA,0),assertz(ligacel(cel(Col,Lin),cel(ColS,LinA), sqrt(2)));true)),
+    ((m(ColS,Lin,0),assertz(cel(Col,Lin)),assertz(cel(ColS,Lin)),assertz(ligacel(cel(Col,Lin), cel(ColS,Lin),1));true)),
+    ((m(ColA,Lin,0),assertz(cel(Col,Lin)),assertz(cel(ColA,Lin)),assertz(ligacel(cel(Col,Lin), cel(ColA,Lin),1));true)),
+    ((m(Col,LinS,0),assertz(cel(Col,Lin)),assertz(cel(Col,LinS)),assertz(ligacel(cel(Col,Lin), cel(Col,LinS),1));true)),
+    ((m(Col,LinA,0),assertz(cel(Col,Lin)),assertz(cel(Col,LinA)),assertz(ligacel(cel(Col,Lin), cel(Col,LinA),1));true)),
+    ((m(ColA,LinA,0),assertz(cel(Col,Lin)),assertz(cel(ColA,LinA)),assertz(ligacel(cel(Col,Lin), cel(ColA,LinA),sqrt(2)));true)),
+    ((m(ColS,LinS,0),assertz(cel(Col,Lin)),assertz(cel(ColS,LinS)),assertz(ligacel(cel(Col,Lin), cel(ColS,LinS),sqrt(2)));true)),
+    ((m(ColA,LinS,0),assertz(cel(Col,Lin)),assertz(cel(ColA,LinS)),assertz(ligacel(cel(Col,Lin), cel(ColA,LinS),sqrt(2)));true)),
+    ((m(ColS,LinA,0),assertz(cel(Col,Lin)),assertz(cel(ColS,LinA)),assertz(ligacel(cel(Col,Lin), cel(ColS,LinA),sqrt(2)));true)),
     Col1 is Col-1,
     cria_grafo_lin(Col1,Lin).
 cria_grafo_lin(Col,Lin):-Col1 is Col-1,cria_grafo_lin(Col1,Lin).
@@ -343,3 +343,49 @@ estimativa(Nodo1,Nodo2,Estimativa):-
 	node(Nodo2,X2,Y2),
 	Estimativa is sqrt((X1-X2)^2+(Y1-Y2)^2).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Algoritmo dfs
+dfs(Orig,Dest,Path):-
+    dfs2(Orig,Dest,[Orig],Path).
+
+dfs2(Dest,Dest,LA,Path):-
+    reverse(LA,Path).
+
+dfs2(Act,Dest,LA,Path):-
+    ligacel(Act,X),
+    \+ member(X,LA),
+    dfs2(X,Dest,[X|LA],Path).
+
+all_dfs(Orig,Dest,LPath):-
+    findall(Path,dfs(Orig,Dest,Path),LPath).
+
+better_dfs(Orig,Dest,Path):-
+    all_dfs(Orig,Dest,LPath),
+    shortlist(LPath,Path,_).
+
+shortlist([L],L,N):-
+    !,
+    length(L,N).
+
+shortlist([L|LL],Lm,Nm):-
+    shortlist(LL,Lm1,Nm1),
+    length(L,NL),
+    ((NL<Nm1,!,Lm=L,Nm is NL);
+        (Lm=Lm1,Nm is Nm1)).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+bfs(Orig,Dest,Path):-
+    bfs2(Dest,[[Orig]],Path).
+
+bfs2(Dest,[[Dest|T]|_],Path):-
+    reverse([Dest|T],Path).
+
+bfs2(Dest,[LA|Outros],Path):-
+    LA=[Act|_],
+    findall([X|LA],
+        (Dest\==Act,ligacel(Act,X),\+ member(X,LA)),
+        Novos),
+    append(Outros,Novos,Todos),
+    bfs2(Dest,Todos,Path).

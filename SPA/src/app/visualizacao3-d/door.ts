@@ -69,7 +69,7 @@ export default class Door {
         
         this.scene.add(this.object);
 
-        /*let actions;
+        let actions;
         let mixer = new THREE.AnimationMixer(this.object);
         console.log(this.animations.length);
         for (let i = 0; i < this.animations.length; i++) {
@@ -81,7 +81,7 @@ export default class Door {
             .setEffectiveWeight(1)
             .fadeIn(5);
 
-        }*/
+        }
         this.loaded = true;
     }
 
