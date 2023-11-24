@@ -195,18 +195,18 @@ export default class EdificioService implements IEdificioService {
       coordCorredores: coordCorredorStringList,
       salas: salaStringList,
       coordPortas: CoordPortasStringList,
-      x_origem: "1",
-      y_origem: "3",
-      piso_origem: "teste1",
-      x_destino: "3",
-      y_destino: "1",
-      piso_destino: "testm1",
+      x_origem: "5",
+      y_origem: "5",
+      piso_origem: "j2",
+      x_destino: "6",
+      y_destino: "6",
+      piso_destino: "g4",
     } as IPlaneamentoInfoDTO;
 
     try {
       // Dynamic import of 'fetch'
       const { default: fetch } = await import('node-fetch');
-      const url = "http://localhost:8000/caminho/pontos_piso"
+      const url = "http://127.0.0.1:8000/caminho/pontos_piso"
       // Faça a requisição HTTP POST
       const response = await fetch(url, {
         method: 'POST',
