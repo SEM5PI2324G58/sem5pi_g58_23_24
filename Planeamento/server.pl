@@ -22,7 +22,7 @@ iniciar_servidor(PORT) :-
     http_server(http_dispatch, [port(PORT)]).
 
 % Manipulador para caminho entre pontos de um piso
-:- http_handler('caminho/pontos_piso', caminho_pontos_piso_handler, []).
+:- http_handler('/caminho/pontos_piso', caminho_pontos_piso_handler, []).
 
 caminho_pontos_piso_handler(Request) :-
     http_read_json_dict(Request,Dict,[]),
@@ -33,7 +33,6 @@ caminho_pontos_piso_handler(Request) :-
     ListaCoordCorr = Dict.coordCorredores,
     ListaSalas = Dict.salas,
     ListaCoordPortas = Dict.coordPortas,
-    obter_dados(ListaPiso, ListaElev, ListaCoordElev, ListaCorr, ListaCoordCorr, ListaSalas, ListaCoordPortas),
     XOrig = Dict.x_origem,
     YOrig = Dict.y_origem,
     PisoOrig = Dict.piso_origem,
@@ -46,13 +45,9 @@ caminho_pontos_piso_handler(Request) :-
     atom_string(XD,XDest),
     atom_string(YD,YDest),
     atom_string(PD,PisoDest),
+    obter_dados(ListaPiso, ListaElev, ListaCoordElev, ListaCorr, ListaCoordCorr, ListaSalas, ListaCoordPortas),
     caminho_pontos_piso(XO, YO, PO, XD, YD, PD, LEdCam, LLig),
     reply_json_dict(_{edificios: LEdCam, ligacoes: LLig}).
-
-% Predicado que vai buscar os dados ao ficheiro JSON
-
-% Definição do caminho para o ficheiro JSON
-
 
 obter_dados(ListaPiso, ListaElev, ListaCoordElev, ListaCorr, ListaCoordCorr, ListaSalas, ListaCoordPortas) :-
     processar_lista(ListaPiso),
@@ -63,7 +58,6 @@ obter_dados(ListaPiso, ListaElev, ListaCoordElev, ListaCorr, ListaCoordCorr, Lis
     processar_lista(ListaSalas),
     processar_lista(ListaCoordPortas).
 
-% Predicado que processa os dados obtidos do ficheiro JSON
 processar_lista(Lista) :-
     maplist(converter_e_assertar, Lista).
 
