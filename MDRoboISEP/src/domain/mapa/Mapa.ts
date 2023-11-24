@@ -18,6 +18,12 @@ interface pisoProps {
 }
 
 export class Mapa extends AggregateRoot<pisoProps> {
+  returnCoordenadasPassagem() {
+    return this.props.coordenadasPassagem;
+  }
+  returnSalasNoMapa() {
+    return this.props.coordenadasSala;
+  }
 
   private constructor (props : pisoProps, id?: IdMapa) {
       super(props,id);

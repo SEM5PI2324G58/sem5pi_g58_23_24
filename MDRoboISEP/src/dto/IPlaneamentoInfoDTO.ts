@@ -6,4 +6,10 @@ export default interface IPlaneamentoInfoDTO {
     coordCorredores: string[];
     salas: string[];
     coordPortas: string[];
+    x_origem: string;
+    y_origem: string;
+    piso_origem: string;
+    x_destino: string;
+    y_destino: string;
+    piso_destino: string;
 }

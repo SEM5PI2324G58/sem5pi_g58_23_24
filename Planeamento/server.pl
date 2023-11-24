@@ -1,7 +1,8 @@
 % Import de Bibliotecas HTTP
 :- use_module(library(http/thread_httpd)).
+:- use_module(library(http/http_client)).
+:- use_module(library(http/http_server)).
 :- use_module(library(http/http_dispatch)).
-:- use_module(library(http/http_unix_daemon)).
 :- use_module(library(http/http_parameters)).
 :- use_module(library(http/http_open)).
 :- use_module(library(http/http_cors)).
@@ -17,42 +18,60 @@
 :- use_module(base).
 
 % Iniciar o servidor
-iniciar_servidor :-
-    http_server(http_dispatch, [port(5000)]).
+iniciar_servidor(PORT) :-
+    http_server(http_dispatch, [port(PORT)]).
 
-% Definição do caminho para o ficheiro JSON
-:- http_handler('/edificio/getInformacaoPlaneamento', obterDados, []).
+% Manipulador para caminho entre pontos de um piso
+:- http_handler('caminho/pontos_piso', caminho_pontos_piso_handler, []).
 
-dados_mapa("http://localhost:4200/edificio/getInformacaoPlaneamento").
+caminho_pontos_piso_handler(Request) :-
+    http_read_json_dict(Request,Dict,[]),
+    ListaPiso = Dict.pisos,
+    ListaElev = Dict.elevadores,
+    ListaCoordElev = Dict.coordElevadores,
+    ListaCorr = Dict.corredores,
+    ListaCoordCorr = Dict.coordCorredores,
+    ListaSalas = Dict.salas,
+    ListaCoordPortas = Dict.coordPortas,
+    obter_dados(ListaPiso, ListaElev, ListaCoordElev, ListaCorr, ListaCoordCorr, ListaSalas, ListaCoordPortas),
+    XOrig = Dict.x_origem,
+    YOrig = Dict.y_origem,
+    PisoOrig = Dict.piso_origem,
+    XDest = Dict.x_destino,
+    YDest = Dict.y_destino,
+    PisoDest = Dict.piso_destino,
+    atom_string(XO,XOrig),
+    atom_string(YO,YOrig),
+    atom_string(PO,PisoOrig),
+    atom_string(XD,XDest),
+    atom_string(YD,YDest),
+    atom_string(PD,PisoDest),
+    caminho_pontos_piso(XO, YO, PO, XD, YD, PD, LEdCam, LLig),
+    reply_json_dict(_{edificios: LEdCam, ligacoes: LLig}).
 
 % Predicado que vai buscar os dados ao ficheiro JSON
-obterDados(Request) :-
-    dados_mapa(URL),
-    setup_call_cleanup(
-        http_open(URL, In, [request_header('Accept'='application/json')]),
-        json_read_dict(In, Data),
-        close(In)
-    ),
-    processarDados(Data).
+
+% Definição do caminho para o ficheiro JSON
+
+
+obter_dados(ListaPiso, ListaElev, ListaCoordElev, ListaCorr, ListaCoordCorr, ListaSalas, ListaCoordPortas) :-
+    processar_lista(ListaPiso),
+    processar_lista(ListaElev),
+    processar_lista(ListaCoordElev),
+    processar_lista(ListaCorr),
+    processar_lista(ListaCoordCorr),
+    processar_lista(ListaSalas),
+    processar_lista(ListaCoordPortas).
 
 % Predicado que processa os dados obtidos do ficheiro JSON
+processar_lista(Lista) :-
+    maplist(converter_e_assertar, Lista).
 
-processarDados(Data) :-
-    % Iterar sobre cada elemento do array Data.pisos
-    maplist(assertStringAsFact, Data.pisos),
-    maplist(assertStringAsFact, Data.elevadores),
-    maplist(assertStringAsFact, Data.coordElevadores),
-    maplist(assertStringAsFact, Data.corredores),
-    maplist(assertStringAsFact, Data.coordCorredores),
-    maplist(assertStringAsFact, Data.salas),
-    maplist(assertStringAsFact, Data.coordPortas),
+converter_e_assertar(String) :-
+    term_string(Termo, String),
+    base:assertz(Termo). 
     
-assertStringAsFact(StringFact) :-
-    % Converter a string para um termo Prolog
-    term_string(Termo, StringFact),
-    % Adicionar o termo à base de conhecimento
-    base:assertz(Termo).
-
+% Predicado que reseta a base de conhecimento
 resetBaseKnowledge :-
     base:retractall(pisos(_)),
     base:retractall(elevadores(_)),

@@ -21,6 +21,16 @@ interface EdificioProps {
 }
 
 export class Edificio extends AggregateRoot<EdificioProps> {
+  
+  public getAllPisosWithMapa() : Piso[]{
+    let listaPisos : Piso[] = [];
+    for (let piso of this.props.listaPisos) {
+      if (piso.hasMapa()) {
+        listaPisos.push(piso);
+      }
+    }
+    return listaPisos;
+  }
 
   /*
   public obterPontoSeguinte(pontoProvided: Ponto, numeroPisoA: number, orientacao: string): Promise<Result<Ponto>> {

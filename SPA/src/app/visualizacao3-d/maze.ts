@@ -254,6 +254,40 @@ export default class Maze {
     
     }
 
+    public distanceToWestDoor(position: THREE.Vector3): number {
+        const indices = this.cartesianToCell(position);
+        if (this.map[indices[0]][indices[1]] == "PortaOeste" || this.map[indices[0]][indices[1]] == "PortaOesteNorteOeste") {
+            return position.x - this.cellToCartesian(indices).x + this.scale.x / 2.0;
+        }
+        return Infinity;
+    }
+
+    public distanceToEastDoor(position: THREE.Vector3): number {
+        const indices = this.cartesianToCell(position);
+        indices[1]++;
+        if (this.map[indices[0]][indices[1]] == "PortaOeste" || this.map[indices[0]][indices[1]] == "PortaOesteNorteOeste") {
+            return this.cellToCartesian(indices).x - this.scale.x / 2.0 - position.x;
+        }
+        return Infinity;
+    }
+
+    public distanceToNorthDoor(position: THREE.Vector3): number {
+        const indices = this.cartesianToCell(position);
+        if (this.map[indices[0]][indices[1]] == "PortaNorte" || this.map[indices[0]][indices[1]] == "PortaNorteNorteOeste") {
+            return position.z - this.cellToCartesian(indices).z + this.scale.z / 2.0;
+        }
+        return Infinity;
+    }
+
+    public distanceToSouthDoor(position: THREE.Vector3): number {
+        const indices = this.cartesianToCell(position);
+        indices[0]++;
+        if (this.map[indices[0]][indices[1]] == "PortaNorte" || this.map[indices[0]][indices[1]] == "PortaNorteNorteOeste") {
+            return this.cellToCartesian(indices).z - this.scale.z / 2.0 - position.z;
+        }
+        return Infinity;
+    }
+
     foundExit(position: THREE.Vector3): boolean {
         return Math.abs(position.x - this.exitLocation.x) < 0.5 * this.scale.x && Math.abs(position.z - this.exitLocation.z) < 0.5 * this.scale.z
     };

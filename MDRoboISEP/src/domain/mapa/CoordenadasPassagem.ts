@@ -14,6 +14,11 @@ interface coordenadasPassagemProps {
 }
 
 export class CoordenadasPassagem extends ValueObject<coordenadasPassagemProps> {
+  isPassagem(arg0: number) {
+    if (this.props.id == arg0) {
+      return true;
+    }
+  }
   private constructor (props : coordenadasPassagemProps) {
     super(props)
   }
