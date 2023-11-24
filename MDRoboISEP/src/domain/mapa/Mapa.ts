@@ -515,8 +515,8 @@ export class Mapa extends AggregateRoot<pisoProps> {
       return null;
     }
     for(let passagem of this.props.coordenadasPassagem){
-      dados.push({id: passagem.returnId(), abcissaA: passagem.returnAbcissaSup(), ordenadaA: passagem.returnOrdenadaSup(),
-        abcissaB:passagem.returnAbcissaInf(), ordenadaB: passagem.returnOrdenadaInf(),orientacao: passagem.returnOrientacao()});
+      dados.push({id: passagem.returnId(), abcissaA: passagem.returnOrdenadaSup(), ordenadaA: passagem.returnAbcissaSup(),
+        abcissaB:passagem.returnOrdenadaInf(), ordenadaB: passagem.returnAbcissaInf(),orientacao: passagem.returnOrientacao()});
     }
     return dados;
   }
@@ -526,7 +526,7 @@ export class Mapa extends AggregateRoot<pisoProps> {
       return null;
     }
     
-    return {xCoord: this.props.coordenadasElevador.returnXCoord(), yCoord: this.props.coordenadasElevador.returnYCoord(),
+    return {xCoord: this.props.coordenadasElevador.returnYCoord(), yCoord: this.props.coordenadasElevador.returnXCoord(),
        orientacao: this.props.coordenadasElevador.returnOrientacao()};
   }
 
@@ -536,14 +536,25 @@ export class Mapa extends AggregateRoot<pisoProps> {
       return null;
     }
     for(let sala of this.props.coordenadasSala){
-      dados.push({abcissa: sala.returnAbcissaPorta(), ordenada: sala.returnOrdenadaPorta(), orientacao: sala.returnOrientacaoPorta()});
+      dados.push({abcissa: sala.returnOrdenadaPorta(), ordenada: sala.returnAbcissaPorta(), orientacao: sala.returnOrientacaoPorta()});
+    }
+    return dados;
+  }
+
+  private exportarTipoDePontos(): string[][] {
+    let dados : string[][] = [];
+    for (let i = 0; i < this.props.mapa.length; i++) {
+      dados[i]=[];
+      for (let j = 0; j < this.props.mapa[i].length; j++) {
+        dados[j][i] = this.props.mapa[i][j].returnTipoPonto();
+      }
     }
     return dados;
   }
 
   public exportarMapa() : {matriz:any, passagens:any, elevador:any, portas:any, posicaoInicialRobo:any} {
     let mapa = {
-      matriz : this.returnTipoDePontos(),
+      matriz : this.exportarTipoDePontos(),
       passagens : this.obterInformacaoPassagens(),
       elevador : this.obterInformcaoElevador(),
       portas : this.obterInformacaoPortas(),
@@ -565,7 +576,7 @@ export class Mapa extends AggregateRoot<pisoProps> {
       for(let j = 0; j < this.props.mapa[i].length; j++){
         if(this.props.mapa[i][j].returnTipoPonto() === " "){
           if(!this.pontoEstaDentroDeSala(i,j)){
-            posicaoInicialRobo = {x: i, y: j};
+            posicaoInicialRobo = {x: j, y: i};
             return posicaoInicialRobo;
           }
         }
