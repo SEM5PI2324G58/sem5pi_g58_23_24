@@ -107,6 +107,20 @@ export class PisoService {
   private listarPisosNumero(codigo: string): Observable<number[]> {
     let params = new HttpParams().set('codigo', codigo);
   
+    return this.http.get<Piso[]>(this.pisoUrl, { params: params, headers: this.httpOptions.headers })
+      .pipe(
+        catchError(this.handleError<Piso[]>('Listar Piso')),
+        map(data => data.map(item => item.numeroPiso))
+      );
+  }
+
+  public listarPisosMapa(codigo: string): Observable<number[]> {
+    return this.listPisosMapa(codigo);
+  }
+
+  private listPisosMapa(codigo: string): Observable<number[]> {
+    let params = new HttpParams().set('codigo', codigo);
+  
     return this.http.get<Piso[]>(this.pisoMapaUrl, { params: params, headers: this.httpOptions.headers })
       .pipe(
         catchError(this.handleError<Piso[]>('Listar Piso')),

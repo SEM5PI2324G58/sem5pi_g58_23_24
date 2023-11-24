@@ -52,7 +52,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
     if (codigo === '') {
       this.listaNumeroPisos = [];
     } else {
-      this.pisoService.listarNumeroPisos(codigo).subscribe({
+      this.pisoService.listarPisosMapa(codigo).subscribe({
         next: (data) => {
           this.listaNumeroPisos = data;
         },
