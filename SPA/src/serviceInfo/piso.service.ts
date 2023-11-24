@@ -16,6 +16,7 @@ import { EdificioService } from './edificio.service';
 export class PisoService {
 
   private pisoUrl = 'http://localhost:4000/api/piso';
+  private pisoMapaUrl = 'http://localhost:4000/api/piso/pisosComMapa';
   
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -106,7 +107,7 @@ export class PisoService {
   private listarPisosNumero(codigo: string): Observable<number[]> {
     let params = new HttpParams().set('codigo', codigo);
   
-    return this.http.get<Piso[]>(this.pisoUrl, { params: params, headers: this.httpOptions.headers })
+    return this.http.get<Piso[]>(this.pisoMapaUrl, { params: params, headers: this.httpOptions.headers })
       .pipe(
         catchError(this.handleError<Piso[]>('Listar Piso')),
         map(data => data.map(item => item.numeroPiso))

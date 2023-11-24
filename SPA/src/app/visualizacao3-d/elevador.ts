@@ -71,7 +71,6 @@ export default class Elevador {
 
         let actions;
         let mixer = new THREE.AnimationMixer(this.object);
-        console.log(this.animations.length);
         
         const clip = this.animations[1];
         const action = mixer.clipAction(clip);

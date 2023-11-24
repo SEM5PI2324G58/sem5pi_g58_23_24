@@ -16,8 +16,9 @@ import UserInterface from './userInterface';
 import { PisoService } from 'src/serviceInfo/piso.service';
 import { EdificioService } from 'src/serviceInfo/edificio.service';
 import ExportarMapa from 'src/dataModel/exportarMapa';
-import { initial } from 'lodash';
+import { initial, isEqual } from 'lodash';
 import DoorAnimations from './doorAnimations';
+import { MapaService } from 'src/serviceInfo/mapa.service';
 
 @Component({
   selector: 'app-visualizacao3-d',
@@ -28,11 +29,14 @@ export class Visualizacao3DComponent implements AfterViewInit {
   listaCodigos: string[] = [];
   listaNumeroPisos: number[] = [];
   codigo: any;
+  numeroPiso: any;
+  mapa: any;
 
   constructor(
     private pisoService: PisoService,
-    private edificioService: EdificioService
-  ) {}
+    private edificioService: EdificioService,
+    private mapaService: MapaService
+  ) { }
 
   ngOnInit(): void {
     this.edificioService.listarCodEdificios().subscribe({
@@ -44,7 +48,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
 
   listarNumeroPisos(): void {
     const codigo = this.codigo.options.item(this.codigo.selectedIndex)?.value;
-
+    console.log("olá");
     if (codigo === '') {
       this.listaNumeroPisos = [];
     } else {
@@ -56,7 +60,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
           console.error('Error fetching floor numbers:', error);
           this.listaNumeroPisos = [];
         },
-        complete: () => {},
+        complete: () => { },
       });
     }
   }
@@ -136,108 +140,113 @@ export class Visualizacao3DComponent implements AfterViewInit {
 
     // Create a 3D scene (the game itself)
     this.scene3D = new THREE.Scene();
-    let mazeData : ExportarMapa;
-    mazeData = {
-      texturaChao: 'assets/ground.png',
-      texturaParede: 'assets/wall.jpg',
-      modeloPorta: 'assets/door/door.glb',
-      modeloElevador: 'assets/elevador/Elevator.glb',
-      codigoEdificio: 'Teste1',
-      numeroPiso: 1,
-      matriz: [
-        ['NorteOeste','PassagemOeste','Passagem','NorteOeste','Norte','NorteOeste','Norte','Norte','Norte','Norte','Oeste',],
-        ['Oeste','Oeste',' ','Oeste',' ','Oeste',' ',' ',' ',' ','Oeste',],
-        ['Oeste','PortaOeste',' ','PortaNorte','Norte','Norte','PortaNorte','Norte','PortaOesteNorteOeste','Norte','Oeste',],
-        ['Oeste', 'Oeste', ' ', ' ', ' ', ' ', ' ', ' ', 'Oeste', ' ', 'Oeste'],
-        ['NorteOeste','Norte','Norte','PortaNorteNorteOeste','Norte','Norte','Oeste',' ','Oeste',' ','Oeste',],
-        ['Oeste',' ',' ','Oeste',' ',' ','Oeste',' ','Oeste',' ','Oeste',],
-        ['Oeste',' ',' ','Oeste',' ',' ','Oeste',' ','Oeste',' ','Oeste',],
-        ['Oeste','',' ','Oeste',' ',' ','Oeste',' ','Oeste',' ','Oeste',],
-        ['NorteOeste','PortaNorte','Norte','Norte' /*elevador*/,'Norte','Norte',' ',' ','Oeste',' ','Oeste',],
-        ['ElevadorOeste',' ',' ','',' ',' ',' ',' ','Oeste',' ','Oeste',],
-        ['Norte','Norte','Norte','Norte','Norte','Norte','Norte','Norte','Norte','Norte',' ',],
-      ],
-      elevador: {xCoord: 0,
-        yCoord: 9,
-        orientacao: 'Este'},
-      passagens: [{
-        id: 1,
-        abcissaA: 0,
-        ordenadaA: 1,
-        abcissaB: 0,
-        ordenadaB: 2,
-        orientacao: 'Oeste'
-      }],
-      portas: [{
-        abcissa : 2,
-        ordenada: 3,
-        orientacao: 'Oeste'
-      }],
-      posicaoInicialRobo: {
-        x: 7,
-        y: 6,
+    let mazeData = this.mapa;
+    if (mazeData == null) {
+      mazeData = {
+        texturaChao: 'assets/ground.png',
+        texturaParede: 'assets/wall.jpg',
+        modeloPorta: 'assets/door/door.glb',
+        modeloElevador: 'assets/elevador/Elevator.glb',
+        codigoEdificio: 'Teste1',
+        numeroPiso: 1,
+        matriz: [
+          ['NorteOeste', 'PassagemOeste', 'Passagem', 'NorteOeste', 'Norte', 'NorteOeste', 'Norte', 'Norte', 'Norte', 'Norte', 'Oeste',],
+          ['Oeste', 'Oeste', ' ', 'Oeste', ' ', 'Oeste', ' ', ' ', ' ', ' ', 'Oeste',],
+          ['Oeste', 'PortaOeste', ' ', 'PortaNorte', 'Norte', 'Norte', 'PortaNorte', 'Norte', 'PortaOesteNorteOeste', 'Norte', 'Oeste',],
+          ['Oeste', 'Oeste', ' ', ' ', ' ', ' ', ' ', ' ', 'Oeste', ' ', 'Oeste'],
+          ['NorteOeste', 'Norte', 'Norte', 'PortaNorteNorteOeste', 'Norte', 'Norte', 'Oeste', ' ', 'Oeste', ' ', 'Oeste',],
+          ['Oeste', ' ', ' ', 'Oeste', ' ', ' ', 'Oeste', ' ', 'Oeste', ' ', 'Oeste',],
+          ['Oeste', ' ', ' ', 'Oeste', ' ', ' ', 'Oeste', ' ', 'Oeste', ' ', 'Oeste',],
+          ['Oeste', '', ' ', 'Oeste', ' ', ' ', 'Oeste', ' ', 'Oeste', ' ', 'Oeste',],
+          ['NorteOeste', 'PortaNorte', 'Norte', 'Norte' /*elevador*/, 'Norte', 'Norte', ' ', ' ', 'Oeste', ' ', 'Oeste',],
+          ['ElevadorOeste', ' ', ' ', '', ' ', ' ', ' ', ' ', 'Oeste', ' ', 'Oeste',],
+          ['Norte', 'Norte', 'Norte', 'Norte', 'Norte', 'Norte', 'Norte', 'Norte', 'Norte', 'Norte', ' ',],
+        ],
+        elevador: {
+          xCoord: 0,
+          yCoord: 9,
+          orientacao: 'Este'
+        },
+        passagens: [{
+          id: 1,
+          abcissaA: 0,
+          ordenadaA: 1,
+          abcissaB: 0,
+          ordenadaB: 2,
+          orientacao: 'Oeste'
+        }],
+        portas: [{
+          abcissa: 2,
+          ordenada: 3,
+          orientacao: 'Oeste'
+        }],
+        posicaoInicialRobo: {
+          x: 7,
+          y: 6,
+        }
       }
-    }
 
-    let mazeDataTesteElevador : ExportarMapa;
-    mazeDataTesteElevador = {
-      texturaChao: 'assets/ground.png',
-      texturaParede: 'assets/wall.jpg',
-      modeloPorta: 'assets/door/door.glb',
-      modeloElevador: 'assets/elevador/Elevator.glb',
-      codigoEdificio: 'Teste1',
-      numeroPiso: 1,
-      matriz: [
-        ['NorteOeste','Norte','Norte','Norte','Norte','Oeste'],
-        ['Oeste',' ',' ',' ',' ','Oeste'],
-        ['Oeste',' ','Elevador',' ',' ','Oeste'],
-        ['Oeste',' ',' ',' ',' ','Oeste'],
-        ['Oeste',' ',' ',' ',' ','Oeste'],
-        ['Norte','Norte','Norte','Norte','Norte',''],
-      ],
-      elevador: {xCoord: 0,
-        yCoord: 9,
-        orientacao: 'Oeste'},
-      passagens: [{
-        id: 1,
-        abcissaA: 0,
-        ordenadaA: 1,
-        abcissaB: 0,
-        ordenadaB: 2,
-        orientacao: 'Oeste'
-      }],
-      portas: [{
-        abcissa : 2,
-        ordenada: 3,
-        orientacao: 'Oeste'
-      }],
-      posicaoInicialRobo: {
-        x: 1,
-        y: 1,
+      let mazeDataTesteElevador: ExportarMapa;
+      mazeDataTesteElevador = {
+        texturaChao: 'assets/ground.png',
+        texturaParede: 'assets/wall.jpg',
+        modeloPorta: 'assets/door/door.glb',
+        modeloElevador: 'assets/elevador/Elevator.glb',
+        codigoEdificio: 'Teste1',
+        numeroPiso: 1,
+        matriz: [
+          ['NorteOeste', 'Norte', 'Norte', 'Norte', 'Norte', 'Oeste'],
+          ['Oeste', ' ', ' ', ' ', ' ', 'Oeste'],
+          ['Oeste', ' ', 'Elevador', ' ', ' ', 'Oeste'],
+          ['Oeste', ' ', ' ', ' ', ' ', 'Oeste'],
+          ['Oeste', ' ', ' ', ' ', ' ', 'Oeste'],
+          ['Norte', 'Norte', 'Norte', 'Norte', 'Norte', ''],
+        ],
+        elevador: {
+          xCoord: 0,
+          yCoord: 9,
+          orientacao: 'Oeste'
+        },
+        passagens: [{
+          id: 1,
+          abcissaA: 0,
+          ordenadaA: 1,
+          abcissaB: 0,
+          ordenadaB: 2,
+          orientacao: 'Oeste'
+        }],
+        portas: [{
+          abcissa: 2,
+          ordenada: 3,
+          orientacao: 'Oeste'
+        }],
+        posicaoInicialRobo: {
+          x: 1,
+          y: 1,
+        }
       }
+
+      let mazeData1 = {
+        groundTextureUrl: 'assets/ground.png',
+        wallTextureUrl: 'assets/wall.jpg',
+        size: { width: 10, height: 10 },
+        map: [
+          ['NorteOeste', 'Oeste', ' ', 'NorteOeste', 'Norte', 'NorteOeste', 'Norte', 'Norte', 'Norte', 'Norte', 'Oeste',],
+          ['Oeste', 'Oeste', ' ', 'Oeste', ' ', 'Oeste', ' ', ' ', ' ', ' ', 'Oeste',],
+          ['Oeste', 'PortaOeste', ' ', 'PortaNorte', 'Norte', 'Norte', 'PortaNorte', 'Norte', 'PortaOesteNorteOeste', 'Norte', 'Oeste',],
+          ['Oeste', 'Oeste', ' ', ' ', ' ', ' ', ' ', ' ', 'Oeste', ' ', 'Oeste'],
+          ['NorteOeste', 'Norte', 'Norte', 'PortaNorteNorteOeste', 'Norte', 'Norte', 'Oeste', ' ', 'Oeste', ' ', 'Oeste',],
+          ['Oeste', ' ', ' ', 'Oeste', ' ', ' ', 'Oeste', ' ', 'Oeste', ' ', 'Oeste',],
+          ['Oeste', ' ', ' ', 'Oeste', ' ', ' ', 'Oeste', ' ', 'Oeste', ' ', 'Oeste',],
+          ['Oeste', '', ' ', 'Oeste', ' ', ' ', 'Oeste', ' ', 'Oeste', ' ', 'Oeste',],
+          ['NorteOeste', 'PortaNorte', 'Norte', 'Norte' /*elevador*/, 'Norte', 'Norte', ' ', ' ', 'Oeste', ' ', 'Oeste',],
+          ['Elevador', 'Elevador', ' ', '', ' ', ' ', ' ', ' ', 'Oeste', ' ', 'Oeste',],
+          ['Norte', 'Norte', 'Norte', ' ', ' ', 'Norte', 'Norte', 'Norte', 'Norte', 'Norte', ' ',],
+        ],
+        initialPosition: [7, 6],
+        initialDirection: 0.0,
+      };
     }
-
-    let mazeData1 = {
-      groundTextureUrl: 'assets/ground.png',
-      wallTextureUrl: 'assets/wall.jpg',
-      size: { width: 10, height: 10 },
-      map: [
-        ['NorteOeste','Oeste',' ','NorteOeste','Norte','NorteOeste','Norte','Norte','Norte','Norte','Oeste',],
-        ['Oeste','Oeste',' ','Oeste',' ','Oeste',' ',' ',' ',' ','Oeste',],
-        ['Oeste','PortaOeste',' ','PortaNorte','Norte','Norte','PortaNorte','Norte','PortaOesteNorteOeste','Norte','Oeste',],
-        ['Oeste', 'Oeste', ' ', ' ', ' ', ' ', ' ', ' ', 'Oeste', ' ', 'Oeste'],
-        ['NorteOeste','Norte','Norte','PortaNorteNorteOeste','Norte','Norte','Oeste',' ','Oeste',' ','Oeste',],
-        ['Oeste',' ',' ','Oeste',' ',' ','Oeste',' ','Oeste',' ','Oeste',],
-        ['Oeste',' ',' ','Oeste',' ',' ','Oeste',' ','Oeste',' ','Oeste',],
-        ['Oeste','',' ','Oeste',' ',' ','Oeste',' ','Oeste',' ','Oeste',],
-        ['NorteOeste','PortaNorte','Norte','Norte' /*elevador*/,'Norte','Norte',' ',' ','Oeste',' ','Oeste',],
-        ['Elevador','Elevador',' ','',' ',' ',' ',' ','Oeste',' ','Oeste',],
-        ['Norte','Norte','Norte',' ',' ','Norte','Norte','Norte','Norte','Norte',' ',],
-      ],
-      initialPosition: [7, 6],
-      initialDirection: 0.0,
-    };
-
     this.maze = new Maze(mazeData, this.scene3D, 0.0);
 
     const playerData = {
@@ -411,6 +420,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
     this.reset = document.getElementById('reset');
     this.resetAll = document.getElementById('reset-all');
     this.codigo = document.getElementById('codigo');
+    this.numeroPiso = document.getElementById('numeroPiso');
 
     this.setActiveViewCamera(this.fixedViewCamera);
 
@@ -472,6 +482,10 @@ export class Visualizacao3DComponent implements AfterViewInit {
     );
 
     this.codigo.addEventListener('change', (event: Event) =>
+      this.elementChange(event)
+    );
+
+    this.numeroPiso.addEventListener('change', (event: Event) =>
       this.elementChange(event)
     );
   }
@@ -796,7 +810,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
         case 'projection':
           this.activeViewCamera.setActiveProjection(
             ['perspective', 'orthographic'][
-              this.projection.options.selectedIndex
+            this.projection.options.selectedIndex
             ]
           );
           this.displayPanel();
@@ -829,6 +843,16 @@ export class Visualizacao3DComponent implements AfterViewInit {
           break;
         case 'codigo':
           this.listarNumeroPisos();
+          break;
+        case 'numeroPiso':
+          const numeroPiso = this.numeroPiso.options.item(this.numeroPiso.selectedIndex)?.value;
+          console.log(numeroPiso);
+         this.mapaService.exportarMapa(this.codigo.value, numeroPiso).subscribe((data: ExportarMapa) => {
+            this.mapa = data;
+            console.log(this.mapa);
+            this.createScene();
+          });
+          break;
           break;
         /*case "multiple-views":
                 this.setViewMode(event.target.checked);
@@ -869,21 +893,21 @@ export class Visualizacao3DComponent implements AfterViewInit {
   }
 
   collision(position: THREE.Vector3) {
-    return this.maze.distanceToWestWall(position) < this.player.radius 
-    || this.maze.distanceToEastWall(position) < this.player.radius 
-    || this.maze.distanceToNorthWall(position) < this.player.radius 
-    || this.maze.distanceToSouthWall(position) < this.player.radius
-    // Colisões Elevador
-    || this.maze.distanceToWestElevador(position) < this.player.radius
-    || this.maze.distanceToEastElevador(position) < this.player.radius
-    || this.maze.distanceToNorthElevador(position) < this.player.radius
-    || this.maze.distanceToSouthElevador(position) < this.player.radius
-    // Colisões Portas
-    || this.maze.distanceToWestDoor(position) < this.player.radius
-    || this.maze.distanceToEastDoor(position) < this.player.radius
-    || this.maze.distanceToNorthDoor(position) < this.player.radius
-    || this.maze.distanceToSouthDoor(position) < this.player.radius
-    ;
+    return this.maze.distanceToWestWall(position) < this.player.radius
+      || this.maze.distanceToEastWall(position) < this.player.radius
+      || this.maze.distanceToNorthWall(position) < this.player.radius
+      || this.maze.distanceToSouthWall(position) < this.player.radius
+      // Colisões Elevador
+      || this.maze.distanceToWestElevador(position) < this.player.radius
+      || this.maze.distanceToEastElevador(position) < this.player.radius
+      || this.maze.distanceToNorthElevador(position) < this.player.radius
+      || this.maze.distanceToSouthElevador(position) < this.player.radius
+      // Colisões Portas
+      || this.maze.distanceToWestDoor(position) < this.player.radius
+      || this.maze.distanceToEastDoor(position) < this.player.radius
+      || this.maze.distanceToNorthDoor(position) < this.player.radius
+      || this.maze.distanceToSouthDoor(position) < this.player.radius
+      ;
   }
 
   update() {
@@ -905,7 +929,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
           this.player.animations
         );
         */
-        
+
 
         // Set the player's position and direction
         this.player.object.position.set(
@@ -938,83 +962,83 @@ export class Visualizacao3DComponent implements AfterViewInit {
       // this.animations.update(deltaT);
 
       //if (!this.animations.actionInProgress) {
-        // Check if the player found the exit
-        //if (this.maze.foundExit(this.player.position)) {
-        //this.finalSequence();
-        //} else {
+      // Check if the player found the exit
+      //if (this.maze.foundExit(this.player.position)) {
+      //this.finalSequence();
+      //} else {
 
-        let coveredDistance = this.player.walkingSpeed * deltaT;
+      let coveredDistance = this.player.walkingSpeed * deltaT;
 
-        let directionIncrement = this.player.turningSpeed * deltaT;
-        if (this.player.keyStates.run) {
-          coveredDistance *= this.player.runningFactor;
-          directionIncrement *= this.player.runningFactor;
-        }
-        if (this.player.keyStates.left) {
-          this.player.object.direction += directionIncrement;
-        } else if (this.player.keyStates.right) {
-          this.player.object.direction -= directionIncrement;
-        }
-        const direction = THREE.MathUtils.degToRad(
-          this.player.object.direction
-        );
-        if (this.player.keyStates.backward) {
-          const newPosition = new THREE.Vector3(
-            -coveredDistance * Math.sin(direction),
-            0.0,
-            -coveredDistance * Math.cos(direction)
-          ).add(this.player.object.position);
-          if (this.collision(newPosition)) {
-            
-          } else {
-            this.player.object.position.set(
-              newPosition.x,
-              newPosition.y,
-              newPosition.z
-            );
-          }
-        } else if (this.player.keyStates.forward) {
-          const newPosition = new THREE.Vector3(
-            coveredDistance * Math.sin(direction),
-            0.0,
-            coveredDistance * Math.cos(direction)
-          ).add(this.player.object.position);
-          if (this.collision(newPosition)) {
-          } else {
-            this.player.object.position.set(
-              newPosition.x,
-              newPosition.y,
-              newPosition.z
-            );
-          }
-          /*
-        } else if (this.player.keyStates.jump) {
-          this.animations.fadeToAction('Jump', 0.2);
-        } else if (this.player.keyStates.yes) {
-          this.animations.fadeToAction('Yes', 0.2);
-        } else if (this.player.keyStates.no) {
-          this.animations.fadeToAction('No', 0.2);
-        } else if (this.player.keyStates.wave) {
-          this.animations.fadeToAction('Wave', 0.2);
-        } else if (this.player.keyStates.punch) {
-          this.animations.fadeToAction('Punch', 0.2);
-        } else if (this.player.keyStates.thumbsUp) {
-          this.animations.fadeToAction('ThumbsUp', 0.2);
+      let directionIncrement = this.player.turningSpeed * deltaT;
+      if (this.player.keyStates.run) {
+        coveredDistance *= this.player.runningFactor;
+        directionIncrement *= this.player.runningFactor;
+      }
+      if (this.player.keyStates.left) {
+        this.player.object.direction += directionIncrement;
+      } else if (this.player.keyStates.right) {
+        this.player.object.direction -= directionIncrement;
+      }
+      const direction = THREE.MathUtils.degToRad(
+        this.player.object.direction
+      );
+      if (this.player.keyStates.backward) {
+        const newPosition = new THREE.Vector3(
+          -coveredDistance * Math.sin(direction),
+          0.0,
+          -coveredDistance * Math.cos(direction)
+        ).add(this.player.object.position);
+        if (this.collision(newPosition)) {
+
         } else {
-          this.animations.fadeToAction(
-            'Idle',
-            this.animations.activeName != 'Death' ? 0.2 : 0.6
+          this.player.object.position.set(
+            newPosition.x,
+            newPosition.y,
+            newPosition.z
           );
-          */
         }
-        this.player.object.position.set(
-          this.player.object.position.x,
-          this.player.object.position.y,
-          this.player.object.position.z
+      } else if (this.player.keyStates.forward) {
+        const newPosition = new THREE.Vector3(
+          coveredDistance * Math.sin(direction),
+          0.0,
+          coveredDistance * Math.cos(direction)
+        ).add(this.player.object.position);
+        if (this.collision(newPosition)) {
+        } else {
+          this.player.object.position.set(
+            newPosition.x,
+            newPosition.y,
+            newPosition.z
+          );
+        }
+        /*
+      } else if (this.player.keyStates.jump) {
+        this.animations.fadeToAction('Jump', 0.2);
+      } else if (this.player.keyStates.yes) {
+        this.animations.fadeToAction('Yes', 0.2);
+      } else if (this.player.keyStates.no) {
+        this.animations.fadeToAction('No', 0.2);
+      } else if (this.player.keyStates.wave) {
+        this.animations.fadeToAction('Wave', 0.2);
+      } else if (this.player.keyStates.punch) {
+        this.animations.fadeToAction('Punch', 0.2);
+      } else if (this.player.keyStates.thumbsUp) {
+        this.animations.fadeToAction('ThumbsUp', 0.2);
+      } else {
+        this.animations.fadeToAction(
+          'Idle',
+          this.animations.activeName != 'Death' ? 0.2 : 0.6
         );
-        this.player.object.rotation.y =
-          direction - this.player.initialDirection;
-        //}
+        */
+      }
+      this.player.object.position.set(
+        this.player.object.position.x,
+        this.player.object.position.y,
+        this.player.object.position.z
+      );
+      this.player.object.rotation.y =
+        direction - this.player.initialDirection;
+      //}
       //}
 
       // Update first-person, third-person and top view cameras parameters (player direction and target)

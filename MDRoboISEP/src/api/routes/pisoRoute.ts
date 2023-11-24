@@ -42,5 +42,13 @@ export default (app: Router) => {
       })
     }),
     (req, res, next) => ctrl.editarPiso(req, res, next) );
+
+    route.get('/pisosComMapa',
+    celebrate({
+      query: Joi.object({
+        codigo: Joi.string().required(),
+      })
+    }),
+    (req, res, next) => ctrl.listarPisosComMapa(req, res, next) );
   
 };

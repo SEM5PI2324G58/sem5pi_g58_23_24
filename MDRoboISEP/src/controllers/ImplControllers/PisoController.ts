@@ -9,12 +9,34 @@ import IPisoDTO from '../../dto/IPisoDTO';
 
 import { Result } from "../../core/logic/Result";
 import IEditarPisoDTO from '../../dto/IEditarPisoDTO';
+import { ParamsDictionary } from 'express-serve-static-core';
+import { ParsedQs } from 'qs';
 
 @Service()
 export default class PisoController implements IPisoController {
   constructor(
       @Inject(config.services.piso.name) private pisoServiceInstance : IPisoService
   ) {}
+  async listarPisosComMapa(req: Request, res: Response, next: NextFunction) {
+    try {
+      const pisoOrError = await this.pisoServiceInstance.listarPisosComMapa(req.query.codigo as string);
+        
+      if (pisoOrError.isFailure) {
+        let message = String(pisoOrError.errorValue());
+        if(message === "O edificio com o código " + req.query.codigo +" não existe" || message === "Não existem pisos nesse Edificio"){
+          return res.status(404).json( pisoOrError.errorValue());
+        }
+        return res.json( pisoOrError.errorValue()).status(400).send();
+      }
+
+      const pisoDTO = pisoOrError.getValue();
+      res.status(200);
+      return res.json( pisoDTO );
+    }
+    catch (e) {
+      return next(e);
+    }
+  };
 
   public async criarPiso(req: Request, res: Response, next: NextFunction) {
     try {

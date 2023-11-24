@@ -71,7 +71,6 @@ export default class Door {
 
         let actions;
         let mixer = new THREE.AnimationMixer(this.object);
-        console.log(this.animations.length);
         for (let i = 0; i < this.animations.length; i++) {
             const clip = this.animations[i];
             const action = mixer.clipAction(clip);
