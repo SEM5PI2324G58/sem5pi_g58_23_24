@@ -18,6 +18,34 @@ interface pisoProps {
 }
 
 export class Mapa extends AggregateRoot<pisoProps> {
+
+  public returnMatrizParaPlaneamento(){
+    return this.gerarMatrizPlaneamento();
+  }
+
+  private gerarMatrizPlaneamento() {
+     // A matriz de planejamento terá um tamanho reduzido em relação à matriz do mapa
+     const tamanhoX = this.props.mapa.length - 1;
+     const tamanhoY = this.props.mapa[0].length - 1;
+ 
+     // Inicializar a matriz de planejamento com zeros
+     let matrizPlaneamento = Array.from({ length: tamanhoX }, () =>
+       Array(tamanhoY).fill("0")
+     ) as string[][];
+ 
+     // Percorrer cada CoordenadaSala e marcar os pontos relevantes como 1
+     this.props.coordenadasSala?.forEach((sala) => {
+       for (let x = sala.returnAbcissaA(); x <= sala.returnAbcissaB(); x++) {
+         for (let y = sala.returnOrdenadaA(); y <= sala.returnOrdenadaB(); y++) {
+           if (x < tamanhoX && y < tamanhoY) {
+             matrizPlaneamento[x][y] = "1";
+           }
+         }
+       }
+     });
+ 
+     return matrizPlaneamento;
+   }
   returnCoordenadasPassagem() {
     return this.props.coordenadasPassagem;
   }
