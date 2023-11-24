@@ -1,4 +1,13 @@
+:- module(base, [caminho_edificios/3, caminho_pisos/4,
+caminho_pontos_piso/8, aStar/4]).
 :-dynamic ligacel/3.
+:-dynamic pisos/2.
+:-dynamic elevador/2.
+:-dynamic coordElevador/3.
+:-dynamic corredor/4.
+:-dynamic coordCorredor/10.
+:-dynamic salas/2.
+:-dynamic coordPorta/3.
 % Dados que vão ser obtidos atraves do pedido da informação do mapa ao MDRI
 
 % Lista de pisos de cada edifício

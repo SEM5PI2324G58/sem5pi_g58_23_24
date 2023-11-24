@@ -75,6 +75,16 @@ export class Elevador extends AggregateRoot<ElevadorProps>{
     public pisosServidosAtuais() : Piso[]{
         return this.props.pisosServidos;
     }
+    
+    public pisoServidosComMapa(){
+        let pisos: Piso[] = [];
+        for (let piso of this.props.pisosServidos){
+            if (piso.hasMapa()){
+                pisos.push(piso);
+            }
+        }
+        return pisos;
+    }
 
     public updatePisos(novosPisos: Piso[]){
         this.props.pisosServidos = novosPisos;

@@ -16,6 +16,9 @@ interface pisoProps {
 }
 
 export class Piso extends AggregateRoot<pisoProps> {
+  public hasMapa(): boolean{
+    return !!this.props.mapa;
+  }
   returnMapa() {
     return this.props.mapa;
   }

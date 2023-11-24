@@ -1,10 +1,10 @@
 import { Result } from "../../core/logic/Result";
 import IEdificioDTO from "../../dto/IEdificioDTO";
 import IListarEdMinEMaxPisosDTO from "../../dto/IListarEdMinEMaxPisosDTO";
-import IPlaneamentoInfoDTO from "../../dto/IPlaneamentoInfoDTO";
+import IPlaneamentoCaminhosDTO from "../../dto/IPlaneamentoCaminhosDTO";
 
 export default interface IEdificioService  {
-    getInformacaoPlaneamento(): Promise<Result<IPlaneamentoInfoDTO>>;
+    getInformacaoPlaneamento(): Promise<Result<IPlaneamentoCaminhosDTO>>;
     criarEdificio(edificioDTO: IEdificioDTO): Promise<Result<IEdificioDTO>>;
     listarEdificioMinEMaxPisos(listarEdificioMinEMaxPisosDTO: IListarEdMinEMaxPisosDTO): Promise<Result<IEdificioDTO[]>>;
     listarEdificios(): Promise<Result<IEdificioDTO[]>>;
