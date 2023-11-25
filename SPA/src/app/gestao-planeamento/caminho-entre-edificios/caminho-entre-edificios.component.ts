@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { PlaneamentoService } from 'src/serviceInfo/planeamento.service';
 
 @Component({
   selector: 'app-caminho-entre-edificios',
@@ -7,9 +8,10 @@ import { Component } from '@angular/core';
 })
 export class CaminhoEntreEdificiosComponent {
 
-  constructor() { }
+  constructor(private planeamentoService: PlaneamentoService) { }
 
   encontrar_caminhos(salaInicial: string, salaFinal: string){
+    this.planeamentoService.encontrar_caminhos(salaInicial, salaFinal);
   }
 
 }
