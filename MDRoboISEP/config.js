@@ -81,6 +81,10 @@ export default {
       name: "MapaController",
       path: "../controllers/ImplControllers/MapaController"
     },
+    planeamento : {
+      name: "PlaneamentoController",
+      path: "../controllers/ImplControllers/PlaneamentoController"
+    },
   },
 
   repos: {
@@ -170,6 +174,10 @@ export default {
     mapa: {
       name: "MapaService",
       path: "../services/ImplServices/MapaService"
+    },
+    planeamento: {
+      name: "PlaneamentoService",
+      path: "../services/ImplServices/PlaneamentoService"
     },
   },
 };
