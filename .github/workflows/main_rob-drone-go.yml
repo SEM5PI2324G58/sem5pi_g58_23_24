@@ -25,8 +25,8 @@ jobs:
         run: |
           cd SPA
           npm install
-          npm run build --if-present
-          npm run test --if-present
+          npm run test
+          npm run start
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -53,5 +53,5 @@ jobs:
         with:
           app-name: 'rob-drone-go'
           slot-name: 'Production'
-          package: .
+          package: ./SPA
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C2E47ED3BACC41D29D189333A3E2975F }}
