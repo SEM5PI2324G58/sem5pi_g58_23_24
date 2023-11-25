@@ -39,6 +39,9 @@ export class Mapa extends AggregateRoot<pisoProps> {
          for (let y = sala.returnOrdenadaA(); y <= sala.returnOrdenadaB(); y++) {
            if (x < tamanhoX && y < tamanhoY) {
              matrizPlaneamento[x][y] = "1";
+             if(sala.returnAbcissaPorta() === x && sala.returnOrdenadaPorta() === y){
+               matrizPlaneamento[x][y] = "0";
+             }
            }
          }
        }
