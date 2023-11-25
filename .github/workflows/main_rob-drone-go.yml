@@ -60,3 +60,8 @@ jobs:
           slot-name: 'Production'
           package: ./SPA
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C2E47ED3BACC41D29D189333A3E2975F }}
+      - name: Start the application
+        run: |
+          cd ./SPA
+          npm install
+          npm run start
