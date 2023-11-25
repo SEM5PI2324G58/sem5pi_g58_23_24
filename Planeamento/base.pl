@@ -1,5 +1,5 @@
 :- module(base, [caminho_edificios/3, caminho_pisos/4,
-caminho_pontos_piso/9, aStar/4]).
+caminho_pontos_piso/10, aStar/4]).
 :-dynamic ligacel/2.
 :-dynamic pisos/2.
 :-dynamic elevador/2.
@@ -22,6 +22,7 @@ pisos(h,[h1,h2,h3,h4]).
 pisos(i,[i1,i2,i3,i4]).
 pisos(j,[j1,j2,j3,j4]).
 
+dim_ed(a,8,7).
 % Lista pisos que um elevador de um edificio serve
 % elevador(IdEdificio,[IdPiso1,IdPiso2,IdPiso3])
 elevador(b,[b1,b2,b3,b4]).
@@ -154,6 +155,7 @@ m(a1,7,7,0).
 m(a1,8,7,1).
 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%% Parte 1 - Obter o caminho entre edificios %%%%%%%%%%%%%%%%%%%
 % ?- caminho_edificios(j,a,LEdCam).
@@ -216,12 +218,12 @@ segue_pisos(PisoAct,PisoDest,[EdAct,EdSeg|LOutrosEd],[elev(PisoAct,PisoAct1),cor
 % apenas pontos que correspondem a portas de salas, elevadores e corredores sáo válidos
 % Solução esperada é do memso tipo da solução do predicado caminho_pisos(j2,g4,LEdCam,LLig) (linha 94 e 95)
 
-caminho_pontos_piso(XOrig,YOrig,PisoOrig,XDest,YDest,PisoDest,LEdCam,LLig,LCelCamPisos):-
+caminho_pontos_piso(XOrig,YOrig,PisoOrig,XDest,YDest,PisoDest,LEdCam,LLig,LCelCamPisos,Custo):-
     caminho_pisos(PisoOrig,PisoDest,LEdCam,LLig),
     processar_LLig(LLig,LParPontoMid),
     append([cel1(PisoOrig,XOrig,YOrig)],LParPontoMid,LParPonto),
-    append(LParPonto,[cel1(PisoDest,XDest,YDest)],LCelCam).
-    processar_LCelCam(LCelCam,LCelCamPisos1).
+    append(LParPonto,[cel1(PisoDest,XDest,YDest)],LCelCam),
+    processar_LCelCam(LCelCam,LCelCamPisos1),
     cam_lista_pisos(LCelCamPisos1,LCelCamPisos,Custo).
 
 
@@ -256,7 +258,7 @@ criar_matriz_piso1([m(X,Y,Z)|RL]):-
 %%%%%%%%%%%%%%%%%%%% Eliminar m(X,Y,Z) atuais %%%%%%%%%%%%%%%%%%%%
 
 eliminar_matriz_piso():-
-    retractall(m(X,Y,Z)).
+    retractall(m(_,_,_)).
 
 %%%%%%%%%%%%%%%%%%%% Criar grafo - ligacel %%%%%%%%%%%%%%%%%%%%
 cria_grafo(_,0):-!.
@@ -337,8 +339,6 @@ eliminar_grafo_Astar():-
     retractall(edge(_,_,_)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-dim_ed(a,8,7).
 
 dim_piso(Piso,Col,Lin):-
     pisos(Ed,LPisos),
