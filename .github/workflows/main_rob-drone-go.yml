@@ -9,6 +9,12 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  AZURE_WEBAPP_NAME: rob-drone-go   # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: './SPA'      # set this to the path to your web app project, defaults to the repository root
+  NODE_VERSION: '18.x'                # set this to the node version to use
+
+
 jobs:
   build:
     runs-on: windows-latest
@@ -23,7 +29,6 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          cd SPA
           npm install
           npm run build --if-present
           npm run test --if-present
@@ -37,9 +42,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+#    environment:
+#     name: 'Production'
+#     url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     
     steps:
       - name: Download artifact from build job
