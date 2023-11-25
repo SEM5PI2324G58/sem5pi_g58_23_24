@@ -235,8 +235,8 @@ export default class PassagemService implements IPassagemService {
                 return Promise.resolve(Result.fail<IListarPisoComPassagensDTO>("Não existem passagens"));
             }
 
-            let idPisoSet: Set<number> = new Set();
-            let pisoSet: Set<Piso> = new Set();
+            let idPisoList: number[] = [];
+            let pisoList: Piso[] = [];
             let mapPassagemPairPiso: Map<Passagem, Pair<Piso, Piso>> = new Map();
 
             for (let passagem of passagemList) {
@@ -245,13 +245,12 @@ export default class PassagemService implements IPassagemService {
 
             for (let passagem of passagemList) {
                 //Colocar só os pisos sem repetir
-                idPisoSet.add(Number(passagem.props.pisoA.id.toValue()));
-                idPisoSet.add(Number(passagem.props.pisoB.id.toValue()));
-                pisoSet.add(passagem.props.pisoA);
-                pisoSet.add(passagem.props.pisoB);
+                idPisoList.push(Number(passagem.props.pisoA.id.toValue()));
+                idPisoList.push(Number(passagem.props.pisoB.id.toValue()));
+                pisoList.push(passagem.props.pisoA);
+                pisoList.push(passagem.props.pisoB);
             }
 
-            let idPisoList = Array.from(idPisoSet);
             let edificioList: Edificio[] = [];
 
             for (let piso of idPisoList) {
@@ -265,7 +264,6 @@ export default class PassagemService implements IPassagemService {
                         ("Não existe edificio para o piso com id: " + piso));
                 }
             }
-            let pisoList = Array.from(pisoSet);
             let pairNumeroIdPisoPairDescricao: Pair<Pair<number, number>, string>[] = [];
         
             for (let piso of pisoList){
