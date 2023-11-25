@@ -42,10 +42,12 @@ export default class MapaService implements IMapaService{
             return Result.fail<ICarregarMapaDTO>("O mapa já tem algo carregado."); // Ainda não implementado.
         }
         let mapaTipoPonto : TipoPonto[][] = [];
+        for(let j = 0; j <= edificio.returnDimensaoY(); j++){
+            mapaTipoPonto[j] = [];
+        }
         for(let i = 0; i <= edificio.returnDimensaoX(); i++){
-            mapaTipoPonto[i] = [];
             for(let j = 0; j <= edificio.returnDimensaoY(); j++){
-                mapaTipoPonto[i][j] = TipoPonto.create(" ").getValue();
+                mapaTipoPonto[j][i] = TipoPonto.create(" ").getValue();
             }
         }
         mapa = Mapa.create({mapa:mapaTipoPonto}, IdMapa.create(await this.mapaRepo.getMaxId() + 1).getValue()).getValue();
@@ -108,7 +110,7 @@ export default class MapaService implements IMapaService{
                 }
             }
         }
-
+        mapa.rodarMapa();
         piso.adicionarMapa(mapa);
         //save
         this.mapaRepo.save(mapa);
