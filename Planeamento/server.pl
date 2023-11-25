@@ -34,6 +34,7 @@ caminho_pontos_piso_handler(Request) :-
     ListaSalas = Dict.salas,
     ListaCoordPortas = Dict.coordPortas,
     ListaMatrizMapa = Dict.listaMatrizMapa,
+    ListaDimensoes = Dict.dimensoes,
     XOrig = Dict.x_origem,
     YOrig = Dict.y_origem,
     PisoOrig = Dict.piso_origem,
@@ -46,7 +47,7 @@ caminho_pontos_piso_handler(Request) :-
     atom_string(XD,XDest),
     atom_string(YD,YDest),
     atom_string(PD,PisoDest),
-    obter_dados(ListaPiso, ListaElev, ListaCoordElev, ListaCorr, ListaCoordCorr, ListaSalas, ListaCoordPortas, ListaMatrizMapa),
+    obter_dados(ListaPiso, ListaElev, ListaCoordElev, ListaCorr, ListaCoordCorr, ListaSalas, ListaCoordPortas, ListaMatrizMapa, ListaDimensoes),
     caminho_pontos_piso(XO, YO, PO, XD, YD, PD, LEdCam, LLig),
     with_output_to(atom(LEdCamf),write(LEdCam)),
     with_output_to(atom(LLigf),write(LLig)),
@@ -54,7 +55,7 @@ caminho_pontos_piso_handler(Request) :-
     prolog_to_json(R, JSONObject),
     reply_json(JSONObject, [json_object(dict)]).
 
-obter_dados(ListaPiso, ListaElev, ListaCoordElev, ListaCorr, ListaCoordCorr, ListaSalas, ListaCoordPortas, ListaMatrizMapa) :-
+obter_dados(ListaPiso, ListaElev, ListaCoordElev, ListaCorr, ListaCoordCorr, ListaSalas, ListaCoordPortas, ListaMatrizMapa, ListaDimensoes) :-
     processar_lista(ListaPiso),
     processar_lista(ListaElev),
     processar_lista(ListaCoordElev),
@@ -62,7 +63,8 @@ obter_dados(ListaPiso, ListaElev, ListaCoordElev, ListaCorr, ListaCoordCorr, Lis
     processar_lista(ListaCoordCorr),
     processar_lista(ListaSalas),
     processar_lista(ListaCoordPortas),
-    processar_lista(ListaMatrizMapa).
+    processar_lista(ListaMatrizMapa),
+    processar_lista(ListaDimensoes).
 
 processar_lista(Lista) :-
     maplist(converter_e_assertar, Lista).
