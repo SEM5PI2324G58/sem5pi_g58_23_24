@@ -48,6 +48,7 @@ export default class EdificioService implements IEdificioService {
     let coordCorredorStringList: string[] = [];
     let salaStringList: string[] = [];
     let CoordPortasStringList: string[] = [];
+    let mapaStringList: string[] = [];
     // Desglosar informação
     for (let edificio of edificioList) {
 
@@ -80,13 +81,13 @@ export default class EdificioService implements IEdificioService {
             for (let sala of salasByPisos) {
               let coordPortasString: string;
               if (j == 0) {
-                salaString += sala.returnNome().toLowerCase();
+                salaString += sala.returnNome().toLowerCase().replace(/\s+/g, '');
                 j++;
               }
-              salaString += "," + sala.returnNome().toLowerCase();
+              salaString += "," + sala.returnNome().toLowerCase().replace(/\s+/g, '');
 
               // CoordPortas
-              coordPortasString = "coordPortas(" + sala.returnNome().toLowerCase() + ","
+              coordPortasString = "coordPortas(" + sala.returnNome().toLowerCase().replace(/\s+/g, '') + ","
                 + String(sala.returnAbcissaPorta()).toLowerCase() + ","
                 + String(sala.returnOrdenadaPorta()).toLowerCase() + ").";
               CoordPortasStringList.push(coordPortasString);
@@ -94,6 +95,17 @@ export default class EdificioService implements IEdificioService {
             salaString += "]).";
             salaStringList.push(salaString);
           }
+          // criar matriz do mapa
+          let matriz = mapa.returnMatrizParaPlaneamento();
+          let stringElemento: string; 
+          for (let i = 0; i < matriz.length; i++) {
+            for (let j = 0; j < matriz[i].length; j++) {
+              stringElemento = "m(" + edificio.returnEdificioId().toLowerCase() + String(piso.returnNumeroPiso()).toLowerCase() 
+              + "," + String(j).toLowerCase() + "," + String(i).toLowerCase() + "," + matriz[i][j].toLowerCase() + ").";
+              mapaStringList.push(stringElemento);
+            }
+          }
+
         }
         pisoString += "]).";
         pisoStringList.push(pisoString);
@@ -195,6 +207,7 @@ export default class EdificioService implements IEdificioService {
       coordCorredores: coordCorredorStringList,
       salas: salaStringList,
       coordPortas: CoordPortasStringList,
+      listaMatrizMapa: mapaStringList,
       x_origem: "5",
       y_origem: "5",
       piso_origem: "j2",

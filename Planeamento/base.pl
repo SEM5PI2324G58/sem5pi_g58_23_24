@@ -1,6 +1,6 @@
 :- module(base, [caminho_edificios/3, caminho_pisos/4,
 caminho_pontos_piso/8, aStar/4]).
-:-dynamic ligacel/3.
+:-dynamic ligacel/2.
 :-dynamic pisos/2.
 :-dynamic elevador/2.
 :-dynamic coordElevador/3.
@@ -8,8 +8,10 @@ caminho_pontos_piso/8, aStar/4]).
 :-dynamic coordCorredor/10.
 :-dynamic salas/2.
 :-dynamic coordPorta/3.
+:-dynamic node/3.
+:-dynamic edge/3.
+:-dynamic edge/5.
 % Dados que vão ser obtidos atraves do pedido da informação do mapa ao MDRI
-
 % Lista de pisos de cada edifício
 % pisos(IdEdificio,[IdPiso1,IdPiso2,IdPiso3])
 pisos(a,[a1]).
@@ -76,62 +78,11 @@ liga(i,j).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Parte 2 - caminho no piso
+% Informação de um grafo para o A*
 
-% Informação de um grafo para o A* (exemplo moodle do apoio3)
 % node(id,X,Y)
-node(a,45,95).
-node(b,90,95).
-node(c,15,85).
-node(d,40,80).
-node(e,70,80).
-node(f,25,65).
-node(g,65,65).
-node(h,45,55).
-node(i,5,50).
-node(j,80,50).
-node(l,65,45).
-node(m,25,40).
-node(n,55,30).
-node(o,80,30).
-node(p,25,15).
-node(q,80,15).
-node(r,55,10).
 
 % edge(idNode1,idNode2,custo)
-edge(a,b,45).
-edge(a,c,32).
-edge(a,d,16).
-edge(a,e,30).
-edge(b,e,25).
-edge(d,e,30).
-edge(c,d,26).
-edge(c,f,23).
-edge(c,i,37).
-edge(d,f,22).
-edge(f,h,23).
-edge(f,m,25).
-edge(f,i,25).
-edge(i,m,23).
-edge(e,f,48).
-edge(e,g,16).
-edge(e,j,32).
-edge(g,h,23).
-edge(g,l,20).
-edge(g,j,22).
-edge(h,m,25).
-edge(h,n,27).
-edge(h,l,23).
-edge(j,l,16).
-edge(j,o,20).
-edge(l,n,19).
-edge(l,o,22).
-edge(m,n,32).
-edge(m,p,25).
-edge(n,p,34).
-edge(n,r,20).
-edge(o,n,25).
-edge(o,q,15).
-edge(p,r,31).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Matriz dummy
@@ -197,27 +148,85 @@ m(5,7,0).
 m(6,7,0).
 m(7,7,0).
 m(8,7,1).
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Criar grafo
+%%%%%%%%%%%%%%%%%%%% Criar grafo - ligacel %%%%%%%%%%%%%%%%%%%%
 cria_grafo(_,0):-!.
 cria_grafo(Col,Lin):-cria_grafo_lin(Col,Lin),Lin1 is Lin-1,cria_grafo(Col,Lin1).
 
 cria_grafo_lin(0,_):-!.
-cria_grafo_lin(Col,Lin):-m(Col,Lin,0),!,ColS is Col+1, ColA is Col-1, LinS is Lin+1,LinA is Lin-1,
-    ((m(ColS,Lin,0),assertz(cel(Col,Lin)),assertz(cel(ColS,Lin)),assertz(ligacel(cel(Col,Lin), cel(ColS,Lin),1));true)),
-    ((m(ColA,Lin,0),assertz(cel(Col,Lin)),assertz(cel(ColA,Lin)),assertz(ligacel(cel(Col,Lin), cel(ColA,Lin),1));true)),
-    ((m(Col,LinS,0),assertz(cel(Col,Lin)),assertz(cel(Col,LinS)),assertz(ligacel(cel(Col,Lin), cel(Col,LinS),1));true)),
-    ((m(Col,LinA,0),assertz(cel(Col,Lin)),assertz(cel(Col,LinA)),assertz(ligacel(cel(Col,Lin), cel(Col,LinA),1));true)),
-    ((m(ColA,LinA,0),assertz(cel(Col,Lin)),assertz(cel(ColA,LinA)),assertz(ligacel(cel(Col,Lin), cel(ColA,LinA),sqrt(2)));true)),
-    ((m(ColS,LinS,0),assertz(cel(Col,Lin)),assertz(cel(ColS,LinS)),assertz(ligacel(cel(Col,Lin), cel(ColS,LinS),sqrt(2)));true)),
-    ((m(ColA,LinS,0),assertz(cel(Col,Lin)),assertz(cel(ColA,LinS)),assertz(ligacel(cel(Col,Lin), cel(ColA,LinS),sqrt(2)));true)),
-    ((m(ColS,LinA,0),assertz(cel(Col,Lin)),assertz(cel(ColS,LinA)),assertz(ligacel(cel(Col,Lin), cel(ColS,LinA),sqrt(2)));true)),
+cria_grafo_lin(Col,Lin):-m(Col,Lin,0),!,ColS is Col+1, ColA is Col-1, LinS is Lin+1,LinA is Lin-1, % Se não for parede ve os nodes á volta
+    ((m(ColS,Lin,0),assertz(ligacel(cel(Col,Lin),cel(ColS,Lin)));true)),
+    ((m(ColA,Lin,0),assertz(ligacel(cel(Col,Lin), cel(ColA,Lin)));true)),
+    ((m(Col,LinS,0),assertz(ligacel(cel(Col,Lin), cel(Col,LinS)));true)),
+    ((m(Col,LinA,0),assertz(ligacel(cel(Col,Lin), cel(Col,LinA)));true)),
+    ((m(ColA,LinA,0),assertz(ligacel(cel(Col,Lin), cel(ColA,LinA)));true)),
+    ((m(ColS,LinS,0),assertz(ligacel(cel(Col,Lin), cel(ColS,LinS)));true)),
+    ((m(ColA,LinS,0),assertz(ligacel(cel(Col,Lin), cel(ColA,LinS)));true)),
+    ((m(ColS,LinA,0),assertz(ligacel(cel(Col,Lin), cel(ColS,LinA)));true)),
     Col1 is Col-1,
     cria_grafo_lin(Col1,Lin).
-cria_grafo_lin(Col,Lin):-Col1 is Col-1,cria_grafo_lin(Col1,Lin).
+cria_grafo_lin(Col,Lin):-Col1 is Col-1,cria_grafo_lin(Col1,Lin). %% Se o ponto for parede dá skip
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%% Criar grafo - A* %%%%%%%%%%%%%%%%%%%%
 
+%%%% Criar nodes %%%%
+criar_nodes():-
+    findall(m(X,Y,0),m(X,Y,0),Res),
+    criar_nodes1(Res,0).
+
+criar_nodes1([],_).
+criar_nodes1([m(X,Y,0)|RL],Id):-
+    Id1 is Id+1,
+    assertz(node(Id1,X,Y)),
+    criar_nodes1(RL,Id1).
+
+%%%% Criar edges auxiliares %%%%
+
+cria_edges_Aux(_,0):-!.
+cria_edges_Aux(Col,Lin):-cria_grafo_lin1(Col,Lin),Lin1 is Lin-1,cria_edges_Aux(Col,Lin1).
+
+cria_grafo_lin1(0,_):-!.
+cria_grafo_lin1(Col,Lin):-m(Col,Lin,0),!,ColS is Col+1, ColA is Col-1, LinS is Lin+1,LinA is Lin-1, % Se não for parede ve os nodes á volta
+    ((m(ColS,Lin,0),assertz(edge(Col,Lin,ColS,Lin,1));true)),
+    ((m(ColA,Lin,0),assertz(edge(Col,Lin,ColA,Lin,1));true)),
+    ((m(Col,LinS,0),assertz(edge(Col,Lin,Col,LinS,1));true)),
+    ((m(Col,LinA,0),assertz(edge(Col,Lin,Col,LinA,1));true)),
+    ((m(ColA,LinA,0),assertz(edge(Col,Lin,ColA,LinA,sqrt(2)));true)),
+    ((m(ColS,LinS,0),assertz(edge(Col,Lin,ColS,LinS,sqrt(2)));true)),
+    ((m(ColA,LinS,0),assertz(edge(Col,Lin,ColA,LinS,sqrt(2)));true)),
+    ((m(ColS,LinA,0),assertz(edge(Col,Lin,ColS,LinA,sqrt(2)));true)),
+    Col1 is Col-1,
+    cria_grafo_lin1(Col1,Lin).
+cria_grafo_lin1(Col,Lin):-Col1 is Col-1,cria_grafo_lin1(Col1,Lin). %% Se o ponto for parede dá skip
+
+%%%% Criar edges %%%%
+
+criar_edges_Astar():-
+    findall(edge(Col,Lin,ColS,LinS,Custo),edge(Col,Lin,ColS,LinS,Custo),Res),
+    criar_edges1(Res).
+
+criar_edges1([]).
+criar_edges1([edge(Col,Lin,ColS,LinS,Custo)|RL]):-
+    node(Id1,Col,Lin),
+    node(Id2,ColS,LinS),
+    assertz(edge(Id1,Id2,Custo)),
+    criar_edges1(RL).
+
+%%%% Criar grafo %%%%
+
+criar_grafo_Astar(X,Y):-
+    criar_nodes(),
+    cria_edges_Aux(X,Y),
+    criar_edges_Astar(),
+    retractall(edge(_,_,_,_,_)).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Obter o caminho entre edificios
 % ?- caminho_edificios(j,a,LEdCam).
 % LEdCam = [j, i, b, g, h, a] ;
@@ -280,42 +289,7 @@ segue_pisos(PisoAct,PisoDest,[EdAct,EdSeg|LOutrosEd],[elev(PisoAct,PisoAct1),cor
 % Solução esperada é do memso tipo da solução do predicado caminho_pisos(j2,g4,LEdCam,LLig) (linha 94 e 95)
 
 caminho_pontos_piso(XOrig,YOrig,PisoOrig,XDest,YDest,PisoDest,LEdCam,LLig):-
-    %ponto_valido(XOrig,YOrig,PisoOrig),
-    %ponto_valido(XDest,YDest,PisoDest),
     caminho_pisos(PisoOrig,PisoDest,LEdCam,LLig).
-
-% piso correspondente a uma sala
-% 
-
-ponto_valido(X,Y,Piso):-
-    is_sala(X,Y,Piso);
-    is_elevador(X,Y,Piso);
-    is_corredor(X,Y,Piso).
-    
-
-is_sala(X,Y,Piso):-
-    coordPorta(IdSala,X,Y),
-    salas(Piso,LSalas),
-    member(IdSala,LSalas),
-    !.
-
-is_elevador(X,Y,Piso):-
-    coordElevador(Elev,X,Y),
-    elevador(Elev,LPisosElev),
-    member(Piso,LPisosElev),
-    !.
-
-is_corredor(X,Y,Piso):-
-    (
-        (coordCorredor(PisoA,_,X,Y,_,_,_,_,_,_);coordCorredor(PisoA,_,_,_,X,Y,_,_,_,_)),
-        !,
-        Piso == PisoA
-    );
-    (
-        (coordCorredor(_,PisoB,_,_,_,_,X,Y,_,_);coordCorredor(_,PisoB,_,_,_,_,_,_,X,Y)),
-        !,
-        Piso == PisoB
-    ).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
