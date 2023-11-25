@@ -21,11 +21,6 @@ export class CriarPassagemComponent {
     });
   }
 
-  onCodigoChange(selectedCodigo: string) {
-    // Aquí puedes manejar el código seleccionado    
-    // Realiza otras acciones según sea necesario
-  }
-
   add(id: number, codigoEdificioA: string, codigoEdificioB: string, numeroPisoA: number, numeroPisoB: number): void {
     this.passagemService.criarPassagem(id, codigoEdificioA, codigoEdificioB, numeroPisoA, numeroPisoB);
   }

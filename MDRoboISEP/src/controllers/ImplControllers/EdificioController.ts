@@ -9,6 +9,7 @@ import IListarEdMinEMaxPisosDTO from '../../dto/IListarEdMinEMaxPisosDTO';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { ParsedQs } from 'qs';
 import IPlaneamentoCaminhosDTO from '../../dto/IPlaneamentoCaminhosDTO';
+import ICoordenadasPontosDTO from '../../dto/ICoordenadasPontosDTO';
 
 @Service()
 export default class EdificioController implements IEdificioController /* TODO: extends ../core/infra/BaseController */ {
@@ -17,7 +18,16 @@ export default class EdificioController implements IEdificioController /* TODO: 
   ) {}
   public async getInformacaoPlaneamento(req: Request, res: Response, next: NextFunction) {
     try{
-      const edificioOrError = await this.edificioServiceInstance.getInformacaoPlaneamento() as Result<IPlaneamentoCaminhosDTO>;
+      let props: ICoordenadasPontosDTO = {
+        x_origem: Number(req.query.x_origem),
+        y_origem: Number(req.query.y_origem),
+        piso_origem: req.query.piso_origem as string,
+        x_destino: Number(req.query.x_destino),
+        y_destino: Number(req.query.y_destino),
+        piso_destino: req.query.piso_destino as string
+      };
+
+      const edificioOrError = await this.edificioServiceInstance.getInformacaoPlaneamento(props) as Result<IPlaneamentoCaminhosDTO>;
       if (edificioOrError.isFailure) {
         res.status(400);
         return res.json(edificioOrError.errorValue());

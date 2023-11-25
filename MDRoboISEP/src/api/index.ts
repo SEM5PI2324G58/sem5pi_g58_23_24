@@ -10,6 +10,7 @@ import passagem from './routes/passagemRoute'
 import dispositivo from './routes/dispositivoRoute'
 import sala from './routes/salaRoute'
 import mapa from './routes/mapaRoute'
+import planeamento from './routes/planeamentoRoute'
 
 export default () => {
 	const app = Router();
@@ -25,5 +26,6 @@ export default () => {
 	dispositivo(app);
 	sala(app);
 	mapa(app);
+	planeamento(app);
 	return app
 }

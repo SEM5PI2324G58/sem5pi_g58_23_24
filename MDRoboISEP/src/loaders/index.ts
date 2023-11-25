@@ -122,6 +122,11 @@ export default async ({ expressApp }) => {
     name: config.controllers.mapa.name,
     path: config.controllers.mapa.path
   }
+
+  const planeamentoController = {
+    name: config.controllers.planeamento.name,
+    path: config.controllers.planeamento.path
+  }
   
   const roleRepo = {
     name: config.repos.role.name,
@@ -225,6 +230,11 @@ export default async ({ expressApp }) => {
     path: config.services.mapa.path
   }
 
+  const planeamentoService = {
+    name: config.services.planeamento.name,
+    path: config.services.planeamento.path
+  }
+
   await dependencyInjectorLoader({
     mongoConnection,
     schemas: [
@@ -249,7 +259,8 @@ export default async ({ expressApp }) => {
       passagemController,
       dispositivoController,
       salaController,
-      mapaController
+      mapaController,
+      planeamentoController
     ],
     repos: [
       roleRepo,
@@ -273,7 +284,8 @@ export default async ({ expressApp }) => {
       passagemService,
       dispositivoService,
       salaService,
-      mapaService
+      mapaService,
+      planeamentoService
     ]
   });
   Logger.info('✌️ Schemas, Controllers, Repositories, Services, etc. loaded');

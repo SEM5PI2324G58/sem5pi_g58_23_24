@@ -21,6 +21,7 @@ import IPlaneamentoInfoDTO from '../../dto/IPlaneamentoInfoDTO';
 import IPlaneamentoCaminhosDTO from '../../dto/IPlaneamentoCaminhosDTO';
 import { verify } from 'crypto';
 import { CoordenadasPassagem } from '../../domain/mapa/CoordenadasPassagem';
+import ICoordenadasPontosDTO from '../../dto/ICoordenadasPontosDTO';
 
 @Service()
 export default class EdificioService implements IEdificioService {
@@ -32,7 +33,7 @@ export default class EdificioService implements IEdificioService {
     @Inject(config.repos.passagem.name) private passagemRepo: IPassagemRepo,
     @Inject(config.repos.mapa.name) private mapaRepo: IMapaRepo,
   ) { }
-  public async getInformacaoPlaneamento(): Promise<Result<IPlaneamentoCaminhosDTO>> {
+  public async getInformacaoPlaneamento(ICoordenadasPontosDTO: ICoordenadasPontosDTO): Promise<Result<IPlaneamentoCaminhosDTO>> {
     //Get Edificios
     let edificioList = await this.edificioRepo.getAllEdificios();
     if (edificioList.length == null || edificioList.length == undefined) {
@@ -213,12 +214,12 @@ export default class EdificioService implements IEdificioService {
       coordPortas: CoordPortasStringList,
       listaMatrizMapa: mapaStringList,
       dimensoes: dimStringList,
-      x_origem: "5",
-      y_origem: "5",
-      piso_origem: "j2",
-      x_destino: "6",
-      y_destino: "6",
-      piso_destino: "g4",
+      x_origem: String(ICoordenadasPontosDTO.x_origem),
+      y_origem: String(ICoordenadasPontosDTO.y_origem),
+      piso_origem: ICoordenadasPontosDTO.piso_origem,
+      x_destino: String(ICoordenadasPontosDTO.x_destino),
+      y_destino: String(ICoordenadasPontosDTO.y_destino),
+      piso_destino: ICoordenadasPontosDTO.piso_destino,
     } as IPlaneamentoInfoDTO;
 
     try {
