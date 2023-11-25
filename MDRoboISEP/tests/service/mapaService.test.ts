@@ -101,6 +101,7 @@ describe('Mapa Service', () => {
         mapaCompleto.criarPontosElevador(3,3,"Norte");
         mapaCompleto.carregarSalaMapa("sala1",0,0,2,2,1,0,"Norte");
         mapaCompleto.carregarPassagemMapa({id:1,abcissa:5,ordenada:3,orientacao:"Oeste"});
+        mapaCompleto.rodarMapa();
 
 		let piso5x5 = Piso.create({
 			numeroPiso: numeroPiso,
@@ -600,9 +601,10 @@ describe('Mapa Service', () => {
         expect(answer.getValue().texturaParede).to.equal("assets/wall.jpg");
         expect(answer.getValue().modeloPorta).to.equal("assets/door.glb");
         expect(answer.getValue().modeloElevador).to.equal("assets/elevator.glb");
-        expect(answer.getValue().portas).to.deep.equal([{abcissa: 1, ordenada: 0, orientacao: "Norte"}]);
+        expect(answer.getValue().portas).to.deep.equal([{abcissa: 0, ordenada: 1, orientacao: "Norte"}]);
         expect(answer.getValue().elevador).to.deep.equal({xCoord: 3, yCoord: 3, orientacao: "Norte"});
-        expect(answer.getValue().passagens).to.deep.equal([{id: 1, abcissaA: 5, ordenadaA: 3, abcissaB:5, ordenadaB:4, orientacao: "Oeste"}]);
+        console.log(answer.getValue().passagens);
+        expect(answer.getValue().passagens).to.deep.equal([{id: 1, abcissaA: 3, ordenadaA: 5, abcissaB:4, ordenadaB:5, orientacao: "Oeste"}]);
 
     });
 

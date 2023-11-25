@@ -381,19 +381,6 @@ describe('Mapa Controller', () => {
 
         const mapaController = new MapaController(mapaServiceInstance as IMapaService);
         await mapaController.exportarMapa(req as Request, res as Response, next as NextFunction);
-        let propsE = {
-            codigoEdificio: "ED01",
-            elevador: { orientacao: "Norte", xCoord: 3, yCoord: 3 },
-            matriz:[["NorteOeste", "Oeste", "Oeste", "NorteOeste", "Oeste", "Norte"], ["PortaNorte", " ", " ", "Norte", " ", "Norte"], ["Norte", " ", " ", "Norte", " ", "Norte"], ["NorteOeste", "Oeste", "Oeste", "Elevador", " ", "Norte"], ["Norte", " ", " ", "Elevador", " ", "Norte"], ["Oeste", "Oeste", "Oeste", "Passagem", "Passagem", " "]],
-            numeroPiso: 0,
-            passagens: [{ abcissaA: 5, abcissaB: 5, id: 1, ordenadaA: 3, ordenadaB: 4, orientacao: "Oeste" }],
-            portas: [{ abcissa: 1, ordenada: 0, orientacao: "Norte" }],
-            texturaChao: "assets/ground.jpg",
-            texturaParede: "assets/wall.jpg",
-            texturaPorta: "assets/door.jpg",
-            texturaElevador: "assets/elevator.jpg"
-        }
-        console.log(propsE);
 
         sinon.assert.calledOnce(res.status as sinon.SinonSpy);
         sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
