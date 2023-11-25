@@ -49,6 +49,7 @@ export default class EdificioService implements IEdificioService {
     let salaStringList: string[] = [];
     let CoordPortasStringList: string[] = [];
     let mapaStringList: string[] = [];
+    let dimStringList: string[] = [];
     // Desglosar informação
     for (let edificio of edificioList) {
 
@@ -134,6 +135,9 @@ export default class EdificioService implements IEdificioService {
         elevadorStringList.push(elevadorString);
       }
 
+      let stringDim = "dim(" + edificio.returnEdificioId().toLowerCase() + "," + String(edificio.returnDimensaoX()).toLowerCase() + "," + String(edificio.returnDimensaoY()).toLowerCase() + ").";
+      dimStringList.push(stringDim);
+
     }
     // Corredor
     let corredorString: string;
@@ -208,6 +212,7 @@ export default class EdificioService implements IEdificioService {
       salas: salaStringList,
       coordPortas: CoordPortasStringList,
       listaMatrizMapa: mapaStringList,
+      dimensoes: dimStringList,
       x_origem: "5",
       y_origem: "5",
       piso_origem: "j2",

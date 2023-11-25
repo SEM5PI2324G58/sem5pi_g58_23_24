@@ -37,6 +37,8 @@ import { ListarElevadorComponent } from './gestao-campus/listar-elevador/listar-
 import { ListarPassagemPorEdificiosComponent } from './gestao-campus/listar-passagem-por-edificios/listar-passagem-por-edificios.component';
 import { ApagarEdificioComponent } from './gestao-campus/apagar-edificio/apagar-edificio.component';
 import { ApagarTipoRoboComponent } from './gestao-frota/apagar-tipo-robo/apagar-tipo-robo.component';
+import { SidebarGestaoPlaneamentoComponent } from './gestao-planeamento/sidebar-gestao-planeamento/sidebar-gestao-planeamento.component';
+import { CaminhoEntreEdificiosComponent } from './gestao-planeamento/caminho-entre-edificios/caminho-entre-edificios.component';
 
 @NgModule({
   declarations: [
@@ -71,7 +73,9 @@ import { ApagarTipoRoboComponent } from './gestao-frota/apagar-tipo-robo/apagar-
     ListarElevadorComponent,
     ListarPassagemPorEdificiosComponent,
     ApagarEdificioComponent,
-    ApagarTipoRoboComponent
+    ApagarTipoRoboComponent,
+    SidebarGestaoPlaneamentoComponent,
+    CaminhoEntreEdificiosComponent
   ],
   imports: [
     BrowserModule,

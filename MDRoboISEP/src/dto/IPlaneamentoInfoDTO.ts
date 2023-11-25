@@ -7,6 +7,7 @@ export default interface IPlaneamentoInfoDTO {
     salas: string[];
     coordPortas: string[];
     listaMatrizMapa: string[];
+    dimensoes: string[];,
     x_origem: string;
     y_origem: string;
     piso_origem: string;
