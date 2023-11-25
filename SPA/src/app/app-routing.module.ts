@@ -27,6 +27,7 @@ import { ListarEdificioMinMaxPisosComponent } from './gestao-campus/listar-edifi
 import { ListarPisoPassagemComponent } from './gestao-campus/listar-piso-passagem/listar-piso-passagem.component';
 import { ListarElevadorComponent } from './gestao-campus/listar-elevador/listar-elevador.component';
 import { ListarPassagemPorEdificiosComponent } from './gestao-campus/listar-passagem-por-edificios/listar-passagem-por-edificios.component';
+import { CaminhoEntreEdificiosComponent } from './gestao-planeamento/caminho-entre-edificios/caminho-entre-edificios.component';
  
 
 const routes: Routes = [
@@ -58,6 +59,7 @@ const routes: Routes = [
   { path: 'listarEdificioMinMaxPisos', component: ListarEdificioMinMaxPisosComponent},
   { path: 'listarPisoPassagem', component: ListarPisoPassagemComponent},
   { path: 'listarPassagensPorEdificio', component: ListarPassagemPorEdificiosComponent},
+  { path: 'caminhoEntreEdificios', component: CaminhoEntreEdificiosComponent}
 
 ];
 
