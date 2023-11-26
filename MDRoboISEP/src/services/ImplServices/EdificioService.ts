@@ -70,7 +70,9 @@ export default class EdificioService implements IEdificioService {
             pisoString += edificio.returnEdificioId().toLowerCase() + "" + String(piso.returnNumeroPiso()).toLowerCase();
             i++;
           }
-          pisoString += "," + edificio.returnEdificioId().toLowerCase() + "" + String(piso.returnNumeroPiso()).toLowerCase();
+          else {
+            pisoString += "," + edificio.returnEdificioId().toLowerCase() + "" + String(piso.returnNumeroPiso()).toLowerCase();
+          }
           // Salas
           let mapa = piso.returnMapa();
           if (mapa == null || mapa == undefined) {
@@ -83,27 +85,32 @@ export default class EdificioService implements IEdificioService {
             for (let sala of salasByPisos) {
               let coordPortasString: string;
               if (j == 0) {
-                salaString += sala.returnNome().toLowerCase().replace(/\s+/g, '');
+                salaString += sala.returnNome().toLowerCase().replace(/\s+/g, '').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 j++;
               }
-              salaString += "," + sala.returnNome().toLowerCase().replace(/\s+/g, '');
-
+              else {
+                salaString += "," + sala.returnNome().toLowerCase().replace(/\s+/g, '').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+              }
               // CoordPortas
-              coordPortasString = "coordPortas(" + sala.returnNome().toLowerCase().replace(/\s+/g, '') + ","
+              coordPortasString = "coordPorta(" + sala.returnNome().toLowerCase().replace(/\s+/g, '').normalize("NFD").replace(/[\u0300-\u036f]/g, "") + ","
                 + String(sala.returnAbcissaPorta()).toLowerCase() + ","
                 + String(sala.returnOrdenadaPorta()).toLowerCase() + ").";
+              if (CoordPortasStringList.includes(coordPortasString) == false) {
               CoordPortasStringList.push(coordPortasString);
+              }
             }
             salaString += "]).";
-            salaStringList.push(salaString);
+            if (salaStringList.includes(salaString) == false) {
+              salaStringList.push(salaString);
+            }
           }
           // criar matriz do mapa
           let matriz = mapa.returnMatrizParaPlaneamento();
-          let stringElemento: string; 
+          let stringElemento: string;
           for (let i = 0; i < matriz.length; i++) {
             for (let j = 0; j < matriz[i].length; j++) {
-              stringElemento = "m(" + edificio.returnEdificioId().toLowerCase() + String(piso.returnNumeroPiso()).toLowerCase() 
-              + "," + String(j).toLowerCase() + "," + String(i).toLowerCase() + "," + matriz[i][j].toLowerCase() + ").";
+              stringElemento = "m(" + edificio.returnEdificioId().toLowerCase() + String(piso.returnNumeroPiso()).toLowerCase()
+                + "," + String(j).toLowerCase() + "," + String(i).toLowerCase() + "," + matriz[i][j].toLowerCase() + ").";
               mapaStringList.push(stringElemento);
             }
           }
@@ -123,107 +130,111 @@ export default class EdificioService implements IEdificioService {
             elevadorString += edificio.returnEdificioId().toLowerCase() + String(piso.returnNumeroPiso()).toLowerCase();
             i++;
           }
-          elevadorString += "," + edificio.returnEdificioId().toLowerCase() + String(piso.returnNumeroPiso()).toLowerCase();
+          else {
+            elevadorString += "," + edificio.returnEdificioId().toLowerCase() + String(piso.returnNumeroPiso()).toLowerCase();
+          }
           // CoordElevador
           let mapa = piso.returnMapa();
           if (mapa !== null && mapa !== undefined) {
             coordElevadorString = "coordElevador(" + edificio.returnEdificioId().toLowerCase() + "," +
               String(mapa.returnXCoordElevador()).toLowerCase() + "," + String(mapa.returnYCoordElevador()).toLowerCase() + ").";
-            CoordElevadorStringList.push(coordElevadorString);
+            if (CoordElevadorStringList.includes(coordElevadorString) == false) {
+              CoordElevadorStringList.push(coordElevadorString);
+            }
           }
         }
         elevadorString += "]).";
-        elevadorStringList.push(elevadorString);
-      }
+          elevadorStringList.push(elevadorString);
 
-      let stringDim = "dim_ed(" + edificio.returnEdificioId().toLowerCase() + "," + String(edificio.returnDimensaoX()).toLowerCase() + "," + String(edificio.returnDimensaoY()).toLowerCase() + ").";
-      dimStringList.push(stringDim);
+        let stringDim = "dim_ed(" + edificio.returnEdificioId().toLowerCase() + "," + String(edificio.returnDimensaoX()+1).toLowerCase() + "," + String(edificio.returnDimensaoY()+1).toLowerCase() + ").";
+        dimStringList.push(stringDim);
 
-    }
-    // Corredor
-    let corredorString: string;
-    let passagemLista = await this.passagemRepo.findAll();
-
-    if (passagemLista == null || passagemLista == undefined) {
-      return Result.fail<IPlaneamentoCaminhosDTO>("Não existem passagens");
-    }
-    if (passagemLista.length === 0) {
-      return Result.fail<IPlaneamentoCaminhosDTO>("Não existem passagens");
-    }
-
-    for (let passagem of passagemLista) {
-      let pisoA = passagem.props.pisoA;
-      let pisoB = passagem.props.pisoB;
-      if (pisoA !== null && pisoA !== undefined && pisoA.hasMapa()
-        && pisoB !== null && pisoB !== undefined && pisoB.hasMapa()) {
-        let edificioA = await this.edificioRepo.findByPiso(pisoA.returnIdPiso());
-        let edificioB = await this.edificioRepo.findByPiso(pisoB.returnIdPiso());
-
-        if (edificioA == null || edificioA == undefined) {
-          return Result.fail<IPlaneamentoCaminhosDTO>("Não existem edificios");
-        }
-        if (edificioB == null || edificioB == undefined) {
-          return Result.fail<IPlaneamentoCaminhosDTO>("Não existem edificios");
-        }
-        corredorString = "corredor(" + String(edificioA.returnEdificioId()).toLowerCase() + "," + String(edificioB.returnEdificioId()).toLowerCase() + ","
-          + String(edificioA.returnEdificioId()).toLowerCase() + String(pisoA.returnNumeroPiso()).toLowerCase() + "," + String(edificioB.returnEdificioId()).toLowerCase()
-          + String(pisoB.returnNumeroPiso()).toLowerCase() + ").";
-        corredorStringList.push(corredorString);
-
-        let mapaA = pisoA.returnMapa();
-        let listaCoordCorredorA = mapaA.returnCoordenadasPassagem();
-        let mapaB = pisoB.returnMapa();
-        let listaCoordCorredorB = mapaB.returnCoordenadasPassagem();
-        let corredorA: CoordenadasPassagem;
-        let corredorB: CoordenadasPassagem;
-        for (let cordA of listaCoordCorredorA) {
-          if (cordA.isPassagem(passagem.returnIdPassagem())) {
-            corredorA = cordA;
-            break;
-          }
-        }
-        for (let cordB of listaCoordCorredorB) {
-          if (cordB.isPassagem(passagem.returnIdPassagem())) {
-            corredorB = cordB;
-            break;
-          }
-        }
-        if (corredorA !== null && corredorA !== undefined && corredorB !== null && corredorB !== undefined) {
-          let coordCorredorString = "coordCorredor(" + edificioA.returnEdificioId().toLowerCase()+ String(pisoA.returnNumeroPiso()) + 
-          "," + edificioB.returnEdificioId().toLowerCase()+ String(pisoB.returnNumeroPiso()) + "," +
-            String(corredorA.returnAbcissaInf()).toLowerCase() + "," + String(corredorA.returnOrdenadaInf()).toLowerCase() + "," +
-            String(corredorA.returnAbcissaSup()).toLowerCase() + "," + String(corredorA.returnOrdenadaSup()).toLowerCase() + "," +
-            String(corredorB.returnAbcissaInf()).toLowerCase() + "," + String(corredorB.returnOrdenadaInf()).toLowerCase() + "," +
-            String(corredorB.returnAbcissaSup()).toLowerCase() + "," + String(corredorB.returnOrdenadaSup()).toLowerCase() + ").";
-          coordCorredorStringList.push(coordCorredorString);
-        }
       }
     }
+      // Corredor
+      let corredorString: string;
+      let passagemLista = await this.passagemRepo.findAll();
 
-    if (pisoStringList.length === 0 || elevadorStringList.length === 0 || CoordElevadorStringList.length === 0
-      || corredorStringList.length === 0 || coordCorredorStringList.length === 0 || salaStringList.length === 0
-      || CoordPortasStringList.length === 0 || mapaStringList.length === 0 || dimStringList.length === 0 ) {
-      return Result.fail<IPlaneamentoCaminhosDTO>("Não existem dados para o planeamento");
-    }
-    const jsonDados = {
-      pisos: pisoStringList,
-      elevadores: elevadorStringList,
-      coordElevadores: CoordElevadorStringList,
-      corredores: corredorStringList,
-      coordCorredores: coordCorredorStringList,
-      salas: salaStringList,
-      coordPortas: CoordPortasStringList,
-      listaMatrizMapa: mapaStringList,
-      dimensoes: dimStringList,
-      x_origem: String(ICoordenadasPontosDTO.x_origem).toLowerCase(),
-      y_origem: String(ICoordenadasPontosDTO.y_origem).toLowerCase(),
-      piso_origem: ICoordenadasPontosDTO.piso_origem.toLowerCase(),
-      x_destino: String(ICoordenadasPontosDTO.x_destino).toLowerCase(),
-      y_destino: String(ICoordenadasPontosDTO.y_destino).toLowerCase(),
-      piso_destino: ICoordenadasPontosDTO.piso_destino.toLowerCase(),
-    } as IPlaneamentoInfoDTO;
+      if (passagemLista == null || passagemLista == undefined) {
+        return Result.fail<IPlaneamentoCaminhosDTO>("Não existem passagens");
+      }
+      if (passagemLista.length === 0) {
+        return Result.fail<IPlaneamentoCaminhosDTO>("Não existem passagens");
+      }
 
-    return this.comunicaoComPlaneamento(jsonDados);
+      for (let passagem of passagemLista) {
+        let pisoA = passagem.props.pisoA;
+        let pisoB = passagem.props.pisoB;
+        if (pisoA !== null && pisoA !== undefined && pisoA.hasMapa()
+          && pisoB !== null && pisoB !== undefined && pisoB.hasMapa()) {
+          let edificioA = await this.edificioRepo.findByPiso(pisoA.returnIdPiso());
+          let edificioB = await this.edificioRepo.findByPiso(pisoB.returnIdPiso());
+
+          if (edificioA == null || edificioA == undefined) {
+            return Result.fail<IPlaneamentoCaminhosDTO>("Não existem edificios");
+          }
+          if (edificioB == null || edificioB == undefined) {
+            return Result.fail<IPlaneamentoCaminhosDTO>("Não existem edificios");
+          }
+          corredorString = "corredor(" + String(edificioA.returnEdificioId()).toLowerCase() + "," + String(edificioB.returnEdificioId()).toLowerCase() + ","
+            + String(edificioA.returnEdificioId()).toLowerCase() + String(pisoA.returnNumeroPiso()).toLowerCase() + "," + String(edificioB.returnEdificioId()).toLowerCase()
+            + String(pisoB.returnNumeroPiso()).toLowerCase() + ").";
+          corredorStringList.push(corredorString);
+
+          let mapaA = pisoA.returnMapa();
+          let listaCoordCorredorA = mapaA.returnCoordenadasPassagem();
+          let mapaB = pisoB.returnMapa();
+          let listaCoordCorredorB = mapaB.returnCoordenadasPassagem();
+          let corredorA: CoordenadasPassagem;
+          let corredorB: CoordenadasPassagem;
+          for (let cordA of listaCoordCorredorA) {
+            if (cordA.isPassagem(passagem.returnIdPassagem())) {
+              corredorA = cordA;
+              break;
+            }
+          }
+          for (let cordB of listaCoordCorredorB) {
+            if (cordB.isPassagem(passagem.returnIdPassagem())) {
+              corredorB = cordB;
+              break;
+            }
+          }
+          if (corredorA !== null && corredorA !== undefined && corredorB !== null && corredorB !== undefined) {
+            let coordCorredorString = "coordCorredor(" + edificioA.returnEdificioId().toLowerCase() + String(pisoA.returnNumeroPiso()) +
+              "," + edificioB.returnEdificioId().toLowerCase() + String(pisoB.returnNumeroPiso()) + "," +
+              String(corredorA.returnAbcissaInf()).toLowerCase() + "," + String(corredorA.returnOrdenadaInf()).toLowerCase() + "," +
+              String(corredorA.returnAbcissaSup()).toLowerCase() + "," + String(corredorA.returnOrdenadaSup()).toLowerCase() + "," +
+              String(corredorB.returnAbcissaInf()).toLowerCase() + "," + String(corredorB.returnOrdenadaInf()).toLowerCase() + "," +
+              String(corredorB.returnAbcissaSup()).toLowerCase() + "," + String(corredorB.returnOrdenadaSup()).toLowerCase() + ").";
+            coordCorredorStringList.push(coordCorredorString);
+          }
+        }
+      }
+
+      if (pisoStringList.length === 0 || elevadorStringList.length === 0 || CoordElevadorStringList.length === 0
+        || corredorStringList.length === 0 || coordCorredorStringList.length === 0 || salaStringList.length === 0
+        || CoordPortasStringList.length === 0 || mapaStringList.length === 0 || dimStringList.length === 0) {
+        return Result.fail<IPlaneamentoCaminhosDTO>("Não existem dados para o planeamento");
+      }
+      const jsonDados = {
+        pisos: pisoStringList,
+        elevadores: elevadorStringList,
+        coordElevadores: CoordElevadorStringList,
+        corredores: corredorStringList,
+        coordCorredores: coordCorredorStringList,
+        salas: salaStringList,
+        coordPortas: CoordPortasStringList,
+        listaMatrizMapa: mapaStringList,
+        dimensoes: dimStringList,
+        x_origem: String(ICoordenadasPontosDTO.x_origem).toLowerCase(),
+        y_origem: String(ICoordenadasPontosDTO.y_origem).toLowerCase(),
+        piso_origem: ICoordenadasPontosDTO.piso_origem.toLowerCase(),
+        x_destino: String(ICoordenadasPontosDTO.x_destino).toLowerCase(),
+        y_destino: String(ICoordenadasPontosDTO.y_destino).toLowerCase(),
+        piso_destino: ICoordenadasPontosDTO.piso_destino.toLowerCase(),
+      } as IPlaneamentoInfoDTO;
+
+      return this.comunicaoComPlaneamento(jsonDados);
   }
 
   private async comunicaoComPlaneamento(jsonDados: IPlaneamentoInfoDTO): Promise<Result<IPlaneamentoCaminhosDTO>> {

@@ -67,12 +67,12 @@ export default class PlaneamentoService implements IPlaneamentoService {
 
 
             let ICoordenadasPontosDTO = {
-                x_origem: coordenadasSalaI.returnAbcissaPorta(),
-                y_origem: coordenadasSalaI.returnOrdenadaPorta(),
-                piso_origem: edificioI.returnEdificioId() + salaI.props.piso.returnIdPiso(),
-                x_destino: coordenadasSalaF.returnAbcissaPorta(),
-                y_destino: coordenadasSalaF.returnOrdenadaPorta(),
-                piso_destino: edificioF.returnEdificioId() + salaF.props.piso.returnIdPiso(),
+                x_origem: coordenadasSalaI.returnOrdenadaPorta(),
+                y_origem: coordenadasSalaI.returnAbcissaPorta(),
+                piso_origem: edificioI.returnEdificioId() + salaI.props.piso.returnNumeroPiso(),
+                x_destino: coordenadasSalaF.returnOrdenadaPorta(),
+                y_destino: coordenadasSalaF.returnAbcissaPorta(),
+                piso_destino: edificioF.returnEdificioId() + salaF.props.piso.returnNumeroPiso(),
             } as ICoordenadasPontosDTO;
             
             let answer = await this.edificioServiceInstance.getInformacaoPlaneamento(ICoordenadasPontosDTO);
