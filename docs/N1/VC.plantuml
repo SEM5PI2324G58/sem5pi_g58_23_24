@@ -1,7 +1,11 @@
 @startuml
 left to right direction
-actor "Ator" as ator
 actor "Gestor de Frota" as frota
+actor "Gestor de Campus" as campus
+actor "Administrador de Sistema" as admin
+actor "Gestor de tarefas" as tarefa
+actor "Ator" as ator
+usecase "Upload mapa do campus" as US130
 usecase "Criar Edificio" as UC150
 usecase "Editar Edifício" as UC160
 usecase "Listar todos os Edifícios" as UC170
@@ -23,26 +27,58 @@ usecase "Criar Sala de um Piso" as UC310
 usecase "Adicionar novo tipo de robot" as UC350
 usecase "Adicionar novo robot à frota" as UC360
 usecase "Inibir um robot" as UC370
-usecase "Consultar todos os robots de forta" as UC380
+usecase "Consultar todos os robots de frota" as UC380
 usecase "Pesquisar todos os robots da frota por designação ou tarefa" as UC390
 
-ator --> UC150
-ator --> UC160
-ator --> UC170
-ator --> UC180
-ator --> UC190
-ator --> UC200
-ator --> UC210
-ator --> UC220
-ator --> UC230
-ator --> UC240
-ator --> UC250
-ator --> UC260
-ator --> UC270
-ator --> UC280
-ator --> UC290
-ator --> UC300
-ator --> UC310
+usecase "Deployment de um dos módulos do RFP" as UC640
+usecase "Apenas os clientes da rede interna do DEI possam aceder" as UC650
+usecase "Apenas os clientes definidos num ficheiro possam aceder" as UC660
+usecase "Identificar e quantificar os riscos envolvidos da solução" as UC670
+usecase "Definir MBCO" as UC800
+usecase "Proposta RPO e WRT" as UC810
+usecase "Definir uma pasta pública" as UC820
+usecase "Obter os utilizadores com mais do que 3 acessos incorretos" as UC830
+
+usecase "Obter caminho entre dois edifícios" as UC1220
+usecase "Obter caminho entre dois edifício otimizando um dado critério" as UC510
+usecase "Análise de complexidade" as UC515
+
+usecase "Relatório RGPD" as UC90
+
+usecase "Pipeline de build contínuo" as UC610
+usecase "Deployment automático na cloud" as UC620
+usecase "Deployment num ambiente cloud" as UC630
+
+usecase "Menu com funcionalidades" as UC535
+usecase "Partilha de informação dos robots entre os módulos" as UC700
+usecase "Partilha de informação dos edificios, pisos, passagens, elevadores e mapas entre os módulos" as UC710
+usecase "Partilha de informação dos percursos entre os módulos" as UC730
+
+usecase "Informação do mapa do piso complementado com o módulo de gestão de campus" as UC601
+usecase "Informação do mapa do piso complementado com texturas e modelos" as UC602
+usecase "Visualizar em 3D o mapa do piso" as UC603
+usecase "Visualizar uma interface para selecionar o edifício e piso" as UC604
+usecase "Importar um modelo 3D de um robot e visualizar no mapa do piso" as UC605
+usecase "Permitir a navegação 3D interativo no mapa do piso" as UC606
+
+campus --> US130
+campus --> UC150
+campus --> UC160
+campus --> UC170
+campus --> UC180
+campus --> UC190
+campus --> UC200
+campus --> UC210
+campus --> UC220
+campus --> UC230
+campus --> UC240
+campus --> UC250
+campus --> UC260
+campus --> UC270
+campus --> UC280
+campus --> UC290
+campus --> UC300
+campus --> UC310
 
 frota --> UC350
 frota --> UC360
@@ -50,4 +86,31 @@ frota --> UC370
 frota --> UC380
 frota --> UC390
 
+admin --> UC640
+admin --> UC650
+admin --> UC660
+admin --> UC670
+admin --> UC800
+admin --> UC810
+admin --> UC820
+admin --> UC830
+
+tarefa --> UC1220
+tarefa --> UC510
+tarefa --> UC515
+
+ator --> UC90
+ator --> UC610
+ator --> UC620
+ator --> UC630
+ator --> UC535
+ator --> UC700
+ator --> UC710
+ator --> UC730
+ator --> UC601
+ator --> UC602
+ator --> UC603
+ator --> UC604
+ator --> UC605
+ator --> UC606
 @enduml
