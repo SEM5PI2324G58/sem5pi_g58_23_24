@@ -10,10 +10,10 @@
         "nome": "D201",
         "abcissaA": 0,
         "ordenadaA": 2,
-        "abcissaB": 5,
-        "ordenadaB": 3,
+        "abcissaB": 3,
+        "ordenadaB": 5,
         "abcissaPorta" : 4,
-        "ordenadaPorta" : 2,
+        "ordenadaPorta" : 4,
         "orientacaoPorta" : "Oeste"
     },
     {
@@ -71,7 +71,7 @@
         "id": 54,
         "abcissa": 12,
         "ordenada": 0,
-        "orientacao": "Norte"
+        "orientacao": "Oeste"
     }
     ] 
 }

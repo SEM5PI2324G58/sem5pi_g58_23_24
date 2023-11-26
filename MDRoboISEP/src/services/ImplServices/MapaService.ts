@@ -42,12 +42,10 @@ export default class MapaService implements IMapaService{
             return Result.fail<ICarregarMapaDTO>("O mapa já tem algo carregado."); // Ainda não implementado.
         }
         let mapaTipoPonto : TipoPonto[][] = [];
-        for(let j = 0; j <= edificio.returnDimensaoY(); j++){
-            mapaTipoPonto[j] = [];
-        }
         for(let i = 0; i <= edificio.returnDimensaoX(); i++){
+            mapaTipoPonto[i] = [];
             for(let j = 0; j <= edificio.returnDimensaoY(); j++){
-                mapaTipoPonto[j][i] = TipoPonto.create(" ").getValue();
+                mapaTipoPonto[i][j] = TipoPonto.create(" ").getValue();
             }
         }
         mapa = Mapa.create({mapa:mapaTipoPonto}, IdMapa.create(await this.mapaRepo.getMaxId() + 1).getValue()).getValue();
@@ -72,18 +70,6 @@ export default class MapaService implements IMapaService{
             return Result.fail<ICarregarMapaDTO>("Não existe nada para carregar no mapa.");
         }
 
-        let elevador = edificio.returnElevador();
-        if(elevadorVaiSerCriado){
-            if(!edificio.temElevador()){
-                return Result.fail<ICarregarMapaDTO>("Não existe elevador neste edifício.");
-            }
-            if(elevador.returnIdPisosServidos().includes(piso.returnIdPiso()) === false){
-                return Result.fail<ICarregarMapaDTO>("O elevador não serve este piso.");
-            };
-            if(mapa.criarPontosElevador(mapaDTO.elevador.xCoord, mapaDTO.elevador.yCoord, mapaDTO.elevador.orientacao) === false){
-                return Result.fail<ICarregarMapaDTO>("O elevador está fora dos limites do edifício.");
-            }
-        }
         // Salas
         if(salasVaoSerCriadas){
             if(await this.verificarSalasValidas(piso, mapaDTO) === false){
@@ -96,6 +82,19 @@ export default class MapaService implements IMapaService{
                     }
             }
 
+        }
+
+        let elevador = edificio.returnElevador();
+        if(elevadorVaiSerCriado){
+            if(!edificio.temElevador()){
+                return Result.fail<ICarregarMapaDTO>("Não existe elevador neste edifício.");
+            }
+            if(elevador.returnIdPisosServidos().includes(piso.returnIdPiso()) === false){
+                return Result.fail<ICarregarMapaDTO>("O elevador não serve este piso.");
+            };
+            if(mapa.criarPontosElevador(mapaDTO.elevador.xCoord, mapaDTO.elevador.yCoord, mapaDTO.elevador.orientacao) === false){
+                return Result.fail<ICarregarMapaDTO>("O elevador está fora dos limites do edifício.");
+            }
         }
 
         // Passagens

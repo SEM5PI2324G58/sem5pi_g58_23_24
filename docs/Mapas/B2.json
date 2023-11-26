@@ -1,6 +1,6 @@
 {
     "codigoEdificio": "B",
-    "numeroPiso" : 1,
+    "numeroPiso" : 2,
     "elevador" : {
         "xCoord" :21,
         "yCoord" : 7,

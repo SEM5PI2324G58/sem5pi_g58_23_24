@@ -38,11 +38,11 @@
     },
     {
         "nome": "B104",
-        "abcissaA": 7,
+        "abcissaA": 6,
         "ordenadaA": 6,
         "abcissaB": 9,
         "ordenadaB": 9,
-        "abcissaPorta" : 8,
+        "abcissaPorta" : 6,
         "ordenadaPorta" : 7,
         "orientacaoPorta" : "Oeste"
     },
@@ -58,8 +58,8 @@
     },
     {
         "nome": "B106",
-        "abcissaA": 6,
-        "ordenadaA": 10,
+        "abcissaA": 10,
+        "ordenadaA": 6,
         "abcissaB": 18,
         "ordenadaB": 9,
         "abcissaPorta" : 16,

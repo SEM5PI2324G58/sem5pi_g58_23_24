@@ -61,13 +61,13 @@
         "id": 52,
         "abcissa": 8,
         "ordenada": 0,
-        "orientacao": "Oeste"
+        "orientacao": "Norte"
     },
     {
         "id": 55,
         "abcissa": 12,
         "ordenada": 0,
-        "orientacao": "Norte"
+        "orientacao": "Oeste"
     }
     ] 
 }

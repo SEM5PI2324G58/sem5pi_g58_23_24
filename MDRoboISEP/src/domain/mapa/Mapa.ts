@@ -416,13 +416,17 @@ export class Mapa extends AggregateRoot<pisoProps> {
     this.carregarCoordenadasSala(nome, xCoordSup, yCoordSup, xCoordInf, yCoordInf, abcissaPorta,
       ordenadaPorta, orientacaoPorta);
     if(orientacaoPorta === 'Norte'){
-      if(this.props.mapa[xCoordSup][yCoordSup].returnTipoPonto() === 'NorteOeste'){
+      if(this.props.mapa[abcissaPorta][ordenadaPorta].returnTipoPonto() === 'NorteOeste'){
+        this.toPortaNorteNorteOeste(abcissaPorta,ordenadaPorta);
+      }else if(this.props.mapa[abcissaPorta][ordenadaPorta].returnTipoPonto() === 'Oeste'){
         this.toPortaNorteNorteOeste(abcissaPorta,ordenadaPorta);
       }else{
         this.toPortaNorte(abcissaPorta,ordenadaPorta);
       }
     }else {
-      if(this.props.mapa[xCoordSup][yCoordSup].returnTipoPonto() === 'NorteOeste'){
+      if(this.props.mapa[abcissaPorta][ordenadaPorta].returnTipoPonto() === 'NorteOeste'){
+        this.toPortaOesteNorteOeste(abcissaPorta,ordenadaPorta);
+      }else if(this.props.mapa[abcissaPorta][ordenadaPorta].returnTipoPonto() === 'Norte'){
         this.toPortaOesteNorteOeste(abcissaPorta,ordenadaPorta);
       }else{
         this.toPortaOeste(abcissaPorta,ordenadaPorta);
@@ -490,8 +494,6 @@ export class Mapa extends AggregateRoot<pisoProps> {
           }else{
             this.toPortaOesteNorteOeste(abcissaPorta,ordenadaPorta);
           }
-        }else{
-          this.toPortaOeste(abcissaPorta,ordenadaPorta);
         }
       }
     }

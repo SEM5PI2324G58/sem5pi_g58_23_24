@@ -2,8 +2,8 @@
     "codigoEdificio": "C",
     "numeroPiso" : 2,
     "elevador" : {
-        "xCoord" :12,
-        "yCoord" : 0,
+        "xCoord" : 0,
+        "yCoord" : 12,
         "orientacao": "Este"   
     },
     "salas": [{
@@ -49,7 +49,7 @@
     {
         "nome": "C205",
         "abcissaA": 4,
-        "ordenadaA": 5,
+        "ordenadaA": 6,
         "abcissaB": 9,
         "ordenadaB": 9,
         "abcissaPorta" : 8,
@@ -89,9 +89,9 @@
     ],
     "passagens": [{
         "id": 54,
-        "abcissa": 14,
-        "ordenada": 0,
-        "orientacao": "Norte"
+        "abcissa": 0,
+        "ordenada": 14,
+        "orientacao": "Oeste"
     }
     ]
 }

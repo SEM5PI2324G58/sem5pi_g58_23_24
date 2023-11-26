@@ -2,8 +2,8 @@
     "codigoEdificio": "C",
     "numeroPiso" : 4,
     "elevador" : {
-        "xCoord" :12,
-        "yCoord" : 0,
+        "xCoord" : 0,
+        "yCoord" : 12,
         "orientacao": "Este"   
     },
     "salas": [{
@@ -13,7 +13,7 @@
         "abcissaB": 5,
         "ordenadaB": 7,
         "abcissaPorta" : 6,
-        "ordenadaPorta" : 6,
+        "ordenadaPorta" : 7,
         "orientacaoPorta" : "Oeste"
     },
     {
@@ -49,9 +49,9 @@
     ],
     "passagens": [{
         "id": 53,
-        "abcissa": 8,
-        "ordenada": 0,
-        "orientacao": "Norte"
+        "abcissa": 0,
+        "ordenada": 8,
+        "orientacao": "Oeste"
     }
     ]
 }
