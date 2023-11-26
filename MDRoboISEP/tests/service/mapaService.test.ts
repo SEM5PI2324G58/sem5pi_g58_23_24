@@ -447,9 +447,17 @@ describe('Mapa Service', () => {
         let mapaRepoInstance = Container.get("MapaRepo") as IMapaRepo;
         let pisoRepoInstance = Container.get("PisoRepo") as IPisoRepo;
 
+        let salaProps : any = {
+            piso : edificio.returnListaPisos()[0],
+            categoria : Categorizacao.create("Gabinete").getValue(),
+            descricao : DescricaoSala.create("B203").getValue(),
+            listaPontos : [undefined, undefined],
+        }
+        let sala = Sala.create(salaProps, NomeSala.create(body.salas[0].nome).getValue()).getValue();
+
         sinon.stub(edificioRepoInstance, 'findByDomainId').returns(Promise.resolve(edificio));
         sinon.stub(mapaRepoInstance, 'getMaxId').returns(Promise.resolve(0));
-
+        sinon.stub(salaRepoInstance, 'findSalasByPiso').returns(Promise.resolve([sala]));
         
         const mapaService = new MapaService(mapaRepoInstance, edificioRepoInstance, salaRepoInstance, passagemRepoInstance, pisoRepoInstance);
         let answer = await mapaService.carregarMapa(body as ICarregarMapaDTO);
@@ -556,9 +564,16 @@ describe('Mapa Service', () => {
         let passagemRepoInstance = Container.get("PassagemRepo") as IPassagemRepo;
         let mapaRepoInstance = Container.get("MapaRepo") as IMapaRepo;
         let pisoRepoInstance = Container.get("PisoRepo") as IPisoRepo;
+        let salaProps : any = {
+            piso : edificio.returnListaPisos()[0],
+            categoria : Categorizacao.create("Gabinete").getValue(),
+            descricao : DescricaoSala.create("B203").getValue(),
+        }
+        let sala = Sala.create(salaProps, NomeSala.create(body.salas[0].nome).getValue()).getValue();
 
         sinon.stub(edificioRepoInstance, 'findByDomainId').returns(Promise.resolve(edificio));
         sinon.stub(mapaRepoInstance, 'getMaxId').returns(Promise.resolve(0));
+        sinon.stub(salaRepoInstance, 'findSalasByPiso').returns(Promise.resolve([sala]));
 
 
         const mapaService = new MapaService(mapaRepoInstance, edificioRepoInstance, salaRepoInstance, passagemRepoInstance, pisoRepoInstance);
