@@ -228,14 +228,16 @@ caminho_pontos_piso(XOrig,YOrig,PisoOrig,XDest,YDest,PisoDest,LEdCam,LLig,LCelCa
 
 
 processar_LLig([],[]).
-processar_LLig([cor(Piso1,Piso2)|LLig],[cel1(Piso1,X1,Y1),cel1(Piso2,X2,Y2)|LCelCam]):- 
+%Troca da X e Y para as informações estarem de acordo com o mapa
+processar_LLig([cor(Piso1,Piso2)|LLig],[cel1(Piso1,Y1,X1),cel1(Piso2,Y2,X2)|LCelCam]):- 
     (coordCorredor(Piso1,Piso2,X1,Y1,_,_,X2,Y2,_,_);coordCorredor(Piso2,Piso1,X2,Y2,_,_,X1,Y1,_,_)),
     processar_LLig(LLig,LCelCam).
 
+%Troca da X e Y para as informações estarem de acordo com o mapa
 processar_LLig([elev(Piso1,Piso2)|LLig],[cel1(Piso1,X,Y),cel1(Piso2,X,Y)|LCelCam]):-
     elevador(Ed,LEd),
     member(Piso1, LEd),
-    coordElevador(Ed,X,Y),
+    coordElevador(Ed,Y,X),
     processar_LLig(LLig,LCelCam).
 
 processar_LCelCam([],[]).
