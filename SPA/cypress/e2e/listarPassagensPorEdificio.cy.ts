@@ -7,7 +7,8 @@ describe('Listar passagens por par de edifícios', () => {
         cy.intercept('POST', '/api/piso').as('createPiso');
         cy.intercept('POST', '/api/passagem').as('createPassagem');
         cy.intercept('GET', '/api//passagem/listarPassagensPorParDeEdificios?edificioACod=T1&edificioBCod=T2').as('getPassagensPorEdificio');
-        cy.intercept('DELETE', '/api/edificio').as('apagarEdificio');
+        cy.intercept('DELETE', '/api/edificio?codEdificio=T1').as('apagarEdificio');
+        
         
         //Criar 2 edificio
         cy.visit('/criarEdificio')
@@ -83,5 +84,6 @@ describe('Listar passagens por par de edifícios', () => {
         cy.get('[name="codigo"]').clear();
         cy.get('[name="codigo"]').type('T2');
         cy.get('button').click();
+        cy.wait('@apagarEdificio');
     });
 })

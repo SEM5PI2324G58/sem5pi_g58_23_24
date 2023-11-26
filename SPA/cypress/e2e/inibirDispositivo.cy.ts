@@ -31,6 +31,8 @@ describe('Inibir dispositivos', () => {
         cy.get('[name="descricao"]').type('Desc1');
         cy.get('button').click();
         cy.wait('@createDispositivo');
+        cy.intercept('DELETE', '/api/tipoDispositivo?idTipoDispositivo='+id).as('apagarTipoRobo');
+
         });        
     });
 
@@ -62,6 +64,7 @@ describe('Inibir dispositivos', () => {
             cy.visit('/apagarTipoRobo');
             cy.get('[name="id"]').type(id);
             cy.get('button').click();
+            cy.wait('@apagarTipoRobo');
         } else {
             cy.log('Erro');
         }

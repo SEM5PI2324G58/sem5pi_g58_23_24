@@ -2,6 +2,8 @@ describe('Edificio', () => {
 
     beforeEach(() => {
         cy.intercept('POST', '/api/edificio').as('createEdificio');
+        cy.intercept('DELETE', '/api/edificio?codEdificio=T1').as('apagarEdificio');
+
     });
     
     it('Criar edificio com sucesso', () => {
@@ -21,5 +23,6 @@ describe('Edificio', () => {
         cy.visit('/apagarEdificio');
         cy.get('[name="codigo"]').type('T1');
         cy.get('button').click();
+        cy.wait('@apagarEdificio');
     });
 })

@@ -27,6 +27,7 @@ describe('Listar dispositivos da frota', () => {
             cy.get('[name="descricao"]').type('Desc1');
             cy.get('button').click();
             cy.wait('@createDispositivo');
+            cy.intercept('DELETE', '/api/tipoDispositivo?idTipoDispositivo='+id).as('apagarTipoRobo');
         });
     });
 
@@ -50,6 +51,7 @@ describe('Listar dispositivos da frota', () => {
         cy.visit('/apagarTipoRobo');
         cy.get('[name="id"]').type(id);
         cy.get('button').click();
+        cy.wait('@apagarTipoRobo');
     });
     
 });
