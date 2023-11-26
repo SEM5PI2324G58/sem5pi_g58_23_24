@@ -199,11 +199,11 @@ export default class EdificioService implements IEdificioService {
       }
     }
 
-    if (pisoStringList.length === 0 || elevadorStringList.length === 0 || CoordElevadorStringList.length === 0
+    /*if (pisoStringList.length === 0 || elevadorStringList.length === 0 || CoordElevadorStringList.length === 0
       || corredorStringList.length === 0 || coordCorredorStringList.length === 0 || salaStringList.length === 0
       || CoordPortasStringList.length === 0) {
       return Result.fail<IPlaneamentoCaminhosDTO>("Não existem dados para o planeamento");
-    }
+    }*/
     const jsonDados = {
       pisos: pisoStringList,
       elevadores: elevadorStringList,
@@ -222,6 +222,10 @@ export default class EdificioService implements IEdificioService {
       piso_destino: ICoordenadasPontosDTO.piso_destino,
     } as IPlaneamentoInfoDTO;
 
+    return this.comunicaoComPlaneamento(jsonDados);
+  }
+
+  private async comunicaoComPlaneamento(jsonDados: IPlaneamentoInfoDTO): Promise<Result<IPlaneamentoCaminhosDTO>> {
     try {
       // Dynamic import of 'fetch'
       const { default: fetch } = await import('node-fetch');
@@ -239,10 +243,9 @@ export default class EdificioService implements IEdificioService {
       const responseData = await response.json() as IPlaneamentoCaminhosDTO;
       return Result.ok<IPlaneamentoCaminhosDTO>(responseData);
     } catch (error) {
-      throw error;
+      return Result.fail<IPlaneamentoCaminhosDTO>(error);
     }
   }
-
 
   public async criarEdificio(edificioDTO: IEdificioDTO): Promise<Result<IEdificioDTO>> {
     try {
