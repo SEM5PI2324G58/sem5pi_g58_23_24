@@ -1,4 +1,5 @@
 export default interface IPlaneamentoCaminhosDTO {
     LEdCam: string; 
-    LLig: string;     
+    caminho: string;
+    custo: string;
 }

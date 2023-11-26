@@ -48,10 +48,11 @@ caminho_pontos_piso_handler(Request) :-
     atom_string(YD,YDest),
     atom_string(PD,PisoDest),
     obter_dados(ListaPiso, ListaElev, ListaCoordElev, ListaCorr, ListaCoordCorr, ListaSalas, ListaCoordPortas, ListaMatrizMapa, ListaDimensoes),
-    caminho_pontos_piso(XO, YO, PO, XD, YD, PD, LEdCam, LLig),
+    caminho_pontos_piso(XO, YO, PO, XD, YD, PD, LEdCam,LLig,LCelCamPisos,Custo),
     with_output_to(atom(LEdCamf),write(LEdCam)),
-    with_output_to(atom(LLigf),write(LLig)),
-    R = json([edificios=LEdCamf,ligacoes=LLigf]),
+    with_output_to(atom(LCelCamPisosf),write(LCelCamPisos)),
+    with_output_to(atom(Custof),write(Custo)),
+    R = json([edificios=LEdCamf,ligacoes=LCelCamPisosf,custo=Custof]),
     prolog_to_json(R, JSONObject),
     reply_json(JSONObject, [json_object(dict)]).
 

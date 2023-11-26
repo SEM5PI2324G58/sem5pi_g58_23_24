@@ -136,7 +136,7 @@ export default class EdificioService implements IEdificioService {
         elevadorStringList.push(elevadorString);
       }
 
-      let stringDim = "dim(" + edificio.returnEdificioId().toLowerCase() + "," + String(edificio.returnDimensaoX()).toLowerCase() + "," + String(edificio.returnDimensaoY()).toLowerCase() + ").";
+      let stringDim = "dim_ed(" + edificio.returnEdificioId().toLowerCase() + "," + String(edificio.returnDimensaoX()).toLowerCase() + "," + String(edificio.returnDimensaoY()).toLowerCase() + ").";
       dimStringList.push(stringDim);
 
     }
@@ -189,7 +189,8 @@ export default class EdificioService implements IEdificioService {
           }
         }
         if (corredorA !== null && corredorA !== undefined && corredorB !== null && corredorB !== undefined) {
-          let coordCorredorString = "coordCorredor(" + edificioA.returnEdificioId().toLowerCase() + "," + edificioB.returnEdificioId().toLowerCase() + "," +
+          let coordCorredorString = "coordCorredor(" + edificioA.returnEdificioId().toLowerCase()+ String(pisoA.returnNumeroPiso()) + 
+          "," + edificioB.returnEdificioId().toLowerCase()+ String(pisoB.returnNumeroPiso()) + "," +
             String(corredorA.returnAbcissaInf()).toLowerCase() + "," + String(corredorA.returnOrdenadaInf()).toLowerCase() + "," +
             String(corredorA.returnAbcissaSup()).toLowerCase() + "," + String(corredorA.returnOrdenadaSup()).toLowerCase() + "," +
             String(corredorB.returnAbcissaInf()).toLowerCase() + "," + String(corredorB.returnOrdenadaInf()).toLowerCase() + "," +
@@ -199,11 +200,11 @@ export default class EdificioService implements IEdificioService {
       }
     }
 
-    /*if (pisoStringList.length === 0 || elevadorStringList.length === 0 || CoordElevadorStringList.length === 0
+    if (pisoStringList.length === 0 || elevadorStringList.length === 0 || CoordElevadorStringList.length === 0
       || corredorStringList.length === 0 || coordCorredorStringList.length === 0 || salaStringList.length === 0
-      || CoordPortasStringList.length === 0) {
+      || CoordPortasStringList.length === 0 || mapaStringList.length === 0 || dimStringList.length === 0 ) {
       return Result.fail<IPlaneamentoCaminhosDTO>("Não existem dados para o planeamento");
-    }*/
+    }
     const jsonDados = {
       pisos: pisoStringList,
       elevadores: elevadorStringList,
@@ -214,12 +215,12 @@ export default class EdificioService implements IEdificioService {
       coordPortas: CoordPortasStringList,
       listaMatrizMapa: mapaStringList,
       dimensoes: dimStringList,
-      x_origem: String(ICoordenadasPontosDTO.x_origem),
-      y_origem: String(ICoordenadasPontosDTO.y_origem),
-      piso_origem: ICoordenadasPontosDTO.piso_origem,
-      x_destino: String(ICoordenadasPontosDTO.x_destino),
-      y_destino: String(ICoordenadasPontosDTO.y_destino),
-      piso_destino: ICoordenadasPontosDTO.piso_destino,
+      x_origem: String(ICoordenadasPontosDTO.x_origem).toLowerCase(),
+      y_origem: String(ICoordenadasPontosDTO.y_origem).toLowerCase(),
+      piso_origem: ICoordenadasPontosDTO.piso_origem.toLowerCase(),
+      x_destino: String(ICoordenadasPontosDTO.x_destino).toLowerCase(),
+      y_destino: String(ICoordenadasPontosDTO.y_destino).toLowerCase(),
+      piso_destino: ICoordenadasPontosDTO.piso_destino.toLowerCase(),
     } as IPlaneamentoInfoDTO;
 
     return this.comunicaoComPlaneamento(jsonDados);

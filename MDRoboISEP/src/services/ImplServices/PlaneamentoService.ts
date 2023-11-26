@@ -79,7 +79,7 @@ export default class PlaneamentoService implements IPlaneamentoService {
             if(answer.isFailure){
                 return Result.fail<String>("Não foi possível encontrar um caminho entre as salas");
             }
-            return Result.ok<String>(answer.getValue().LLig);
+            return Result.ok<String>(answer.getValue().caminho);
         }
         catch (e) {
             throw e;

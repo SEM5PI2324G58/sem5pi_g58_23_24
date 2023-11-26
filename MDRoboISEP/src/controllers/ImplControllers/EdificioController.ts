@@ -19,12 +19,12 @@ export default class EdificioController implements IEdificioController /* TODO: 
   public async getInformacaoPlaneamento(req: Request, res: Response, next: NextFunction) {
     try{
       let props: ICoordenadasPontosDTO = {
-        x_origem: Number(req.query.x_origem),
-        y_origem: Number(req.query.y_origem),
-        piso_origem: req.query.piso_origem as string,
-        x_destino: Number(req.query.x_destino),
-        y_destino: Number(req.query.y_destino),
-        piso_destino: req.query.piso_destino as string
+        x_origem: Number(req.body.x_origem),
+        y_origem: Number(req.body.y_origem),
+        piso_origem: req.body.piso_origem as string,
+        x_destino: Number(req.body.x_destino),
+        y_destino: Number(req.body.y_destino),
+        piso_destino: req.body.piso_destino as string
       };
 
       const edificioOrError = await this.edificioServiceInstance.getInformacaoPlaneamento(props) as Result<IPlaneamentoCaminhosDTO>;
