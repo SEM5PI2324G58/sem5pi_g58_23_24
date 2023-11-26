@@ -9,6 +9,8 @@ describe('Editar passagem', () => {
         cy.intercept('GET', '/api/piso?codigo=T2').as('getPisosEdificioB');
         cy.intercept('POST', '/api/passagem').as('createPassagem');
         cy.intercept('PUT', '/api/passagem').as('editPassagem');
+        cy.intercept('DELETE', '/api/edificio?codEdificio=T1').as('apagarEdificio');
+
         
         //Criar 2 edificios
        
@@ -127,5 +129,6 @@ describe('Editar passagem', () => {
         cy.visit('/apagarEdificio');
         cy.get('[name="codigo"]').type('T1');
         cy.get('button').click();
+        cy.wait('@apagarEdificio');
     });
 })

@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 
 import { MapaService } from './mapa.service';
 import ExportarMapa from 'src/dataModel/exportarMapa';
+import { devEnvironment } from 'src/environments/environment.development';
 
 describe('MapaService', () => {
   let service: MapaService;
@@ -31,7 +32,7 @@ describe('MapaService', () => {
 
     const patchSpy = spyOn(httpClient, 'patch').and.returnValue(of(testData));
     service.carregarMapa(testData);
-    expect(patchSpy).toHaveBeenCalledWith('http://localhost:4000/api/mapa', testData, service.httpOptions);
+    expect(patchSpy).toHaveBeenCalledWith(devEnvironment.MDRI_API_URL + 'mapa', testData, service.httpOptions);
   });
 
   it('Método exportarMapa chama o método get do HttpClient', () => {
@@ -72,6 +73,6 @@ describe('MapaService', () => {
 
     const getSpy = spyOn(httpClient, 'get').and.returnValue(of(testData));
     service.exportarMapa(testData.codigoEdificio, testData.numeroPiso);
-    expect(getSpy).toHaveBeenCalledWith("http://localhost:4000/api/mapa", {params: params, headers: service.httpOptions.headers});
+    expect(getSpy).toHaveBeenCalledWith(devEnvironment.MDRI_API_URL + "mapa", {params: params, headers: service.httpOptions.headers});
   });
 });

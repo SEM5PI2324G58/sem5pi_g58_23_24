@@ -8,6 +8,8 @@ describe('Listar elevador', () => {
         cy.intercept('GET', '/api/piso?codigo=T1').as('getPisosEdificio');
         cy.intercept('POST', '/api/elevador').as('createElevador');
         cy.intercept('GET', '/api/elevador/elevadoresPorEdificio?edificio=T1').as('listarElevador');
+        cy.intercept('DELETE', '/api/edificio?codEdificio=T1').as('apagarEdificio');
+
         
         //Criar um edificio
         cy.visit('/criarEdificio')
@@ -75,5 +77,6 @@ describe('Listar elevador', () => {
         cy.visit('/apagarEdificio');
         cy.get('[name="codigo"]').type('T1');
         cy.get('button').click();
+        cy.wait('@apagarEdificio');
     });
 })

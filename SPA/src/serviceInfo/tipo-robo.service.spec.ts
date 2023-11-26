@@ -5,6 +5,7 @@ import { TipoRobo } from 'src/dataModel/tipoRobo';
 import { of } from 'rxjs';
 
 import { TipoRoboService } from './tipo-robo.service';
+import { devEnvironment } from 'src/environments/environment.development';
 
 describe('TipoRoboService', () => {
   let service: TipoRoboService;
@@ -28,7 +29,7 @@ describe('TipoRoboService', () => {
 
     service.criarTipoRobo(testData.tipoTarefa, testData.marca, testData.modelo);
     
-    expect(postSpy).toHaveBeenCalledWith('http://localhost:4000/api/tipoDispositivo', testDataInput, service.httpOptions);
+    expect(postSpy).toHaveBeenCalledWith(devEnvironment.MDRI_API_URL + 'tipoDispositivo', testDataInput, service.httpOptions);
   });
 
   it('Método criarTipoRobo com marca vazia não chama o método post do HttpClient', () => {
