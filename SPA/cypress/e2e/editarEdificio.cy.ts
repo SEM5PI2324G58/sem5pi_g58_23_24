@@ -5,6 +5,8 @@ describe('Edificio', () => {
         cy.intercept('POST', '/api/edificio').as('createEdificio');
         cy.intercept('GET', '/api/edificio').as('getEdificio');
         cy.intercept('PUT', '/api/edificio').as('editarEdificio');
+        cy.intercept('DELETE', '/api/edificio?codEdificio=T1').as('apagarEdificio');
+
         cy.visit('/criarEdificio')
         cy.get('[name="codigo"]').type('T1');
         cy.get('[name="nomeEdificio"]').type('Nome1');
@@ -30,5 +32,6 @@ describe('Edificio', () => {
         cy.visit('/apagarEdificio');
         cy.get('[name="codigo"]').type('T1');
         cy.get('button').click();
+        cy.wait('@apagarEdificio');
     });
 })

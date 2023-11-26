@@ -7,7 +7,7 @@ describe('Listar Piso', () => {
         cy.intercept('POST', '/api/piso').as('createPiso');
         cy.intercept('POST', '/api/passagem').as('createPassagem');
         cy.intercept('GET', '/api//passagem/listarPisosComPassagens').as('getPassagens');
-        cy.intercept('DELETE', '/api/edificio').as('apagarEdificio');
+        cy.intercept('DELETE', '/api/edificio?codEdificio=T1').as('apagarEdificio');
 
         //Criar 2 edificio
         cy.visit('/criarEdificio')
@@ -60,6 +60,7 @@ describe('Listar Piso', () => {
 
     it('Listar pisos com passagem com sucesso', () => {
         cy.visit('/listarPisoPassagem');
+        cy.wait('@getPassagens');
 
         // Encuentra todos los elementos 'td' dentro de 'table' y verifica que cada uno no esté vacío
         cy.get('table').find('td').each(($td) => {
@@ -73,5 +74,6 @@ describe('Listar Piso', () => {
         cy.visit('/apagarEdificio');
         cy.get('[name="codigo"]').type('T1');
         cy.get('button').click();
+        cy.wait('@apagarEdificio');
     });
 })

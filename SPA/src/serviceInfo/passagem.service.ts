@@ -21,10 +21,10 @@ interface TabelaInfo {
 
 export class PassagemService {
 
-  private passagemUrl = 'http://localhost:4000/api/passagem';
-  private passagemUrl2 = 'http://localhost:4000/api/passagem/editarPassagens';
-  private passagemUrl3 = 'http://localhost:4000/api/passagem/listarPisosComPassagens';
-  private passagemUrlMain = devEnvironment.MDRI_API_URL + '/passagem';
+  private passagemUrl = devEnvironment.MDRI_API_URL +'passagem';
+  private passagemUrl2 = devEnvironment.MDRI_API_URL +'passagem/editarPassagens';
+  private passagemUrl3 =  devEnvironment.MDRI_API_URL +'passagem/listarPisosComPassagens';
+  private passagemUrlMain = devEnvironment.MDRI_API_URL + 'passagem';
   
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })

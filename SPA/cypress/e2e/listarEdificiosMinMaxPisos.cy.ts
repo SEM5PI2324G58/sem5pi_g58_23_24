@@ -6,6 +6,8 @@ describe('Listar Edificio com Minimo e Max Pisos', () => {
         cy.intercept('GET', '/api/edificio').as('getEdificio');
         cy.intercept('POST', '/api/piso').as('createPiso');
         cy.intercept('GET', 'api/edificio/listarMinEMaxPisos?minPisos=0&maxPisos=2').as('getEdificioMinMax');
+        cy.intercept('DELETE', '/api/edificio?codEdificio=T1').as('apagarEdificio');
+
 
         
         //Criar um edificio
@@ -72,5 +74,6 @@ describe('Listar Edificio com Minimo e Max Pisos', () => {
         cy.visit('/apagarEdificio');
         cy.get('[name="codigo"]').type('T1');
         cy.get('button').click();
+        cy.wait('@apagarEdificio');
     });
 })

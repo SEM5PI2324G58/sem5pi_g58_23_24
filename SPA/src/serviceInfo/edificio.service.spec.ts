@@ -1,4 +1,4 @@
-
+import { devEnvironment } from 'src/environments/environment.development';
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { EdificioService } from './edificio.service';
@@ -29,7 +29,7 @@ describe('EdificioService', () => {
 
     service.criarEdificio(testData.codigo, String(testData.dimensaoX), String(testData.dimensaoY),testData.nome, testData.descricao);
     
-    expect(postSpy).toHaveBeenCalledWith('http://localhost:4000/api/edificio', testData, service.httpOptions);
+    expect(postSpy).toHaveBeenCalledWith(devEnvironment.MDRI_API_URL +'edificio', testData, service.httpOptions);
   });
 
   it('Método criarEdificio com código vazio não chama o método post do HttpClient', () => {
@@ -59,7 +59,7 @@ describe('EdificioService', () => {
     const putSpy = spyOn(httpClient, 'put').and.returnValue(of(testData));
 
     service.editarEdificio(testData.codigo, testData.nome, testData.descricao);
-    expect(putSpy).toHaveBeenCalledWith('http://localhost:4000/api/edificio', testData, service.httpOptions);
+    expect(putSpy).toHaveBeenCalledWith(devEnvironment.MDRI_API_URL + 'edificio', testData, service.httpOptions);
   });
 
   it ('Método editarEdificio com código vazio não chama o método put do HttpClient', () => {
@@ -77,7 +77,7 @@ describe('EdificioService', () => {
     const putSpy = spyOn(httpClient, 'put').and.returnValue(of(testData));
 
     service.editarEdificio(testDataInput.codigo, testDataInput.nome, testDataInput.descricao);
-    expect(putSpy).toHaveBeenCalledWith('http://localhost:4000/api/edificio', testData, service.httpOptions);
+    expect(putSpy).toHaveBeenCalledWith(devEnvironment.MDRI_API_URL + 'edificio', testData, service.httpOptions);
   });
 
   it ('Método editarEdificio com descricao vazia chama o método put do HttpClient, sem a descircao', () => {
@@ -87,7 +87,7 @@ describe('EdificioService', () => {
     const putSpy = spyOn(httpClient, 'put').and.returnValue(of(testData));
 
     service.editarEdificio(testDataInput.codigo, testDataInput.nome, testDataInput.descricao);
-    expect(putSpy).toHaveBeenCalledWith('http://localhost:4000/api/edificio', testData, service.httpOptions);
+    expect(putSpy).toHaveBeenCalledWith(devEnvironment.MDRI_API_URL +'edificio', testData, service.httpOptions);
   });
 
   it ('Método editarEdificio com nome e descricao vazios chama o método put do HttpClient, sem o nome e a descricao', () => {
@@ -106,6 +106,6 @@ describe('EdificioService', () => {
     const getSpy = spyOn(httpClient, 'get').and.returnValue(of(testData));
 
     service.listarCodEdificios();
-    expect(getSpy).toHaveBeenCalledWith('http://localhost:4000/api/edificio', service.httpOptions);
+    expect(getSpy).toHaveBeenCalledWith(devEnvironment.MDRI_API_URL + 'edificio', service.httpOptions);
   });
 });

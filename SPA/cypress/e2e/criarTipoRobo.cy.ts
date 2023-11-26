@@ -19,11 +19,15 @@ describe('Tipo de Robo', () => {
         cy.get('[name="app-message"]').invoke('text').then((text) => {
             const regex = /Tipo de Robot com id (\w+) criado com sucesso!/;
             const match = text.match(regex);
+            
             if (match) {
               let id = match[1];
+              cy.intercept('DELETE', '/api/tipoDispositivo?idTipoDispositivo='+id).as('apagarTipoRobo');
+
               cy.visit('/apagarTipoRobo');
               cy.get('[name="id"]').type(id);
               cy.get('button').click();
+              cy.wait('@apagarTipoRobo');
             } else {
               cy.log('Erro');
             }

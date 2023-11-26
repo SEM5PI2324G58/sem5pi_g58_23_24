@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, min, tap } from 'rxjs/operators';
 import { Edificio } from '../dataModel/edificio';
+import { devEnvironment } from 'src/environments/environment.development';
 
 import { MessageService } from './message.service';
 
@@ -12,7 +13,7 @@ import { MessageService } from './message.service';
 })
 export class EdificioService {
 
-  private edificioUrl = 'http://localhost:4000/api/edificio';
+  private edificioUrl = devEnvironment.MDRI_API_URL + 'edificio';
   
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })

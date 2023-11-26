@@ -141,114 +141,9 @@ export class Visualizacao3DComponent implements AfterViewInit {
     // Create a 3D scene (the game itself)
     this.scene3D = new THREE.Scene();
     let mazeData = this.mapa;
-    if (mazeData == null) {
-      mazeData = {
-        texturaChao: 'assets/ground.png',
-        texturaParede: 'assets/wall.jpg',
-        modeloPorta: 'assets/door/door.glb',
-        modeloElevador: 'assets/elevador/Elevator.glb',
-        codigoEdificio: 'Teste1',
-        numeroPiso: 1,
-        matriz: [
-          ['NorteOeste', 'PassagemOeste', 'Passagem', 'NorteOeste', 'Norte', 'NorteOeste', 'Norte', 'Norte', 'Norte', 'Norte', 'Oeste',],
-          ['Oeste', 'Oeste', ' ', 'Oeste', ' ', 'Oeste', ' ', ' ', ' ', ' ', 'Oeste',],
-          ['Oeste', 'PortaOeste', ' ', 'PortaNorte', 'Norte', 'Norte', 'PortaNorte', 'Norte', 'PortaOesteNorteOeste', 'Norte', 'Oeste',],
-          ['Oeste', 'Oeste', ' ', ' ', ' ', ' ', ' ', ' ', 'Oeste', ' ', 'Oeste'],
-          ['NorteOeste', 'Norte', 'Norte', 'PortaNorteNorteOeste', 'Norte', 'Norte', 'Oeste', ' ', 'Oeste', ' ', 'Oeste',],
-          ['Oeste', ' ', ' ', 'Oeste', ' ', ' ', 'Oeste', ' ', 'Oeste', ' ', 'Oeste',],
-          ['Oeste', ' ', ' ', 'Oeste', ' ', ' ', 'Oeste', ' ', 'Oeste', ' ', 'Oeste',],
-          ['Oeste', '', ' ', 'Oeste', ' ', ' ', 'Oeste', ' ', 'Oeste', ' ', 'Oeste',],
-          ['NorteOeste', 'PortaNorte', 'Norte', 'Norte' /*elevador*/, 'Norte', 'Norte', ' ', ' ', 'Oeste', ' ', 'Oeste',],
-          ['ElevadorOeste', ' ', ' ', '', ' ', ' ', ' ', ' ', 'Oeste', ' ', 'Oeste',],
-          ['Norte', 'Norte', 'Norte', 'Norte', 'Norte', 'Norte', 'Norte', 'Norte', 'Norte', 'Norte', ' ',],
-        ],
-        elevador: {
-          xCoord: 0,
-          yCoord: 9,
-          orientacao: 'Este'
-        },
-        passagens: [{
-          id: 1,
-          abcissaA: 0,
-          ordenadaA: 1,
-          abcissaB: 0,
-          ordenadaB: 2,
-          orientacao: 'Oeste'
-        }],
-        portas: [{
-          abcissa: 2,
-          ordenada: 3,
-          orientacao: 'Oeste'
-        }],
-        posicaoInicialRobo: {
-          x: 7,
-          y: 6,
-        }
-      }
-
-      let mazeDataTesteElevador: ExportarMapa;
-      mazeDataTesteElevador = {
-        texturaChao: 'assets/ground.png',
-        texturaParede: 'assets/wall.jpg',
-        modeloPorta: 'assets/door/door.glb',
-        modeloElevador: 'assets/elevador/Elevator.glb',
-        codigoEdificio: 'Teste1',
-        numeroPiso: 1,
-        matriz: [
-          ['NorteOeste', 'Norte', 'Norte', 'Norte', 'Norte', 'Oeste'],
-          ['Oeste', ' ', ' ', ' ', ' ', 'Oeste'],
-          ['Oeste', ' ', 'Elevador', ' ', ' ', 'Oeste'],
-          ['Oeste', ' ', ' ', ' ', ' ', 'Oeste'],
-          ['Oeste', ' ', ' ', ' ', ' ', 'Oeste'],
-          ['Norte', 'Norte', 'Norte', 'Norte', 'Norte', ''],
-        ],
-        elevador: {
-          xCoord: 0,
-          yCoord: 9,
-          orientacao: 'Oeste'
-        },
-        passagens: [{
-          id: 1,
-          abcissaA: 0,
-          ordenadaA: 1,
-          abcissaB: 0,
-          ordenadaB: 2,
-          orientacao: 'Oeste'
-        }],
-        portas: [{
-          abcissa: 2,
-          ordenada: 3,
-          orientacao: 'Oeste'
-        }],
-        posicaoInicialRobo: {
-          x: 1,
-          y: 1,
-        }
-      }
-
-      let mazeData1 = {
-        groundTextureUrl: 'assets/ground.png',
-        wallTextureUrl: 'assets/wall.jpg',
-        size: { width: 10, height: 10 },
-        map: [
-          ['NorteOeste', 'Oeste', ' ', 'NorteOeste', 'Norte', 'NorteOeste', 'Norte', 'Norte', 'Norte', 'Norte', 'Oeste',],
-          ['Oeste', 'Oeste', ' ', 'Oeste', ' ', 'Oeste', ' ', ' ', ' ', ' ', 'Oeste',],
-          ['Oeste', 'PortaOeste', ' ', 'PortaNorte', 'Norte', 'Norte', 'PortaNorte', 'Norte', 'PortaOesteNorteOeste', 'Norte', 'Oeste',],
-          ['Oeste', 'Oeste', ' ', ' ', ' ', ' ', ' ', ' ', 'Oeste', ' ', 'Oeste'],
-          ['NorteOeste', 'Norte', 'Norte', 'PortaNorteNorteOeste', 'Norte', 'Norte', 'Oeste', ' ', 'Oeste', ' ', 'Oeste',],
-          ['Oeste', ' ', ' ', 'Oeste', ' ', ' ', 'Oeste', ' ', 'Oeste', ' ', 'Oeste',],
-          ['Oeste', ' ', ' ', 'Oeste', ' ', ' ', 'Oeste', ' ', 'Oeste', ' ', 'Oeste',],
-          ['Oeste', '', ' ', 'Oeste', ' ', ' ', 'Oeste', ' ', 'Oeste', ' ', 'Oeste',],
-          ['NorteOeste', 'PortaNorte', 'Norte', 'Norte' /*elevador*/, 'Norte', 'Norte', ' ', ' ', 'Oeste', ' ', 'Oeste',],
-          ['Elevador', 'Elevador', ' ', '', ' ', ' ', ' ', ' ', 'Oeste', ' ', 'Oeste',],
-          ['Norte', 'Norte', 'Norte', ' ', ' ', 'Norte', 'Norte', 'Norte', 'Norte', 'Norte', ' ',],
-        ],
-        initialPosition: [7, 6],
-        initialDirection: 0.0,
-      };
+    if(!(mazeData === undefined || mazeData === null)){
+      this.maze = new Maze(mazeData, this.scene3D, 0.0);
     }
-    this.maze = new Maze(mazeData, this.scene3D, 0.0);
-
     const playerData = {
       url: 'assets/robotDelivery/starship_delivery_robot_model.glb',
       credits:
@@ -912,49 +807,52 @@ export class Visualizacao3DComponent implements AfterViewInit {
 
   update() {
     if (!this.gameRunning) {
-      if (this.maze.loaded && this.player.loaded) {
-        // If all resources have been loaded
-        // Add the maze, the player and the lights to the scene
-        this.scene3D.add(this.maze.object);
-        this.scene3D.add(this.player.object);
-        this.scene3D.add(this.light.object);
+      if(!(this.mapa === undefined || this.mapa === null)){
+        if (this.maze.loaded && this.player.loaded) {
 
-        // Create the clock
-        this.clock = new THREE.Clock();
+          // If all resources have been loaded
+          // Add the maze, the player and the lights to the scene
+          this.scene3D.add(this.maze.object);
+          this.scene3D.add(this.player.object);
+          this.scene3D.add(this.light.object);
 
-        // Create model animations (states, emotes and expressions)
-        /*
-        this.animations = new Animations(
-          this.player.object,
-          this.player.animations
-        );
-        */
+          // Create the clock
+          this.clock = new THREE.Clock();
+
+          // Create model animations (states, emotes and expressions)
+          /*
+          this.animations = new Animations(
+            this.player.object,
+            this.player.animations
+          );
+          */
 
 
-        // Set the player's position and direction
-        this.player.object.position.set(
-          this.maze.initialPosition.x,
-          this.maze.initialPosition.y,
-          this.maze.initialPosition.z
-        );
-        this.player.object.direction = this.maze.initialDirection;
+          // Set the player's position and direction
+          this.player.object.position.set(
+            this.maze.initialPosition.x,
+            this.maze.initialPosition.y,
+            this.maze.initialPosition.z
+          );
+          this.player.object.direction = this.maze.initialDirection;
 
-        // Create the user interface
-        this.userInterface = new UserInterface(
-          this.scene3D,
-          this.renderer,
-          {
-            object: {
-              ambientLight: this.light.ambientLight,
-              pointLight1: this.light.pointLight1,
-              pointLight2: this.light.pointLight2,
+          // Create the user interface
+          this.userInterface = new UserInterface(
+            this.scene3D,
+            this.renderer,
+            {
+              object: {
+                ambientLight: this.light.ambientLight,
+                pointLight1: this.light.pointLight1,
+                pointLight2: this.light.pointLight2,
+              },
             },
-          },
-          /*this.fog,*/ this.player.object /*, this.animations*/
-        );
-        console.log('Game started');
-        // Start the game
-        this.gameRunning = true;
+            /*this.fog,*/ this.player.object /*, this.animations*/
+          );
+          console.log('Game started');
+          // Start the game
+          this.gameRunning = true;
+        }
       }
     } else {
       // Update the model animations

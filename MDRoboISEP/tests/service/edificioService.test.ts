@@ -39,6 +39,12 @@ import { Passagem } from "../../src/domain/passagem/Passagem";
 import { IdPassagem } from "../../src/domain/passagem/IdPassagem";
 import IPlaneamentoCaminhosDTO from "../../src/dto/IPlaneamentoCaminhosDTO";
 import { Result } from "../../src/core/logic/Result";
+import { DescricaoElevador } from "../../src/domain/elevador/DescricaoElevador";
+import { IdElevador } from "../../src/domain/elevador/IdElevador";
+import { MarcaElevador } from "../../src/domain/elevador/MarcaElevador";
+import { ModeloElevador } from "../../src/domain/elevador/ModeloElevador";
+import { NumeroSerieElevador } from "../../src/domain/elevador/NumeroSerieElevador";
+import { Elevador } from "../../src/domain/elevador/Elevador";
 
 describe('EdificioService ', () => {
 
@@ -577,8 +583,10 @@ describe('EdificioService ', () => {
 
 
         const mockResponseData: IPlaneamentoCaminhosDTO = {
-            LEdCam: "ED01", 
-            LLig: "ED02"
+            caminho: "ED01",
+            custo: "ED02",
+            edificios: "ED03",
+            ligacoes: "ED04",
         };
 
         //edificioRepo = chamado 1 vez +  nPassagens vezes 
@@ -607,15 +615,22 @@ describe('EdificioService ', () => {
             piso_destino: "g4",
         } as unknown as ICoordenadasPontosDTO;
 
+
+        let idElevador = IdElevador.create(1).getValue();
+        let marcaElevador = MarcaElevador.create('123').getValue();
+        let modeloElevador = ModeloElevador.create('123').getValue();
+        let numeroSerieElevador = NumeroSerieElevador.create('123').getValue();
+        let descricaoElevador = DescricaoElevador.create('123').getValue();
+
         let edificioProps = {
             nome: Nome.create('Edificio A').getValue(),
-            dimensao: Dimensao.create(1, 1).getValue(),
+            dimensao: Dimensao.create(5, 5).getValue(),
             descricao: DescricaoEdificio.create('Edificio A').getValue(),
             listaPisos: [],
         };
 
-        let edificioA = Edificio.create(edificioProps, Codigo.create('ED01').getValue()).getValue();
-        let edificioB = Edificio.create(edificioProps, Codigo.create('ED02').getValue()).getValue();
+        let edificioA = Edificio.create(edificioProps, Codigo.create('j').getValue()).getValue();
+        let edificioB = Edificio.create(edificioProps, Codigo.create('g').getValue()).getValue();
 
         let mapaTipoPonto: TipoPonto[][] = [];
         for (let i = 0; i <= 5; i++) {
@@ -645,8 +660,44 @@ describe('EdificioService ', () => {
             mapa: mapaCompleto,
         }, IdPiso.create(2).getValue()).getValue();
 
+        let piso5x5_3 = Piso.create({
+            numeroPiso: NumeroPiso.create(1).getValue(),
+            descricaoPiso: DescricaoPiso.create("ola").getValue(),
+            mapa: mapaCompleto,
+        }, IdPiso.create(3).getValue()).getValue();
+
+        let piso5x5_4 = Piso.create({
+            numeroPiso: NumeroPiso.create(2).getValue(),
+            descricaoPiso: DescricaoPiso.create("ola").getValue(),
+            mapa: mapaCompleto,
+        }, IdPiso.create(4).getValue()).getValue();
+
+        
+
+        let elevadorOrError =  Elevador.create({
+            pisosServidos: [piso5x5, piso5x5_2],
+            marca: marcaElevador,
+            modelo: modeloElevador,
+            numeroSerie: numeroSerieElevador,
+            descricao: descricaoElevador
+        }, IdElevador.create(1).getValue()).getValue();
+
+
+        let elevador = Elevador.create({
+            pisosServidos: [piso5x5_3, piso5x5_4],
+            marca: marcaElevador,
+            modelo: modeloElevador,
+            numeroSerie: numeroSerieElevador,
+            descricao: descricaoElevador
+        }, IdElevador.create(2).getValue()).getValue();
+
         edificioA.addPiso(piso5x5);
-        edificioB.addPiso(piso5x5_2);
+        edificioA.addPiso(piso5x5_2);
+        edificioB.addPiso(piso5x5_3);
+        edificioB.addPiso(piso5x5_4);
+
+        edificioA.adicionarElevador(elevadorOrError);
+        edificioB.adicionarElevador(elevador);
 
         let passagemOuErro = Passagem.create({
             pisoA: piso5x5,
@@ -659,10 +710,10 @@ describe('EdificioService ', () => {
         stub.onCall(0).returns(Promise.resolve(edificioA));
         stub.onCall(1).returns(Promise.resolve(edificioB));
 
-        sinon.stub(edificioService, "comunicaoComPlaneamento").returns(mockResponseData);
+        sinon.stub(edificioService, "comunicaoComPlaneamento").resolves(mockResponseData);
 
         let data = await edificioService.getInformacaoPlaneamento(coordenadas);
 
-        expect(data).equal(mockResponseData)
+        expect(data).equal(mockResponseData);
     });
 });

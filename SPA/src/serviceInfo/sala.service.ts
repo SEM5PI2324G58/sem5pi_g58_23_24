@@ -6,13 +6,14 @@ import { catchError, map, tap } from 'rxjs/operators';
 
 import { MessageService } from './message.service';
 import Sala from 'src/dataModel/sala';
+import { devEnvironment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SalaService {
 
-  private salaUrl = 'http://localhost:4000/api/sala';
+  private salaUrl = devEnvironment.MDRI_API_URL + 'sala';
   
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
