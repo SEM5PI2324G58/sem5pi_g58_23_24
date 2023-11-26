@@ -241,7 +241,7 @@ export default class EdificioService implements IEdificioService {
     try {
       // Dynamic import of 'fetch'
       const { default: fetch } = await import('node-fetch');
-      const url = "http://127.0.0.1:8000/caminho/pontos_piso"
+      const url = "http://10.9.11.58:8000/caminho/pontos_piso"
       // Faça a requisição HTTP POST
       const response = await fetch(url, {
         method: 'POST',
