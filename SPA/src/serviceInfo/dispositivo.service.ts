@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-
+import { devEnvironment } from 'src/environments/environment.development';
 import { Dispositivo } from '../dataModel/dispositivo';
 import { MessageService } from './message.service';
 
@@ -12,8 +12,8 @@ import { MessageService } from './message.service';
 })
 export class DispositivoService {
 
-  private dispositivoUrl = 'http://localhost:4000/api/dispositivo';
-  private dispositivoInibirUrl = 'http://localhost:4000/api/dispositivo/inibir';
+  private dispositivoUrl = devEnvironment.MDRI_API_URL + 'dispositivo';
+  private dispositivoInibirUrl = devEnvironment.MDRI_API_URL + 'dispositivo/inibir';
 
 
   httpOptions = {

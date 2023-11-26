@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
+import { devEnvironment } from 'src/environments/environment.development';
+
 
 import CarregarMapa from 'src/dataModel/carregarMapa';
 import { MessageService } from './message.service';
@@ -15,7 +17,7 @@ export class MapaService {
 
   constructor(private http: HttpClient, private messageService:MessageService) { }
 
-  private mapaUrl = 'http://localhost:4000/api/mapa';
+  private mapaUrl = devEnvironment.MDRI_API_URL + 'mapa';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })

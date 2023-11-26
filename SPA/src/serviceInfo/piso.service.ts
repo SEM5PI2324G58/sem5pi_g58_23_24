@@ -8,6 +8,7 @@ import { Piso } from '../dataModel/piso';
 import { MessageService } from './message.service';
 import { EditarPiso } from 'src/dataModel/editarPiso';
 import { EdificioService } from './edificio.service';
+import { devEnvironment } from 'src/environments/environment.development';
 
 
 @Injectable({
@@ -15,8 +16,9 @@ import { EdificioService } from './edificio.service';
 })
 export class PisoService {
 
-  private pisoUrl = 'http://localhost:4000/api/piso';
-  private pisoMapaUrl = 'http://localhost:4000/api/piso/pisosComMapa';
+  
+  private pisoUrl = devEnvironment.MDRI_API_URL + 'piso';
+  private pisoMapaUrl = devEnvironment.MDRI_API_URL + 'piso/pisosComMapa';
   
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })

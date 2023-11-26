@@ -60,6 +60,7 @@ describe('Listar Piso', () => {
 
     it('Listar pisos com passagem com sucesso', () => {
         cy.visit('/listarPisoPassagem');
+        cy.wait('@getPassagens');
 
         // Encuentra todos los elementos 'td' dentro de 'table' y verifica que cada uno no esté vacío
         cy.get('table').find('td').each(($td) => {

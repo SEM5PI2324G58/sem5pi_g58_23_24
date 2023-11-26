@@ -4,12 +4,13 @@ import { Observable, of } from 'rxjs';
 import { catchError} from 'rxjs/operators';
 import { TipoRobo } from '../dataModel/tipoRobo';
 import { MessageService } from './message.service';
+import { devEnvironment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TipoRoboService {
-  private tipoRoboUrl = 'http://localhost:4000/api/tipoDispositivo';
+  private tipoRoboUrl = devEnvironment.MDRI_API_URL + 'tipoDispositivo';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
