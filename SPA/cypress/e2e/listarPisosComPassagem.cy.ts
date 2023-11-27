@@ -74,6 +74,9 @@ describe('Listar Piso', () => {
         cy.visit('/apagarEdificio');
         cy.get('[name="codigo"]').type('T1');
         cy.get('button').click();
+        cy.get('[name="codigo"]').clear();
+        cy.get('[name="codigo"]').type('T2');
+        cy.get('button').click();
         cy.wait('@apagarEdificio');
     });
 })
