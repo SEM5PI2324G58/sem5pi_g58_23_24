@@ -12,13 +12,12 @@ pool:
 steps:
 - task: NodeTool@0
   inputs:
-    versionSpec: '10.x'
+    versionSpec: '10.2.4'
   displayName: 'Install Node.js'
 
 - script: |
-      echo "Node.js version: $(node --version)"
-      echo "npm version: $(npm --version)"
-      echo "PATH: $PATH"
-      env | sort
+    npm install -g @angular/cli
+    npm install
+    ng build --prod
   displayName: 'npm install and build'
   workingDirectory: 'SPA'
