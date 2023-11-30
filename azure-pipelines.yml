@@ -16,8 +16,9 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
-    npm install -g @angular/cli
-    npm install
-    ng build --prod
+      echo "Node.js version: $(node --version)"
+      echo "npm version: $(npm --version)"
+      echo "PATH: $PATH"
+      env | sort
   displayName: 'npm install and build'
   workingDirectory: 'SPA'
