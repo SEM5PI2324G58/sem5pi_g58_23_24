@@ -31,7 +31,8 @@ export class Visualizacao3DComponent implements AfterViewInit {
   codigo: any;
   numeroPiso: any;
   mapa: any;
-
+  multipleViewsCheckBox: any;
+  userInterfaceCheckBox: any;
   constructor(
     private pisoService: PisoService,
     private edificioService: EdificioService,
@@ -92,6 +93,8 @@ export class Visualizacao3DComponent implements AfterViewInit {
   doorAnimations!: DoorAnimations;
   //elevadorAnimations!: ElevadorAnimations;
   userInterface!: UserInterface;
+  subwindowsPanel!: HTMLElement | null;
+
 
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
@@ -292,10 +295,12 @@ export class Visualizacao3DComponent implements AfterViewInit {
       canvas: this.canvas,
       antialias: true,
     });
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.autoClear = false;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(this.renderer.domElement);
 
     this.changeCameraDistance = false;
     this.changeCameraOrientation = false;
@@ -316,6 +321,11 @@ export class Visualizacao3DComponent implements AfterViewInit {
     this.resetAll = document.getElementById('reset-all');
     this.codigo = document.getElementById('codigo');
     this.numeroPiso = document.getElementById('numeroPiso');
+    this.subwindowsPanel = document.getElementById("subwindows-panel");
+    this.multipleViewsCheckBox = document.getElementById("multiple-views");
+    this.multipleViewsCheckBox.checked = false;
+    this.userInterfaceCheckBox = document.getElementById("user-interface");
+    this.userInterfaceCheckBox.checked = true;
 
     this.setActiveViewCamera(this.fixedViewCamera);
 
@@ -383,6 +393,8 @@ export class Visualizacao3DComponent implements AfterViewInit {
     this.numeroPiso.addEventListener('change', (event: Event) =>
       this.elementChange(event)
     );
+    this.multipleViewsCheckBox.addEventListener("change", (event: Event) => this.elementChange(event));
+    this.userInterfaceCheckBox.addEventListener("change", (event: Event) => this.elementChange(event));
   }
 
   sleep(ms: number): Promise<void> {
@@ -470,13 +482,14 @@ export class Visualizacao3DComponent implements AfterViewInit {
           // Select top view
           this.setActiveViewCamera(this.topViewCamera);
         }
-        /*
-                    if (event.code == this.player.keyCodes.viewMode && state) { // Single-view mode / multiple-views mode
-                        this.setViewMode(!this.multipleViewsCheckBox.checked);
-                    }
-                    if (event.code == this.player.keyCodes.userInterface && state) { // Display / hide user interface
-                        this.setUserInterfaceVisibility(!this.userInterfaceCheckBox.checked);
-                    }
+        
+        if (event.code == this.player.keyCodes.viewMode && state) { // Single-view mode / multiple-views mode
+            this.setViewMode(!this.multipleViewsCheckBox.checked);
+        }        
+        if (event.code == this.player.keyCodes.userInterface && state) { // Display / hide user interface
+            this.setUserInterfaceVisibility(!this.userInterfaceCheckBox.checked);
+        }
+                    /*
                     if (event.code == this.player.keyCodes.miniMap && state) { // Display / hide mini-map
                         this.setMiniMapVisibility(!this.miniMapCheckBox.checked);
                     }
@@ -535,7 +548,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
           'third-person',
           'top',
         ].indexOf(cameraView);
-        //this.view.options.selectedIndex = cameraIndex;
+        this.view.options.selectedIndex = cameraIndex;
         this.setActiveViewCamera(
           [
             this.fixedViewCamera,
@@ -566,11 +579,11 @@ export class Visualizacao3DComponent implements AfterViewInit {
         }*/
     // Check if the pointer is over the remaining camera viewports
     let cameras;
-    /*if (this.multipleViewsCheckBox.checked) {
+    if (this.multipleViewsCheckBox.checked) {
             cameras = [this.fixedViewCamera, this.firstPersonViewCamera, this.thirdPersonViewCamera, this.topViewCamera];
-        }else {*/
-
-    cameras = [this.activeViewCamera];
+        }else {
+          cameras = [this.activeViewCamera];
+        }
     for (const camera of cameras) {
       viewport = camera.getViewport();
       if (this.pointerIsOverViewport(pointer, viewport)) {
@@ -671,7 +684,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
         'third-person',
         'top',
       ].indexOf(cameraView);
-      //this.view.options.selectedIndex = cameraIndex;
+      this.view.options.selectedIndex = cameraIndex;
       const activeViewCamera = [
         this.fixedViewCamera,
         this.firstPersonViewCamera,
@@ -742,17 +755,16 @@ export class Visualizacao3DComponent implements AfterViewInit {
         case 'numeroPiso':
           const numeroPiso = this.numeroPiso.options.item(this.numeroPiso.selectedIndex)?.value;
           console.log(numeroPiso);
-         this.mapaService.exportarMapa(this.codigo.value, numeroPiso).subscribe((data: ExportarMapa) => {
+          this.mapaService.exportarMapa(this.codigo.value, numeroPiso).subscribe((data: ExportarMapa) => {
             this.mapa = data;
             console.log(this.mapa);
             this.createScene();
           });
           break;
-          break;
-        /*case "multiple-views":
-                this.setViewMode(event.target.checked);
-                break;
-            case "help":
+          case "multiple-views":
+              this.setViewMode((target as any)['checked']);
+              break;
+           /* case "help":
                 this.setHelpVisibility(event.target.checked);
                 break;
             case "statistics":
@@ -780,10 +792,25 @@ export class Visualizacao3DComponent implements AfterViewInit {
     }
   }
 
+  setViewMode(multipleViews: any) { // Single-view mode: false; multiple-views mode: true
+    this.multipleViewsCheckBox.checked = multipleViews;
+    this.arrangeViewports(this.multipleViewsCheckBox.checked);
+  }
+
+  arrangeViewports(multipleViews: any) {
+    this.fixedViewCamera.setViewport(multipleViews);
+    this.firstPersonViewCamera.setViewport(multipleViews);
+    this.thirdPersonViewCamera.setViewport(multipleViews);
+    this.topViewCamera.setViewport(multipleViews);
+  }
+
+
   setUserInterfaceVisibility(visible: boolean) {
     //this.userInterfaceCheckBox.checked = visible;
     //this.viewsPanel.style.visibility = visible ? "visible" : "hidden";
-    //this.subwindowsPanel.style.visibility = visible ? "visible" : "hidden";
+    if(!(this.subwindowsPanel === null || this.subwindowsPanel === undefined)){
+      this.subwindowsPanel.style.visibility = visible ? "visible" : "hidden";
+    }
     this.userInterface.setVisibility(visible);
   }
 
@@ -956,7 +983,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
       //this.statistics.update();
 
       // Render primary viewport(s)
-      //this.renderer.clear();
+      this.renderer.clear();
 
       /*if (this.fog.enabled) {
                 this.scene3D.fog = this.fog.object;
@@ -965,16 +992,18 @@ export class Visualizacao3DComponent implements AfterViewInit {
                 this.scene3D.fog = null;
             }*/
       let cameras;
-      /*if (this.multipleViewsCheckBox.checked) {
-                cameras = [this.fixedViewCamera, this.firstPersonViewCamera, this.thirdPersonViewCamera, this.topViewCamera];
-            }
-            else {
-            }*/
-      cameras = [this.activeViewCamera];
+      if (this.multipleViewsCheckBox.checked) {
+          cameras = [this.fixedViewCamera, this.firstPersonViewCamera, this.thirdPersonViewCamera, this.topViewCamera];
+      }
+      else {
+        cameras = [this.activeViewCamera];
+      }
       for (const camera of cameras) {
-        this.player.object.visible = camera != this.firstPersonViewCamera;
+        console.log(camera);
+        this.player.object.visible = (camera != this.firstPersonViewCamera);
         const viewport = camera.getViewport();
-        //this.renderer.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+        this.renderer.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+
         this.renderer.render(this.scene3D, camera.object);
         //this.renderer.render(this.scene2D, this.camera2D);
         this.renderer.clearDepth();

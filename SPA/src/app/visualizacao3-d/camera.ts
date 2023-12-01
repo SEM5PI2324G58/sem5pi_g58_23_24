@@ -67,7 +67,7 @@ export default class Camera {
     this.far = parameters.far;
     this.projection = "perspective";
 
-    this.viewport = this.multipleViewsViewport.clone();
+    this.viewport = new THREE.Vector4(0.0, 0.0, 1.0, 1.0);
     this.target = parameters.target.clone();
 
     this.initialHalfSize =
@@ -190,17 +190,17 @@ export default class Camera {
     }
   }
 
-  getViewport() {
+  getViewport() : any{
     const windowMinSize = Math.min(this.windowWidth, this.windowHeight);
 
     let x;
     let y;
-    let width = this.viewport.width;
-    let height = this.viewport.height;
+    let width = this.viewport.z;
+    let height = this.viewport.w;
 
     if (this.view != "mini-map") {
-      x = this.viewport.x * (1.0 - this.viewport.width);
-      y = this.viewport.y * (1.0 - this.viewport.height);
+      x = this.viewport.x * (1.0 - this.viewport.z);
+      y = this.viewport.y * (1.0 - this.viewport.w);
 
       if (this.windowWidth < this.windowHeight) {
         x *= windowMinSize;
@@ -223,7 +223,7 @@ export default class Camera {
     return new THREE.Vector4(x, y, width, height);
   }
 
-  setViewport(multipleViews: boolean) {
+  setViewport(multipleViews: any) {
     if (multipleViews) {
       this.viewport = this.multipleViewsViewport.clone();
     } else {

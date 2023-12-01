@@ -29,6 +29,13 @@ table.subwindows {
     position: absolute;
     background-color: #70707070;
     text-align: right;
+    top: 90%;
+    z-index: 2;
+}
+
+.subwindow {
+    position: absolute;
+    background-color: #70707070;
 }
 
 th,
