@@ -146,6 +146,29 @@ export class Visualizacao3DComponent implements AfterViewInit {
     let mazeData = this.mapa;
     if(!(mazeData === undefined || mazeData === null)){
       this.maze = new Maze(mazeData, this.scene3D, 0.0);
+    }else{
+      const defaultMazeData = {
+        texturaChao: 'assets/ground.jpg',
+        texturaParede: 'assets/wall.jpg',
+        modeloPorta: 'assets/door/door.glb',
+        modeloElevador: 'assets/elevador/Elevator.glb',
+        codigoEdificio: 'Teste1',
+        numeroPiso: 1,
+        matriz: [
+          ['NorteOeste', 'Norte', 'Norte', 'Norte', 'Norte', 'Oeste'],
+          ['Oeste', ' ', ' ', ' ', ' ', 'Oeste'],
+          ['Oeste', ' ', '', ' ', ' ', 'Oeste'],
+          ['Oeste', ' ', ' ', ' ', ' ', 'Oeste'],
+          ['Oeste', ' ', ' ', ' ', ' ', 'Oeste'],
+          ['Norte', 'Norte', 'Norte', 'Norte', 'Norte', ''],
+        ],
+        posicaoInicialRobo: {
+          x: 1,
+          y: 1,
+        }
+      } as ExportarMapa;
+
+      this.maze = new Maze(defaultMazeData, this.scene3D, 0.0);
     }
     const playerData = {
       url: 'assets/robotDelivery/starship_delivery_robot_model.glb',
@@ -834,53 +857,53 @@ export class Visualizacao3DComponent implements AfterViewInit {
 
   update() {
     if (!this.gameRunning) {
-      if(!(this.mapa === undefined || this.mapa === null)){
-        if (this.maze.loaded && this.player.loaded) {
+      
+      if (this.maze.loaded && this.player.loaded) {
 
-          // If all resources have been loaded
-          // Add the maze, the player and the lights to the scene
-          this.scene3D.add(this.maze.object);
-          this.scene3D.add(this.player.object);
-          this.scene3D.add(this.light.object);
+        // If all resources have been loaded
+        // Add the maze, the player and the lights to the scene
+        this.scene3D.add(this.maze.object);
+        this.scene3D.add(this.player.object);
+        this.scene3D.add(this.light.object);
 
-          // Create the clock
-          this.clock = new THREE.Clock();
+        // Create the clock
+        this.clock = new THREE.Clock();
 
-          // Create model animations (states, emotes and expressions)
-          /*
-          this.animations = new Animations(
-            this.player.object,
-            this.player.animations
-          );
-          */
+        // Create model animations (states, emotes and expressions)
+        /*
+        this.animations = new Animations(
+          this.player.object,
+          this.player.animations
+        );
+        */
 
 
-          // Set the player's position and direction
-          this.player.object.position.set(
-            this.maze.initialPosition.x,
-            this.maze.initialPosition.y,
-            this.maze.initialPosition.z
-          );
-          this.player.object.direction = this.maze.initialDirection;
+        // Set the player's position and direction
+        this.player.object.position.set(
+          this.maze.initialPosition.x,
+          this.maze.initialPosition.y,
+          this.maze.initialPosition.z
+        );
+        this.player.object.direction = this.maze.initialDirection;
 
-          // Create the user interface
-          this.userInterface = new UserInterface(
-            this.scene3D,
-            this.renderer,
-            {
-              object: {
-                ambientLight: this.light.ambientLight,
-                pointLight1: this.light.pointLight1,
-                pointLight2: this.light.pointLight2,
-              },
+        // Create the user interface
+        this.userInterface = new UserInterface(
+          this.scene3D,
+          this.renderer,
+          {
+            object: {
+              ambientLight: this.light.ambientLight,
+              pointLight1: this.light.pointLight1,
+              pointLight2: this.light.pointLight2,
             },
-            /*this.fog,*/ this.player.object /*, this.animations*/
-          );
-          console.log('Game started');
-          // Start the game
-          this.gameRunning = true;
-        }
+          },
+          /*this.fog,*/ this.player.object /*, this.animations*/
+        );
+        console.log('Game started');
+        // Start the game
+        this.gameRunning = true;
       }
+      
     } else {
       // Update the model animations
       const deltaT = this.clock.getDelta();
