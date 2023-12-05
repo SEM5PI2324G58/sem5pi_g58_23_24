@@ -20,7 +20,8 @@ steps:
     npm install
     ng build
   displayName: 'npm install and build'
-test:
+  workingDirectory: 'SPA'
+- script: |
     ng test --watch=false --browsers=ChromeHeadless
-    displayName: 'ng test'
+  displayName: 'ng test'
   workingDirectory: 'SPA'
