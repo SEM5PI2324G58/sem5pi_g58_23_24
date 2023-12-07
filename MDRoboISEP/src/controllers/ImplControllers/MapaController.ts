@@ -57,4 +57,27 @@ export default class MapaController implements IMapaController {
             return next(e);
         }
     }
+
+    public async exportarMapaAtravesDeUmaPassagemEPiso(req: Request, res: Response, next: NextFunction) {
+        try{
+            let idPassagem = req.query.idPassagem as unknown as number;
+            let codEd = req.query.codEd as string;
+            let numeroPiso = req.query.numeroPiso as unknown as number;
+            let mapaOrError = await this.mapaServiceInstance.exportarMapaAtravesDeUmaPassagemEPiso(idPassagem, codEd, numeroPiso);
+            if(mapaOrError.isFailure){
+                let erro = String(mapaOrError.errorValue());
+                if(erro === "A passagem não existe." || erro === "O edifício não existe." || erro === "O piso não existe."){
+                    res.status(404);
+                }else{
+                    res.status(400);
+                }
+                return res.json(mapaOrError.errorValue());
+            }
+            const mapaDTO = mapaOrError.getValue();
+            res.status(200);
+            return res.json(mapaDTO);
+        }catch(e){
+            return next(e);
+        }
+    }
 }
