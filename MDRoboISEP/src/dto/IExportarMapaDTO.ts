@@ -19,10 +19,15 @@ export default interface IExportarMapaDTO{
         ordenadaB: number,
         orientacao: string
     }],
-    portas ?: [{
-        abcissa : number,
-        ordenada: number,
-        orientacao: string
+    salas ?: [{
+        nome: string,
+        abcissaA : number,
+        ordenadaA: number,
+        abcissaB: number,
+        ordenadaB: number,
+        abcissaPorta: number,
+        ordenadaPorta: number,
+        orientacaoPorta: string,
     }],
     posicaoInicialRobo ?: {
         x: number,

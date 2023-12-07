@@ -616,7 +616,7 @@ describe('Mapa Service', () => {
         expect(answer.getValue().texturaParede).to.equal("assets/wall.jpg");
         expect(answer.getValue().modeloPorta).to.equal("assets/door.glb");
         expect(answer.getValue().modeloElevador).to.equal("assets/elevator.glb");
-        expect(answer.getValue().portas).to.deep.equal([{abcissa: 0, ordenada: 1, orientacao: "Norte"}]);
+        expect(answer.getValue().salas).to.deep.equal([{nome:"sala1",abcissaA: 0, abcissaB: 2,ordenadaA: 0,ordenadaB: 2,abcissaPorta: 0, ordenadaPorta: 1, orientacaoPorta: "Norte"}]);
         expect(answer.getValue().elevador).to.deep.equal({xCoord: 3, yCoord: 3, orientacao: "Norte"});
         console.log(answer.getValue().passagens);
         expect(answer.getValue().passagens).to.deep.equal([{id: 1, abcissaA: 3, ordenadaA: 5, abcissaB:4, ordenadaB:5, orientacao: "Oeste"}]);

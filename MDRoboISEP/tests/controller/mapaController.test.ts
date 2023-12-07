@@ -393,7 +393,16 @@ describe('Mapa Controller', () => {
             modeloPorta: "assets/door.glb",
             numeroPiso: 0,
             passagens: [{ abcissaA: 5, abcissaB: 5, id: 1, ordenadaA: 3, ordenadaB: 4, orientacao: "Oeste" }],
-            portas: [{ abcissa: 1, ordenada: 0, orientacao: "Norte" }],
+            salas: [{
+                abcissaA: 0,
+                abcissaB: 2,
+                abcissaPorta: 1,
+                nome: "sala1",
+                ordenadaA: 0,
+                ordenadaB: 2,
+                ordenadaPorta: 0,
+                orientacaoPorta: "Norte"
+              }],
             posicaoInicialRobo: { x: 1, y: 4 },
             texturaChao: "assets/ground.jpg",
             texturaParede: "assets/wall.jpg"
