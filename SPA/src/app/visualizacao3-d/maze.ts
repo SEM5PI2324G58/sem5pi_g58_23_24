@@ -48,10 +48,15 @@ export default class Maze {
         ordenadaB: number,
         orientacao: string
     }];
-    public portasCoord : [{
-        abcissa : number,
-        ordenada: number,
-        orientacao: string
+    public  salasCoord ?: [{
+        nome: string,
+        abcissaA : number,
+        ordenadaA: number,
+        abcissaB: number,
+        ordenadaB: number,
+        abcissaPorta: number,
+        ordenadaPorta: number,
+        orientacaoPorta: string,
     }];
 
     constructor(mapaData: ExportarMapa, scene: THREE.Scene, initialDirection: number) {
@@ -61,7 +66,7 @@ export default class Maze {
         this.size = { width: mapaData.matriz[0].length -1 ,height: mapaData.matriz.length-1};
         this.initialPosition = this.cellToCartesian([mapaData.posicaoInicialRobo.x, mapaData.posicaoInicialRobo.y]);
         this.initialDirection = initialDirection;
-        this.portasCoord = mapaData.portas;
+        this.salasCoord = mapaData.salas;
         this.passagensCoord = mapaData.passagens;
         this.elevadorCoord = mapaData.elevador;
         this.door = [];
