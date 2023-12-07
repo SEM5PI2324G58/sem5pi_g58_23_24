@@ -211,7 +211,7 @@ export default class MapaService implements IMapaService{
             matriz : informcaoMapa.matriz,
             elevador : informcaoMapa.elevador,
             passagens : informcaoMapa.passagens,
-            portas : informcaoMapa.portas,
+            salas : informcaoMapa.salas,
             posicaoInicialRobo : informcaoMapa.posicaoInicialRobo
         }
         return Result.ok<IExportarMapaDTO>(informacaoMapaDTO);
