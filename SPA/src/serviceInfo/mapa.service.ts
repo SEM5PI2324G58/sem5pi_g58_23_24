@@ -52,6 +52,17 @@ export class MapaService {
     };
   }
 
+  public exportarMapaAtravesDeUmaPassagemEPiso(idPassagem: number, codEd: string, numeroPiso: number): Observable<ExportarMapa> {
+    let params = new HttpParams().set('idPassagem', idPassagem.toString());
+    params = params.append('codEd', codEd);
+    params = params.append('numeroPiso', numeroPiso.toString());
+    
+    return this.http.get<ExportarMapa>(this.mapaUrl + '/atravesDeUmaPassagemEPiso', { params: params, headers: this.httpOptions.headers })
+      .pipe(
+        catchError(this.handleError<ExportarMapa>('Exportar Mapa'))
+      );
+  }
+
   private log(message: string) {
     this.messageService.add(`${message}`);
   }

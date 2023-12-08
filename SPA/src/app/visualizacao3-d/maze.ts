@@ -58,6 +58,8 @@ export default class Maze {
         ordenadaPorta: number,
         orientacaoPorta: string,
     }];
+    public numeroPiso: number;
+    public codigoEdificio: string;
 
     constructor(mapaData: ExportarMapa, scene: THREE.Scene, initialDirection: number) {
         this.loaded = false;
@@ -71,6 +73,8 @@ export default class Maze {
         this.elevadorCoord = mapaData.elevador;
         this.door = [];
         this.elevador = [];
+        this.numeroPiso = mapaData.numeroPiso;
+        this.codigoEdificio = mapaData.codigoEdificio;
 
         //this.exitLocation = this.cellToCartesian(mapaData.exitLocation);
         this.object = new THREE.Group();
@@ -164,6 +168,84 @@ export default class Maze {
         return Infinity;
     }
 
+    public distanceToWestPassage(position: THREE.Vector3): number {
+        const indices = this.cartesianToCell(position);
+        if (this.map[indices[0]][indices[1]] == "Passagem" || this.map[indices[0]][indices[1]] == "PassagemOeste" || this.map[indices[0]][indices[1]] == "PassagemNorte") {
+            for(let i = 0; i < this.passagensCoord.length; i++){
+                if(this.passagensCoord[i].abcissaA == indices[0] && this.passagensCoord[i].ordenadaA == indices[1]){
+                    if(this.passagensCoord[i].orientacao == "Oeste"){
+                        return position.x - this.cellToCartesian(indices).x + this.scale.x / 2.0;
+                    }
+                }
+                if(this.passagensCoord[i].abcissaB == indices[0] && this.passagensCoord[i].ordenadaB == indices[1]){
+                    if(this.passagensCoord[i].orientacao == "Oeste"){
+                        return position.x - this.cellToCartesian(indices).x + this.scale.x / 2.0;
+                    }
+                }
+            }
+        }
+        return Infinity;
+    }
+
+    public distanceToEastPassage(position: THREE.Vector3): number {
+        const indices = this.cartesianToCell(position);
+        indices[1]++;
+        if (this.map[indices[0]][indices[1]] == "Passagem" || this.map[indices[0]][indices[1]] == "PassagemOeste" || this.map[indices[0]][indices[1]] == "PassagemNorte") {
+            for(let i = 0; i < this.passagensCoord.length; i++){
+                if(this.passagensCoord[i].abcissaA == indices[0] && this.passagensCoord[i].ordenadaA == indices[1]){
+                    if(this.passagensCoord[i].orientacao == "Oeste"){
+                        return this.cellToCartesian(indices).x - this.scale.x / 2.0 - position.x;
+                    }
+                }
+                if(this.passagensCoord[i].abcissaB == indices[0] && this.passagensCoord[i].ordenadaB == indices[1]){
+                    if(this.passagensCoord[i].orientacao == "Oeste"){
+                        return this.cellToCartesian(indices).x - this.scale.x / 2.0 - position.x;
+                    }
+                }
+            }
+        }
+        return Infinity;
+    }
+
+    public distanceToNorthPassage(position: THREE.Vector3): number {
+        const indices = this.cartesianToCell(position);
+        if (this.map[indices[0]][indices[1]] == "Passagem" || this.map[indices[0]][indices[1]] == "PassagemNorte" || this.map[indices[0]][indices[1]] == "PassagemNorte") {
+            for(let i = 0; i < this.passagensCoord.length; i++){
+                if(this.passagensCoord[i].abcissaA == indices[0] && this.passagensCoord[i].ordenadaA == indices[1]){
+                    if(this.passagensCoord[i].orientacao == "Norte"){
+                        return position.z - this.cellToCartesian(indices).z + this.scale.z / 2.0;
+                    }
+                }
+                if(this.passagensCoord[i].abcissaB == indices[0] && this.passagensCoord[i].ordenadaB == indices[1]){
+                    if(this.passagensCoord[i].orientacao == "Norte"){
+                        return position.z - this.cellToCartesian(indices).z + this.scale.z / 2.0;
+                    }
+                }
+            }
+        }
+        return Infinity;
+    }
+
+    public distanceToSouthPassage(position: THREE.Vector3): number {
+        const indices = this.cartesianToCell(position);
+        indices[0]++;
+        if (this.map[indices[0]][indices[1]] == "Passagem" || this.map[indices[0]][indices[1]] == "PassagemNorte" || this.map[indices[0]][indices[1]] == "PassagemNorte") {
+            for(let i = 0; i < this.passagensCoord.length; i++){
+                if(this.passagensCoord[i].abcissaA == indices[0] && this.passagensCoord[i].ordenadaA == indices[1]){
+                    if(this.passagensCoord[i].orientacao == "Norte"){
+                        return this.cellToCartesian(indices).z - this.scale.z / 2.0 - position.z;
+                    }
+                }
+                if(this.passagensCoord[i].abcissaB == indices[0] && this.passagensCoord[i].ordenadaB == indices[1]){
+                    if(this.passagensCoord[i].orientacao == "Norte"){
+                        return this.cellToCartesian(indices).z - this.scale.z / 2.0 - position.z;
+                    }
+                }
+            }
+        }
+        return Infinity;
+    }
+
     public distanceToWestElevador(position: THREE.Vector3): number {
         const indices = this.cartesianToCell(position);
         // Se estiver no limite oeste do mapa
@@ -186,6 +268,77 @@ export default class Maze {
             return Infinity;
         }
         
+    }
+
+    public idPassagem(position: THREE.Vector3, radius: number): number {
+        if(this.distanceToWestPassage(position) < radius){
+            const indices = this.cartesianToCell(position);
+            if (this.map[indices[0]][indices[1]] == "Passagem" || this.map[indices[0]][indices[1]] == "PassagemOeste" || this.map[indices[0]][indices[1]] == "PassagemNorte") {
+                for(let i = 0; i < this.passagensCoord.length; i++){
+                    if(this.passagensCoord[i].abcissaA == indices[0] && this.passagensCoord[i].ordenadaA == indices[1]){
+                        if(this.passagensCoord[i].orientacao == "Oeste"){
+                            return this.passagensCoord[i].id;
+                        }
+                    }
+                    if(this.passagensCoord[i].abcissaB == indices[0] && this.passagensCoord[i].ordenadaB == indices[1]){
+                        if(this.passagensCoord[i].orientacao == "Oeste"){
+                            return this.passagensCoord[i].id;
+                        }
+                    }
+                }
+            }
+        }else if(this.distanceToEastPassage(position) < radius){
+            const indices = this.cartesianToCell(position);
+            indices[1]++;
+            if (this.map[indices[0]][indices[1]] == "Passagem" || this.map[indices[0]][indices[1]] == "PassagemOeste" || this.map[indices[0]][indices[1]] == "PassagemNorte") {
+                for(let i = 0; i < this.passagensCoord.length; i++){
+                    if(this.passagensCoord[i].abcissaA == indices[0] && this.passagensCoord[i].ordenadaA == indices[1]){
+                        if(this.passagensCoord[i].orientacao == "Oeste"){
+                            return this.passagensCoord[i].id;
+                        }
+                    }
+                    if(this.passagensCoord[i].abcissaB == indices[0] && this.passagensCoord[i].ordenadaB == indices[1]){
+                        if(this.passagensCoord[i].orientacao == "Oeste"){
+                            return this.passagensCoord[i].id;
+                        }
+                    }
+                }
+            }
+        }else if(this.distanceToNorthPassage(position) < radius){
+            const indices = this.cartesianToCell(position);
+            if (this.map[indices[0]][indices[1]] == "Passagem" || this.map[indices[0]][indices[1]] == "PassagemNorte" || this.map[indices[0]][indices[1]] == "PassagemNorte") {
+                for(let i = 0; i < this.passagensCoord.length; i++){
+                    if(this.passagensCoord[i].abcissaA == indices[0] && this.passagensCoord[i].ordenadaA == indices[1]){
+                        if(this.passagensCoord[i].orientacao == "Norte"){
+                            return this.passagensCoord[i].id;
+                        }
+                    }
+                    if(this.passagensCoord[i].abcissaB == indices[0] && this.passagensCoord[i].ordenadaB == indices[1]){
+                        if(this.passagensCoord[i].orientacao == "Norte"){
+                            return this.passagensCoord[i].id;
+                        }
+                    }
+                }
+            }
+        }else if(this.distanceToSouthPassage(position) < radius){
+            const indices = this.cartesianToCell(position);
+            indices[0]++;
+            if (this.map[indices[0]][indices[1]] == "Passagem" || this.map[indices[0]][indices[1]] == "PassagemNorte" || this.map[indices[0]][indices[1]] == "PassagemNorte") {
+                for(let i = 0; i < this.passagensCoord.length; i++){
+                    if(this.passagensCoord[i].abcissaA == indices[0] && this.passagensCoord[i].ordenadaA == indices[1]){
+                        if(this.passagensCoord[i].orientacao == "Norte"){
+                            return this.passagensCoord[i].id;
+                        }
+                    }
+                    if(this.passagensCoord[i].abcissaB == indices[0] && this.passagensCoord[i].ordenadaB == indices[1]){
+                        if(this.passagensCoord[i].orientacao == "Norte"){
+                            return this.passagensCoord[i].id;
+                        }
+                    }
+                }
+            }
+        }
+        return -1;
     }
 
     public distanceToEastElevador(position: THREE.Vector3): number {

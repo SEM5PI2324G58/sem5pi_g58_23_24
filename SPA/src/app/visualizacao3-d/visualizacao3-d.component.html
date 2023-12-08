@@ -78,11 +78,20 @@
                 </tr>
             </table>
         </div>
-    <div>
-
+    <div class="cdk-overlay-container">
+        <div *ngIf="popupOpen" class="dialog"> 
+            <div class="header">
+                <p>Vai entrar na Passagem?</p>
+            </div>
+            <div class="button">
+                <button (click)="atravessarPassagem(false)">Não</button>
+                <button (click)="atravessarPassagem(true)">Sim</button>
+            </div>
+        </div>
     </div>
-        
-    <canvas #myCanvas id="myCanvas" style="display: block;"></canvas>
+    <div class="canvas">
+        <canvas #myCanvas id="myCanvas" style="display: block;"></canvas>
+    </div>   
     <div class="mes">
         <app-message></app-message>
     </div>

@@ -256,8 +256,8 @@ export default class MapaService implements IMapaService{
             return Result.fail<IExportarMapaDTO>("A passagem não existe.");
         }
         let posicaoInicialRobo: {x: number, y: number};
-        if(passagem.abcissaA === 0 && passagem.orientacao === "Norte"){
-            posicaoInicialRobo = {x: passagem.abcissaA + 1, y: passagem.ordenadaA};
+        if(passagem.abcissaA === (informacaoMapa.matriz.length -1) && passagem.orientacao === "Norte"){
+            posicaoInicialRobo = {x: passagem.abcissaA -1 , y: passagem.ordenadaA};
         }else if(passagem.ordenadaB === (informacaoMapa.matriz[0].length -1) && passagem.orientacao === "Oeste"){
             posicaoInicialRobo = {x: passagem.abcissaA, y: passagem.ordenadaB - 1};
         }else{
