@@ -4,6 +4,7 @@ import {
   ElementRef,
   Input,
   ViewChild,
+  Inject
 } from '@angular/core';
 import * as THREE from 'three';
 import Maze from './maze';
@@ -33,10 +34,12 @@ export class Visualizacao3DComponent implements AfterViewInit {
   mapa: any;
   multipleViewsCheckBox: any;
   userInterfaceCheckBox: any;
+  popupOpen: boolean = false;
+
   constructor(
     private pisoService: PisoService,
     private edificioService: EdificioService,
-    private mapaService: MapaService
+    private mapaService: MapaService,
   ) { }
 
   ngOnInit(): void {
@@ -46,7 +49,6 @@ export class Visualizacao3DComponent implements AfterViewInit {
       },
     });
   }
-
   listarNumeroPisos(): void {
     const codigo = this.codigo.options.item(this.codigo.selectedIndex)?.value;
     console.log("olá");
@@ -94,6 +96,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
   //elevadorAnimations!: ElevadorAnimations;
   userInterface!: UserInterface;
   subwindowsPanel!: HTMLElement | null;
+  idPassagemAtravessar: number = -1;
 
 
   private get canvas(): HTMLCanvasElement {
@@ -129,6 +132,8 @@ export class Visualizacao3DComponent implements AfterViewInit {
   topViewCamera: any;
 
   async createScene() {
+    this.gameRunning = false;
+
     this.scene2D = new THREE.Scene();
     let points = [
       new THREE.Vector3(0.0, 0.0, 0.0),
@@ -327,7 +332,6 @@ export class Visualizacao3DComponent implements AfterViewInit {
 
     this.changeCameraDistance = false;
     this.changeCameraOrientation = false;
-    this.gameRunning = false;
 
     this.viewsPanel = document.getElementById('views-panel');
     this.view = document.getElementById('view');
@@ -780,7 +784,6 @@ export class Visualizacao3DComponent implements AfterViewInit {
           console.log(numeroPiso);
           this.mapaService.exportarMapa(this.codigo.value, numeroPiso).subscribe((data: ExportarMapa) => {
             this.mapa = data;
-            console.log(this.mapa);
             this.createScene();
           });
           break;
@@ -855,6 +858,38 @@ export class Visualizacao3DComponent implements AfterViewInit {
       ;
   }
 
+  collisionWithPassage(position: THREE.Vector3) {
+    return this.maze.distanceToWestPassage(position) < this.player.radius
+      || this.maze.distanceToEastPassage(position) < this.player.radius
+      || this.maze.distanceToNorthPassage(position) < this.player.radius
+      || this.maze.distanceToSouthPassage(position) < this.player.radius
+      ;
+  }
+
+  atravessarPassagem(resposta: boolean) {
+    if(resposta == true){
+      this.mapaService.exportarMapaAtravesDeUmaPassagemEPiso(this.idPassagemAtravessar,this.maze.codigoEdificio,this.maze.numeroPiso).subscribe((data: ExportarMapa) => {
+        this.mapa = data;
+        this.createScene();
+        this.popupOpen = false;
+        this.codigo.value = this.maze.codigoEdificio;
+        this.pisoService.listarPisosMapa(this.codigo.value).subscribe({
+          next: (data) => {
+            this.listaNumeroPisos = data;
+            this.numeroPiso.value = this.maze.numeroPiso.toString();
+          },
+          error: (error) => {
+            console.error('Error fetching floor numbers:', error);
+            this.listaNumeroPisos = [];
+          },
+          complete: () => { },
+        });
+      });
+    }else{
+      this.popupOpen = false;
+    }
+  }
+
   update() {
     if (!this.gameRunning) {
       
@@ -905,90 +940,106 @@ export class Visualizacao3DComponent implements AfterViewInit {
       }
       
     } else {
-      // Update the model animations
-      const deltaT = this.clock.getDelta();
-      // this.animations.update(deltaT);
+      if (!this.popupOpen) {
+        // Update the model animations
+        const deltaT = this.clock.getDelta();
+        // this.animations.update(deltaT);
 
-      //if (!this.animations.actionInProgress) {
-      // Check if the player found the exit
-      //if (this.maze.foundExit(this.player.position)) {
-      //this.finalSequence();
-      //} else {
+        //if (!this.animations.actionInProgress) {
+        // Check if the player found the exit
+        //if (this.maze.foundExit(this.player.position)) {
+        //this.finalSequence();
+        //} else {
 
-      let coveredDistance = this.player.walkingSpeed * deltaT;
+        let coveredDistance = this.player.walkingSpeed * deltaT;
 
-      let directionIncrement = this.player.turningSpeed * deltaT;
-      if (this.player.keyStates.run) {
-        coveredDistance *= this.player.runningFactor;
-        directionIncrement *= this.player.runningFactor;
-      }
-      if (this.player.keyStates.left) {
-        this.player.object.direction += directionIncrement;
-      } else if (this.player.keyStates.right) {
-        this.player.object.direction -= directionIncrement;
-      }
-      const direction = THREE.MathUtils.degToRad(
-        this.player.object.direction
-      );
-      if (this.player.keyStates.backward) {
-        const newPosition = new THREE.Vector3(
-          -coveredDistance * Math.sin(direction),
-          0.0,
-          -coveredDistance * Math.cos(direction)
-        ).add(this.player.object.position);
-        if (this.collision(newPosition)) {
-
-        } else {
-          this.player.object.position.set(
-            newPosition.x,
-            newPosition.y,
-            newPosition.z
-          );
+        let directionIncrement = this.player.turningSpeed * deltaT;
+        if (this.player.keyStates.run) {
+          coveredDistance *= this.player.runningFactor;
+          directionIncrement *= this.player.runningFactor;
         }
-      } else if (this.player.keyStates.forward) {
-        const newPosition = new THREE.Vector3(
-          coveredDistance * Math.sin(direction),
-          0.0,
-          coveredDistance * Math.cos(direction)
-        ).add(this.player.object.position);
-        if (this.collision(newPosition)) {
-        } else {
-          this.player.object.position.set(
-            newPosition.x,
-            newPosition.y,
-            newPosition.z
-          );
+        if (this.player.keyStates.left) {
+          this.player.object.direction += directionIncrement;
+        } else if (this.player.keyStates.right) {
+          this.player.object.direction -= directionIncrement;
         }
-        /*
-      } else if (this.player.keyStates.jump) {
-        this.animations.fadeToAction('Jump', 0.2);
-      } else if (this.player.keyStates.yes) {
-        this.animations.fadeToAction('Yes', 0.2);
-      } else if (this.player.keyStates.no) {
-        this.animations.fadeToAction('No', 0.2);
-      } else if (this.player.keyStates.wave) {
-        this.animations.fadeToAction('Wave', 0.2);
-      } else if (this.player.keyStates.punch) {
-        this.animations.fadeToAction('Punch', 0.2);
-      } else if (this.player.keyStates.thumbsUp) {
-        this.animations.fadeToAction('ThumbsUp', 0.2);
-      } else {
-        this.animations.fadeToAction(
-          'Idle',
-          this.animations.activeName != 'Death' ? 0.2 : 0.6
+        const direction = THREE.MathUtils.degToRad(
+          this.player.object.direction
         );
-        */
-      }
-      this.player.object.position.set(
-        this.player.object.position.x,
-        this.player.object.position.y,
-        this.player.object.position.z
-      );
-      this.player.object.rotation.y =
-        direction - this.player.initialDirection;
-      //}
-      //}
+        if (this.player.keyStates.backward) {
+          const newPosition = new THREE.Vector3(
+            -coveredDistance * Math.sin(direction),
+            0.0,
+            -coveredDistance * Math.cos(direction)
+          ).add(this.player.object.position);
+          if (this.collision(newPosition)) {
 
+          } else {
+            if (this.collisionWithPassage(newPosition)) {
+              this.idPassagemAtravessar = this.maze.idPassagem(newPosition, this.player.radius);
+              this.popupOpen = true;
+
+            } else {
+              this.player.object.position.set(
+                newPosition.x,
+                newPosition.y,
+                newPosition.z
+              );        
+            }
+          }
+          
+        } else if (this.player.keyStates.forward) {
+          const newPosition = new THREE.Vector3(
+            coveredDistance * Math.sin(direction),
+            0.0,
+            coveredDistance * Math.cos(direction)
+          ).add(this.player.object.position);
+          if (this.collision(newPosition)) {
+          } else {
+            if (this.collisionWithPassage(newPosition)) {
+              this.idPassagemAtravessar = this.maze.idPassagem(newPosition, this.player.radius);
+              this.popupOpen = true;
+              
+            } else {
+              this.player.object.position.set(
+                newPosition.x,
+                newPosition.y,
+                newPosition.z
+              );        
+            }
+          }
+          
+          /*
+        } else if (this.player.keyStates.jump) {
+          this.animations.fadeToAction('Jump', 0.2);
+        } else if (this.player.keyStates.yes) {
+          this.animations.fadeToAction('Yes', 0.2);
+        } else if (this.player.keyStates.no) {
+          this.animations.fadeToAction('No', 0.2);
+        } else if (this.player.keyStates.wave) {
+          this.animations.fadeToAction('Wave', 0.2);
+        } else if (this.player.keyStates.punch) {
+          this.animations.fadeToAction('Punch', 0.2);
+        } else if (this.player.keyStates.thumbsUp) {
+          this.animations.fadeToAction('ThumbsUp', 0.2);
+        } else {
+          this.animations.fadeToAction(
+            'Idle',
+            this.animations.activeName != 'Death' ? 0.2 : 0.6
+          );
+          */
+        }
+      
+        this.player.object.position.set(
+          this.player.object.position.x,
+          this.player.object.position.y,
+          this.player.object.position.z
+        );
+        this.player.object.rotation.y =
+          direction - this.player.initialDirection;
+        //}
+        //}
+      }
       // Update first-person, third-person and top view cameras parameters (player direction and target)
       this.firstPersonViewCamera.playerDirection = this.player.object.direction;
       this.thirdPersonViewCamera.playerDirection = this.player.object.direction;
@@ -1022,7 +1073,6 @@ export class Visualizacao3DComponent implements AfterViewInit {
         cameras = [this.activeViewCamera];
       }
       for (const camera of cameras) {
-        console.log(camera);
         this.player.object.visible = (camera != this.firstPersonViewCamera);
         const viewport = camera.getViewport();
         this.renderer.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);

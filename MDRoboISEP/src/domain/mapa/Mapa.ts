@@ -595,23 +595,25 @@ export class Mapa extends AggregateRoot<pisoProps> {
     };
   }
 
-  private obterInformacaoPortas(): any[] {
+  private obterInformacaoSalas(): any[] {
     let dados: any[] = [];
-    if (!this.props.coordenadasSala) {
+    if(!this.props.coordenadasSala){
       return null;
     }
-    for (let sala of this.props.coordenadasSala) {
-      dados.push({ abcissa: sala.returnAbcissaPorta(), ordenada: sala.returnOrdenadaPorta(), orientacao: sala.returnOrientacaoPorta() });
+    for(let sala of this.props.coordenadasSala){
+      dados.push({nome: sala.returnNome(), abcissaA: sala.returnAbcissaA(), ordenadaA: sala.returnOrdenadaA(),
+        abcissaB: sala.returnAbcissaB(), ordenadaB: sala.returnOrdenadaB(),
+        abcissaPorta: sala.returnAbcissaPorta(), ordenadaPorta: sala.returnOrdenadaPorta(),
+        orientacaoPorta: sala.returnOrientacaoPorta()});
     }
     return dados;
   }
-
-  public exportarMapa(): { matriz: any, passagens: any, elevador: any, portas: any, posicaoInicialRobo: any } {
+  public exportarMapa(): { matriz: any, passagens: any, elevador: any, salas: any, posicaoInicialRobo: any } {
     let mapa = {
       matriz: this.returnTipoDePontos(),
       passagens: this.obterInformacaoPassagens(),
       elevador: this.obterInformcaoElevador(),
-      portas: this.obterInformacaoPortas(),
+      salas: this.obterInformacaoSalas(), 
       posicaoInicialRobo: this.posicaoIncicialRobo(),
     }
     return mapa;

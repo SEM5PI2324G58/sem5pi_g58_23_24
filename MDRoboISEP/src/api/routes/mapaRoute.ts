@@ -49,4 +49,14 @@ export default (app: Router) => {
             })
         }),
         (req, res, next) => ctrl.exportarMapa(req, res, next));
+
+        route.get('/atravesDeUmaPassagemEPiso',
+        celebrate({
+            query: Joi.object({
+                idPassagem: Joi.number().required(),
+                codEd : Joi.string().required(),
+                numeroPiso : Joi.number().required()
+            })
+        }),
+        (req, res, next) => ctrl.exportarMapaAtravesDeUmaPassagemEPiso(req, res, next));
     };

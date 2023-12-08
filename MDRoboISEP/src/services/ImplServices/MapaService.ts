@@ -211,9 +211,74 @@ export default class MapaService implements IMapaService{
             matriz : informcaoMapa.matriz,
             elevador : informcaoMapa.elevador,
             passagens : informcaoMapa.passagens,
-            portas : informcaoMapa.portas,
+            salas : informcaoMapa.salas,
             posicaoInicialRobo : informcaoMapa.posicaoInicialRobo
         }
         return Result.ok<IExportarMapaDTO>(informacaoMapaDTO);
     }
+
+    
+    public async exportarMapaAtravesDeUmaPassagemEPiso(idPassagem: number, codEd: string, numeroPiso: number) : Promise<Result<IExportarMapaDTO>>{
+
+        let passagemOrError = await this.passagemRepo.findByDomainId(idPassagem);
+        if(passagemOrError === null){
+            return Result.fail<IExportarMapaDTO>("A passagem não existe.");
+        }
+        let edificioOrError = await this.ediRepo.findByDomainId(codEd);
+        if(edificioOrError === null){
+            return Result.fail<IExportarMapaDTO>("O edifício não existe.");
+        }
+        let piso = edificioOrError.returnPisoPeloNumero(numeroPiso);
+        if(piso === null){
+            return Result.fail<IExportarMapaDTO>("O piso não existe.");
+        }
+
+        let pisoComMapa;
+
+        if(passagemOrError.props.pisoA.returnIdPiso() === piso.returnIdPiso()){
+            pisoComMapa = passagemOrError.props.pisoB;
+        }else{
+            pisoComMapa = passagemOrError.props.pisoA;
+        }
+        let mapa = pisoComMapa.props.mapa;
+        if(mapa === null || mapa === undefined || mapa.verificarSeMapaVazio() === true){
+            return Result.fail<IExportarMapaDTO>("O mapa não tem nada para exportar.");
+        }
+
+        let ediDestino = await this.ediRepo.findByPiso(pisoComMapa.returnIdPiso());
+        if(ediDestino === null){
+            return Result.fail<IExportarMapaDTO>("O edifício de destino não existe.");
+        }
+
+        let informacaoMapa = mapa.exportarMapa();
+        let passagem = informacaoMapa.passagens.find(passagem => passagem.id === idPassagem);
+        if(passagem === undefined){
+            return Result.fail<IExportarMapaDTO>("A passagem não existe.");
+        }
+        let posicaoInicialRobo: {x: number, y: number};
+        if(passagem.abcissaA === (informacaoMapa.matriz.length -1) && passagem.orientacao === "Norte"){
+            posicaoInicialRobo = {x: passagem.abcissaA -1 , y: passagem.ordenadaA};
+        }else if(passagem.ordenadaB === (informacaoMapa.matriz[0].length -1) && passagem.orientacao === "Oeste"){
+            posicaoInicialRobo = {x: passagem.abcissaA, y: passagem.ordenadaB - 1};
+        }else{
+            posicaoInicialRobo = {x: passagem.abcissaA, y: passagem.ordenadaB};
+        }
+
+        let informacaoMapaDTO : IExportarMapaDTO = {
+            texturaChao: "assets/ground.jpg",
+            texturaParede: "assets/wall.jpg",
+            modeloPorta: "assets/door.glb",
+            modeloElevador: "assets/elevator.glb",
+            codigoEdificio: ediDestino.returnEdificioId(),
+            numeroPiso : pisoComMapa.returnNumeroPiso(),
+            matriz : informacaoMapa.matriz,
+            elevador : informacaoMapa.elevador,
+            passagens : informacaoMapa.passagens,
+            salas : informacaoMapa.salas,
+            posicaoInicialRobo : posicaoInicialRobo
+        }
+
+        return Result.ok<IExportarMapaDTO>(informacaoMapaDTO);
+    }
+
 }
