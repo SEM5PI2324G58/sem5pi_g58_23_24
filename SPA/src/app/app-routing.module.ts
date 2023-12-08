@@ -4,6 +4,7 @@ import { GestaoCampusComponent } from './gestao-campus/gestao-campus.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { GestaoFrotaComponent } from './gestao-frota/gestao-frota.component';
 import { GestaoPlaneamentoComponent } from './gestao-planeamento/gestao-planeamento.component';
+import { ContaComponent } from './conta/conta.component';
 import { CriarPisoComponent } from './gestao-campus/criar-piso/criar-piso.component';
 import { CriarEdificioComponent } from './gestao-campus/criar-edificio/criar-edificio.component';
 import { EditarEdificioComponent } from './gestao-campus/editar-edificio/editar-edificio.component';
@@ -28,7 +29,7 @@ import { ListarPisoPassagemComponent } from './gestao-campus/listar-piso-passage
 import { ListarElevadorComponent } from './gestao-campus/listar-elevador/listar-elevador.component';
 import { ListarPassagemPorEdificiosComponent } from './gestao-campus/listar-passagem-por-edificios/listar-passagem-por-edificios.component';
 import { CaminhoEntreEdificiosComponent } from './gestao-planeamento/caminho-entre-edificios/caminho-entre-edificios.component';
- 
+import { ExportarDadosPessoaisComponent } from './conta/exportar-dados-pessoais/exportar-dados-pessoais.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full'},
@@ -36,6 +37,7 @@ const routes: Routes = [
   { path: 'gestaoCampus', component: GestaoCampusComponent },
   { path: 'gestaoFrota', component: GestaoFrotaComponent},
   { path: 'gestaoPlaneamento', component: GestaoPlaneamentoComponent},
+  { path: 'conta', component: ContaComponent},
   { path: 'criarPiso', component: CriarPisoComponent},
   { path: 'criarEdificio', component: CriarEdificioComponent},
   { path: 'editarEdificio', component: EditarEdificioComponent},
@@ -59,8 +61,8 @@ const routes: Routes = [
   { path: 'listarEdificioMinMaxPisos', component: ListarEdificioMinMaxPisosComponent},
   { path: 'listarPisoPassagem', component: ListarPisoPassagemComponent},
   { path: 'listarPassagensPorEdificio', component: ListarPassagemPorEdificiosComponent},
-  { path: 'caminhoEntreEdificios', component: CaminhoEntreEdificiosComponent}
-
+  { path: 'caminhoEntreEdificios', component: CaminhoEntreEdificiosComponent},
+  { path: 'exportarDadosPessoais', component: ExportarDadosPessoaisComponent}
 ];
 
 @NgModule({
