@@ -39,6 +39,9 @@ import { ApagarEdificioComponent } from './gestao-campus/apagar-edificio/apagar-
 import { ApagarTipoRoboComponent } from './gestao-frota/apagar-tipo-robo/apagar-tipo-robo.component';
 import { SidebarGestaoPlaneamentoComponent } from './gestao-planeamento/sidebar-gestao-planeamento/sidebar-gestao-planeamento.component';
 import { CaminhoEntreEdificiosComponent } from './gestao-planeamento/caminho-entre-edificios/caminho-entre-edificios.component';
+import { ContaComponent } from './conta/conta.component';
+import { SidebarContaComponent } from './conta/sidebar-conta/sidebar-conta.component';
+import { ExportarDadosPessoaisComponent } from './conta/exportar-dados-pessoais/exportar-dados-pessoais.component';
 
 @NgModule({
   declarations: [
@@ -75,7 +78,10 @@ import { CaminhoEntreEdificiosComponent } from './gestao-planeamento/caminho-ent
     ApagarEdificioComponent,
     ApagarTipoRoboComponent,
     SidebarGestaoPlaneamentoComponent,
-    CaminhoEntreEdificiosComponent
+    CaminhoEntreEdificiosComponent,
+    ContaComponent,
+    SidebarContaComponent,
+    ExportarDadosPessoaisComponent
   ],
   imports: [
     BrowserModule,
