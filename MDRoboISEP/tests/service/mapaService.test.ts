@@ -683,4 +683,159 @@ describe('Mapa Service', () => {
 
         expect(answer.errorValue()).to.equal("O mapa não tem nada para exportar.");
     });
+
+    it('exportarMapaAtravesDeUmaPassagemEPiso', async () => {
+
+        let idPassagem = 1;
+        let codEd = "ED02";
+        let numeroPiso = 1;
+
+        let edificioProps : any = {
+            nome: Nome.create('ED01 A').getValue(),
+            dimensao: Dimensao.create(4,4).getValue(),
+            listaPisos: [Container.get('piso5x5')],
+        };
+        let edificioComMapa = Edificio.create(edificioProps, Codigo.create("ED01").getValue()).getValue();
+        let edificioProps2 : any = {
+            nome: Nome.create('ED02 A').getValue(),
+            dimensao: Dimensao.create(4,4).getValue(),
+            listaPisos: [],
+        };
+        let ediInicial = Edificio.create(edificioProps2, Codigo.create("ED02").getValue()).getValue();
+        let mapa;
+        // Criar 2 pisos
+        let piso2 = Piso.create({
+            numeroPiso:  NumeroPiso.create(1).getValue(),
+            descricaoPiso: DescricaoPiso.create("Ola").getValue(),
+            mapa: mapa,
+        }, IdPiso.create(7).getValue()).getValue();
+
+        ediInicial.addPiso(piso2);
+        let passagem = Passagem.create({
+            pisoA: piso2,
+            pisoB: Container.get('piso5x5'),
+        }, IdPassagem.create(1).getValue()).getValue();
+
+        let edificioRepoInstance = Container.get("EdificioRepo") as IEdificioRepo;
+        let salaRepoInstance = Container.get("SalaRepo") as ISalaRepo;
+        let passagemRepoInstance = Container.get("PassagemRepo") as IPassagemRepo;
+        let mapaRepoInstance = Container.get("MapaRepo") as IMapaRepo;
+        let pisoRepoInstance = Container.get("PisoRepo") as IPisoRepo;
+
+        sinon.stub(passagemRepoInstance, 'findByDomainId').returns(Promise.resolve(passagem));
+        sinon.stub(edificioRepoInstance, 'findByDomainId').returns(Promise.resolve(ediInicial));
+        sinon.stub(edificioRepoInstance, 'findByPiso').returns(Promise.resolve(edificioComMapa));
+
+        const mapaService = new MapaService(mapaRepoInstance, edificioRepoInstance, salaRepoInstance, passagemRepoInstance, pisoRepoInstance);
+        let answer = await mapaService.exportarMapaAtravesDeUmaPassagemEPiso(idPassagem,codEd,numeroPiso);
+
+        expect(answer.getValue().codigoEdificio).to.equal("ED01");
+        expect(answer.getValue().numeroPiso).to.equal(0);
+        expect(answer.getValue().texturaChao).to.equal("assets/ground.jpg");
+        expect(answer.getValue().texturaParede).to.equal("assets/wall.jpg");
+        expect(answer.getValue().modeloPorta).to.equal("assets/door.glb");
+        expect(answer.getValue().modeloElevador).to.equal("assets/elevator.glb");
+        expect(answer.getValue().salas).to.deep.equal([{nome:"sala1",abcissaA: 0, abcissaB: 2,ordenadaA: 0,ordenadaB: 2,abcissaPorta: 0, ordenadaPorta: 1, orientacaoPorta: "Norte"}]);
+        expect(answer.getValue().elevador).to.deep.equal({xCoord: 3, yCoord: 3, orientacao: "Norte"});
+        console.log(answer.getValue().passagens);
+        expect(answer.getValue().passagens).to.deep.equal([{id: 1, abcissaA: 3, ordenadaA: 5, abcissaB:4, ordenadaB:5, orientacao: "Oeste"}]);
+    });
+
+
+    it('exportarMapaAtravesDeUmaPassagemEPiso passagem não existe', async () => {
+
+        let idPassagem = 1;
+        let codEd = "ED02";
+        let numeroPiso = 1;
+
+        let edificioProps : any = {
+            nome: Nome.create('ED01 A').getValue(),
+            dimensao: Dimensao.create(4,4).getValue(),
+            listaPisos: [Container.get('piso5x5')],
+        };
+        let edificioComMapa = Edificio.create(edificioProps, Codigo.create("ED01").getValue()).getValue();
+        let edificioProps2 : any = {
+            nome: Nome.create('ED02 A').getValue(),
+            dimensao: Dimensao.create(4,4).getValue(),
+            listaPisos: [],
+        };
+        let ediInicial = Edificio.create(edificioProps2, Codigo.create("ED02").getValue()).getValue();
+        let mapa;
+        // Criar 2 pisos
+        let piso2 = Piso.create({
+            numeroPiso:  NumeroPiso.create(1).getValue(),
+            descricaoPiso: DescricaoPiso.create("Ola").getValue(),
+            mapa: mapa,
+        }, IdPiso.create(7).getValue()).getValue();
+
+        ediInicial.addPiso(piso2);
+        let passagem = Passagem.create({
+            pisoA: piso2,
+            pisoB: Container.get('piso5x5'),
+        }, IdPassagem.create(1).getValue()).getValue();
+
+        let edificioRepoInstance = Container.get("EdificioRepo") as IEdificioRepo;
+        let salaRepoInstance = Container.get("SalaRepo") as ISalaRepo;
+        let passagemRepoInstance = Container.get("PassagemRepo") as IPassagemRepo;
+        let mapaRepoInstance = Container.get("MapaRepo") as IMapaRepo;
+        let pisoRepoInstance = Container.get("PisoRepo") as IPisoRepo;
+
+        sinon.stub(passagemRepoInstance, 'findByDomainId').returns(null);
+        sinon.stub(edificioRepoInstance, 'findByDomainId').returns(Promise.resolve(ediInicial));
+        sinon.stub(edificioRepoInstance, 'findByPiso').returns(Promise.resolve(edificioComMapa));
+
+        const mapaService = new MapaService(mapaRepoInstance, edificioRepoInstance, salaRepoInstance, passagemRepoInstance, pisoRepoInstance);
+        let answer = await mapaService.exportarMapaAtravesDeUmaPassagemEPiso(idPassagem,codEd,numeroPiso);
+
+        expect(answer.errorValue()).to.equal("A passagem não existe.");
+
+    });
+
+    it('exportarMapaAtravesDeUmaPassagemEPiso edificio não existe', async () => {
+
+        let idPassagem = 1;
+        let codEd = "ED02";
+        let numeroPiso = 1;
+
+        let edificioProps : any = {
+            nome: Nome.create('ED01 A').getValue(),
+            dimensao: Dimensao.create(4,4).getValue(),
+            listaPisos: [Container.get('piso5x5')],
+        };
+        let edificioComMapa = Edificio.create(edificioProps, Codigo.create("ED01").getValue()).getValue();
+        let edificioProps2 : any = {
+            nome: Nome.create('ED02 A').getValue(),
+            dimensao: Dimensao.create(4,4).getValue(),
+            listaPisos: [],
+        };
+        let ediInicial = Edificio.create(edificioProps2, Codigo.create("ED02").getValue()).getValue();
+        let mapa;
+        // Criar 2 pisos
+        let piso2 = Piso.create({
+            numeroPiso:  NumeroPiso.create(1).getValue(),
+            descricaoPiso: DescricaoPiso.create("Ola").getValue(),
+            mapa: mapa,
+        }, IdPiso.create(7).getValue()).getValue();
+
+        ediInicial.addPiso(piso2);
+        let passagem = Passagem.create({
+            pisoA: piso2,
+            pisoB: Container.get('piso5x5'),
+        }, IdPassagem.create(1).getValue()).getValue();
+
+        let edificioRepoInstance = Container.get("EdificioRepo") as IEdificioRepo;
+        let salaRepoInstance = Container.get("SalaRepo") as ISalaRepo;
+        let passagemRepoInstance = Container.get("PassagemRepo") as IPassagemRepo;
+        let mapaRepoInstance = Container.get("MapaRepo") as IMapaRepo;
+        let pisoRepoInstance = Container.get("PisoRepo") as IPisoRepo;
+
+        sinon.stub(passagemRepoInstance, 'findByDomainId').returns(Promise.resolve(passagem));
+        sinon.stub(edificioRepoInstance, 'findByDomainId').returns(null);
+
+        const mapaService = new MapaService(mapaRepoInstance, edificioRepoInstance, salaRepoInstance, passagemRepoInstance, pisoRepoInstance);
+        let answer = await mapaService.exportarMapaAtravesDeUmaPassagemEPiso(idPassagem,codEd,numeroPiso);
+
+        expect(answer.errorValue()).to.equal("O edifício não existe.");
+
+    });
 });

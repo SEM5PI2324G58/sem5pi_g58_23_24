@@ -408,4 +408,52 @@ describe('Mapa Controller', () => {
             texturaParede: "assets/wall.jpg"
         }));
     });
+
+    it('exportarMapaAtravesDeUmaPassagemEPiso retorna exportarMapaDTO', async function(){
+        let body = {
+        }
+
+        let exportarMapaDTO : IExportarMapaDTO = {
+            codigoEdificio: "ED01",
+            numeroPiso: 0,
+            matriz: [
+                [" ", " ", " ", " ", " ", " "],
+                [" ", " ", " ", " ", " ", " "],
+                [" ", " ", " ", " ", " ", " "],
+            ],
+            texturaChao: "/assets/floor.jpg",
+            texturaParede: "/assets/wall.jpg",
+            modeloPorta: "/assets/door.glb",
+            modeloElevador: "/assets/elevator.glb",
+        }
+
+        let req: Partial<Request> = {};
+        req.query = body;
+
+        let res: Partial<Response> = {
+            status: sinon.spy(),
+            json: sinon.spy()
+        };
+
+        let next: Partial<NextFunction> = () => {};
+
+        let mapaServiceInstance = Container.get("MapaService");
+        sinon.stub(mapaServiceInstance, "exportarMapaAtravesDeUmaPassagemEPiso").returns(Promise.resolve(Result.ok<IExportarMapaDTO>(exportarMapaDTO)));
+
+        const mapaController = new MapaController(mapaServiceInstance as IMapaService);
+        await mapaController.exportarMapaAtravesDeUmaPassagemEPiso(req as Request, res as Response, next as NextFunction);
+
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, sinon.match({
+            codigoEdificio: "ED01",
+            matriz: [[" ", " ", " ", " ", " ", " "], [" ", " ", " ", " ", " ", " "], [" ", " ", " ", " ", " ", " "]],
+            modeloElevador: "/assets/elevator.glb",
+            modeloPorta: "/assets/door.glb",
+            numeroPiso: 0,
+            texturaChao: "/assets/floor.jpg",
+            texturaParede: "/assets/wall.jpg"
+          }));
+    });
 });
