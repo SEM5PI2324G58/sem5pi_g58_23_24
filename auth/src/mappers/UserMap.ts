@@ -76,7 +76,7 @@ export class UserMap extends Mapper<User> {
 
   public static toPersistence(user: User): any {
     return {
-      domainId: user.id.toString(),
+      domainId: Number(user.id),
       name: user.getName().getValue(),
       email: user.getEmail().getValue(),
       password: user.getPassword().getValue(),

@@ -30,6 +30,8 @@ import { ListarElevadorComponent } from './gestao-campus/listar-elevador/listar-
 import { ListarPassagemPorEdificiosComponent } from './gestao-campus/listar-passagem-por-edificios/listar-passagem-por-edificios.component';
 import { CaminhoEntreEdificiosComponent } from './gestao-planeamento/caminho-entre-edificios/caminho-entre-edificios.component';
 import { ExportarDadosPessoaisComponent } from './conta/exportar-dados-pessoais/exportar-dados-pessoais.component';
+import { AdministradorComponent } from './administrador/administrador.component';
+import { SignupComponent } from './administrador/signup/signup.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full'},
@@ -37,7 +39,9 @@ const routes: Routes = [
   { path: 'gestaoCampus', component: GestaoCampusComponent },
   { path: 'gestaoFrota', component: GestaoFrotaComponent},
   { path: 'gestaoPlaneamento', component: GestaoPlaneamentoComponent},
+  { path: 'administrador', component: AdministradorComponent},
   { path: 'conta', component: ContaComponent},
+  { path: 'registar', component: SignupComponent},
   { path: 'criarPiso', component: CriarPisoComponent},
   { path: 'criarEdificio', component: CriarEdificioComponent},
   { path: 'editarEdificio', component: EditarEdificioComponent},

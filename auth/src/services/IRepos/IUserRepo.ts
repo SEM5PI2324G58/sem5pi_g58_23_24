@@ -6,6 +6,6 @@ export default interface IUserRepo extends Repo<User> {
   	maxId(): Promise<number>;
 	save(user: User): Promise<User>;
 	findByEmail (email: UserEmail | string): Promise<User>;
-	findById (id: string): Promise<User>;
+	findById (id: number): Promise<User>;
 }
   

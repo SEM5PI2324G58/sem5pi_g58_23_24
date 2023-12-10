@@ -20,11 +20,11 @@ export default class UserRepo implements IUserRepo {
   public async maxId(): Promise<number> {
     try {
       var maxIdResult = await this.userSchema
-        .find({}, { domainID: 1 })
+        .find({}, { domainId: 1 })
         ;
 
       if (maxIdResult && maxIdResult.length > 0) {
-        return (maxIdResult.sort((a, b) => b._id - a._id))[0]._id;
+        return (maxIdResult.sort((a, b) => b.domainId - a.domainId))[0].domainId;
       }
       else {
         return 0;
@@ -40,7 +40,7 @@ export default class UserRepo implements IUserRepo {
     }
   }
 
-  public async exists(userId: User | string): Promise<boolean> {
+  public async exists(userId: User | number): Promise<boolean> {
 
     const idX = userId instanceof User ? userId.id.toValue() : userId;
 
@@ -89,7 +89,7 @@ export default class UserRepo implements IUserRepo {
       return null;
   }
 
-  public async findById(userId: UserId | string): Promise<User> {
+  public async findById(userId: UserId | number): Promise<User> {
 
     const idX = userId instanceof UserId ? (<UserId>userId).toValue() : userId;
 

@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 const User = new mongoose.Schema(
   {
     domainId: { 
-      type: String,
+      type: Number,
       unique: true
     },
 

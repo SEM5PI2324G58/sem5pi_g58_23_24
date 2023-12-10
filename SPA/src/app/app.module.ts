@@ -42,6 +42,9 @@ import { CaminhoEntreEdificiosComponent } from './gestao-planeamento/caminho-ent
 import { ContaComponent } from './conta/conta.component';
 import { SidebarContaComponent } from './conta/sidebar-conta/sidebar-conta.component';
 import { ExportarDadosPessoaisComponent } from './conta/exportar-dados-pessoais/exportar-dados-pessoais.component';
+import { AdministradorComponent } from './administrador/administrador.component';
+import { SignupComponent } from './administrador/signup/signup.component';
+import { SidebarAdministradorComponent } from './administrador/sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -49,9 +52,11 @@ import { ExportarDadosPessoaisComponent } from './conta/exportar-dados-pessoais/
     GestaoCampusComponent,
     GestaoFrotaComponent,
     GestaoPlaneamentoComponent,
+    AdministradorComponent,
     DashboardComponent,
     SidebarComponent,
     SidebarFrotaComponent,
+    SidebarAdministradorComponent,
     CriarPisoComponent,
     CriarEdificioComponent,
     EditarEdificioComponent,
@@ -81,7 +86,8 @@ import { ExportarDadosPessoaisComponent } from './conta/exportar-dados-pessoais/
     CaminhoEntreEdificiosComponent,
     ContaComponent,
     SidebarContaComponent,
-    ExportarDadosPessoaisComponent
+    ExportarDadosPessoaisComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,

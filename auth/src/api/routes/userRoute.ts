@@ -29,7 +29,7 @@ export default (app: Router) => {
   
     route.get('/login',
     celebrate({
-      body: Joi.object({
+      query: Joi.object({
         email: Joi.string().required(),
         password: Joi.string().required()
       })

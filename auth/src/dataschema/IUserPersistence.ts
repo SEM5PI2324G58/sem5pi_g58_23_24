@@ -1,5 +1,5 @@
 export interface IUserPersistence {
-	_id: string;
+	domainId: number;
 	name: string;
 	telefone: string;
 	nif: string;

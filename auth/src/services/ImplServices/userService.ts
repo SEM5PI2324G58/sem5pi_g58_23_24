@@ -71,7 +71,8 @@ export default class UserService implements IUserService {
       const name = UserName.create(userDTO.name).getValue();
       const telefone = UserTelefone.create(userDTO.telefone).getValue();
 
-      const userId = await this.userRepo.maxId();
+      let userId = await this.userRepo.maxId();
+      userId++;
 
       const userOrError = await User.create(
         {
@@ -83,7 +84,7 @@ export default class UserService implements IUserService {
           name: name,
           telefone: telefone
         },
-        UserId.create(userId+1).getValue()
+        UserId.create(userId).getValue()
       );
 
       if (userOrError.isFailure) {
