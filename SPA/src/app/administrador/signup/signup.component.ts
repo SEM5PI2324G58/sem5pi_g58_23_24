@@ -10,9 +10,13 @@ export class SignupComponent {
 
   constructor(private userService: AuthService) {}
 
-  add(name:string, email:string, telefone:string, nif:string, password:string, role:string): void {
-    console.log(name, email, telefone, nif, password, role);
-    this.userService.signUp(name, email, telefone, nif, password, role);
+  selectedRole: string | null = null; 
+  nif : string | null = null;
+
+
+  add(name:string, email:string, telefone:string, password:string, role:string): void {
+    console.log(name, email, telefone, this.nif, password, role);
+    this.userService.signUp(name, email, telefone, this.nif, password, role);
   }
 
 }

@@ -37,7 +37,7 @@ export default class UserService implements IUserService {
       const found = !!userDocument;
 
       if (found) {
-        return Result.fail<String>("User already exists with email=" + userDTO.email);
+        return Result.fail<String>("User already exists with email" + userDTO.email);
       }
 
       /**
@@ -67,14 +67,23 @@ export default class UserService implements IUserService {
       const email = UserEmail.create(userDTO.email).getValue();
       const role = Role.create(userDTO.role).getValue();
       const estado = UserEstado.create(userDTO.estado).getValue();
-      const nif = UserNumeroContribuinte.create(userDTO.nif).getValue();
+      let nif: UserNumeroContribuinte;
+
+      if (userDTO.nif) {
+        nif = UserNumeroContribuinte.create(userDTO.nif).getValue();
+      }
+
       const name = UserName.create(userDTO.name).getValue();
       const telefone = UserTelefone.create(userDTO.telefone).getValue();
 
       let userId = await this.userRepo.maxId();
       userId++;
 
-      const userOrError = await User.create(
+      if (!userDTO.nif&& userDTO.role === "utente") {
+        return Result.fail<String>("NIF é obrigatório para utentes");
+      }
+
+      const userOrError = User.create(
         {
           email: email,
           password: password,
@@ -87,14 +96,12 @@ export default class UserService implements IUserService {
         UserId.create(userId).getValue()
       );
 
+
       if (userOrError.isFailure) {
         throw Result.fail<IUserDTO>(userOrError.errorValue());
       }
 
       const userResult = userOrError.getValue();
-
-      this.logger.silly('Generating JWT');
-      const token = this.generateToken(userResult);
 
       this.logger.silly('Sending welcome email');
       //await this.mailer.SendWelcomeEmail(userResult);
@@ -102,7 +109,6 @@ export default class UserService implements IUserService {
       //this.eventDispatcher.dispatch(events.user.signUp, { user: userResult });
 
       await this.userRepo.save(userResult);
-      const userDTOResult = UserMap.toDTO(userResult) as IUserDTO;
       return Result.ok<String>("Conta criada com sucesso!")
 
     } catch (e) {
@@ -113,7 +119,7 @@ export default class UserService implements IUserService {
 
   public async SignIn(email: string, password: string): Promise<Result<{ token: string }>> {
 
-    const user = await this.userRepo.findByEmail( email );
+    const user = await this.userRepo.findByEmail(email);
 
     if (!user) {
       throw new Error('User not registered');
@@ -131,7 +137,7 @@ export default class UserService implements IUserService {
 
       const userDTOResult = UserMap.toDTONomeRole(user) as IUserDTO;
 
-      return Result.ok<{user: IUserDTO, token: string}>( {user: userDTOResult,token: token} );
+      return Result.ok<{ user: IUserDTO, token: string }>({ user: userDTOResult, token: token });
     } else {
       throw new Error('Invalid Password');
     }

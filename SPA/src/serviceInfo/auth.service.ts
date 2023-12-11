@@ -28,19 +28,20 @@ export class AuthService {
      * @param user data view model
      * @returns 
      */
-    signUp(name: string, email: string, telefone: string, nif: string, password: string, role: string) {
+    signUp(name: string, email: string, telefone: string, nif: string|null, password: string, role: string) {
 
         let user: UserModel = {
             name: name,
             email: email,
             telefone: telefone,
-            nif: nif,
             password: password,
             estado: "aceito",
             role: role
         } as UserModel;
 
-        console.log(user);
+        if (nif !== null && nif !== "" && nif !== undefined) {
+            user.nif = nif; 
+        }
 
         return this.http.post<string>(this.signUpUrl, user, this.httpOptions)
             .pipe(catchError(this.handleError<string>("signup")))

@@ -30,12 +30,7 @@
         </div>
 
         <div class="input-field">
-            <input name="nif" #nif placeholder="Numero de Contribuinte do Utilizador *" />
-            <span></span>
-        </div>
-
-        <div class="input-field">
-            <select name="role" #role>
+            <select [(ngModel)]="selectedRole" name="role" #role>
                 <option value="" disabled selected>Role do Utilizador *</option>
                 <option value="gestor de campus">Gestor de Campus</option>
                 <option value="gestor de frota">Gestor de Frota</option>
@@ -46,9 +41,14 @@
             <span></span>
         </div>
 
+        <div class="input-field" *ngIf="selectedRole === 'utente'">
+            <input name="nif" #nif placeholder="Numero de Contribuinte do Utilizador " />
+            <span></span>
+        </div>
+
         <div class="button-submit">
             <button type="button" class="add-button"
-                (click)=" add(name.value, email.value, telefone.value, nif.value, password.value, role.value)">Adicionar
+                (click)=" add(name.value, email.value, telefone.value, password.value, role.value)">Adicionar
                 Utilizador</button>
         </div>
         <app-message></app-message>
