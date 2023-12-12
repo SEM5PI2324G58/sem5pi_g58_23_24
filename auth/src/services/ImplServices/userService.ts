@@ -23,6 +23,7 @@ import { UserNumeroContribuinte } from '../../domain/userNumeroContribuinte';
 import { UserName } from '../../domain/userName';
 import { UserTelefone } from '../../domain/userTelefone';
 import { UserId } from '../../domain/userId';
+import { ISignupUtenteDTO } from '../../dto/ISignupUtenteDTO';
 
 @Service()
 export default class UserService implements IUserService {
@@ -176,5 +177,58 @@ export default class UserService implements IUserService {
     );
   }
 
+  public async signupUtente(signupUtente: ISignupUtenteDTO): Promise<Result<String>> {
+    try {
+      const userDocument = await this.userRepo.findByEmail(signupUtente.email);
+      const found = !!userDocument;
 
+      if (found) {
+        return Result.fail<String>("Já existe um utilizador com esse email");
+      }
+
+      const salt = randomBytes(32);
+      this.logger.silly('Hashing password');
+      const hashedPassword = await argon2.hash(signupUtente.password, { salt });
+      this.logger.silly('Creating user db record');
+
+      const password = UserPassword.create({ value: hashedPassword, hashed: true }).getValue();
+      const email = UserEmail.create(signupUtente.email).getValue();
+      const role = Role.create("utente").getValue();
+      const estado = UserEstado.create("pendente").getValue();
+      const nif= UserNumeroContribuinte.create(signupUtente.nif).getValue();
+
+      const name = UserName.create(signupUtente.name).getValue();
+      const telefone = UserTelefone.create(signupUtente.telefone).getValue();
+
+      let userId = await this.userRepo.maxId();
+      userId++;
+
+      const userOrError = User.create(
+        {
+          email: email,
+          password: password,
+          role: role,
+          estado: estado,
+          nif: nif,
+          name: name,
+          telefone: telefone
+        },
+        UserId.create(userId).getValue()
+      );
+
+
+      if (userOrError.isFailure) {
+        throw Result.fail<IUserDTO>(userOrError.errorValue());
+      }
+
+      const userResult = userOrError.getValue();
+
+      await this.userRepo.save(userResult);
+      return Result.ok<String>("Conta criada com sucesso!")
+
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
 }
