@@ -36,4 +36,15 @@ export default (app: Router) => {
     }),
     (req, res, next) => ctrl.login(req, res, next));
   
+  route.post('/signupUtente',
+      celebrate({
+        body: Joi.object({
+          name: Joi.string().required(),
+          email: Joi.string().required(),
+          telefone: Joi.string().required(),
+          nif: Joi.string().required(),
+          password: Joi.string().required(),
+      })
+    }),
+    (req, res, next) => ctrl.signupUtente(req, res, next));
 };
