@@ -58,8 +58,9 @@ export default class UserController implements IUserController {
       try {
           const userOrError = await this.userServiceInstance.signupUtente(req.body as ISignupUtenteDTO);
             
-          if (userOrError.isFailure) {            
-            return res.status(400).json( userOrError.errorValue());
+          if (userOrError.isFailure) {  
+            res.status(400);          
+            return res.json( userOrError.errorValue());
           }
           const userDTO = userOrError.getValue();
           res.status(201);

@@ -29,7 +29,6 @@ import { ISignupUtenteDTO } from '../../dto/ISignupUtenteDTO';
 export default class UserService implements IUserService {
   constructor(
     @Inject(config.repos.user.name) private userRepo: IUserRepo,
-    @Inject('logger') private logger,
   ) { }
 
   public async SignUp(userDTO: IUserDTO): Promise<Result<String>> {
@@ -60,9 +59,7 @@ export default class UserService implements IUserService {
 
 
       const salt = randomBytes(32);
-      this.logger.silly('Hashing password');
       const hashedPassword = await argon2.hash(userDTO.password, { salt });
-      this.logger.silly('Creating user db record');
 
       const password = UserPassword.create({ value: hashedPassword, hashed: true }).getValue();
       const email = UserEmail.create(userDTO.email).getValue();
@@ -104,7 +101,6 @@ export default class UserService implements IUserService {
 
       const userResult = userOrError.getValue();
 
-      this.logger.silly('Sending welcome email');
       //await this.mailer.SendWelcomeEmail(userResult);
 
       //this.eventDispatcher.dispatch(events.user.signUp, { user: userResult });
@@ -113,7 +109,6 @@ export default class UserService implements IUserService {
       return Result.ok<String>("Conta criada com sucesso!")
 
     } catch (e) {
-      this.logger.error(e);
       throw e;
     }
   }
@@ -129,11 +124,8 @@ export default class UserService implements IUserService {
     /**
      * We use verify from argon2 to prevent 'timing based' attacks
      */
-    this.logger.silly('Checking password');
     const isValidPassword = await argon2.verify(user.getPassword().getValue(), password);
     if (isValidPassword) {
-      this.logger.silly('Password is valid!');
-      this.logger.silly('Generating JWT');
       const token = this.generateToken(user) as string;
 
       const userDTOResult = UserMap.toDTONomeRole(user) as IUserDTO;
@@ -158,8 +150,6 @@ export default class UserService implements IUserService {
      * because it doesn't have _the secret_ to sign it
      * more information here: https://softwareontheroad.com/you-dont-need-passport
      */
-    this.logger.silly(`Sign JWT for userId: ${user.getId().toString()}`);
-
     const id = user.id.toString();
     const email = user.getEmail().getValue();
     const name = user.getName().getValue();
@@ -225,7 +215,6 @@ export default class UserService implements IUserService {
       return Result.ok<String>("Conta criada com sucesso!")
 
     } catch (e) {
-      this.logger.error(e);
       throw e;
     }
   }

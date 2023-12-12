@@ -25,7 +25,7 @@ import "reflect-metadata";
 import 'mocha';
 
 
-describe('Tipo Dispositivo Service ', () => {
+describe('User Service ', () => {
 
     const sandbox = sinon.createSandbox();
     
@@ -76,7 +76,7 @@ describe('Tipo Dispositivo Service ', () => {
         sinon.stub(userRepoInstance, "maxId").returns(Promise.resolve(0));
         sinon.stub(userRepoInstance, "save").returns(Promise.resolve(user));
 
-        const tipoDispositivoService = new UserService(userRepoInstance as IUserRepo, null);
+        const tipoDispositivoService = new UserService(userRepoInstance as IUserRepo);
 
         let answer = await tipoDispositivoService.signupUtente(body as ISignupUtenteDTO);
         expect("Conta criada com sucesso!").to.equal(answer.getValue());
@@ -110,7 +110,7 @@ describe('Tipo Dispositivo Service ', () => {
 
         sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(user));
 
-        const tipoDispositivoService = new UserService(userRepoInstance as IUserRepo, null);
+        const tipoDispositivoService = new UserService(userRepoInstance as IUserRepo);
 
         let answer = await tipoDispositivoService.signupUtente(body as ISignupUtenteDTO);
         expect("Já existe um utilizador com esse email").to.equal(answer.errorValue());
