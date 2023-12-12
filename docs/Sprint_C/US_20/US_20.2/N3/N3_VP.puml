@@ -1,0 +1,46 @@
+autonumber
+
+participant userRoute as route
+participant "controller: UserContoller" as ctrl
+participant "dto: SignupUtenteDTO" as dto
+participant "service: UserService" as service
+participant "UserRepo" as userRepo
+participant "User" as user
+
+[o-> route: POST(json)
+activate route
+route -> ctrl: signupUtente(Request, Response, Next)
+activate ctrl
+ctrl -> dto ** : create(json)
+ctrl -> service: signupUtente(signupUtenteDTO) 
+activate service
+service -> userRepo: findByEmail(email)
+activate userRepo
+return user
+service -> userRepo: maxId()
+activate userRepo
+return userId
+service -> user ** : create(userProps)
+service -> userRepo: save(user)
+return resposta
+alt
+route <-- ctrl: Ok
+<-- route: Ok
+else "Erro"
+route <-- ctrl: Erro
+deactivate ctrl
+<-- route: Erro
+end alt
+deactivate route
+
+
+
+
+
+
+
+
+
+
+
+
