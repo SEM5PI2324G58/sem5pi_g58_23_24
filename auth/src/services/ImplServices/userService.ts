@@ -187,9 +187,7 @@ export default class UserService implements IUserService {
       }
 
       const salt = randomBytes(32);
-      this.logger.silly('Hashing password');
       const hashedPassword = await argon2.hash(signupUtente.password, { salt });
-      this.logger.silly('Creating user db record');
 
       const password = UserPassword.create({ value: hashedPassword, hashed: true }).getValue();
       const email = UserEmail.create(signupUtente.email).getValue();
