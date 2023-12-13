@@ -179,27 +179,31 @@ export default class UserService implements IUserService {
       const salt = randomBytes(32);
       const hashedPassword = await argon2.hash(signupUtente.password, { salt });
 
-      const password = UserPassword.create({ value: hashedPassword, hashed: true }).getValue();
-      const email = UserEmail.create(signupUtente.email).getValue();
+      const password = UserPassword.create({ value: hashedPassword, hashed: true });
+      const email = UserEmail.create(signupUtente.email);
       const role = Role.create("utente").getValue();
       const estado = UserEstado.create("pendente").getValue();
-      const nif= UserNumeroContribuinte.create(signupUtente.nif).getValue();
+      const nif= UserNumeroContribuinte.create(signupUtente.nif);
 
-      const name = UserName.create(signupUtente.name).getValue();
-      const telefone = UserTelefone.create(signupUtente.telefone).getValue();
+      const name = UserName.create(signupUtente.name);
+      const telefone = UserTelefone.create(signupUtente.telefone);
 
+      let result = Result.combine([password, email, nif, name, telefone]);
+      if (result.isFailure) {
+        return Result.fail<String>(result.errorValue().toString());
+      }
       let userId = await this.userRepo.maxId();
       userId++;
 
       const userOrError = User.create(
         {
-          email: email,
-          password: password,
+          email: email.getValue(),
+          password: password.getValue(),
           role: role,
           estado: estado,
-          nif: nif,
-          name: name,
-          telefone: telefone
+          nif: nif.getValue(),
+          name: name.getValue(),
+          telefone: telefone.getValue()
         },
         UserId.create(userId).getValue()
       );
