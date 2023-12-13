@@ -10,8 +10,7 @@ ator -> component: pede para registar e insere os dados(nome, password, email, t
 activate component
 component -> serviceInfo: signupUtente(nome, password, email, telefone, numero contribuinte)
 activate serviceInfo
-serviceInfo -> dataModel **: create(nome, password, email, telefone, numero contribuinte)
-serviceInfo ->o]: POST sighupUtente(utente)
+serviceInfo ->o]: POST sighupUtente(user)
 serviceInfo<-- : resposta
 return resposta
 return resposta
