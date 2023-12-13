@@ -51,39 +51,66 @@ export class UserMap extends Mapper<User> {
     const nameOrError = UserName.create(raw.name);
     const emailOrError = UserEmail.create(raw.email);
     const telefoneOrError = UserTelefone.create(raw.telefone);
-    const nifOrError = UserNumeroContribuinte.create(raw.nif);
-    const passwordOrError = UserPassword.create({value: raw.password, hashed:true});
+    let nifOrError: Result<UserNumeroContribuinte>;
+    if (raw.nif) {
+      nifOrError = UserNumeroContribuinte.create(raw.nif);
+    }
+    const passwordOrError = UserPassword.create({ value: raw.password, hashed: true });
     const estadoOrError = UserEstado.create(raw.estado);
     const roleOrError = Role.create(raw.role);
     const userIdOrError = UserId.create(raw.domainId);
 
-    const userOrError = User.create({
-      name: nameOrError.getValue(),
-      email: emailOrError.getValue(),
-      telefone: telefoneOrError.getValue(),
-      nif: nifOrError.getValue(),
-      password: passwordOrError.getValue(),
-      estado: estadoOrError.getValue(),
-      role: roleOrError.getValue(),
-    }, userIdOrError.getValue());
-
-    if (userOrError.isFailure) {
+    let userOrError : Result<User>;
+    if (raw.nif) {
+      userOrError = User.create({
+        name: nameOrError.getValue(),
+        email: emailOrError.getValue(),
+        telefone: telefoneOrError.getValue(),
+        nif: nifOrError.getValue(),
+        password: passwordOrError.getValue(),
+        estado: estadoOrError.getValue(),
+        role: roleOrError.getValue(),
+      }, userIdOrError.getValue());
+    }
+    else {
+      userOrError = User.create({
+        name: nameOrError.getValue(),
+        email: emailOrError.getValue(),
+        telefone: telefoneOrError.getValue(),
+        password: passwordOrError.getValue(),
+        estado: estadoOrError.getValue(),
+        role: roleOrError.getValue(),
+      }, userIdOrError.getValue());
+    }
+    if (userOrError.isFailure || userOrError == null || userOrError == undefined) {
       return null;
     }
-
     return userOrError.getValue();
   }
 
   public static toPersistence(user: User): any {
-    return {
-      domainId: Number(user.id),
-      name: user.getName().getValue(),
-      email: user.getEmail().getValue(),
-      password: user.getPassword().getValue(),
-      role: user.getRole().getValue(),
-      estado: user.getEstado().getValue(),
-      telefone: user.getTelefone().getValue(),
-      nif: user.getNif().getValue(),
-    };
+    if (user.getNif() == null && user.getNif() == undefined) {
+      return {
+        domainId: Number(user.id),
+        name: user.getName().getValue(),
+        email: user.getEmail().getValue(),
+        password: user.getPassword().getValue(),
+        role: user.getRole().getValue(),
+        estado: user.getEstado().getValue(),
+        telefone: user.getTelefone().getValue(),
+      };
+    }
+    else {
+      return {
+        domainId: Number(user.id),
+        name: user.getName().getValue(),
+        email: user.getEmail().getValue(),
+        password: user.getPassword().getValue(),
+        role: user.getRole().getValue(),
+        estado: user.getEstado().getValue(),
+        telefone: user.getTelefone().getValue(),
+        nif: user.getNif().getValue(),
+      };
+    }
   }
 }

@@ -78,7 +78,6 @@ export class User extends AggregateRoot<UserProps> {
       { argument: props.name, argumentName: 'name' },
       { argument: props.email, argumentName: 'email' },
       { argument: props.telefone, argumentName: 'telefone' },
-      { argument: props.nif, argumentName: 'nif' },
       { argument: props.password, argumentName: 'password' },
       { argument: props.role, argumentName: 'role' },
       { argument: props.estado, argumentName: 'estado' }

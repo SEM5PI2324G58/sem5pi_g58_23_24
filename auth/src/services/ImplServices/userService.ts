@@ -23,12 +23,12 @@ import { UserNumeroContribuinte } from '../../domain/userNumeroContribuinte';
 import { UserName } from '../../domain/userName';
 import { UserTelefone } from '../../domain/userTelefone';
 import { UserId } from '../../domain/userId';
+import { ISignupUtenteDTO } from '../../dto/ISignupUtenteDTO';
 
 @Service()
 export default class UserService implements IUserService {
   constructor(
     @Inject(config.repos.user.name) private userRepo: IUserRepo,
-    @Inject('logger') private logger,
   ) { }
 
   public async SignUp(userDTO: IUserDTO): Promise<Result<String>> {
@@ -37,7 +37,7 @@ export default class UserService implements IUserService {
       const found = !!userDocument;
 
       if (found) {
-        return Result.fail<String>("User already exists with email=" + userDTO.email);
+        return Result.fail<String>("User already exists with email" + userDTO.email);
       }
 
       /**
@@ -59,22 +59,29 @@ export default class UserService implements IUserService {
 
 
       const salt = randomBytes(32);
-      this.logger.silly('Hashing password');
       const hashedPassword = await argon2.hash(userDTO.password, { salt });
-      this.logger.silly('Creating user db record');
 
       const password = UserPassword.create({ value: hashedPassword, hashed: true }).getValue();
       const email = UserEmail.create(userDTO.email).getValue();
       const role = Role.create(userDTO.role).getValue();
       const estado = UserEstado.create(userDTO.estado).getValue();
-      const nif = UserNumeroContribuinte.create(userDTO.nif).getValue();
+      let nif: UserNumeroContribuinte;
+
+      if (userDTO.nif) {
+        nif = UserNumeroContribuinte.create(userDTO.nif).getValue();
+      }
+
       const name = UserName.create(userDTO.name).getValue();
       const telefone = UserTelefone.create(userDTO.telefone).getValue();
 
       let userId = await this.userRepo.maxId();
       userId++;
 
-      const userOrError = await User.create(
+      if (!userDTO.nif&& userDTO.role === "utente") {
+        return Result.fail<String>("NIF é obrigatório para utentes");
+      }
+
+      const userOrError = User.create(
         {
           email: email,
           password: password,
@@ -87,33 +94,28 @@ export default class UserService implements IUserService {
         UserId.create(userId).getValue()
       );
 
+
       if (userOrError.isFailure) {
         throw Result.fail<IUserDTO>(userOrError.errorValue());
       }
 
       const userResult = userOrError.getValue();
 
-      this.logger.silly('Generating JWT');
-      const token = this.generateToken(userResult);
-
-      this.logger.silly('Sending welcome email');
       //await this.mailer.SendWelcomeEmail(userResult);
 
       //this.eventDispatcher.dispatch(events.user.signUp, { user: userResult });
 
       await this.userRepo.save(userResult);
-      const userDTOResult = UserMap.toDTO(userResult) as IUserDTO;
       return Result.ok<String>("Conta criada com sucesso!")
 
     } catch (e) {
-      this.logger.error(e);
       throw e;
     }
   }
 
   public async SignIn(email: string, password: string): Promise<Result<{ token: string }>> {
 
-    const user = await this.userRepo.findByEmail( email );
+    const user = await this.userRepo.findByEmail(email);
 
     if (!user) {
       throw new Error('User not registered');
@@ -122,16 +124,13 @@ export default class UserService implements IUserService {
     /**
      * We use verify from argon2 to prevent 'timing based' attacks
      */
-    this.logger.silly('Checking password');
     const isValidPassword = await argon2.verify(user.getPassword().getValue(), password);
     if (isValidPassword) {
-      this.logger.silly('Password is valid!');
-      this.logger.silly('Generating JWT');
       const token = this.generateToken(user) as string;
 
       const userDTOResult = UserMap.toDTONomeRole(user) as IUserDTO;
 
-      return Result.ok<{user: IUserDTO, token: string}>( {user: userDTOResult,token: token} );
+      return Result.ok<{ user: IUserDTO, token: string }>({ user: userDTOResult, token: token });
     } else {
       throw new Error('Invalid Password');
     }
@@ -151,8 +150,6 @@ export default class UserService implements IUserService {
      * because it doesn't have _the secret_ to sign it
      * more information here: https://softwareontheroad.com/you-dont-need-passport
      */
-    this.logger.silly(`Sign JWT for userId: ${user.getId().toString()}`);
-
     const id = user.id.toString();
     const email = user.getEmail().getValue();
     const name = user.getName().getValue();
@@ -170,5 +167,59 @@ export default class UserService implements IUserService {
     );
   }
 
+  public async signupUtente(signupUtente: ISignupUtenteDTO): Promise<Result<String>> {
+    try {
+      const userDocument = await this.userRepo.findByEmail(signupUtente.email);
+      const found = !!userDocument;
 
+      if (found) {
+        return Result.fail<String>("Já existe um utilizador com esse email");
+      }
+
+      const salt = randomBytes(32);
+      const hashedPassword = await argon2.hash(signupUtente.password, { salt });
+
+      const password = UserPassword.create({ value: hashedPassword, hashed: true });
+      const email = UserEmail.create(signupUtente.email);
+      const role = Role.create("utente").getValue();
+      const estado = UserEstado.create("pendente").getValue();
+      const nif= UserNumeroContribuinte.create(signupUtente.nif);
+
+      const name = UserName.create(signupUtente.name);
+      const telefone = UserTelefone.create(signupUtente.telefone);
+
+      let result = Result.combine([password, email, nif, name, telefone]);
+      if (result.isFailure) {
+        return Result.fail<String>(result.errorValue().toString());
+      }
+      let userId = await this.userRepo.maxId();
+      userId++;
+
+      const userOrError = User.create(
+        {
+          email: email.getValue(),
+          password: password.getValue(),
+          role: role,
+          estado: estado,
+          nif: nif.getValue(),
+          name: name.getValue(),
+          telefone: telefone.getValue()
+        },
+        UserId.create(userId).getValue()
+      );
+
+
+      if (userOrError.isFailure) {
+        throw Result.fail<IUserDTO>(userOrError.errorValue());
+      }
+
+      const userResult = userOrError.getValue();
+
+      await this.userRepo.save(userResult);
+      return Result.ok<String>("Conta criada com sucesso!")
+
+    } catch (e) {
+      throw e;
+    }
+  }
 }
