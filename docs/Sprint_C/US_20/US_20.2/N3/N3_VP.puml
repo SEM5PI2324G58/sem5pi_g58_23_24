@@ -1,11 +1,11 @@
 autonumber
 
-participant userRoute as route
-participant "controller: UserContoller" as ctrl
-participant "dto: SignupUtenteDTO" as dto
-participant "service: UserService" as service
-participant "UserRepo" as userRepo
-participant "User" as user
+participant routes as route
+participant "controllers" as ctrl
+participant "dto" as dto
+participant "ImplServices" as service
+participant "repos" as userRepo
+participant "domain" as user
 
 [o-> route: POST(json)
 activate route

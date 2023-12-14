@@ -45,6 +45,7 @@ import { ExportarDadosPessoaisComponent } from './conta/exportar-dados-pessoais/
 import { AdministradorComponent } from './administrador/administrador.component';
 import { SignupComponent } from './administrador/signup/signup.component';
 import { SidebarAdministradorComponent } from './administrador/sidebar/sidebar.component';
+import { SignupUtenteComponent } from './signup-utente/signup-utente.component';
 
 @NgModule({
   declarations: [
@@ -87,7 +88,8 @@ import { SidebarAdministradorComponent } from './administrador/sidebar/sidebar.c
     ContaComponent,
     SidebarContaComponent,
     ExportarDadosPessoaisComponent,
-    SignupComponent
+    SignupComponent,
+    SignupUtenteComponent
   ],
   imports: [
     BrowserModule,

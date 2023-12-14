@@ -32,6 +32,7 @@ import { CaminhoEntreEdificiosComponent } from './gestao-planeamento/caminho-ent
 import { ExportarDadosPessoaisComponent } from './conta/exportar-dados-pessoais/exportar-dados-pessoais.component';
 import { AdministradorComponent } from './administrador/administrador.component';
 import { SignupComponent } from './administrador/signup/signup.component';
+import { SignupUtenteComponent } from './signup-utente/signup-utente.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full'},
@@ -66,7 +67,8 @@ const routes: Routes = [
   { path: 'listarPisoPassagem', component: ListarPisoPassagemComponent},
   { path: 'listarPassagensPorEdificio', component: ListarPassagemPorEdificiosComponent},
   { path: 'caminhoEntreEdificios', component: CaminhoEntreEdificiosComponent},
-  { path: 'exportarDadosPessoais', component: ExportarDadosPessoaisComponent}
+  { path: 'exportarDadosPessoais', component: ExportarDadosPessoaisComponent},
+  { path: 'signupUtente', component: SignupUtenteComponent}
 ];
 
 @NgModule({

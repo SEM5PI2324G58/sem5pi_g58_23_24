@@ -15,7 +15,6 @@ export default class UserRepo implements IUserRepo {
 
   constructor(
     @Inject('userSchema') private userSchema: Model<IUserPersistence & Document>,
-    @Inject('logger') private logger
   ) { }
   public async maxId(): Promise<number> {
     try {

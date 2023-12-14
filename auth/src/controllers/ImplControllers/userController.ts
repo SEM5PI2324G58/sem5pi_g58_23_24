@@ -5,6 +5,7 @@ import config from "../../../config";
 import IUserController from '../IControllers/IUserController';
 import IUserService from '../../services/IServices/IUserService';
 import { IUserDTO } from '../../dto/IUserDTO';
+import { ISignupUtenteDTO } from '../../dto/ISignupUtenteDTO';
 
 @Service()
 export default class UserController implements IUserController {
@@ -52,5 +53,22 @@ export default class UserController implements IUserController {
             return next(e);
           }
     }
+
+    async signupUtente(req: Request, res: Response, next: NextFunction) {
+      try {
+          const userOrError = await this.userServiceInstance.signupUtente(req.body as ISignupUtenteDTO);
+            
+          if (userOrError.isFailure) {  
+            res.status(400);          
+            return res.json( userOrError.errorValue());
+          }
+          const userDTO = userOrError.getValue();
+          res.status(201);
+          return res.json( userDTO );
+        }
+        catch (e) {
+          return next(e);
+        }
+  }
 
 }

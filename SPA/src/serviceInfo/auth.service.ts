@@ -5,6 +5,7 @@ import { User } from 'src/app/domain/user/user';
 import { map } from 'rxjs';
 import { UserModel } from 'src/dataModel/userModel';
 import { MessageService } from './message.service';
+import { devEnvironment } from 'src/environments/environment.development';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
@@ -12,6 +13,7 @@ export class AuthService {
     public user: Observable<User | null>;
     private loginUrl = "http://localhost:4500/api/user/login";
     private signUpUrl = "http://localhost:4500/api/user/signup";
+    private authUrl = devEnvironment.AUTH_API_URL + "user";
     httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
@@ -48,6 +50,35 @@ export class AuthService {
             .subscribe(data => {
                 this.log(data);
             });
+    }
+
+    signupUtente(name: string, email: string, telefone: string,nif: string ,password: string): void {
+        
+        if(nif == ""|| nif == undefined || nif == null ||
+            name == "" || name == undefined || name == null ||
+            email == "" || email == undefined || email == null || 
+            telefone == "" || telefone == undefined || telefone == null || 
+            password == "" || password == undefined || password == null){
+            
+            this.log("Preencha todos os campos");
+            return ;
+        }
+
+        let user = {
+            name: name,
+            email: email,
+            telefone: telefone,
+            password: password,
+            nif: nif,
+        };
+
+        this.http.post<string>(this.authUrl + "/signupUtente", user, this.httpOptions)
+            .pipe(catchError(this.handleError<string>("signup")))
+            .subscribe({next: data => {
+                if(data != undefined){
+                    this.log(data);
+                }
+            }});
     }
 
     /**
