@@ -1,23 +1,17 @@
-import { expect } from "chai";
 import 'mocha';
-import { Document } from 'mongoose';
 import "reflect-metadata";
 import * as sinon from 'sinon';
 import { Container } from 'typedi';
 import { randomBytes } from 'crypto';
 import argon2 from 'argon2';
-import { UserPassword } from '../../src/domain/userPassword';
-import { UserEmail } from '../../src/domain/userEmail';
-import { Role } from '../../src/domain/role';
-import { User } from '../../src/domain/user';
-import { UserEstado } from '../../src/domain/userEstado';
-import { UserNumeroContribuinte } from '../../src/domain/userNumeroContribuinte';
-import { UserName } from '../../src/domain/userName';
-import { UserTelefone } from '../../src/domain/userTelefone';
-import { UserId } from '../../src/domain/userId';
-import { ISignupUtenteDTO } from '../../src/dto/ISignupUtenteDTO';
-import UserService  from '../../src/services/ImplServices/userService';
-import IUserRepo from '../../src/services/IRepos/IUserRepo';
+import { UserPassword } from '../../src/domain/user/userPassword';
+import { UserEmail } from '../../src/domain/user/userEmail';
+import { Role } from '../../src/domain/user/role';
+import { User } from '../../src/domain/user/user';
+import { UserEstado } from '../../src/domain/user/userEstado';
+import { UserNumeroContribuinte } from '../../src/domain/user/userNumeroContribuinte';
+import { UserName } from '../../src/domain/user/userName';
+import { UserTelefone } from '../../src//domain/user/userTelefone';
 import { Request, Response, NextFunction } from 'express';
 import UserController from '../../src/controllers/ImplControllers/UserController';
 import { Result } from '../../src/core/logic/Result';
@@ -62,7 +56,7 @@ describe('User Controller ', () => {
             "email": "Marcoantonio@isep.ipp.pt",
             "telefone": "914231321",
             "nif": "321123567",
-            "password": "password10@"
+            "password": "Password10@"
         };
 
         let req: Partial<Request> = {};
@@ -99,7 +93,7 @@ describe('User Controller ', () => {
             "email": "Marcoantonio@isep.ipp.pt",
             "telefone": "914231321",
             "nif": "321123567",
-            "password": "password10@"
+            "password": "Password10@"
         };
 
         let req: Partial<Request> = {};
@@ -137,7 +131,7 @@ describe('User Controller ', () => {
             "email": "Marcoantonio@isep.ipp.pt",
             "telefone": "914231321",
             "nif": "321123567",
-            "password": "password10@"
+            "password": "Password10@"
         };
 
         let req: Partial<Request> = {};
@@ -156,21 +150,19 @@ describe('User Controller ', () => {
             email: "Marcoantonio@isep.ipp.pt",
             telefone: "914231321",
             nif: "321123567",
-            password: "password10@"
+            password: "Password10@"
         };
 
-        const salt = randomBytes(32);
-        const hashedPassword = await argon2.hash(body.password, { salt });
+        const hashedPassword = await UserPassword.create({ value: signupDTO.password });
         let userProps = {
             name: UserName.create(body.name).getValue(),
-            email: UserEmail.create(body.email).getValue(),
             telefone: UserTelefone.create(body.telefone).getValue(),
             nif: UserNumeroContribuinte.create(body.nif).getValue(),
-            password: UserPassword.create({ value: hashedPassword, hashed: true }).getValue(),
+            password: hashedPassword.getValue(),
             role: Role.create("utente").getValue(),
             estado: UserEstado.create("pendente").getValue()
         };
-        let user = User.create(userProps, UserId.create(1).getValue()).getValue();
+        let user = User.create(userProps, UserEmail.create(body.email).getValue());
 
         let userService = Container.get("UserService");
         const userServiceSpy = sinon.spy(userService, 'signupUtente');
@@ -178,7 +170,6 @@ describe('User Controller ', () => {
         let userRepoInstance = Container.get("UserRepo");
 
         sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(null));
-        sinon.stub(userRepoInstance, "maxId").returns(Promise.resolve(0));
         sinon.stub(userRepoInstance, "save").returns(Promise.resolve(user));
         
 
@@ -193,11 +184,6 @@ describe('User Controller ', () => {
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
         sinon.assert.calledWith(res.json as sinon.SinonSpy, "Conta criada com sucesso!");
         
-    });
-
-   
-
-    
-
+    });    
 
 });

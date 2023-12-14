@@ -4,9 +4,8 @@ import { Document, Model } from 'mongoose';
 import { IUserPersistence } from '../dataschema/IUserPersistence';
 
 import IUserRepo from "../services/IRepos/IUserRepo";
-import { User } from "../domain/user";
-import { UserId } from "../domain/userId";
-import { UserEmail } from "../domain/userEmail";
+import { User } from "../domain/user/user";
+import { UserEmail } from "../domain/user/userEmail";
 import { UserMap } from "../mappers/UserMap";
 
 @Service()
@@ -16,22 +15,6 @@ export default class UserRepo implements IUserRepo {
   constructor(
     @Inject('userSchema') private userSchema: Model<IUserPersistence & Document>,
   ) { }
-  public async maxId(): Promise<number> {
-    try {
-      var maxIdResult = await this.userSchema
-        .find({}, { domainId: 1 })
-        ;
-
-      if (maxIdResult && maxIdResult.length > 0) {
-        return (maxIdResult.sort((a, b) => b.domainId - a.domainId))[0].domainId;
-      }
-      else {
-        return 0;
-      }
-    } catch (err) {
-      throw err;
-    }
-  }
 
   private createBaseQuery(): any {
     return {
@@ -39,18 +22,18 @@ export default class UserRepo implements IUserRepo {
     }
   }
 
-  public async exists(userId: User | number): Promise<boolean> {
+  public async exists(userId: User | string): Promise<boolean> {
 
-    const idX = userId instanceof User ? userId.id.toValue() : userId;
+    const idX = userId instanceof User ? userId.id.toString() : userId;
 
-    const query = { domainId: idX };
+    const query = { email: idX };
     const userDocument = await this.userSchema.findOne(query);
 
     return !!userDocument === true;
   }
 
   public async save(user: User): Promise<User> {
-    const query = { domainId: user.id.toString() };
+    const query = { email: user.getEmail() };
 
     const userDocument = await this.userSchema.findOne(query);
 
@@ -64,7 +47,6 @@ export default class UserRepo implements IUserRepo {
       } else {
         userDocument.name = user.getName().getValue();
         userDocument.telefone = user.getTelefone().getValue();
-        userDocument.email = user.getEmail().getValue();
         userDocument.password = user.getPassword().getValue();
         userDocument.role = user.getRole().getValue();
         userDocument.estado = user.getEstado().getValue();
@@ -88,17 +70,4 @@ export default class UserRepo implements IUserRepo {
       return null;
   }
 
-  public async findById(userId: UserId | number): Promise<User> {
-
-    const idX = userId instanceof UserId ? (<UserId>userId).toValue() : userId;
-
-    const query = { domainId: idX };
-    const userRecord = await this.userSchema.findOne(query);
-
-    if (userRecord != null) {
-      return UserMap.toDomain(userRecord);
-    }
-    else
-      return null;
-  }
 }

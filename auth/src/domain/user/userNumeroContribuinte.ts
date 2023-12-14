@@ -1,7 +1,7 @@
 
-import { ValueObject } from "../core/domain/ValueObject";
-import { Result } from "../core/logic/Result";
-import { Guard } from "../core/logic/Guard";
+import { ValueObject } from "../../core/domain/ValueObject";
+import { Result } from "../../core/logic/Result";
+import { Guard } from "../../core/logic/Guard";
 
 interface UserNumeroContribuinteProps {
   numero: string;
@@ -18,7 +18,7 @@ export class UserNumeroContribuinte extends ValueObject<UserNumeroContribuintePr
 
   public static create(numero: string): Result<UserNumeroContribuinte> {
 
-    const formatGuardResult = Guard.againstInvalidNIF(numero, 'numero');
+    const formatGuardResult = Guard.againstInvalidNIF(numero, 'numero de contribuinte');
     if (!formatGuardResult.succeeded) {
       return Result.fail<UserNumeroContribuinte>(formatGuardResult.message);
     }

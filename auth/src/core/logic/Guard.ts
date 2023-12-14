@@ -1,3 +1,4 @@
+import config from "../../../config";
 
 export interface IGuardResult {
   succeeded: boolean;
@@ -12,6 +13,14 @@ export interface IGuardArgument {
 export type GuardArgumentCollection = IGuardArgument[];
 
 export class Guard {
+  public static isValidDomainName(email: string, arg1: string) {
+    const allowedDomains = config.allowedEmails?.split(',') || [];
+    const emailDomain = email.split('@')[1];
+    if (allowedDomains.includes(emailDomain)){
+      return { succeeded: true };
+    }
+    return { succeeded: false, message: `O ${arg1} não é um válido ou aceite pelo sistema.` };
+  }
 
   public static combine(guardResults: IGuardResult[]): IGuardResult {
     for (let result of guardResults) {
@@ -23,7 +32,7 @@ export class Guard {
 
   public static againstNullOrUndefined(argument: any, argumentName: string): IGuardResult {
     if (argument === null || argument === undefined) {
-      return { succeeded: false, message: `${argumentName} is null or undefined` }
+      return { succeeded: false, message: `${argumentName} é nulo ou indefinido` }
     } else {
       return { succeeded: true }
     }
@@ -34,7 +43,6 @@ export class Guard {
       const result = this.againstNullOrUndefined(arg.argument, arg.argumentName);
       if (!result.succeeded) return result;
     }
-
     return { succeeded: true }
   }
 
@@ -51,7 +59,7 @@ export class Guard {
     } else {
       return {
         succeeded: false,
-        message: `${argumentName} isn't oneOf the correct types in ${JSON.stringify(validValues)}. Got "${value}".`
+        message: `${argumentName} não é um dos valores válidos: ${JSON.stringify(validValues)}. Obteve-se: "${value}".`
       }
     }
   }
@@ -59,7 +67,7 @@ export class Guard {
   public static inRange(num: number, min: number, max: number, argumentName: string): IGuardResult {
     const isInRange = num >= min && num <= max;
     if (!isInRange) {
-      return { succeeded: false, message: `${argumentName} is not within range ${min} to ${max}.` }
+      return { succeeded: false, message: `${argumentName} não está dentro do intervalo ${min} e ${max}.` }
     } else {
       return { succeeded: true }
     }
@@ -73,7 +81,7 @@ export class Guard {
     }
 
     if (failingResult) {
-      return { succeeded: false, message: `${argumentName} is not within the range.` }
+      return { succeeded: false, message: `${argumentName} não está dentro do intervalo.` }
     } else {
       return { succeeded: true }
     }
@@ -106,7 +114,7 @@ export class Guard {
     if (regEx.test(email)) {
       return { succeeded: true }
     } else {
-      return { succeeded: false, message: `${argumentName} is not a valid email address.` }
+      return { succeeded: false, message: `O ${argumentName} não é um email válido` }
     }
   }
 
@@ -117,10 +125,10 @@ export class Guard {
    * @returns 
    */
   public static againstInvalidPhoneFormat(input: string, fieldName: string): IGuardResult {
-    const phoneRegex = /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]*$/g; // regex from https://stackoverflow.com/questions/4338267/validate-phone-number-with-javascript
+    const phoneRegex = /9[1236][0-9]{7}|2[1-9][0-9]{7}/; // regex from https://www.portugal-a-programar.pt/forums/topic/51048-express%C3%A3o-regular-para-valida%C3%A7%C3%A3o-de-n%C3%BAmeros-de-telefone/
 
     if (!phoneRegex.test(input)) {
-      return { succeeded: false, message: `${fieldName} is not a valid phone number format.` };
+      return { succeeded: false, message: `O numero de ${fieldName} não tem um formato portugues valido.` };
     }
 
     return { succeeded: true };
@@ -133,10 +141,10 @@ export class Guard {
    * @returns 
    */
   public static againstInvalidUsername(input: string, fieldName: string): IGuardResult {
-    const usernameRegex = /^[a-zA-Z ]{2,30}$/;
+    const usernameRegex = /^[a-zA-Z ]{2,100}$/;
 
     if (!usernameRegex.test(input)) {
-      return { succeeded: false, message: `${fieldName} is not a valid username.` };
+      return { succeeded: false, message: `O ${fieldName} inserido não é um nome válido ou aceite pelo sistema.` };
     }
 
     return { succeeded: true };
@@ -150,14 +158,14 @@ export class Guard {
    */
   public static againstInvalidNIF(nif: string, fieldName: string): IGuardResult { 
     if (nif.length !== 9 || !/^[0-9]+$/.test(nif)) {
-      return { succeeded: false, message: `${fieldName} must be a 9 digit number.` };
+      return { succeeded: false, message: `O ${fieldName} tem que ter 9 digitos.` };
     }
 
-    /*const validStartDigits = ['1', '2', '3', '5', '6', '8', '45', '70', '71', '72', '77', '79', '90', '91', '98', '99'];
+    const validStartDigits = ['1', '2', '3', '5', '6', '8', '45', '70', '71', '72', '77', '79', '90', '91', '98', '99'];
     if (!validStartDigits.some(d => nif.startsWith(d))) {
-      return { succeeded: false, message: `${fieldName} does not start with a valid digit sequence.` };
+      return { succeeded: false, message: `O ${fieldName} tem que começar com um destes digitos: ${validStartDigits.join(', ')}.` };
     }
-
+  /*
     const total = [...nif].slice(0, 8).reduce((acc, curr, i) => acc + parseInt(curr) * (9 - i), 0);
     const modulo11 = total % 11;
     const comparador = modulo11 < 2 ? 0 : 11 - modulo11;
@@ -168,6 +176,41 @@ export class Guard {
     }*/
 
     return { succeeded: true };
+  }
+
+  public static isPasswordGreaterOrEqualThan(value: string, length: number): IGuardResult {
+    if (value.length >= length){
+      return { succeeded: true };
+    }
+    return { succeeded: false, message: `A password tem que ter ${length} ou mais caracteres` };
+  }
+
+  public static passwordContainsUppercaseLetter(password: string): IGuardResult {
+    if (/[A-Z]/.test(password)){
+      return { succeeded: true };
+    }
+    return { succeeded: false, message: `A password tem que ter pelo menos uma letra maiúscula` };
+  }
+
+  public static passwordContainsLowercaseLetter(password: string): IGuardResult {
+    if (/[a-z]/.test(password)) {
+      return { succeeded: true };
+    }
+    return { succeeded: false, message: `A password tem que ter pelo menos uma letra minúscula` };
+  }
+
+  public static passwordContainsDigit(password: string): IGuardResult {
+    if  (/\d/.test(password)) {
+      return { succeeded: true };
+    }
+    return { succeeded: false, message: `A password tem que ter pelo menos um número` };
+  }
+
+  public static passwordContainsSymbol(password: string): IGuardResult {
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      return { succeeded: true };
+    }
+    return { succeeded: false, message: `A password tem que ter pelo menos um símbolo ou caracter especial` };
   }
 
 }
