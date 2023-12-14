@@ -17,7 +17,7 @@ export class UserName extends ValueObject<UserNameProps> {
     }
 
     public static create(name: string): Result<UserName> {
-        const nullOrUndefinedResult = Guard.againstNullOrUndefined(name, 'name');
+        const nullOrUndefinedResult = Guard.againstNullOrUndefined(name, 'nome');
         if (!nullOrUndefinedResult.succeeded) {
             return Result.fail<UserName>(nullOrUndefinedResult.message);
         }

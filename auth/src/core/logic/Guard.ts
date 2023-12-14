@@ -59,7 +59,7 @@ export class Guard {
     } else {
       return {
         succeeded: false,
-        message: `${argumentName} não é um dos valores válidos: ${JSON.stringify(validValues)}. Obteve-se: "${value}".`
+        message: `${argumentName} não é um dos valores válidos: ${JSON.stringify(validValues)}. Obteve-se: ${value}.`
       }
     }
   }
