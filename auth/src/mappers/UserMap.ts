@@ -1,15 +1,14 @@
 import { Mapper } from "../core/infra/Mapper";
 import { IUserDTO } from "../dto/IUserDTO";
-import { User } from "../domain/user";
+import { User } from "../domain/user/user";
 import { Result } from "../core/logic/Result";
-import { Role } from "../domain/role";
-import { UserEmail } from "../domain/userEmail";
-import { UserEstado } from "../domain/userEstado";
-import { UserId } from "../domain/userId";
-import { UserName } from "../domain/userName";
-import { UserNumeroContribuinte } from "../domain/userNumeroContribuinte";
-import { UserPassword } from "../domain/userPassword";
-import { UserTelefone } from "../domain/userTelefone";
+import { Role } from "../domain/user/role";
+import { UserEmail } from "../domain/user/userEmail";
+import { UserEstado } from "../domain/user/userEstado";
+import { UserName } from "../domain/user/userName";
+import { UserNumeroContribuinte } from "../domain/user/userNumeroContribuinte";
+import { UserPassword } from "../domain/user/userPassword";
+import { UserTelefone } from "../domain/user/userTelefone";
 
 
 export class UserMap extends Mapper<User> {
@@ -26,7 +25,7 @@ export class UserMap extends Mapper<User> {
 
     return {
       name: name.getValue(),
-      email: email.getValue(),
+      email: email,
       telefone: telefone.getValue(),
       nif: nif.getValue(),
       password: password.getValue(),
@@ -55,32 +54,35 @@ export class UserMap extends Mapper<User> {
     if (raw.nif) {
       nifOrError = UserNumeroContribuinte.create(raw.nif);
     }
-    const passwordOrError = UserPassword.create({ value: raw.password, hashed: true });
+    const passwordOrError = await UserPassword.create({ value: raw.password, hashed: true });
     const estadoOrError = UserEstado.create(raw.estado);
     const roleOrError = Role.create(raw.role);
-    const userIdOrError = UserId.create(raw.domainId);
 
-    let userOrError : Result<User>;
+    let userOrError: Result<User>;
     if (raw.nif) {
-      userOrError = User.create({
-        name: nameOrError.getValue(),
-        email: emailOrError.getValue(),
-        telefone: telefoneOrError.getValue(),
-        nif: nifOrError.getValue(),
-        password: passwordOrError.getValue(),
-        estado: estadoOrError.getValue(),
-        role: roleOrError.getValue(),
-      }, userIdOrError.getValue());
+      userOrError = User.create(
+        {
+          name: nameOrError.getValue(),
+          telefone: telefoneOrError.getValue(),
+          nif: nifOrError.getValue(),
+          password: passwordOrError.getValue(),
+          estado: estadoOrError.getValue(),
+          role: roleOrError.getValue(),
+        },
+        emailOrError.getValue(),
+      );
     }
     else {
-      userOrError = User.create({
-        name: nameOrError.getValue(),
-        email: emailOrError.getValue(),
-        telefone: telefoneOrError.getValue(),
-        password: passwordOrError.getValue(),
-        estado: estadoOrError.getValue(),
-        role: roleOrError.getValue(),
-      }, userIdOrError.getValue());
+      userOrError = User.create(
+        {
+          name: nameOrError.getValue(),
+          telefone: telefoneOrError.getValue(),
+          password: passwordOrError.getValue(),
+          estado: estadoOrError.getValue(),
+          role: roleOrError.getValue(),
+        },
+        emailOrError.getValue(),
+      );
     }
     if (userOrError.isFailure || userOrError == null || userOrError == undefined) {
       return null;
@@ -91,9 +93,8 @@ export class UserMap extends Mapper<User> {
   public static toPersistence(user: User): any {
     if (user.getNif() == null && user.getNif() == undefined) {
       return {
-        domainId: Number(user.id),
         name: user.getName().getValue(),
-        email: user.getEmail().getValue(),
+        email: user.getEmail(),
         password: user.getPassword().getValue(),
         role: user.getRole().getValue(),
         estado: user.getEstado().getValue(),
@@ -102,9 +103,8 @@ export class UserMap extends Mapper<User> {
     }
     else {
       return {
-        domainId: Number(user.id),
         name: user.getName().getValue(),
-        email: user.getEmail().getValue(),
+        email: user.getEmail(),
         password: user.getPassword().getValue(),
         role: user.getRole().getValue(),
         estado: user.getEstado().getValue(),

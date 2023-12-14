@@ -34,6 +34,12 @@ export default {
   },
 
   /**
+   * My email domain
+   */
+
+  allowedEmails: process.env.ALLOWED_EMAILS || "isep.ipp.pt",
+
+  /**
    * API configs
    */
   api: {

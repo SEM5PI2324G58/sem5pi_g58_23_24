@@ -1,11 +1,10 @@
-import { AggregateRoot } from "../core/domain/AggregateRoot";
-import { UniqueEntityID } from "../core/domain/UniqueEntityID";
-import { Result } from "../core/logic/Result";
-import { UserId } from "./userId";
+import { AggregateRoot } from "../../core/domain/AggregateRoot";
+import { UniqueEntityID } from "../../core/domain/UniqueEntityID";
+import { Result } from "../../core/logic/Result";
 import { UserEmail } from "./userEmail";
-import { Role } from "../domain/role";
+import { Role } from "../user/role";
 import { UserPassword } from "./userPassword";
-import { Guard } from "../core/logic/Guard";
+import { Guard } from "../../core/logic/Guard";
 import { UserTelefone } from "./userTelefone";
 import { UserName } from "./userName";
 import { UserNumeroContribuinte } from "./userNumeroContribuinte";
@@ -14,7 +13,6 @@ import { UserEstado } from "./userEstado";
 
 interface UserProps {
   name: UserName;
-  email: UserEmail;
   telefone: UserTelefone;
   nif?: UserNumeroContribuinte;
   password: UserPassword;
@@ -23,16 +21,9 @@ interface UserProps {
 }
 
 export class User extends AggregateRoot<UserProps> {
-  getId(): UniqueEntityID {
-    return this._id;
-  }
 
-  getUserId(): UserId {
-    return UserId.caller(this.id)
-  }
-
-  getEmail(): UserEmail {
-    return this.props.email;
+  getEmail(): string {
+    return String(this.id.toString());
   }
 
   getName(): UserName {
@@ -68,15 +59,14 @@ export class User extends AggregateRoot<UserProps> {
       this.props.role = value;
   }
 
-  private constructor (props: UserProps, id?: UniqueEntityID) {
-    super(props, id);
+  private constructor (props: UserProps, id?: UserEmail) {
+    super(props,id);
   }
 
-  public static create (props: UserProps, id?: UniqueEntityID): Result<User> {
+  public static create (props: UserProps, id?: UserEmail): Result<User> {
 
     const guardedProps = [
       { argument: props.name, argumentName: 'name' },
-      { argument: props.email, argumentName: 'email' },
       { argument: props.telefone, argumentName: 'telefone' },
       { argument: props.password, argumentName: 'password' },
       { argument: props.role, argumentName: 'role' },
@@ -84,7 +74,6 @@ export class User extends AggregateRoot<UserProps> {
     ];
 
     const guardResult = Guard.againstNullOrUndefinedBulk(guardedProps);
-
     if (!guardResult.succeeded) {
       return Result.fail<User>(guardResult.message)
     }     
