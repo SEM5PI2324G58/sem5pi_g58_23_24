@@ -27,6 +27,29 @@ import { MapaService } from 'src/serviceInfo/mapa.service';
   styleUrls: ['./visualizacao3-d.component.css'],
 })
 export class Visualizacao3DComponent implements AfterViewInit {
+  automaticMode : boolean = true;
+  listaPontos : {
+    edificio: string,
+    piso: number,
+    x: number,
+    y: number,
+  }[] = [];
+  numeroEdificioAtual: number = 0;
+  pontoAtualTarefa: number = 0;
+  objetivoDirecao: number = 0;
+  initialDirection: number = 0;
+  chegou:boolean = false;
+  atualMenor:boolean = false;
+  tarefaConcluida:boolean = false;
+
+  listaPontosEdificio: {
+    edificio: string,
+    piso: number,
+    x: number,
+    y: number,
+  }[][] = [];
+
+
   listaCodigos: string[] = [];
   listaNumeroPisos: number[] = [];
   codigo: any;
@@ -43,11 +66,32 @@ export class Visualizacao3DComponent implements AfterViewInit {
   ) { }
 
   ngOnInit(): void {
-    this.edificioService.listarCodEdificios().subscribe({
-      next: (data) => {
-        this.listaCodigos = data;
-      },
-    });
+    this.listaPontos = [{
+      edificio: "A",
+      piso: 1,
+      x: 3,
+      y: 3,
+    },{
+      edificio: "A",
+      piso: 1,
+      x: 2,
+      y: 3,
+    },
+    {
+      edificio: "A",
+      piso: 1,
+      x: 1,
+      y: 1,
+    }]
+    this.setListaPontosPorEdificio();
+    
+    if(!this.automaticMode){
+      this.edificioService.listarCodEdificios().subscribe({
+        next: (data) => {
+          this.listaCodigos = data;
+        },
+      });
+    }
   }
   listarNumeroPisos(): void {
     const codigo = this.codigo.options.item(this.codigo.selectedIndex)?.value;
@@ -65,6 +109,21 @@ export class Visualizacao3DComponent implements AfterViewInit {
         },
         complete: () => { },
       });
+    }
+  }
+
+  private setListaPontosPorEdificio(): void {
+    let edificioAtual:string = this.listaPontos[0].edificio;
+    let numeroEdificios:number = 0;
+    this.listaPontosEdificio[0] = [];
+    for(let i = 0; i < this.listaPontos.length; i++){
+      if(this.listaPontos[i].edificio === edificioAtual){
+        this.listaPontosEdificio[numeroEdificios].push(this.listaPontos[i]);
+      }else{
+        numeroEdificios++;
+        this.listaPontosEdificio[numeroEdificios] = [];
+        this.listaPontosEdificio[numeroEdificios].push(this.listaPontos[i]);
+      }
     }
   }
 
@@ -149,8 +208,43 @@ export class Visualizacao3DComponent implements AfterViewInit {
     // Create a 3D scene (the game itself)
     this.scene3D = new THREE.Scene();
     let mazeData = this.mapa;
+
+    this.initialDirection = 0;
+    if(this.automaticMode){
+      let xDiff = this.listaPontos[1].x - this.listaPontos[0].x;
+      let yDiff = this.listaPontos[1].y - this.listaPontos[0].y;
+      if(xDiff > 0){
+        if(yDiff > 0){
+          this.initialDirection = 45;
+        }else if(yDiff < 0){
+          this.initialDirection = 135;
+        }else{
+          this.initialDirection = 90;
+        }
+      }else if (xDiff < 0){
+        if(yDiff > 0){
+          this.initialDirection = 315;
+        }else if(yDiff < 0){
+          this.initialDirection = 225;
+        }else{
+          this.initialDirection = 270;
+        }
+      }else{
+        if(yDiff > 0){
+          this.initialDirection = 0;
+        }else if(yDiff < 0){
+          this.initialDirection = 180;
+        }
+      }
+      this.objetivoDirecao = this.initialDirection;
+    }
+
     if(!(mazeData === undefined || mazeData === null)){
-      this.maze = new Maze(mazeData, this.scene3D, 0.0);
+      if(this.automaticMode){
+        this.maze = new Maze(mazeData, this.scene3D, 0.0, [this.listaPontos[0].y, this.listaPontos[0].x]);
+      }else{
+        this.maze = new Maze(mazeData, this.scene3D, 0.0);
+      }
     }else{
       const defaultMazeData = {
         texturaChao: 'assets/ground.jpg',
@@ -172,8 +266,11 @@ export class Visualizacao3DComponent implements AfterViewInit {
           y: 1,
         }
       } as ExportarMapa;
-
-      this.maze = new Maze(defaultMazeData, this.scene3D, 0.0);
+      if(this.automaticMode){    
+        this.maze = new Maze(defaultMazeData, this.scene3D, 0.0, [this.listaPontos[0].y, this.listaPontos[0].x]);
+      }else{
+        this.maze = new Maze(defaultMazeData, this.scene3D, 0.0);
+      }
     }
     const playerData = {
       url: 'assets/robotDelivery/starship_delivery_robot_model.glb',
@@ -182,8 +279,8 @@ export class Visualizacao3DComponent implements AfterViewInit {
       eyeHeight: 0.8, // fraction of character height
       scale: new THREE.Vector3(0.05, 0.05, 0.05),
       walkingSpeed: 0.85,
-      initialDirection: 0.0, // Expressed in degrees
-      turningSpeed: 75.0, // Expressed in degrees / second
+      initialDirection: 0, // Expressed in degrees
+      turningSpeed: 225.0, // Expressed in degrees / second
       runningFactor: 2.0, // Affects walking speed and turning speed
       keyCodes: {
         fixedView: 'Digit1',
@@ -358,13 +455,16 @@ export class Visualizacao3DComponent implements AfterViewInit {
 
     window.addEventListener('resize', (event) => this.windowResize(event));
 
-    // Register the event handler to be called on key down
-    document.addEventListener('keydown', (event) =>
-      this.keyChange(event, true)
-    );
-
-    // Register the event handler to be called on key release
-    document.addEventListener('keyup', (event) => this.keyChange(event, false));
+    if(!this.automaticMode){
+      // Register the event handler to be called on key down
+      document.addEventListener('keydown', (event) =>
+        this.keyChange(event, true)
+      );
+  
+      // Register the event handler to be called on key release
+      document.addEventListener('keyup', (event) => this.keyChange(event, false));
+    }
+    
 
     this.renderer.domElement.addEventListener('mousedown', (event) =>
       this.mouseDown(event)
@@ -777,11 +877,20 @@ export class Visualizacao3DComponent implements AfterViewInit {
           }
           break;
         case 'codigo':
-          this.listarNumeroPisos();
+          if(!this.automaticMode){
+            this.listarNumeroPisos();
+          }
           break;
         case 'numeroPiso':
-          const numeroPiso = this.numeroPiso.options.item(this.numeroPiso.selectedIndex)?.value;
+          let numeroPiso;
+          if(!this.automaticMode){
+            numeroPiso = this.numeroPiso.options.item(this.numeroPiso.selectedIndex)?.value;
+          }else{
+            numeroPiso = this.numeroPiso;
+          }
           console.log(numeroPiso);
+          alert(numeroPiso);
+          alert(this.codigo.value);
           this.mapaService.exportarMapa(this.codigo.value, numeroPiso).subscribe((data: ExportarMapa) => {
             this.mapa = data;
             this.createScene();
@@ -919,8 +1028,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
           this.maze.initialPosition.y,
           this.maze.initialPosition.z
         );
-        this.player.object.direction = this.maze.initialDirection;
-
+        
         // Create the user interface
         this.userInterface = new UserInterface(
           this.scene3D,
@@ -933,14 +1041,40 @@ export class Visualizacao3DComponent implements AfterViewInit {
             },
           },
           /*this.fog,*/ this.player.object /*, this.animations*/
-        );
-        console.log('Game started');
-        // Start the game
-        this.gameRunning = true;
+          );
+          console.log('Game started');
+          // Start the game
+          this.gameRunning = true;
+          this.player.object.direction = this.initialDirection;
+          if(this.automaticMode){
+            this.listaCodigos[0] = this.listaPontosEdificio[this.numeroEdificioAtual][0].edificio;
+            this.codigo.value = this.listaCodigos[0];
+            this.listaNumeroPisos[0] = this.listaPontosEdificio[this.numeroEdificioAtual][0].piso;
+            this.numeroPiso = this.listaNumeroPisos[0];
+
+            this.player.object.keyStates = true;
+            this.player.keyStates.forward = true;
+            this.pontoAtualTarefa = 0.5;
+            this.chegou = false;
+          }
       }
       
     } else {
       if (!this.popupOpen) {
+        if(this.tarefaConcluida){
+          if(this.numeroEdificioAtual !== this.listaPontosEdificio.length - 1){
+            this.numeroEdificioAtual++;
+            this.listaCodigos[0] = this.listaPontosEdificio[this.numeroEdificioAtual][0].edificio;
+            this.codigo = this.listaCodigos[0];
+            this.listaNumeroPisos[0] = this.listaPontosEdificio[this.numeroEdificioAtual][0].piso;
+            this.numeroPiso = this.listaNumeroPisos[0];
+          }
+          this.tarefaConcluida = false;
+          this.player.keyStates.forward = true;
+          this.player.object.direction = this.initialDirection;
+          this.pontoAtualTarefa = 0.5;
+          this.chegou = false;
+        }
         // Update the model animations
         const deltaT = this.clock.getDelta();
         // this.animations.update(deltaT);
@@ -950,9 +1084,75 @@ export class Visualizacao3DComponent implements AfterViewInit {
         //if (this.maze.foundExit(this.player.position)) {
         //this.finalSequence();
         //} else {
-
+          
         let coveredDistance = this.player.walkingSpeed * deltaT;
+        if(this.automaticMode){
+          if(this.chegou === false){
+            if(this.maze.cartesianToCell(this.player.object.position)[1] === this.listaPontos[Math.floor(this.pontoAtualTarefa)+1].x &&
+              this.maze.cartesianToCell(this.player.object.position)[0] === this.listaPontos[Math.floor(this.pontoAtualTarefa)+1].y){
+              this.player.keyStates.forward = false;
+              this.pontoAtualTarefa = Math.floor(this.pontoAtualTarefa)+1;
+              this.chegou = true;
 
+              let xDiff = this.listaPontos[Math.floor(this.pontoAtualTarefa) + 1].x - this.maze.cartesianToCell(this.player.object.position)[1];
+              let yDiff = this.listaPontos[Math.floor(this.pontoAtualTarefa) + 1].y - this.maze.cartesianToCell(this.player.object.position)[0];
+              if(xDiff > 0){
+                if(yDiff > 0){
+                  this.objetivoDirecao = 45;
+                }else if(yDiff < 0){
+                  this.objetivoDirecao = 135;
+                }else{
+                  this.objetivoDirecao = 90;
+                }
+              }else if (xDiff < 0){
+                if(yDiff > 0){
+                  this.objetivoDirecao = 315;
+                }else if(yDiff < 0){
+                  this.objetivoDirecao = 225;
+                }else{
+                  this.objetivoDirecao = 270;
+                }
+              }else{
+                if(yDiff > 0){
+                  this.objetivoDirecao = 0;
+                }else if(yDiff < 0){
+                  this.objetivoDirecao = 180;
+                }
+              }
+              if(this.player.object.direction < this.objetivoDirecao){
+                this.atualMenor = true;
+              }else{
+                this.atualMenor = false;
+              }
+            }
+          }else{
+            if((this.atualMenor && this.player.object.direction >= this.objetivoDirecao) || (!this.atualMenor && this.player.object.direction <= this.objetivoDirecao)){
+              if(this)
+              if(this.pontoAtualTarefa === this.listaPontosEdificio[this.numeroEdificioAtual].length - 1){
+                if(this.numeroEdificioAtual === this.listaPontos.length - 1){
+                  alert("Chegou ao destino");
+                }
+                this.player.keyStates.forward = false;
+                this.tarefaConcluida = true;
+              }else{
+                this.player.object.direction = this.objetivoDirecao;
+                this.player.keyStates.forward = true;
+                this.chegou = false;
+              }
+            }else{
+              let anguloAtual = this.player.object.direction %360;
+              let anguloDestino = this.objetivoDirecao%360;
+              const ponteiros = (anguloDestino - anguloAtual + 360) % 360;
+              const contraponteiros = (anguloAtual - anguloDestino+ 360) % 360;
+          
+              if (ponteiros < contraponteiros) {
+                  this.player.object.direction += this.player.turningSpeed * deltaT;
+              } else {
+                this.player.object.direction  -= this.player.turningSpeed * deltaT;
+              }
+            }
+          }
+        }
         let directionIncrement = this.player.turningSpeed * deltaT;
         if (this.player.keyStates.run) {
           coveredDistance *= this.player.runningFactor;
@@ -978,7 +1178,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
             if (this.collisionWithPassage(newPosition)) {
               this.idPassagemAtravessar = this.maze.idPassagem(newPosition, this.player.radius);
               this.popupOpen = true;
-
+              
             } else {
               this.player.object.position.set(
                 newPosition.x,
