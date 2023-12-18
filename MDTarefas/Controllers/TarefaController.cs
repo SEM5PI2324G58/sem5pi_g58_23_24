@@ -1,4 +1,5 @@
 using MDTarefas.dto;
+using MDTarefas.Models.exceptions;
 using MDTarefas.Models.tarefa;
 using MDTarefas.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -16,17 +17,21 @@ public class TarefaController : ControllerBase
         _tarefaService = tarefaService;
     }
 
-    [HttpGet("GetAll")]
+    [HttpGet]
     public async Task<ActionResult<List<TarefaDTO>>> Get() {
         var tarefas = await _tarefaService.listarTarefas();
         return Ok(tarefas);
     }
 
-    [HttpPost("Create")]
+    [HttpPost]
     public async Task<ActionResult<Tarefa>> Create(CriarTarefaDTO tarefa)
     {
-        Tarefa tarefacriada = await _tarefaService.criarTarefa(tarefa);
-        return Created(tarefacriada.Id, tarefacriada);  
+        try {
+            Tarefa tarefacriada = await _tarefaService.criarTarefa(tarefa);
+            return Created(tarefacriada.Id, tarefacriada);  
+        } catch (BusinessRuleValidationException e) {
+            return BadRequest(e.Message);
+        }
     }
 
 }

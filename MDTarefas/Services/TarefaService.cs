@@ -43,7 +43,7 @@ namespace MDTarefas.Services
             if (tarefaDTO.CodConfirmacao == null || tarefaDTO.DescricaoEntrega == null ||
                 tarefaDTO.NomePickUp == null || tarefaDTO.NumeroPickUp == null ||
                 tarefaDTO.NomeDelivery == null || tarefaDTO.NumeroDelivery == null) {
-                throw new Exception("Tarrefa de pick up and delivery necessita de um código de confirmação, descrição de entrega e contactos de pick up e delivery");
+                throw new BusinessRuleValidationException("Tarrefa de pick up and delivery necessita de um código de confirmação, descrição de entrega e contactos (nome e nº de telefone) de pick up e delivery");
             }
 
             string id = RandomHexStringGenerator.GenerateRandomHex(24);
@@ -66,7 +66,7 @@ namespace MDTarefas.Services
 
         private async Task<Tarefa> criarVigilancia(CriarTarefaDTO tarefaDTO){
             if (tarefaDTO.NomeVigilancia == null || tarefaDTO.NumeroVigilancia == null) {
-                throw new BusinessRuleValidationException("Tarefa de vigilância necessita de um contacto");
+                throw new BusinessRuleValidationException("Tarefa de vigilância necessita de um contacto (nome e nº de telefone)");
             }
 
             string id = RandomHexStringGenerator.GenerateRandomHex(24);
