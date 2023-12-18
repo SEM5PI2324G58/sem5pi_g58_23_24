@@ -9,7 +9,7 @@ namespace MDTarefas.Models.tarefa.ValueObjects
         public string Email { get; private set; } = null!;
 
         public EmailRequisitor(string email) {
-            if (!StringValidations.isNullOrEmpty(email)) {
+            if (StringValidations.isNullOrEmpty(email)) {
                 throw new BusinessRuleValidationException("Email não pode ser nulo ou vazio");
             }
             this.Email = email;
