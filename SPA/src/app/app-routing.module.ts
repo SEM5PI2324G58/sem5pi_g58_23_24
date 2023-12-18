@@ -56,6 +56,7 @@ const routes: Routes = [
   { path: 'listarDispositivosFrota', component: ListarDispositivosFrotaComponent},  
   { path: 'editarPiso', component: EditarPisoComponent},
   { path: 'visualizacao3D', component: Visualizacao3DComponent},
+  { path: 'visualizacao3D/:id', component: Visualizacao3DComponent},
   { path: 'criarPassagem', component: CriarPassagemComponent},
   { path: 'criarSala', component: CriarSalaComponent},
   { path: 'editarPassagem', component: EditarPassagemComponent},
@@ -69,6 +70,7 @@ const routes: Routes = [
   { path: 'caminhoEntreEdificios', component: CaminhoEntreEdificiosComponent},
   { path: 'exportarDadosPessoais', component: ExportarDadosPessoaisComponent},
   { path: 'signupUtente', component: SignupUtenteComponent}
+  
 ];
 
 @NgModule({

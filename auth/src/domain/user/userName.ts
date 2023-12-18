@@ -1,7 +1,7 @@
 
-import { ValueObject } from "../core/domain/ValueObject";
-import { Result } from "../core/logic/Result";
-import { Guard } from "../core/logic/Guard";
+import { ValueObject } from "../../core/domain/ValueObject";
+import { Result } from "../../core/logic/Result";
+import { Guard } from "../../core/logic/Guard";
 
 interface UserNameProps {
     name: string;
@@ -17,12 +17,12 @@ export class UserName extends ValueObject<UserNameProps> {
     }
 
     public static create(name: string): Result<UserName> {
-        const nullOrUndefinedResult = Guard.againstNullOrUndefined(name, 'name');
+        const nullOrUndefinedResult = Guard.againstNullOrUndefined(name, 'nome');
         if (!nullOrUndefinedResult.succeeded) {
             return Result.fail<UserName>(nullOrUndefinedResult.message);
         }
 
-        const validUsernameResult = Guard.againstInvalidUsername(name, 'name');
+        const validUsernameResult = Guard.againstInvalidUsername(name, 'nome');
         if (!validUsernameResult.succeeded) {
             return Result.fail<UserName>(validUsernameResult.message);
         }

