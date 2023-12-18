@@ -2,7 +2,7 @@ using MDTarefas.dto;
 using MDTarefas.mappers;
 using MDTarefas.Models.tarefa;
 using MDTarefas.repo;
-using MDTarefas.utils.IdGenerator;
+using MDTarefas.utils;
 
 namespace MDTarefas.Services
 {

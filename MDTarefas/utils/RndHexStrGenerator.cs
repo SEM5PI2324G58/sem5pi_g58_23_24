@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace MDTarefas.utils.IdGenerator
+namespace MDTarefas.utils
 {
     public static class RandomHexStringGenerator
     {
