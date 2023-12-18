@@ -9,7 +9,7 @@ namespace MDTarefas.mappers
             if (tarefa is Vigilancia) {
                 Vigilancia vigilancia = (Vigilancia) tarefa;
 
-                return new TarefaDTO(vigilancia.Id, vigilancia.Estado.EstadoString, vigilancia.Percurso.PercursoString, vigilancia.EmailRequisitor.Email,
+                return new TarefaDTO(vigilancia.Id, vigilancia.Percurso.PercursoString, vigilancia.Estado.EstadoString, vigilancia.EmailRequisitor.Email,
                                     vigilancia.Contacto.Nome.NomeString, vigilancia.Contacto.NumeroTelefone.NumeroTelefoneString);
             
             } else {
