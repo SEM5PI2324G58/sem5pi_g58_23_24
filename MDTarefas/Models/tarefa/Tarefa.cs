@@ -18,7 +18,7 @@ namespace MDTarefas.Models.tarefa
 
         public Tarefa(string id, string percurso, string emailRequisitor) {
             this.Id = id;
-            this.Estado = new Estado("Pending");
+            this.Estado = new Estado(EstadoEnum.Pendente);
             this.Percurso = new Percurso(percurso);
             this.EmailRequisitor = new EmailRequisitor(emailRequisitor);
         }
