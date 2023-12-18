@@ -1,5 +1,6 @@
 using MDTarefas.dto;
 using MDTarefas.mappers;
+using MDTarefas.Models.exceptions;
 using MDTarefas.Models.tarefa;
 using MDTarefas.repo;
 using MDTarefas.utils;
@@ -34,7 +35,7 @@ namespace MDTarefas.Services
             } else if (tarefaDTO.TipoTarefa.ToLower() == "vigilancia") {
                 return await criarVigilancia(tarefaDTO);
             } else {
-                throw new Exception("Tipo de tarefa inválido");
+                throw new BusinessRuleValidationException("Tipo de tarefa inválido");
             }
         }
 
@@ -42,7 +43,7 @@ namespace MDTarefas.Services
             if (tarefaDTO.CodConfirmacao == null || tarefaDTO.DescricaoEntrega == null ||
                 tarefaDTO.NomePickUp == null || tarefaDTO.NumeroPickUp == null ||
                 tarefaDTO.NomeDelivery == null || tarefaDTO.NumeroDelivery == null) {
-                throw new Exception("Dados inválidos");
+                throw new Exception("Tarrefa de pick up and delivery necessita de um código de confirmação, descrição de entrega e contactos de pick up e delivery");
             }
 
             string id = RandomHexStringGenerator.GenerateRandomHex(24);
@@ -65,7 +66,7 @@ namespace MDTarefas.Services
 
         private async Task<Tarefa> criarVigilancia(CriarTarefaDTO tarefaDTO){
             if (tarefaDTO.NomeVigilancia == null || tarefaDTO.NumeroVigilancia == null) {
-                throw new Exception("Dados inválidos");
+                throw new BusinessRuleValidationException("Tarefa de vigilância necessita de um contacto");
             }
 
             string id = RandomHexStringGenerator.GenerateRandomHex(24);
