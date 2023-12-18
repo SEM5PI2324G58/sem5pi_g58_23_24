@@ -20,6 +20,7 @@ import ExportarMapa from 'src/dataModel/exportarMapa';
 import { initial, isEqual } from 'lodash';
 import DoorAnimations from './doorAnimations';
 import { MapaService } from 'src/serviceInfo/mapa.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-visualizacao3-d',
@@ -27,7 +28,8 @@ import { MapaService } from 'src/serviceInfo/mapa.service';
   styleUrls: ['./visualizacao3-d.component.css'],
 })
 export class Visualizacao3DComponent implements AfterViewInit {
-  automaticMode : boolean = true;
+  idTarefa: number = -1;
+  automaticMode : boolean = false;
   listaPontos : {
     edificio: string,
     piso: number,
@@ -63,25 +65,35 @@ export class Visualizacao3DComponent implements AfterViewInit {
     private pisoService: PisoService,
     private edificioService: EdificioService,
     private mapaService: MapaService,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
+
+    this.route.paramMap.subscribe(params => {
+      // Check if the parameter with key 'yourParamName' exists in the URL
+      const idFromUrl = this.route.snapshot.paramMap.get('id');
+      if(idFromUrl){
+        this.automaticMode = true;
+        this.idTarefa = parseInt(idFromUrl);
+      }
+    });
     this.listaPontos = [{
       edificio: "A",
       piso: 1,
-      x: 3,
-      y: 3,
+      x: 20,
+      y: 4,
     },{
       edificio: "A",
       piso: 1,
-      x: 2,
-      y: 3,
+      x: 20,
+      y: 5,
     },
     {
       edificio: "A",
       piso: 1,
-      x: 1,
-      y: 1,
+      x: 21,
+      y: 5,
     }]
     this.setListaPontosPorEdificio();
     
@@ -266,8 +278,10 @@ export class Visualizacao3DComponent implements AfterViewInit {
           y: 1,
         }
       } as ExportarMapa;
-      if(this.automaticMode){    
-        this.maze = new Maze(defaultMazeData, this.scene3D, 0.0, [this.listaPontos[0].y, this.listaPontos[0].x]);
+      if(this.automaticMode){
+        this.mapaService.exportarMapa(this.listaPontos[0].edificio, this.listaPontos[0].piso).subscribe((data: ExportarMapa) => {
+           this.maze = new Maze(data, this.scene3D, 0.0, [this.listaPontos[0].y, this.listaPontos[0].x]);
+        });
       }else{
         this.maze = new Maze(defaultMazeData, this.scene3D, 0.0);
       }
@@ -278,7 +292,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
         "Model and related code snippets created by <a href='https://www.patreon.com/quaternius' target='_blank' rel='noopener'>Tomás Laulhé</a>. CC0 1.0. Modified by <a href='https://donmccurdy.com/' target='_blank' rel='noopener'>Don McCurdy</a>.",
       eyeHeight: 0.8, // fraction of character height
       scale: new THREE.Vector3(0.05, 0.05, 0.05),
-      walkingSpeed: 0.85,
+      walkingSpeed: 1,
       initialDirection: 0, // Expressed in degrees
       turningSpeed: 225.0, // Expressed in degrees / second
       runningFactor: 2.0, // Affects walking speed and turning speed
@@ -882,19 +896,14 @@ export class Visualizacao3DComponent implements AfterViewInit {
           }
           break;
         case 'numeroPiso':
-          let numeroPiso;
           if(!this.automaticMode){
-            numeroPiso = this.numeroPiso.options.item(this.numeroPiso.selectedIndex)?.value;
-          }else{
-            numeroPiso = this.numeroPiso;
+            const numeroPiso = this.numeroPiso.options.item(this.numeroPiso.selectedIndex)?.value;
+            console.log(numeroPiso);
+            this.mapaService.exportarMapa(this.codigo.value, numeroPiso).subscribe((data: ExportarMapa) => {
+              this.mapa = data;
+              this.createScene();
+            });
           }
-          console.log(numeroPiso);
-          alert(numeroPiso);
-          alert(this.codigo.value);
-          this.mapaService.exportarMapa(this.codigo.value, numeroPiso).subscribe((data: ExportarMapa) => {
-            this.mapa = data;
-            this.createScene();
-          });
           break;
           case "multiple-views":
               this.setViewMode((target as any)['checked']);
@@ -1047,10 +1056,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
           this.gameRunning = true;
           this.player.object.direction = this.initialDirection;
           if(this.automaticMode){
-            this.listaCodigos[0] = this.listaPontosEdificio[this.numeroEdificioAtual][0].edificio;
-            this.codigo.value = this.listaCodigos[0];
-            this.listaNumeroPisos[0] = this.listaPontosEdificio[this.numeroEdificioAtual][0].piso;
-            this.numeroPiso = this.listaNumeroPisos[0];
+
 
             this.player.object.keyStates = true;
             this.player.keyStates.forward = true;
@@ -1063,17 +1069,17 @@ export class Visualizacao3DComponent implements AfterViewInit {
       if (!this.popupOpen) {
         if(this.tarefaConcluida){
           if(this.numeroEdificioAtual !== this.listaPontosEdificio.length - 1){
+            this.tarefaConcluida = false;
             this.numeroEdificioAtual++;
             this.listaCodigos[0] = this.listaPontosEdificio[this.numeroEdificioAtual][0].edificio;
             this.codigo = this.listaCodigos[0];
             this.listaNumeroPisos[0] = this.listaPontosEdificio[this.numeroEdificioAtual][0].piso;
             this.numeroPiso = this.listaNumeroPisos[0];
+            this.player.keyStates.forward = true;
+            this.player.object.direction = this.initialDirection;
+            this.pontoAtualTarefa = 0.5;
+            this.chegou = false;
           }
-          this.tarefaConcluida = false;
-          this.player.keyStates.forward = true;
-          this.player.object.direction = this.initialDirection;
-          this.pontoAtualTarefa = 0.5;
-          this.chegou = false;
         }
         // Update the model animations
         const deltaT = this.clock.getDelta();
@@ -1086,7 +1092,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
         //} else {
           
         let coveredDistance = this.player.walkingSpeed * deltaT;
-        if(this.automaticMode){
+        if(this.automaticMode && !this.tarefaConcluida){
           if(this.chegou === false){
             if(this.maze.cartesianToCell(this.player.object.position)[1] === this.listaPontos[Math.floor(this.pontoAtualTarefa)+1].x &&
               this.maze.cartesianToCell(this.player.object.position)[0] === this.listaPontos[Math.floor(this.pontoAtualTarefa)+1].y){
@@ -1127,9 +1133,8 @@ export class Visualizacao3DComponent implements AfterViewInit {
             }
           }else{
             if((this.atualMenor && this.player.object.direction >= this.objetivoDirecao) || (!this.atualMenor && this.player.object.direction <= this.objetivoDirecao)){
-              if(this)
               if(this.pontoAtualTarefa === this.listaPontosEdificio[this.numeroEdificioAtual].length - 1){
-                if(this.numeroEdificioAtual === this.listaPontos.length - 1){
+                if(this.numeroEdificioAtual === this.listaPontosEdificio.length - 1){
                   alert("Chegou ao destino");
                 }
                 this.player.keyStates.forward = false;
