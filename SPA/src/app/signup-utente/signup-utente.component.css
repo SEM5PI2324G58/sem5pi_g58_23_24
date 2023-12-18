@@ -22,7 +22,7 @@ body {
 form {
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
+    width: 22%;
     background-color: #f0f0f0;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -45,6 +45,7 @@ h2 {
 }
 
 button {
+    margin-top: 5px;
     background-color: #0074d9;
     color: #fff;
     padding: 10px;
@@ -57,3 +58,15 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
+label {
+    line-height: 2; 
+    color: rgb(57, 57, 57);
+    font-size: 16px; 
+  }
+  
+#checkbox {
+    height: 18px;
+    width: 18px; 
+  }
+  
