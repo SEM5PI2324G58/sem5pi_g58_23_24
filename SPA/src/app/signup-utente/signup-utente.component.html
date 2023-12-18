@@ -17,8 +17,11 @@
     <input type="text" #nif id="nif" name="nif" placeholder="Número de Contribuinte *" required>
 
     <input type="password" #password id="password" name="password" placeholder="Password *" required>
-
-    <button type="submit" (click)="signupUtente(name.value, email.value, telemovel.value, nif.value, password.value)">Registar</button>
+    
+    <input type="checkbox" id="checkbox"/>
+    <label for="checkbox"> Eu li e concordo com os <a routerLink="">termos de uso.</a>
+    </label>
+    <button id="registar" type="submit" (click)="signupUtente(name.value, email.value, telemovel.value, nif.value, password.value)">Registar</button>
 
     <app-message></app-message>
 

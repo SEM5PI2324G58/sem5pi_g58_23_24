@@ -28,6 +28,8 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./visualizacao3-d.component.css'],
 })
 export class Visualizacao3DComponent implements AfterViewInit {
+  virarRelogio: any = false;
+  pontoAtualTarefaEdificio: number = 0;
   idTarefa: number = -1;
   automaticMode : boolean = false;
   listaPontos : {
@@ -35,6 +37,11 @@ export class Visualizacao3DComponent implements AfterViewInit {
     piso: number,
     x: number,
     y: number,
+  }[] = [];
+  listaPontosCartesian: {
+    edificio: string,
+    piso: number,
+    cartesian: THREE.Vector3,
   }[] = [];
   numeroEdificioAtual: number = 0;
   pontoAtualTarefa: number = 0;
@@ -51,6 +58,12 @@ export class Visualizacao3DComponent implements AfterViewInit {
     y: number,
   }[][] = [];
 
+  listaPontosEdificioCartesian: {
+    edificio: string,
+    piso: number,
+    cell: THREE.Vector3,
+  }[][] = [];
+
 
   listaCodigos: string[] = [];
   listaNumeroPisos: number[] = [];
@@ -60,6 +73,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
   multipleViewsCheckBox: any;
   userInterfaceCheckBox: any;
   popupOpen: boolean = false;
+  carregouPiso: boolean = false;
 
   constructor(
     private pisoService: PisoService,
@@ -78,7 +92,8 @@ export class Visualizacao3DComponent implements AfterViewInit {
         this.idTarefa = parseInt(idFromUrl);
       }
     });
-    this.listaPontos = [{
+    this.listaPontos = [
+      {
       edificio: "A",
       piso: 1,
       x: 20,
@@ -94,9 +109,27 @@ export class Visualizacao3DComponent implements AfterViewInit {
       piso: 1,
       x: 21,
       y: 5,
-    }]
-    this.setListaPontosPorEdificio();
-    
+    },
+    {
+      edificio: "B",
+      piso: 1,
+      x: 20,
+      y: 5,
+    },
+    {
+      edificio: "B",
+      piso: 1,
+      x: 20,
+      y: 6,
+    },
+    {
+      edificio: "B",
+      piso: 1,
+      x: 19,
+      y: 6,
+    }
+  ]
+  this.setListaPontosPorEdificio();
     if(!this.automaticMode){
       this.edificioService.listarCodEdificios().subscribe({
         next: (data) => {
@@ -126,15 +159,50 @@ export class Visualizacao3DComponent implements AfterViewInit {
 
   private setListaPontosPorEdificio(): void {
     let edificioAtual:string = this.listaPontos[0].edificio;
+    let pisoAtual:number = this.listaPontos[0].piso;
     let numeroEdificios:number = 0;
     this.listaPontosEdificio[0] = [];
     for(let i = 0; i < this.listaPontos.length; i++){
-      if(this.listaPontos[i].edificio === edificioAtual){
+      if(this.listaPontos[i].edificio === edificioAtual && this.listaPontos[i].piso === pisoAtual){
         this.listaPontosEdificio[numeroEdificios].push(this.listaPontos[i]);
       }else{
+        edificioAtual = this.listaPontos[i].edificio;
+        pisoAtual = this.listaPontos[i].piso;
         numeroEdificios++;
         this.listaPontosEdificio[numeroEdificios] = [];
         this.listaPontosEdificio[numeroEdificios].push(this.listaPontos[i]);
+      }
+    }
+    for(let i = 0; i < this.listaPontosEdificio.length; i++){
+      for(let j = 0; j < this.listaPontosEdificio[i].length; j++){
+        console.log(i + " " + this.listaPontosEdificio[i][j].edificio);
+      }
+    }
+  }
+
+  private setListaPontosCartesian(): void {
+    this.listaPontosCartesian = [];
+    for(let i = 0; i < this.listaPontos.length; i++){
+      let number = [];
+      number.push(this.listaPontos[i].y);
+      number.push(this.listaPontos[i].x);
+      this.listaPontosCartesian[i] = {
+        edificio: this.listaPontos[i].edificio,
+        piso: this.listaPontos[i].piso,
+        cartesian: this.maze.cellToCartesian(number),
+      }
+    }
+    for(let i = 0; i < this.listaPontosEdificio.length; i++){
+      this.listaPontosEdificioCartesian[i] = [];
+      for(let j = 0; j < this.listaPontosEdificio[i].length; j++){
+        let number = [];
+        number.push(this.listaPontosEdificio[i][j].y);
+        number.push(this.listaPontosEdificio[i][j].x);
+        this.listaPontosEdificioCartesian[i][j] = {
+          edificio: this.listaPontosEdificio[i][j].edificio,
+          piso: this.listaPontosEdificio[i][j].piso,
+          cell: this.maze.cellToCartesian(number),
+        }
       }
     }
   }
@@ -175,8 +243,17 @@ export class Visualizacao3DComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.createScene();
-    this.render();
+    if(this.automaticMode){
+      this.mapaService.exportarMapa(this.listaPontos[0].edificio, this.listaPontos[0].piso).subscribe((data: ExportarMapa) => {
+        this.mapa = data;
+        this.createScene();
+        this.render();
+        this.setListaPontosCartesian();
+      });
+    }else{
+      this.createScene();
+      this.render();
+    }
   }
 
   @Input() public rotationSpeedX: number = 0.001;
@@ -223,8 +300,14 @@ export class Visualizacao3DComponent implements AfterViewInit {
 
     this.initialDirection = 0;
     if(this.automaticMode){
-      let xDiff = this.listaPontos[1].x - this.listaPontos[0].x;
-      let yDiff = this.listaPontos[1].y - this.listaPontos[0].y;
+      let xDiff = 0;
+      let yDiff = 0;
+      console.log(this.listaPontosEdificio[this.numeroEdificioAtual].length);
+      console.log(this.listaPontosEdificio[this.numeroEdificioAtual][0].edificio);
+      if(this.listaPontosEdificio[this.numeroEdificioAtual].length > 1){
+        xDiff = this.listaPontosEdificio[this.numeroEdificioAtual][1].x - this.listaPontosEdificio[this.numeroEdificioAtual][0].x;
+        yDiff = this.listaPontosEdificio[this.numeroEdificioAtual][1].y - this.listaPontosEdificio[this.numeroEdificioAtual][0].y;
+      }
       if(xDiff > 0){
         if(yDiff > 0){
           this.initialDirection = 45;
@@ -253,7 +336,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
 
     if(!(mazeData === undefined || mazeData === null)){
       if(this.automaticMode){
-        this.maze = new Maze(mazeData, this.scene3D, 0.0, [this.listaPontos[0].y, this.listaPontos[0].x]);
+        this.maze = new Maze(mazeData, this.scene3D, 0.0, [this.listaPontosEdificio[this.numeroEdificioAtual][0].y, this.listaPontosEdificio[this.numeroEdificioAtual][0].x]);
       }else{
         this.maze = new Maze(mazeData, this.scene3D, 0.0);
       }
@@ -278,13 +361,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
           y: 1,
         }
       } as ExportarMapa;
-      if(this.automaticMode){
-        this.mapaService.exportarMapa(this.listaPontos[0].edificio, this.listaPontos[0].piso).subscribe((data: ExportarMapa) => {
-           this.maze = new Maze(data, this.scene3D, 0.0, [this.listaPontos[0].y, this.listaPontos[0].x]);
-        });
-      }else{
-        this.maze = new Maze(defaultMazeData, this.scene3D, 0.0);
-      }
+      this.maze = new Maze(defaultMazeData, this.scene3D, 0.0);
     }
     const playerData = {
       url: 'assets/robotDelivery/starship_delivery_robot_model.glb',
@@ -292,9 +369,9 @@ export class Visualizacao3DComponent implements AfterViewInit {
         "Model and related code snippets created by <a href='https://www.patreon.com/quaternius' target='_blank' rel='noopener'>Tomás Laulhé</a>. CC0 1.0. Modified by <a href='https://donmccurdy.com/' target='_blank' rel='noopener'>Don McCurdy</a>.",
       eyeHeight: 0.8, // fraction of character height
       scale: new THREE.Vector3(0.05, 0.05, 0.05),
-      walkingSpeed: 1,
+      walkingSpeed: 0.85,
       initialDirection: 0, // Expressed in degrees
-      turningSpeed: 225.0, // Expressed in degrees / second
+      turningSpeed: 100.0, // Expressed in degrees / second
       runningFactor: 2.0, // Affects walking speed and turning speed
       keyCodes: {
         fixedView: 'Digit1',
@@ -536,6 +613,8 @@ export class Visualizacao3DComponent implements AfterViewInit {
     );
     this.multipleViewsCheckBox.addEventListener("change", (event: Event) => this.elementChange(event));
     this.userInterfaceCheckBox.addEventListener("change", (event: Event) => this.elementChange(event));
+
+    this.carregouPiso = true;
   }
 
   sleep(ms: number): Promise<void> {
@@ -991,7 +1070,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
         this.createScene();
         this.popupOpen = false;
         this.codigo.value = this.maze.codigoEdificio;
-        this.pisoService.listarPisosMapa(this.codigo.value).subscribe({
+        this.pisoService.listarPisosMapa(this.codigo.value).subscribe({ //
           next: (data) => {
             this.listaNumeroPisos = data;
             this.numeroPiso.value = this.maze.numeroPiso.toString();
@@ -1053,32 +1132,46 @@ export class Visualizacao3DComponent implements AfterViewInit {
           );
           console.log('Game started');
           // Start the game
-          this.gameRunning = true;
           this.player.object.direction = this.initialDirection;
-          if(this.automaticMode){
-
-
+          if(this.automaticMode && this.pontoAtualTarefa === 0){
             this.player.object.keyStates = true;
             this.player.keyStates.forward = true;
             this.pontoAtualTarefa = 0.5;
             this.chegou = false;
           }
+          if(this.automaticMode &&  this.carregouPiso){
+            if(this.pontoAtualTarefa === this.listaPontos.length - 1){
+              this.tarefaConcluida = true;
+              alert("Tarefa concluída!")
+            }else{
+              this.player.keyStates.forward = true;
+              this.player.object.direction = this.initialDirection;
+              this.chegou = false;
+            }
+          }
+          this.gameRunning = true;
       }
       
     } else {
+      
       if (!this.popupOpen) {
-        if(this.tarefaConcluida){
+        if(this.tarefaConcluida && this.automaticMode){
           if(this.numeroEdificioAtual !== this.listaPontosEdificio.length - 1){
-            this.tarefaConcluida = false;
             this.numeroEdificioAtual++;
-            this.listaCodigos[0] = this.listaPontosEdificio[this.numeroEdificioAtual][0].edificio;
-            this.codigo = this.listaCodigos[0];
-            this.listaNumeroPisos[0] = this.listaPontosEdificio[this.numeroEdificioAtual][0].piso;
-            this.numeroPiso = this.listaNumeroPisos[0];
-            this.player.keyStates.forward = true;
-            this.player.object.direction = this.initialDirection;
-            this.pontoAtualTarefa = 0.5;
-            this.chegou = false;
+            this.pontoAtualTarefa++;
+            this.pontoAtualTarefaEdificio = 0;
+            this.mapaService.exportarMapa(this.listaPontosEdificio[this.numeroEdificioAtual][0].edificio, (this.listaPontosEdificio[this.numeroEdificioAtual][0].piso)).subscribe(async (data: ExportarMapa) => {
+              this.mapa = data;
+              this.carregouPiso = false;
+              this.renderer.clear();
+              this.createScene();
+              this.tarefaConcluida = false;
+              this.listaCodigos[0] = this.listaPontosEdificio[this.numeroEdificioAtual][0].edificio;
+              this.codigo = this.listaCodigos[0];
+              this.listaNumeroPisos[0] = this.listaPontosEdificio[this.numeroEdificioAtual][0].piso;
+              this.numeroPiso = this.listaNumeroPisos[0];
+            });
+
           }
         }
         // Update the model animations
@@ -1093,67 +1186,96 @@ export class Visualizacao3DComponent implements AfterViewInit {
           
         let coveredDistance = this.player.walkingSpeed * deltaT;
         if(this.automaticMode && !this.tarefaConcluida){
-          if(this.chegou === false){
-            if(this.maze.cartesianToCell(this.player.object.position)[1] === this.listaPontos[Math.floor(this.pontoAtualTarefa)+1].x &&
-              this.maze.cartesianToCell(this.player.object.position)[0] === this.listaPontos[Math.floor(this.pontoAtualTarefa)+1].y){
-              this.player.keyStates.forward = false;
-              this.pontoAtualTarefa = Math.floor(this.pontoAtualTarefa)+1;
-              this.chegou = true;
+          if(this.chegou === false && this.pontoAtualTarefa < this.listaPontos.length - 1 && this.listaPontos[Math.floor(this.pontoAtualTarefa) + 1].edificio === this.listaPontos[Math.floor(this.pontoAtualTarefa)].edificio && this.listaPontos[Math.floor(this.pontoAtualTarefa) + 1].piso === this.listaPontos[Math.floor(this.pontoAtualTarefa)].piso){
+            if(this.player.object.position.x >= this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.x - 0.01&&
+              this.player.object.position.x <= this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.x + 0.01 &&
+              this.player.object.position.z >=this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.z -0.01 &&
+              this.player.object.position.z <= this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.z + 0.01){
+                
+                this.player.object.position.x = this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.x;
+                this.player.object.position.z = this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.z;
+                this.player.keyStates.forward = false;
+                this.pontoAtualTarefa = Math.floor(this.pontoAtualTarefa)+1;
+                this.pontoAtualTarefaEdificio = Math.floor(this.pontoAtualTarefaEdificio)+1;
+                this.chegou = true;
 
-              let xDiff = this.listaPontos[Math.floor(this.pontoAtualTarefa) + 1].x - this.maze.cartesianToCell(this.player.object.position)[1];
-              let yDiff = this.listaPontos[Math.floor(this.pontoAtualTarefa) + 1].y - this.maze.cartesianToCell(this.player.object.position)[0];
-              if(xDiff > 0){
-                if(yDiff > 0){
-                  this.objetivoDirecao = 45;
-                }else if(yDiff < 0){
-                  this.objetivoDirecao = 135;
-                }else{
-                  this.objetivoDirecao = 90;
+                if(this.pontoAtualTarefa < this.listaPontos.length - 1 && this.listaPontos[Math.floor(this.pontoAtualTarefa) + 1].edificio === this.listaPontos[Math.floor(this.pontoAtualTarefa)].edificio){
+                  let xDiff = this.listaPontos[Math.floor(this.pontoAtualTarefa) + 1].x - this.maze.cartesianToCell(this.player.object.position)[1];
+                  let yDiff = this.listaPontos[Math.floor(this.pontoAtualTarefa) + 1].y - this.maze.cartesianToCell(this.player.object.position)[0];
+                  this.virarRelogio = undefined;
+                  if(xDiff > 0){
+                    if(yDiff > 0){
+                      this.objetivoDirecao = 45;
+                    }else if(yDiff < 0){
+                      this.objetivoDirecao = 135;
+                    }else{
+                      this.objetivoDirecao = 90;
+                    }
+                  }else if (xDiff < 0){
+                    if(yDiff > 0){
+                      this.objetivoDirecao = 315;
+                    }else if(yDiff < 0){
+                      this.objetivoDirecao = 225;
+                    }else{
+                      this.objetivoDirecao = 270;
+                    }
+                  }else{
+                    if(yDiff > 0){
+                      this.objetivoDirecao = 0;
+                    }else if(yDiff < 0){
+                      this.objetivoDirecao = 180;
+                    }
+                  }
+                  if(this.player.object.direction < this.objetivoDirecao){
+                    this.atualMenor = true;
+                  }else{
+                    this.atualMenor = false;
+                  }
                 }
-              }else if (xDiff < 0){
-                if(yDiff > 0){
-                  this.objetivoDirecao = 315;
-                }else if(yDiff < 0){
-                  this.objetivoDirecao = 225;
-                }else{
-                  this.objetivoDirecao = 270;
-                }
-              }else{
-                if(yDiff > 0){
-                  this.objetivoDirecao = 0;
-                }else if(yDiff < 0){
-                  this.objetivoDirecao = 180;
-                }
-              }
-              if(this.player.object.direction < this.objetivoDirecao){
-                this.atualMenor = true;
-              }else{
-                this.atualMenor = false;
-              }
-            }
+              } 
           }else{
+            console.log(this.atualMenor);
+            console.log(this.player.object.direction);
             if((this.atualMenor && this.player.object.direction >= this.objetivoDirecao) || (!this.atualMenor && this.player.object.direction <= this.objetivoDirecao)){
-              if(this.pontoAtualTarefa === this.listaPontosEdificio[this.numeroEdificioAtual].length - 1){
+              if(this.pontoAtualTarefaEdificio === this.listaPontosEdificio[this.numeroEdificioAtual].length - 1){
                 if(this.numeroEdificioAtual === this.listaPontosEdificio.length - 1){
-                  alert("Chegou ao destino");
+                  alert("Tarefa concluída!")
                 }
                 this.player.keyStates.forward = false;
                 this.tarefaConcluida = true;
               }else{
-                this.player.object.direction = this.objetivoDirecao;
-                this.player.keyStates.forward = true;
-                this.chegou = false;
+                if(this.tarefaConcluida === false){
+                  this.player.object.direction = this.objetivoDirecao;
+                  this.player.keyStates.forward = true;
+                  this.chegou = false;
+                }
               }
             }else{
-              let anguloAtual = this.player.object.direction %360;
-              let anguloDestino = this.objetivoDirecao%360;
-              const ponteiros = (anguloDestino - anguloAtual + 360) % 360;
-              const contraponteiros = (anguloAtual - anguloDestino+ 360) % 360;
-          
-              if (ponteiros < contraponteiros) {
+              if(this.virarRelogio === undefined){
+                let anguloAtual = this.player.object.direction %360;
+                let anguloDestino = this.objetivoDirecao%360;
+                const ponteiros = (anguloDestino - anguloAtual + 360) % 360;
+                const contraponteiros = (anguloAtual - anguloDestino+ 360) % 360;
+                console.log(ponteiros + " ponteiros");
+                console.log(contraponteiros + " contraponteiros");
+                console.log(anguloAtual + " anguloAtual");
+                console.log(anguloDestino + " anguloDestino");
+                if (ponteiros < contraponteiros || (-ponteiros >= contraponteiros - 0.001 && -ponteiros <= contraponteiros + 0.001) || (ponteiros >= contraponteiros - 0.001 && ponteiros <= contraponteiros + 0.001)) {
+                  this.virarRelogio = true;
+                } else {
+                  this.virarRelogio = false;
+                }
+              }        
+              if (this.virarRelogio === true) {
+                  console.log("Positivo");
                   this.player.object.direction += this.player.turningSpeed * deltaT;
               } else {
+                console.log(this.virarRelogio + " virarRelogio");
+                console.log("Negativo");
                 this.player.object.direction  -= this.player.turningSpeed * deltaT;
+                if(this.player.object.direction < 0){
+                  this.player.object.direction += 360;
+                }
               }
             }
           }
