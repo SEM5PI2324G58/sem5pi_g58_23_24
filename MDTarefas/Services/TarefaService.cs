@@ -2,6 +2,7 @@ using MDTarefas.dto;
 using MDTarefas.mappers;
 using MDTarefas.Models.tarefa;
 using MDTarefas.repo;
+using MDTarefas.utils.IdGenerator;
 
 namespace MDTarefas.Services
 {
@@ -28,9 +29,9 @@ namespace MDTarefas.Services
         }
 
         public async Task<Tarefa> criarTarefa(CriarTarefaDTO tarefaDTO) {
-            if (tarefaDTO.TipoTarefa == "PickUpDelivery") {
+            if (tarefaDTO.TipoTarefa.ToLower() == "pickupdelivery") {
                 return await criarPickUpDelivery(tarefaDTO);
-            } else if (tarefaDTO.TipoTarefa == "Vigilancia") {
+            } else if (tarefaDTO.TipoTarefa.ToLower() == "vigilancia") {
                 return await criarVigilancia(tarefaDTO);
             } else {
                 throw new Exception("Tipo de tarefa inválido");
@@ -44,6 +45,8 @@ namespace MDTarefas.Services
                 throw new Exception("Dados inválidos");
             }
 
+            string id = RandomHexStringGenerator.GenerateRandomHex(24);
+
             PickUpDelivery tarefa = new PickUpDelivery(
                 tarefaDTO.CodConfirmacao,
                 tarefaDTO.DescricaoEntrega,
@@ -53,7 +56,7 @@ namespace MDTarefas.Services
                 tarefaDTO.NomeDelivery,
                 "percurso",
                 "email",
-                "223456789012345678901234"
+                id
             );
 
             await _tarefaRepository.CreateAsync(tarefa);
@@ -65,12 +68,14 @@ namespace MDTarefas.Services
                 throw new Exception("Dados inválidos");
             }
 
+            string id = RandomHexStringGenerator.GenerateRandomHex(24);
+
             Vigilancia tarefa = new Vigilancia(
                 tarefaDTO.NomeVigilancia,
                 tarefaDTO.NumeroVigilancia,
                 "percurso",
                 "email",
-                "223456789012345678901234"
+                id
             );
 
             await _tarefaRepository.CreateAsync(tarefa);
