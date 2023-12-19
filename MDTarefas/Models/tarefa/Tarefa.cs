@@ -9,12 +9,12 @@ namespace MDTarefas.Models.tarefa
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; private set;}
-        public Estado Estado { get; private set; } = null!;
+        private string Id;
+        private Estado Estado = null!;
 
-        public Percurso Percurso { get; private set;} = null!;
+        private Percurso Percurso = null!;
         
-        public EmailRequisitor EmailRequisitor { get; private set; } = null!;
+        private EmailRequisitor EmailRequisitor = null!;
 
         public Tarefa(string id, string percurso, string emailRequisitor) {
             this.Id = id;
@@ -25,6 +25,22 @@ namespace MDTarefas.Models.tarefa
 
         public void updateId(string id) {
             this.Id = id;
+        }
+
+        public string getId() {
+            return this.Id;
+        }
+
+        public string getEstadoString() {
+            return this.Estado.getEstadoString();
+        }
+
+        public string getPercursoString() {
+            return this.Percurso.getPercursoString();
+        }
+
+        public string getEmailRequisitorString() {
+            return this.EmailRequisitor.getEmailRequisitorString();
         }
     }
 }

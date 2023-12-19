@@ -5,9 +5,9 @@ namespace MDTarefas.Models.tarefa.ValueObjects{
     
     public class Contacto {
         [BsonElement("NomeContacto")]
-        public Nome Nome { get; private set; } = null!;
+        private Nome Nome = null!;
         [BsonElement("NumeroContacto")]
-        public NumeroTelefone NumeroTelefone { get; private set; } = null!;
+        private NumeroTelefone NumeroTelefone = null!;
 
         public Contacto(Nome nome, NumeroTelefone numeroTelefone)
         {
@@ -16,6 +16,14 @@ namespace MDTarefas.Models.tarefa.ValueObjects{
             }
             this.Nome = nome;
             this.NumeroTelefone = numeroTelefone;
+        }
+
+        public string getNomeString() {
+            return this.Nome.getNomeString();
+        }
+
+        public string getNumeroTelefoneString() {
+            return this.NumeroTelefone.getNumeroTelefoneString();
         }
     }
     

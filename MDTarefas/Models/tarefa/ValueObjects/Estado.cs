@@ -11,10 +11,13 @@ namespace MDTarefas.Models.tarefa.ValueObjects
     public class Estado {
 
         [BsonElement("Estado")]
-        public EstadoEnum EstadoString { get; private set; }
-
+        private EstadoEnum EstadoString;
         public Estado(EstadoEnum estadoEnum) {
             this.EstadoString = estadoEnum;
+        }
+
+        public string getEstadoString() {
+            return this.EstadoString.ToString();
         }
     }
 }

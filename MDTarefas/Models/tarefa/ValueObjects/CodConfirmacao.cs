@@ -5,7 +5,7 @@ namespace MDTarefas.Models.tarefa.ValueObjects
 {
     public class CodConfirmacao
     {
-        public string Codigo { get; private set; } = null!;
+        private string Codigo = null!;
 
         public CodConfirmacao(string codigo) {
             if (StringValidations.isNullOrEmpty(codigo) || !StringValidations.isNumeric(codigo) || 
@@ -13,6 +13,10 @@ namespace MDTarefas.Models.tarefa.ValueObjects
                 throw new BusinessRuleValidationException("Código de confirmação deve ser um número com 4 a 6 dígitos");
             }
             this.Codigo = codigo;
+        }
+
+        public string getCodConfirmacaoString() {
+            return this.Codigo;
         }
     }
 }

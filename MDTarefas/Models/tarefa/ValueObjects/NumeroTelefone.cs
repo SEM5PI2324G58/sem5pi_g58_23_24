@@ -5,7 +5,7 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace MDTarefas.Models.tarefa.ValueObjects{
     public class NumeroTelefone {
         [BsonElement("NumeroString")]
-        public string NumeroTelefoneString { get; private set; } = null!;
+        private string NumeroTelefoneString = null!;
 
         public NumeroTelefone(string numeroTelefoneString) {
             if ( StringValidations.isNullOrEmpty(numeroTelefoneString) ||
@@ -14,6 +14,10 @@ namespace MDTarefas.Models.tarefa.ValueObjects{
                 throw new BusinessRuleValidationException("Número de telefone deve ser um número com 9 dígitos");
             }
             this.NumeroTelefoneString = numeroTelefoneString;
+        }
+
+        public string getNumeroTelefoneString() {
+            return this.NumeroTelefoneString;
         }
     }
 }

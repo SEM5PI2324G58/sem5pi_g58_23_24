@@ -28,7 +28,7 @@ public class TarefaController : ControllerBase
     {
         try {
             Tarefa tarefacriada = await _tarefaService.criarTarefa(tarefa);
-            return Created(tarefacriada.Id, tarefacriada);  
+            return Created("placeholderIdCreatedtask",tarefacriada);  
         } catch (BusinessRuleValidationException e) {
             return BadRequest(e.Message);
         }

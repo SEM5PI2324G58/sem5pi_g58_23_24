@@ -3,7 +3,7 @@ using MDTarefas.utils;
 
 namespace MDTarefas.Models.tarefa.ValueObjects{
     public class DescricaoEntrega {
-        public string DescricaoEntregaString { get; private set;} = null!;
+        private string DescricaoEntregaString = null!;
 
         public DescricaoEntrega(string descricaoEntregaString) {
             if (StringValidations.isNullOrEmpty(descricaoEntregaString) || 
@@ -12,6 +12,10 @@ namespace MDTarefas.Models.tarefa.ValueObjects{
                 throw new BusinessRuleValidationException("Descrição de entrega deve ter apenas caracteres alfuanuméricos e espaços, ter no máximo 1000 caracteres e não pode ser vazia");
             }
             this.DescricaoEntregaString = descricaoEntregaString;
+        }
+
+        public string getDescricaoEntregaString() {
+            return this.DescricaoEntregaString;
         }
     }
 }

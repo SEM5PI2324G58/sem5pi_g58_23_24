@@ -28,14 +28,14 @@ public class TarefaRepo
         await _tarefaCollection.Find(_ => true).ToListAsync();
 
     public async Task<Tarefa?> GetAsync(string id) =>
-        await _tarefaCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+        await _tarefaCollection.Find(x => x.getId() == id).FirstOrDefaultAsync();
 
     public async Task CreateAsync(Tarefa newTarefa) =>
         await _tarefaCollection.InsertOneAsync(newTarefa);
 
     public async Task UpdateAsync(string id, Tarefa updatedTarefa) =>
-        await _tarefaCollection.ReplaceOneAsync(x => x.Id == id, updatedTarefa);
+        await _tarefaCollection.ReplaceOneAsync(x => x.getId() == id, updatedTarefa);
 
     public async Task RemoveAsync(string id) =>
-        await _tarefaCollection.DeleteOneAsync(x => x.Id == id);
+        await _tarefaCollection.DeleteOneAsync(x => x.getId() == id);
 }
