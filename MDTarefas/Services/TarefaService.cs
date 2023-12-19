@@ -4,6 +4,8 @@ using MDTarefas.Models.exceptions;
 using MDTarefas.Models.tarefa;
 using MDTarefas.repo;
 using MDTarefas.utils;
+using MongoDB.Driver;
+using System.Text.Json;
 
 namespace MDTarefas.Services
 {
@@ -42,11 +44,16 @@ namespace MDTarefas.Services
         private async Task<Tarefa> criarPickUpDelivery(CriarTarefaDTO tarefaDTO){
             if (tarefaDTO.CodConfirmacao == null || tarefaDTO.DescricaoEntrega == null ||
                 tarefaDTO.NomePickUp == null || tarefaDTO.NumeroPickUp == null ||
-                tarefaDTO.NomeDelivery == null || tarefaDTO.NumeroDelivery == null) {
+                tarefaDTO.NomeDelivery == null || tarefaDTO.NumeroDelivery == null ||
+                tarefaDTO.SalaInicial == null || tarefaDTO.SalaFinal == null) {
                 throw new BusinessRuleValidationException("Tarrefa de pick up and delivery necessita de um código de confirmação, descrição de entrega e contactos (nome e nº de telefone) de pick up e delivery");
             }
 
             string id = RandomHexStringGenerator.GenerateRandomHex(24);
+
+            string percurso = await obterPercursoEntreSalas(tarefaDTO.SalaInicial, tarefaDTO.SalaFinal);
+            percurso = percurso.Trim('\"');
+            
 
             PickUpDelivery tarefa = new PickUpDelivery(
                 tarefaDTO.CodConfirmacao,
@@ -55,8 +62,8 @@ namespace MDTarefas.Services
                 tarefaDTO.NomePickUp,
                 tarefaDTO.NumeroDelivery,
                 tarefaDTO.NomeDelivery,
-                "percurso",
-                "email",
+                percurso,
+                "emailPlaceholder",
                 id
             );
 
@@ -74,13 +81,31 @@ namespace MDTarefas.Services
             Vigilancia tarefa = new Vigilancia(
                 tarefaDTO.NomeVigilancia,
                 tarefaDTO.NumeroVigilancia,
-                "percurso",
-                "email",
+                "percursoVigilanciaPlaceholder",
+                "emailPlaceholder",
                 id
             );
 
             await _tarefaRepository.CreateAsync(tarefa);
             return tarefa;
+        }
+
+        private async Task<string> obterPercursoEntreSalas(string salaInicial, string salaFinal) {
+            
+            using (HttpClient client = new HttpClient())
+            {
+                string baseUri = utils.Environments.MDRI_API_PLANEAMENTO_URL + "/caminhoEntreEdificios";
+                string finalUrl = $"{baseUri}?salaInicial={salaInicial}&salaFinal={salaFinal}";
+
+                HttpResponseMessage response = await client.GetAsync(finalUrl);
+
+                if (response.IsSuccessStatusCode) {
+                    return await response.Content.ReadAsStringAsync();
+                } else {
+                    string errorMessage = await response.Content.ReadAsStringAsync();
+                    throw new BusinessRuleValidationException($"Pedido ao módulo de planeamento falhou.\nErro: {errorMessage}");
+                }
+            }
         }
     }
 }

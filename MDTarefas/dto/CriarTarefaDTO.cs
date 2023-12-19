@@ -12,6 +12,8 @@ public class CriarTarefaDTO
     public string? NumeroPickUp { get; set; }
     public string? NomeDelivery { get; set; }
     public string? NumeroDelivery { get; set; }
+    public string? SalaInicial { get; set; }
+    public string? SalaFinal { get; set; }
 
     // For Vigilancia
 
