@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MDTarefas")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+571baba109e3cdd55e2c3f6fe2d3436ba9b2cc5a")]
 [assembly: System.Reflection.AssemblyProductAttribute("MDTarefas")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MDTarefas")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

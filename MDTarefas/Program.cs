@@ -1,5 +1,8 @@
 using BookStoreApi.Models;
 using BookStoreApi.Services;
+using MDTarefas.Models;
+using MDTarefas.repo;
+using MDTarefas.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,10 +11,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.Configure<BookStoreDatabaseSettings>(
-    builder.Configuration.GetSection("BookStoreDatabase"));
+builder.Services.Configure<TarefaDatabaseSettings>(
+    builder.Configuration.GetSection("TarefaDatabaseSettings"));
 
-builder.Services.AddSingleton<BooksService>();
+builder.Services.AddSingleton<TarefaRepo>();
+builder.Services.AddScoped<TarefaService>();
 
 var app = builder.Build();
 

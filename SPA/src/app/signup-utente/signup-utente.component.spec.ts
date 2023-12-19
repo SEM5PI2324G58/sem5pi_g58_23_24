@@ -36,6 +36,7 @@ describe('SignupUtenteComponent', () => {
     const telefone = '123456789';
 
     let authService = TestBed.inject(AuthService);
+    spyOn(document, 'getElementById').and.returnValue({ checked: true } as HTMLInputElement);
 
     spyOn(component['authService'], 'signupUtente');
     component.signupUtente(name,email,telefone,nif,password);

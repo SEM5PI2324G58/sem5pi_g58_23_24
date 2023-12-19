@@ -61,12 +61,18 @@ export default class Maze {
     public numeroPiso: number;
     public codigoEdificio: string;
 
-    constructor(mapaData: ExportarMapa, scene: THREE.Scene, initialDirection: number) {
+    constructor(mapaData: ExportarMapa, scene: THREE.Scene, initialDirection: number, posicaoInicialRobo?: number[]) {
         this.loaded = false;
         this.scale = new THREE.Vector3(1.0, 0.8, 1.0);
         this.map = mapaData.matriz;
         this.size = { width: mapaData.matriz[0].length -1 ,height: mapaData.matriz.length-1};
-        this.initialPosition = this.cellToCartesian([mapaData.posicaoInicialRobo.x, mapaData.posicaoInicialRobo.y]);
+        let posicaoInicialRoboAux;
+        if(posicaoInicialRobo){
+            posicaoInicialRoboAux = this.cellToCartesian(posicaoInicialRobo);
+        }else{
+            posicaoInicialRoboAux = this.cellToCartesian([mapaData.posicaoInicialRobo.x, mapaData.posicaoInicialRobo.y])
+        }
+        this.initialPosition = posicaoInicialRoboAux;
         this.initialDirection = initialDirection;
         this.salasCoord = mapaData.salas;
         this.passagensCoord = mapaData.passagens;
@@ -125,12 +131,12 @@ export default class Maze {
     }
 
     // Convert cell [row, column] coordinates to cartesian (x, y, z) coordinates
-    private cellToCartesian(position: number[]): THREE.Vector3 {
-        return new THREE.Vector3((position[1] - this.size.width / 2.0 + 0.5) * this.scale.x, 0.0, (position[0] - this.size.height / 2.0 + 0.5) * this.scale.z)
+    public cellToCartesian(position: number[]): THREE.Vector3 {
+        return new THREE.Vector3((position[1] - this.size.width / 2.0 + 0.5) * this.scale.x, 0.0, (position[0] - this.size.height / 2.0 + 0.5) * this.scale.z);
     }
 
     // Convert cartesian (x, y, z) coordinates to cell [row, column] coordinates
-    private cartesianToCell(position: THREE.Vector3): number[] {
+    public cartesianToCell(position: THREE.Vector3): number[] {
         return [Math.floor(position.z / this.scale.z + this.size.height / 2.0), Math.floor(position.x / this.scale.x + this.size.width / 2.0)];
     }
 

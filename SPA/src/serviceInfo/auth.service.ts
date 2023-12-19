@@ -131,7 +131,7 @@ export class AuthService {
      *  Uma função para registar mensagens de erro na consola.
      * @param message 
      */
-    private log(message: string) {
+    public log(message: string) {
         this.messageService.add(`${message}`);
     }
 
