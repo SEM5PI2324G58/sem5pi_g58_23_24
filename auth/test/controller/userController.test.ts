@@ -49,6 +49,81 @@ describe('User Controller ', () => {
     });
 
 
+    it ('signup com sucesso', async () => {
+            
+            let body = {
+                "name": "Marco Antonio",
+                "email": "marco@isep.ipp.pt",
+                "telefone": "914231321",
+                "nif": "321123567",
+                "password": "Password10@"
+            };
+            let req: Partial<Request> = {};
+            req.body = body;
+            let res: Partial<Response> = {
+                status: sinon.spy(),
+                json: sinon.spy()
+            };
+            let next: Partial<NextFunction> = () => {};
+            let userServiceInstance = Container.get("UserService");
+            sinon.stub(userServiceInstance, "SignUp").returns(Result.ok<string>("Conta criada com sucesso!"));
+            const userController = new UserController(userServiceInstance as IUserService);
+            let answer = await userController.signup(<Request>req, <Response>res, <NextFunction>next);
+            sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+            sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
+            sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+            sinon.assert.calledWith(res.json as sinon.SinonSpy, "Conta criada com sucesso!");
+    });
+
+    it ('signup Controller + Service com sucesso', async () => {
+            
+        let body = {
+            "name": "Marco Antonio",
+            "email": "marco@isep.ipp.pt",
+            "telefone": "914231321",
+            "nif": "321123567",
+            "password": "Password10@",
+            "estado": "aceito",
+            "role": "admin"
+        };
+        
+        let req: Partial<Request> = {};
+        req.body = body;
+        let res: Partial<Response> = {
+            status: sinon.spy(),
+            json: sinon.spy()
+        };
+
+        let next: Partial<NextFunction> = () => {};
+
+        const hashedPassword = await UserPassword.create({ value: body.password });
+        let userProps = {
+            name: UserName.create(body.name).getValue(),
+            telefone: UserTelefone.create(body.telefone).getValue(),
+            nif: UserNumeroContribuinte.create(body.nif).getValue(),
+            password: hashedPassword.getValue(),
+            role: Role.create("utente").getValue(),
+            estado: UserEstado.create("pendente").getValue()
+        };
+        let user = User.create(userProps, UserEmail.create(body.email).getValue());
+
+        let userService = Container.get("UserService");
+        const userServiceSpy = sinon.spy(userService, 'SignUp');
+
+        let userRepoInstance = Container.get("UserRepo");
+
+        sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(null));
+        sinon.stub(userRepoInstance, "save").returns(Promise.resolve(user));
+
+        const userController = new UserController(userService as IUserService);
+        let answer = await userController.signup(<Request>req, <Response>res, <NextFunction>next);
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, "Conta criada com sucesso!");
+});
+
+
     it('signupUtente com sucesso', async () => {
 
         let body = {

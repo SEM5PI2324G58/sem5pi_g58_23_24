@@ -36,7 +36,7 @@ export default class UserService implements IUserService {
       const found = !!userDocument;
 
       if (found) {
-        return Result.fail<String>("User already exists with email" + userDTO.email);
+        return Result.fail<String>("Utilizador já existe com email " + userDTO.email);
       }
 
       const passwordResult = await UserPassword.create({value: userDTO.password});
