@@ -9,8 +9,6 @@ namespace MDTarefas.Models.tarefa.ValueObjects
         Rejeitada
     }
     public class Estado {
-
-        [BsonElement("Estado")]
         private EstadoEnum EstadoString;
         public Estado(EstadoEnum estadoEnum) {
             this.EstadoString = estadoEnum;

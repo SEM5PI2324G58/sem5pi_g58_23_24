@@ -4,9 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace MDTarefas.Models.tarefa.ValueObjects{
     
     public class Contacto {
-        [BsonElement("NomeContacto")]
         private Nome Nome = null!;
-        [BsonElement("NumeroContacto")]
         private NumeroTelefone NumeroTelefone = null!;
 
         public Contacto(Nome nome, NumeroTelefone numeroTelefone)

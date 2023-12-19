@@ -5,7 +5,6 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace MDTarefas.Models.tarefa.ValueObjects
 {
     public class Percurso {
-        [BsonElement("Percurso")]
         private string PercursoString = null!;
 
         public Percurso(string percursoString) {

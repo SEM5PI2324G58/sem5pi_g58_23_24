@@ -4,10 +4,8 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace MDTarefas.Models.tarefa
 {
-    [BsonKnownTypes(typeof(PickUpDelivery), typeof(Vigilancia))]
     public abstract class Tarefa
     {
-        
         private string Id;
         private Estado Estado = null!;
 

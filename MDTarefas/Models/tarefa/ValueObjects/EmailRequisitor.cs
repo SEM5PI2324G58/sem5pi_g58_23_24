@@ -5,7 +5,6 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace MDTarefas.Models.tarefa.ValueObjects
 {
     public class EmailRequisitor {
-        [BsonElement("EmailRequisitor")]
         private string EmailString = null!;
 
         public EmailRequisitor(string email) {

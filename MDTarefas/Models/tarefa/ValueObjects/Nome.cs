@@ -5,7 +5,6 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace MDTarefas.Models.tarefa.ValueObjects{
 
     public class Nome {
-        [BsonElement("NomeString")]
         private string NomeString = null!;
 
         public Nome(string nomeString) {
