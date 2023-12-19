@@ -1,3 +1,6 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace MDTarefas.dataSchemas{
 
 
@@ -5,6 +8,8 @@ namespace MDTarefas.dataSchemas{
     {
         public string TipoTarefa { get; set; } = null!; // "PickUpDelivery" or "Vigilancia"
         // For both types of Tarefa
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; } = null!;
         public string PercursoString { get; set; } = null!;
         public string EstadoString { get; set; } = null!;

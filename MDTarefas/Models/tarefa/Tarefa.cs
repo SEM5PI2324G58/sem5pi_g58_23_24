@@ -7,8 +7,7 @@ namespace MDTarefas.Models.tarefa
     [BsonKnownTypes(typeof(PickUpDelivery), typeof(Vigilancia))]
     public abstract class Tarefa
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
+        
         private string Id;
         private Estado Estado = null!;
 
