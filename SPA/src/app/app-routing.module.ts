@@ -33,6 +33,7 @@ import { ExportarDadosPessoaisComponent } from './conta/exportar-dados-pessoais/
 import { AdministradorComponent } from './administrador/administrador.component';
 import { SignupComponent } from './administrador/signup/signup.component';
 import { SignupUtenteComponent } from './signup-utente/signup-utente.component';
+import { PoliticaPrivacidadeComponent } from './politica-privacidade/politica-privacidade.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full'},
@@ -69,7 +70,8 @@ const routes: Routes = [
   { path: 'listarPassagensPorEdificio', component: ListarPassagemPorEdificiosComponent},
   { path: 'caminhoEntreEdificios', component: CaminhoEntreEdificiosComponent},
   { path: 'exportarDadosPessoais', component: ExportarDadosPessoaisComponent},
-  { path: 'signupUtente', component: SignupUtenteComponent}
+  { path: 'signupUtente', component: SignupUtenteComponent},
+  { path: 'politicaPrivacidade', component: PoliticaPrivacidadeComponent}
   
 ];
 

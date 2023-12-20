@@ -4,7 +4,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-
 <form>
     <h2>Registar Utente</h2>
 
@@ -19,7 +18,7 @@
     <input type="password" #password id="password" name="password" placeholder="Password *" required>
     
     <input type="checkbox" id="checkbox"/>
-    <label for="checkbox"> Eu li e concordo com os <a routerLink="">termos de uso.</a>
+    <label for="checkbox"> Eu li e concordo com a <a routerLink="/politicaPrivacidade">Política de privacidade.</a>
     </label>
     <button id="registar" type="submit" (click)="signupUtente(name.value, email.value, telemovel.value, nif.value, password.value)">Registar</button>
 
