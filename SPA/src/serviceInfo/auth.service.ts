@@ -12,7 +12,7 @@ export class AuthService {
     private userSubject: BehaviorSubject<User | null>;
     public user: Observable<User | null>;
     private loginUrl = "http://localhost:4500/api/user/login";
-    private signUpUrl = "http://localhost:4500/api/user/signup";
+    private signUpUrl = devEnvironment.AUTH_API_URL+"user/signup";
     private authUrl = devEnvironment.AUTH_API_URL + "user";
     httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -32,6 +32,16 @@ export class AuthService {
      */
     signUp(name: string, email: string, telefone: string, nif: string|null, password: string, role: string) {
 
+        if (name == "" || name == undefined || name == null ||
+            email == "" || email == undefined || email == null ||
+            telefone == "" || telefone == undefined || telefone == null ||
+            password == "" || password == undefined || password == null ||
+            role == "" || role == undefined || role == null) {
+
+            this.log("Preencha todos os campos");
+            return;
+        }
+
         let user: UserModel = {
             name: name,
             email: email,
@@ -48,7 +58,9 @@ export class AuthService {
         return this.http.post<string>(this.signUpUrl, user, this.httpOptions)
             .pipe(catchError(this.handleError<string>("signup")))
             .subscribe(data => {
+                if(data != undefined){
                 this.log(data);
+                }
             });
     }
 

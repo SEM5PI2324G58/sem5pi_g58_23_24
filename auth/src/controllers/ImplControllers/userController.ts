@@ -71,4 +71,20 @@ export default class UserController implements IUserController {
         }
   }
 
+
+  public async delete(req: Request, res: Response, next: NextFunction){
+    try{
+      let props = String(req.query.email);
+      const userOrError = await this.userServiceInstance.delete(props);
+      if (userOrError.isFailure) {
+        res.status(402);
+        return res.json(userOrError.errorValue());
+      }
+      const userDTO = userOrError.getValue();
+      return res.json( userDTO );
+    }catch(e){
+      throw next(e);
+    }
+  }
+
 }

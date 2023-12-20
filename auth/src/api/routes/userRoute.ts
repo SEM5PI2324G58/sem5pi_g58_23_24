@@ -47,4 +47,12 @@ export default (app: Router) => {
       })
     }),
     (req, res, next) => ctrl.signupUtente(req, res, next));
+
+    route.delete('',
+    celebrate({
+      query: Joi.object({
+        email: Joi.string().required(),
+      })
+    }),
+    (req, res, next) => ctrl.delete(req, res, next));
 };

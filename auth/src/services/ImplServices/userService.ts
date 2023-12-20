@@ -216,4 +216,16 @@ export default class UserService implements IUserService {
       throw e;
     }
   }
+
+  public async delete(email: string): Promise<Result<IUserDTO>> {
+
+    const user = await this.userRepo.findByEmail(email);
+    if (user === null) {
+      return Result.fail<IUserDTO>("Utilizador não existe")
+    }
+    await this.userRepo.delete(user);
+
+    return Result.ok<IUserDTO>(UserMap.toDTO(user));
+  }
+
 }

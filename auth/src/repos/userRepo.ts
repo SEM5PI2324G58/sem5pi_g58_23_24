@@ -70,4 +70,16 @@ export default class UserRepo implements IUserRepo {
       return null;
   }
 
+  public async delete(user: User): Promise<boolean> {
+    const query = { email: user.getEmail()};
+    const userRecord = await this.userSchema.findOne( query );
+
+    if(userRecord != null){
+      await this.userSchema.deleteOne(query);
+      return true;
+    }
+    else
+      return false;
+  }
+
 }

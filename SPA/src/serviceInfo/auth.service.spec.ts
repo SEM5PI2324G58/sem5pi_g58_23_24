@@ -12,7 +12,7 @@ describe('AuthService', () => {
   let httpClient: HttpClient;
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ HttpClientTestingModule ]
+      imports: [HttpClientTestingModule]
     });
     service = TestBed.inject(AuthService);
     httpClient = TestBed.inject(HttpClient);
@@ -27,31 +27,47 @@ describe('AuthService', () => {
 
   it('Método signupUtente chama o método post do HttpClient', () => {
     const testData = {
-        name: "name",
-        email: "email@isep.ipp.pt",
-        telefone: "123432123",
-        password: "Password10@",
-        nif: "123123123",
-    
+      name: "name",
+      email: "email@isep.ipp.pt",
+      telefone: "123432123",
+      password: "Password10@",
+      nif: "123123123",
+
     }
     const postSpy = spyOn(httpClient, 'post').and.returnValue(of(testData));
 
-    service.signupUtente(testData.name,testData.email,testData.telefone,testData.nif,testData.password);
-    expect(postSpy).toHaveBeenCalledWith(devEnvironment.AUTH_API_URL + 'user/signupUtente',testData, service.httpOptions);
+    service.signupUtente(testData.name, testData.email, testData.telefone, testData.nif, testData.password);
+    expect(postSpy).toHaveBeenCalledWith(devEnvironment.AUTH_API_URL + 'user/signupUtente', testData, service.httpOptions);
   });
 
   it('Método signupUtente não chama o método post do HttpClient caso haja dados por preencher', () => {
     let name: string = "";
     const testData = {
-        email: "email@isep.ipp.pt",
-        telefone: "123432123",
-        password: "Password10@",
-        nif: "123123123",
-    
+      email: "email@isep.ipp.pt",
+      telefone: "123432123",
+      password: "Password10@",
+      nif: "123123123",
+
     }
     const postSpy = spyOn(httpClient, 'post').and.returnValue(of(testData));
 
-    service.signupUtente(name,testData.email,testData.telefone,testData.nif,testData.password);
+    service.signupUtente(name, testData.email, testData.telefone, testData.nif, testData.password);
     expect(postSpy).toHaveBeenCalledTimes(0);
   });
+
+  it('Método signup chama o método post do HttpClient', () => {
+    const testData = {
+      name: "name",
+      email: "email@isep.ipp.pt",
+      telefone: "123432123",
+      password: "Password10@",
+      estado: "aceito",
+      role: "admin",
+      nif: "123123123",
+    }
+    const postSpy = spyOn(httpClient, 'post').and.returnValue(of(testData));
+    service.signUp(testData.name, testData.email, testData.telefone, testData.nif, testData.password, testData.role);
+    expect(postSpy).toHaveBeenCalledWith(devEnvironment.AUTH_API_URL + "user/signup", testData, service.httpOptions);
+  });
+
 });
