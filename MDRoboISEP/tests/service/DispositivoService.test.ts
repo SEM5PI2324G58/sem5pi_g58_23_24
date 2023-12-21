@@ -332,4 +332,39 @@ describe('DispositivoService ', () => {
 
     });
 
+    it('Listar codigo dos dispositivos da frota por tarefa tem sucesso', async () => {
+        
+        let dispositivoRepoInstance = Container.get("DispositivoRepo");
+        let tipoDispositivoRepoInstance = Container.get("TipoDispositivoRepo");
+
+        let dispositivos : Dispositivo[] = [];
+        dispositivos.push(Container.get("dispositivo"));
+
+        let tipoDispositivoProps : any = {
+            tipoTarefa: [TipoTarefa.create('PickUp/Delivery').getValue()],
+            marca: Marca.create('Marca').getValue(),
+            modelo: Modelo.create('Modelo').getValue(),
+        }
+        const tipoDispositivo = TipoDispositivo.create(tipoDispositivoProps,IdTipoDispositivo.create(2).getValue()).getValue();
+
+        let dispositivoProps : any = {
+            descricaoDispositivo: DescricaoDispositivo.create("asdasdqwe123").getValue(),
+            estado: EstadoDispositivo.create(true).getValue(),
+            nickname: Nickname.create("ola").getValue(),
+            numeroSerie: NumeroDeSerie.create("123456789").getValue(),
+            tipoDeDispositivo: tipoDispositivo,
+        };
+
+        const dispositivo = Dispositivo.create(dispositivoProps,CodigoDispositivo.create("as2").getValue()).getValue();
+
+        dispositivos.push(dispositivo);
+        sinon.stub(dispositivoRepoInstance, "findAll").returns(Promise.resolve(dispositivos));
+
+
+
+        const dispositivoService = new DispositivoService(tipoDispositivoRepoInstance as ITipoDispositivoRepo,dispositivoRepoInstance as IDispositivoRepo);
+        const answer = (await dispositivoService.listarCodigoDosDispositivosDaFrotaPorTarefa()).getValue();
+        expect(answer.dispositivosVigilancia[0]).to.equal('as1');
+        expect(answer.dispositivosPickup[0]).to.equal('as2');       
+    });
 });

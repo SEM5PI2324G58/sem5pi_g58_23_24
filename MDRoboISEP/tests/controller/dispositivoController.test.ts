@@ -24,6 +24,7 @@ import TipoDispositivoRepo from "../../src/repos/TipoDispositivoRepo";
 
 import 'mocha';
 import IDispositivoDTO from "../../src/dto/IDispositivoDTO";
+import ICodigoDosDispositivosPorTarefaDTO from "../../src/dto/ICodigoDosDispositivosPorTarefaDTO";
 
 
 
@@ -379,6 +380,92 @@ describe('DispositivoController', () => {
         
         let dispositivoController = new DispositivoController(dispositivoServiceInstance as IDispositivoService);
         let answer = await dispositivoController.listarDispositivosDaFrota(<Request> req,<Response> res, <NextFunction> next);
+
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, listaDTO);
+    });
+
+
+    it('listarCodigoDosDispositivosDaFrotaPorTarefa retorna lista de dispositivos em JSON', async function() {
+
+        let listaDTO = {
+            dispositivosPickup: ["as1"],
+            dispositivosVigilancia: ["as2"]
+        } as ICodigoDosDispositivosPorTarefaDTO;
+
+        let body = {
+        };
+
+        let req: Partial<Request> = {};req.body = body;
+        let res: Partial<Response> = {
+            status: sinon.spy(),
+            json: sinon.spy()
+        };
+        let next: Partial<NextFunction> = () => {};
+        let dispositivoServiceInstance = Container.get("DispositivoService");
+        sinon.stub(dispositivoServiceInstance, 'listarCodigoDosDispositivosDaFrotaPorTarefa').returns(Promise.resolve(Result.ok<ICodigoDosDispositivosPorTarefaDTO>(listaDTO)));
+
+        let dispositivoController = new DispositivoController(dispositivoServiceInstance as IDispositivoService);
+
+        
+        let answer = await dispositivoController.listarCodigoDosDispositivosDaFrotaPorTarefa(<Request> req,<Response> res, <NextFunction> next);
+
+        
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, listaDTO);
+    });
+
+    it('Controller + Service - listarCodigoDosDispositivosDaFrotaPorTarefa retorna lista de dispositivos em JSON', async function() {
+
+        let listaDTO = {
+            dispositivosPickup: ["as2"],
+            dispositivosVigilancia: ["as1"]
+        } as ICodigoDosDispositivosPorTarefaDTO;
+
+        let body = {
+        };
+
+        let req: Partial<Request> = {};req.body = body;
+        let res: Partial<Response> = {
+            status: sinon.spy(),
+            json: sinon.spy()
+        };
+       
+        let next: Partial<NextFunction> = () => {};
+
+        let dispositivoServiceInstance = Container.get("DispositivoService");
+        let dispositivoRepoInstance = Container.get("DispositivoRepo");
+
+         let dispositivos : Dispositivo[] = [];
+        dispositivos.push(Container.get("dispositivo"));
+
+        let tipoDispositivoProps : any = {
+            tipoTarefa: [TipoTarefa.create('PickUp/Delivery').getValue()],
+            marca: Marca.create('Marca').getValue(),
+            modelo: Modelo.create('Modelo').getValue(),
+        }
+        const tipoDispositivo = TipoDispositivo.create(tipoDispositivoProps,IdTipoDispositivo.create(2).getValue()).getValue();
+
+        let dispositivoProps : any = {
+            descricaoDispositivo: DescricaoDispositivo.create("asdasdqwe123").getValue(),
+            estado: EstadoDispositivo.create(true).getValue(),
+            nickname: Nickname.create("ola").getValue(),
+            numeroSerie: NumeroDeSerie.create("123456789").getValue(),
+            tipoDeDispositivo: tipoDispositivo,
+        };
+
+        const dispositivo = Dispositivo.create(dispositivoProps,CodigoDispositivo.create("as2").getValue()).getValue();
+
+        dispositivos.push(dispositivo);
+
+        sinon.stub(dispositivoRepoInstance, "findAll").returns(Promise.resolve(dispositivos));
+        
+        let dispositivoController = new DispositivoController(dispositivoServiceInstance as IDispositivoService);
+        let answer = await dispositivoController.listarCodigoDosDispositivosDaFrotaPorTarefa(<Request> req,<Response> res, <NextFunction> next);
 
         sinon.assert.calledOnce(res.status as sinon.SinonSpy);
         sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);

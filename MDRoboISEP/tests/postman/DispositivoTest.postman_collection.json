@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "658b25a1-0e58-486b-9249-97ccd39e13d3",
+		"_postman_id": "0286670b-33e6-4282-92b4-85e33283c6c6",
 		"name": "DispositivoTest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "30921552"
+		"_exporter_id": "30673359"
 	},
 	"item": [
 		{
@@ -122,6 +122,49 @@
 					"raw": "{\r\n    \"codigo\": \"RoboTeste@Teste\",\r\n    \"descricaoDispositivo\": \"testeTeste\",\r\n    \"nickname\": \"robotesteTeste\",\r\n    \"tipoDispositivo\": {{id}},\r\n    \"numeroSerie\": \"12343254\"\r\n}"
 				},
 				"url": "http://localhost:4000/api/dispositivo"
+			},
+			"response": []
+		},
+		{
+			"name": "ListarDispositivosPorTipoTarefa",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Resposta tem o tamanho certo\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.be.an('object');\r",
+							"    pm.expect(jsonData.dispositivosPickup).to.be.an('array');\r",
+							"    pm.environment.set(\"lengthTarefaPickUp\", jsonData.dispositivosPickup.length);\r",
+							"    pm.expect(jsonData.dispositivosPickup).to.have.lengthOf(pm.environment.get(\"lengthTarefaPickUp\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n}"
+				},
+				"url": "http://localhost:4000/api/dispositivo/tipoTarefa"
 			},
 			"response": []
 		},
@@ -246,6 +289,46 @@
 					"raw": "{\r\n}"
 				},
 				"url": "http://localhost:4000/api/dispositivo"
+			},
+			"response": []
+		},
+		{
+			"name": "ListarDispositivosPorTipoTarefa",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response tem tamanho especifico\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.dispositivosPickup).to.have.lengthOf(pm.environment.get(\"lengthTarefaPickUp\")+1);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n}"
+				},
+				"url": "http://localhost:4000/api/dispositivo/tipoTarefa"
 			},
 			"response": []
 		},
@@ -587,9 +670,26 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"idTipoDispositivo\" : {{id}}\r\n}"
+					"raw": ""
 				},
-				"url": "http://localhost:4000/api/tipoDispositivo"
+				"url": {
+					"raw": "http://localhost:4000/api/tipoDispositivo?idTipoDispositivo={{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"tipoDispositivo"
+					],
+					"query": [
+						{
+							"key": "idTipoDispositivo",
+							"value": "{{id}}"
+						}
+					]
+				}
 			},
 			"response": []
 		}
