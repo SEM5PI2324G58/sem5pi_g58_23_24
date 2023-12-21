@@ -26,8 +26,8 @@ export default (app: Router) => {
       })
     }),
     (req, res, next) => ctrl.signup(req, res, next));
-  
-    route.get('/login',
+
+  route.get('/login',
     celebrate({
       query: Joi.object({
         email: Joi.string().required(),
@@ -35,20 +35,35 @@ export default (app: Router) => {
       })
     }),
     (req, res, next) => ctrl.login(req, res, next));
-  
+
   route.post('/signupUtente',
-      celebrate({
-        body: Joi.object({
-          name: Joi.string().required(),
-          email: Joi.string().required(),
-          telefone: Joi.string().required(),
-          nif: Joi.string().required(),
-          password: Joi.string().required(),
+    celebrate({
+      body: Joi.object({
+        name: Joi.string().required(),
+        email: Joi.string().required(),
+        telefone: Joi.string().required(),
+        nif: Joi.string().required(),
+        password: Joi.string().required(),
       })
     }),
     (req, res, next) => ctrl.signupUtente(req, res, next));
 
-    route.delete('',
+    route.patch('/approveOrReject',
+    celebrate({
+      body: Joi.object({
+        email: Joi.string().required(),
+        estado: Joi.string().required(),
+      })
+    }),
+    (req, res, next) => ctrl.approveOrRejectSignUp(req, res, next));
+
+  route.get('/listarUtilizadoresPendentes',
+    celebrate({
+      query: Joi.object({
+      })
+    }),
+    (req, res, next) => ctrl.listarUtilizadoresPendentes(req, res, next));
+  route.delete('',
     celebrate({
       query: Joi.object({
         email: Joi.string().required(),

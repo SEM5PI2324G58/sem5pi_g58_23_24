@@ -70,11 +70,23 @@ export default class UserRepo implements IUserRepo {
       return null;
   }
 
-  public async delete(user: User): Promise<boolean> {
-    const query = { email: user.getEmail()};
-    const userRecord = await this.userSchema.findOne( query );
+  public async listarUtilizadoresPendentes(): Promise<User[]> {
+    const query = { estado: "pendente" };
+    const userRecords = await this.userSchema.find(query);
 
-    if(userRecord != null){
+    if (userRecords != null) {
+      const users = await Promise.all(userRecords.map((item) => UserMap.toDomain(item)));
+      return users;
+    } else {
+      return null;
+    }
+  }
+
+  public async delete(user: User): Promise<boolean> {
+    const query = { email: user.getEmail() };
+    const userRecord = await this.userSchema.findOne(query);
+
+    if (userRecord != null) {
       await this.userSchema.deleteOne(query);
       return true;
     }

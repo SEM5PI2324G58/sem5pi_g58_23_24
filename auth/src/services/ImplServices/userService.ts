@@ -141,7 +141,22 @@ export default class UserService implements IUserService {
     }
   }
 
+  public async listarUtilizadoresPendentes(): Promise<Result<IUserDTO[]>> {
+    try {
+      const userDocument = await this.userRepo.listarUtilizadoresPendentes();
+      const found = !!userDocument;
 
+      if (!found) {
+        return Result.fail<IUserDTO[]>("Não existem utilizadores pendentes");
+      }
+
+      const userDTO = UserMap.toDTOList(userDocument);
+      return Result.ok<IUserDTO[]>(userDTO);
+    }
+    catch (e) {
+      throw e;
+    }
+  }
 
   public async SignIn(email: string, password: string): Promise<Result<{ token: string }>> {
 

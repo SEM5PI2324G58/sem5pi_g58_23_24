@@ -11,90 +11,109 @@ import { IApproveOrRejectSignUpDTO } from '../../dto/IApproveOrRejectUtenteDTO';
 @Service()
 export default class UserController implements IUserController {
   constructor(
-      @Inject(config.services.user.name) private userServiceInstance : IUserService
-  ) {}
-    async login(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { email, password } = req.body;
-            const userOrError = await this.userServiceInstance.SignIn(email, password);
-            if (userOrError.isFailure) {
-              let message = String(userOrError.errorValue());
-              if (message === "User not found") {
-                res.status(404);
-                return res.json( userOrError.errorValue());
-              }
-              return res.status(400).json( userOrError.errorValue());
-            }
-      
-            const userDTO = userOrError.getValue();
-            return res.json( userDTO );
-          }
-          catch (e) {
-            return next(e);
-          }
-    }
-    async signup(req: Request, res: Response, next: NextFunction) {
-        try {
-            const userOrError = await this.userServiceInstance.SignUp(req.body as IUserDTO);
-              
-            if (userOrError.isFailure) {
-              let message = String(userOrError.errorValue());
-              if(message === "Utilizador já existe com email " + req.body.email) {
-                res.status(404);
-                return res.json( userOrError.errorValue());
-              }
-              return res.status(400).json( userOrError.errorValue());
-            }
-      
-            const userDTO = userOrError.getValue();
-            res.status(201);
-            return res.json( userDTO );
-          }
-          catch (e) {
-            return next(e);
-          }
-    }
+    @Inject(config.services.user.name) private userServiceInstance: IUserService
+  ) { }
+  async login(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email, password } = req.body;
+      const userOrError = await this.userServiceInstance.SignIn(email, password);
+      if (userOrError.isFailure) {
+        let message = String(userOrError.errorValue());
+        if (message === "User not found") {
+          res.status(404);
+          return res.json(userOrError.errorValue());
+        }
+        return res.status(400).json(userOrError.errorValue());
+      }
 
-    async approveOrRejectSignUp(req: Request, res: Response, next: NextFunction) {
-      try {
-          const userOrError = await this.userServiceInstance.approveOrRejectSignUp(req.body as IApproveOrRejectSignUpDTO);
-          if (userOrError.isFailure) {
-            let message = String(userOrError.errorValue());
-            if (message === "Utilizador não existe com email " + req.body.email) {
-              res.status(404);
-              return res.json( userOrError.errorValue());
-            }
-            return res.status(400).json( userOrError.errorValue());
-          }
-    
-          const userDTO = userOrError.getValue();
-          return res.json( userDTO );
-        }
-        catch (e) {
-          return next(e);
-        }
+      const userDTO = userOrError.getValue();
+      return res.json(userDTO);
     }
+    catch (e) {
+      return next(e);
+    }
+  }
+  async signup(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userOrError = await this.userServiceInstance.SignUp(req.body as IUserDTO);
 
-    async signupUtente(req: Request, res: Response, next: NextFunction) {
-      try {
-          const userOrError = await this.userServiceInstance.signupUtente(req.body as ISignupUtenteDTO);
-            
-          if (userOrError.isFailure) {  
-            res.status(400);          
-            return res.json( userOrError.errorValue());
-          }
-          const userDTO = userOrError.getValue();
-          res.status(201);
-          return res.json( userDTO );
+      if (userOrError.isFailure) {
+        let message = String(userOrError.errorValue());
+        if (message === "Utilizador já existe com email " + req.body.email) {
+          res.status(404);
+          return res.json(userOrError.errorValue());
         }
-        catch (e) {
-          return next(e);
+        return res.status(400).json(userOrError.errorValue());
+      }
+
+      const userDTO = userOrError.getValue();
+      res.status(201);
+      return res.json(userDTO);
+    }
+    catch (e) {
+      return next(e);
+    }
+  }
+
+  async approveOrRejectSignUp(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userOrError = await this.userServiceInstance.approveOrRejectSignUp(req.body as IApproveOrRejectSignUpDTO);
+      if (userOrError.isFailure) {
+        let message = String(userOrError.errorValue());
+        if (message === "Utilizador não existe com email " + req.body.email) {
+          res.status(404);
+          return res.json(userOrError.errorValue());
         }
+        return res.status(400).json(userOrError.errorValue());
+      }
+
+      const userDTO = userOrError.getValue();
+      return res.json(userDTO);
+    }
+    catch (e) {
+      return next(e);
+    }
+  }
+
+  async listarUtilizadoresPendentes(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userOrError = await this.userServiceInstance.listarUtilizadoresPendentes();
+      if (userOrError.isFailure) {
+        let message = String(userOrError.errorValue());
+        if (message === "Não existem utilizadores pendentes") {
+          res.status(404);
+          return res.json(userOrError.errorValue());
+        }
+        return res.status(400).json(userOrError.errorValue());
+      }
+      const userDTO = userOrError.getValue();
+      res.status(201);
+      return res.json(userDTO);
+    } catch (e) {
+      return next(e);
+    }
+  }
+
+  async signupUtente(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userOrError = await this.userServiceInstance.signupUtente(req.body as ISignupUtenteDTO);
+
+      if (userOrError.isFailure) {
+        res.status(400);
+        return res.json(userOrError.errorValue());
+      }
+      const userDTO = userOrError.getValue();
+      res.status(201);
+      return res.json(userDTO);
+    }
+    catch (e) {
+      return next(e);
+    }
   }
 
 
-  public async delete(req: Request, res: Response, next: NextFunction){
-    try{
+  public async delete(req: Request, res: Response, next: NextFunction) {
+    try {
       let props = String(req.query.email);
       const userOrError = await this.userServiceInstance.delete(props);
       if (userOrError.isFailure) {
@@ -102,8 +121,8 @@ export default class UserController implements IUserController {
         return res.json(userOrError.errorValue());
       }
       const userDTO = userOrError.getValue();
-      return res.json( userDTO );
-    }catch(e){
+      return res.json(userDTO);
+    } catch (e) {
       throw next(e);
     }
   }
