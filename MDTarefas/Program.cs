@@ -16,6 +16,7 @@ builder.Services.Configure<TarefaDatabaseSettings>(
 
 builder.Services.AddScoped<ITarefaRepo, TarefaRepo>();
 builder.Services.AddScoped<ITarefaService, TarefaService>();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 

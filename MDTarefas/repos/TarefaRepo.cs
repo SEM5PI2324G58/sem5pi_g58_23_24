@@ -50,8 +50,9 @@ public class TarefaRepo : ITarefaRepo
         return TarefaMapper.toDomain(schema);
     }
 
-    public async Task CreateAsync(Tarefa newTarefa) {
+    public async Task<Tarefa> CreateAsync(Tarefa newTarefa) {
         await _tarefaCollection.InsertOneAsync(TarefaMapper.toPersistance(newTarefa));
+        return newTarefa;
     }
 
     public async Task UpdateAsync(string id, Tarefa updatedTarefa) =>

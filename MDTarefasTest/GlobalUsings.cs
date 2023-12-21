@@ -1,5 +1,6 @@
 global using Xunit;
 global using Moq;
+global using MDTarefas.Controller;
 global using MDTarefas.Services.IServices;
 global using MDTarefas.Services;
 global using MDTarefas.repos.IRepos; 
@@ -7,3 +8,4 @@ global using MDTarefas.repos;
 global using MDTarefas.dto; 
 global using MDTarefas.Models.exceptions;
 global using MDTarefas.Models.tarefa;
+global using Microsoft.AspNetCore.Mvc;

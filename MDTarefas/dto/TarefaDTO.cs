@@ -2,12 +2,12 @@ namespace MDTarefas.dto;
 
 public class TarefaDTO
 {
-    public string TipoTarefa { get; set; } = null!; // "PickUpDelivery" or "Vigilancia"
+    public string? TipoTarefa { get; set; } // "PickUpDelivery" or "Vigilancia"
     // For both types of Tarefa
-    public string Id { get; set; } = null!;
-    public string PercursoString { get; set; } = null!;
-    public string EstadoString { get; set; } = null!;
-    public string EmailRequisitor { get; set; } = null!;
+    public string? Id { get; set; }
+    public string? PercursoString { get; set; }
+    public string? EstadoString { get; set; }
+    public string? EmailRequisitor { get; set; }
     public string? CodDispositivo { get; set; }
     // For PickUp&Delivery
     public string? CodConfirmacao { get; set; }
@@ -25,6 +25,9 @@ public class TarefaDTO
     public string? CodEdificio { get; set; }
     public int? NumeroPiso { get; set; }
 
+
+    public TarefaDTO() {
+    }
     public TarefaDTO(string id, string percurso, string estado, string emailRequisitor,
                         string codDispositivo, int numeroPiso, string codEdificio, 
                         string nomeContactoVigilancia, string numeroContactoVigilancia) {
