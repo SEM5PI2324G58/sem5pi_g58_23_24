@@ -22,6 +22,7 @@ import DoorAnimations from './doorAnimations';
 import { MapaService } from 'src/serviceInfo/mapa.service';
 import { ActivatedRoute } from '@angular/router';
 
+
 @Component({
   selector: 'app-visualizacao3-d',
   templateUrl: './visualizacao3-d.component.html',
@@ -74,6 +75,11 @@ export class Visualizacao3DComponent implements AfterViewInit {
   userInterfaceCheckBox: any;
   popupOpen: boolean = false;
   carregouPiso: boolean = false;
+  context1!: CanvasRenderingContext2D | null;
+  texture1!: THREE.Texture;
+  mouse = { x: 0, y: 0 }
+  INTERSECTED: any;
+  tooltip!: HTMLElement | null;
 
   constructor(
     private pisoService: PisoService,
@@ -522,6 +528,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
     this.changeCameraOrientation = false;
 
     this.viewsPanel = document.getElementById('views-panel');
+    this.tooltip = document.getElementById('tooltip');
     this.view = document.getElementById('view');
     this.projection = document.getElementById('projection');
     this.horizontal = document.getElementById('horizontal');
@@ -837,6 +844,13 @@ export class Visualizacao3DComponent implements AfterViewInit {
   }
 
   mouseMove(event: MouseEvent) {
+    this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	  this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    if(this.tooltip != null){
+      this.tooltip.style.left = event.clientX - this.tooltip.offsetWidth / 2 + 'px';
+      this.tooltip.style.top = event.clientY - this.tooltip.offsetHeight - 10 + 'px';
+    }
+    
     if (event.buttons == 1 || event.buttons == 2) {
       // Primary or secondary button down
       if (
@@ -1149,6 +1163,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
               this.chegou = false;
             }
           }
+
           this.gameRunning = true;
       }
       
@@ -1399,14 +1414,44 @@ export class Visualizacao3DComponent implements AfterViewInit {
       else {
         cameras = [this.activeViewCamera];
       }
+      
       for (const camera of cameras) {
         this.player.object.visible = (camera != this.firstPersonViewCamera);
         const viewport = camera.getViewport();
         this.renderer.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
-
+        
         this.renderer.render(this.scene3D, camera.object);
         //this.renderer.render(this.scene2D, this.camera2D);
         this.renderer.clearDepth();
+
+        if(!this.multipleViewsCheckBox.checked){
+          var ray: THREE.Raycaster;
+          let i = new THREE.Raycaster(); 
+          var vector = new THREE.Vector2( this.mouse.x, this.mouse.y );
+          ray = i;
+          ray.setFromCamera( vector, camera.object );
+
+          
+          
+          // create an array containing all objects in the scene with which the ray intersects
+          var intersects = ray.intersectObjects( this.scene3D.children );
+
+          if ( intersects.length > 0 ){
+            // update text, if it has a "name" field.
+            if ( intersects[ 0 ].object.name && intersects[ 0 ].object.name != "Object_2") {
+              let text = this.maze.getObjectNames(intersects[ 0 ].point);
+              if(this.tooltip != null && text != ""){
+                this.tooltip.style.display = 'block';
+                this.tooltip.innerHTML = text; // Replace with desired text            
+              }
+
+            } else {
+              if(this.tooltip != null){
+                this.tooltip.style.display = 'none';
+              }
+            }
+          }
+        }  
       }
 
       // Render secondary viewport (mini-map)
