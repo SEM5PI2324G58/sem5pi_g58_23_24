@@ -31,11 +31,13 @@ namespace MDTarefas.Services
             return await _tarefaRepository.GetAsync(id);
         }
 
-        public async Task<Tarefa> criarTarefa(CriarTarefaDTO tarefaDTO) {
+        public async Task<TarefaDTO> criarTarefa(CriarTarefaDTO tarefaDTO) {
             if (tarefaDTO.TipoTarefa.ToLower() == "pickupdelivery") {
-                return await criarPickUpDelivery(tarefaDTO);
+                var tarefa = await criarPickUpDelivery(tarefaDTO);
+                return TarefaMapper.toDTO(tarefa);
             } else if (tarefaDTO.TipoTarefa.ToLower() == "vigilancia") {
-                return await criarVigilancia(tarefaDTO);
+                var tarefa = await criarVigilancia(tarefaDTO);
+                return TarefaMapper.toDTO(tarefa);
             } else {
                 throw new BusinessRuleValidationException("Tipo de tarefa inválido");
             }
@@ -46,7 +48,7 @@ namespace MDTarefas.Services
                 tarefaDTO.NomePickUp == null || tarefaDTO.NumeroPickUp == null ||
                 tarefaDTO.NomeDelivery == null || tarefaDTO.NumeroDelivery == null ||
                 tarefaDTO.SalaInicial == null || tarefaDTO.SalaFinal == null) {
-                throw new BusinessRuleValidationException("Tarrefa de pick up and delivery necessita de um código de confirmação, descrição de entrega e contactos (nome e nº de telefone) de pick up e delivery");
+                throw new BusinessRuleValidationException("Tarefa de pick up and delivery necessita de um código de confirmação, descrição de entrega, contactos (nome e nº de telefone) de pick up e delivery, sala inicial e sala final");
             }
 
             string id = RandomHexStringGenerator.GenerateRandomHex(24);
@@ -62,9 +64,12 @@ namespace MDTarefas.Services
                 tarefaDTO.NomePickUp,
                 tarefaDTO.NumeroDelivery,
                 tarefaDTO.NomeDelivery,
+                tarefaDTO.SalaInicial,
+                tarefaDTO.SalaFinal,
                 percurso,
                 "emailPlaceholder",
-                id
+                id,
+                "" // CodDispositivo só é atualizado quando a tarefa é aceite
             );
 
             await _tarefaRepository.CreateAsync(tarefa);
@@ -72,8 +77,9 @@ namespace MDTarefas.Services
         }
 
         private async Task<Tarefa> criarVigilancia(CriarTarefaDTO tarefaDTO){
-            if (tarefaDTO.NomeVigilancia == null || tarefaDTO.NumeroVigilancia == null) {
-                throw new BusinessRuleValidationException("Tarefa de vigilância necessita de um contacto (nome e nº de telefone)");
+            if (tarefaDTO.NomeVigilancia == null || tarefaDTO.NumeroVigilancia == null ||
+                tarefaDTO.CodEdificio == null || tarefaDTO.NumeroPiso == null) {
+                throw new BusinessRuleValidationException("Tarefa de vigilância necessita de um contacto (nome e nº de telefone), código de edifício e número de piso");
             }
 
             string id = RandomHexStringGenerator.GenerateRandomHex(24);
@@ -81,9 +87,12 @@ namespace MDTarefas.Services
             Vigilancia tarefa = new Vigilancia(
                 tarefaDTO.NomeVigilancia,
                 tarefaDTO.NumeroVigilancia,
+                tarefaDTO.CodEdificio,
+                tarefaDTO.NumeroPiso ?? 0, // Se null então 0 (nunca vai ser null, mas o compilador não sabe disso)
                 "percursoVigilanciaPlaceholder",
                 "emailPlaceholder",
-                id
+                id,
+                "" // CodDispositivo só é atualizado quando a tarefa é aceite
             );
 
             await _tarefaRepository.CreateAsync(tarefa);

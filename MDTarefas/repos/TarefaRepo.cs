@@ -11,6 +11,8 @@ public class TarefaRepo
 {
     private readonly IMongoCollection<TarefaSchema> _tarefaCollection;
 
+    public TarefaRepo() {}
+
     public TarefaRepo(
         IOptions<TarefaDatabaseSettings> tarefaDatabaseSettings)
     {

@@ -19,5 +19,7 @@ public class CriarTarefaDTO
 
     public string? NomeVigilancia { get; set; }
     public string? NumeroVigilancia { get; set; }
+    public string? CodEdificio { get; set; }
+    public int? NumeroPiso { get; set; }
 
 }

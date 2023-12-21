@@ -8,17 +8,22 @@ namespace MDTarefas.Models.tarefa
         private DescricaoEntrega DescricaoEntrega  = null!;
         private Contacto ContactoPickUp  = null!;
         private Contacto ContactoDelivery  = null!;
+        private NomeSala SalaInicial = null!;
+        private NomeSala SalaFinal = null!;
+        
 
         public PickUpDelivery(string codConfirmacao, string descricaoEntrega, 
                             string numeroPickUp, string nomePickUp, 
                             string numeroDelivery, string nomeDelivery,
-                            string percurso, string email, string id ) : base(id, percurso, email) {
+                            string salaInicial, string salaFinal,
+                            string percurso, string email, string id, string codDispositivo ) : base(id, percurso, email, codDispositivo) {
             
             this.CodConfirmacao = new CodConfirmacao(codConfirmacao);
             this.DescricaoEntrega = new DescricaoEntrega(descricaoEntrega);
             this.ContactoPickUp = new Contacto(new Nome(nomePickUp), new NumeroTelefone(numeroPickUp));
             this.ContactoDelivery = new Contacto(new Nome(nomeDelivery), new NumeroTelefone(numeroDelivery));
-
+            this.SalaInicial = new NomeSala(salaInicial);
+            this.SalaFinal = new NomeSala(salaFinal);
         }
 
         public string getCodConfirmacaoString() {
@@ -43,6 +48,14 @@ namespace MDTarefas.Models.tarefa
 
         public string getNumeroContactoDeliveryString() {
             return this.ContactoDelivery.getNumeroTelefoneString();
+        }
+
+        public string getNomeSalaInicialString() {
+            return this.SalaInicial.getNomeSalaString();
+        }
+
+        public string getNomeSalaFinalString() {
+            return this.SalaFinal.getNomeSalaString();
         }
     }
 }

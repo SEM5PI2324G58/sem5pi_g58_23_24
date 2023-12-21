@@ -13,11 +13,14 @@ namespace MDTarefas.Models.tarefa
         
         private EmailRequisitor EmailRequisitor = null!;
 
-        public Tarefa(string id, string percurso, string emailRequisitor) {
+        private string CodDispositivo = null!;
+
+        public Tarefa(string id, string percurso, string emailRequisitor, string codDispositivo) {
             this.Id = id;
             this.Estado = new Estado(EstadoEnum.Pendente);
             this.Percurso = new Percurso(percurso);
             this.EmailRequisitor = new EmailRequisitor(emailRequisitor);
+            this.CodDispositivo = codDispositivo;
         }
 
         public void updateId(string id) {
@@ -39,5 +42,10 @@ namespace MDTarefas.Models.tarefa
         public string getEmailRequisitorString() {
             return this.EmailRequisitor.getEmailRequisitorString();
         }
+
+        public string getCodDispositivo() {
+            return this.CodDispositivo;
+        }
+
     }
 }

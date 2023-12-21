@@ -24,11 +24,11 @@ public class TarefaController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Tarefa>> Create(CriarTarefaDTO tarefa)
+    public async Task<ActionResult<TarefaDTO>> Create(CriarTarefaDTO tarefa)
     {
         try {
-            Tarefa tarefacriada = await _tarefaService.criarTarefa(tarefa);
-            return Created("placeholderIdCreatedtask",tarefacriada);  
+            TarefaDTO tarefacriada = await _tarefaService.criarTarefa(tarefa);
+            return Created(tarefacriada.Id,tarefacriada);  
         } catch (BusinessRuleValidationException e) {
             return BadRequest(e.Message);
         }
