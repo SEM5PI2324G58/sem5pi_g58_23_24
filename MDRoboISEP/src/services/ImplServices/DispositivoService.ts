@@ -32,6 +32,7 @@ import IDispositivoInibirDTO from '../../dto/IDispositivoInibirDTO';
 import { TipoDispositivo } from '../../domain/tipoDispositivo/TipoDispositivo';
 import { IdTipoDispositivo } from '../../domain/tipoDispositivo/IdTipoDispositivo';
 import { Marca } from '../../domain/tipoDispositivo/Marca';
+import ICodigoDosDispositivosPorTarefaDTO from '../../dto/ICodigoDosDispositivosPorTarefaDTO';
 
 
 @Service()
@@ -141,6 +142,43 @@ export default class DispositivoService implements IDispositivoService{
         }
         
         return Result.ok<IDispositivoDTO[]>(listaDispositivosDTO);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  public async listarCodigoDosDispositivosDaFrotaPorTarefa(): Promise<Result<ICodigoDosDispositivosPorTarefaDTO>> {
+    try {
+        const dispositivos = await this.dispositivoRepo.findAll();
+
+        let listaDispositivosPorTarefaDTO: ICodigoDosDispositivosPorTarefaDTO;
+        let listaDispositivosVigilancia: string[] = [];
+        let listaDispositivosPickup: string[] = [];
+        listaDispositivosPorTarefaDTO = {
+            dispositivosVigilancia: listaDispositivosVigilancia,
+            dispositivosPickup: listaDispositivosPickup
+        };
+
+        
+        if(dispositivos.length === 0){
+            return Result.fail<ICodigoDosDispositivosPorTarefaDTO>("Não existem dispositivos na frota");
+        }
+        for (let dispositivo of dispositivos) {
+            if(dispositivo.returnEstado()){
+                if(dispositivo.props.tipoDeDispositivo.returnTipoTarefa().includes("Vigilancia")){
+                    listaDispositivosVigilancia.push(dispositivo.returnCodigoDispositivo());
+                }
+                if(dispositivo.props.tipoDeDispositivo.returnTipoTarefa().includes("PickUp/Delivery")){
+                    listaDispositivosPickup.push(dispositivo.returnCodigoDispositivo());
+                }    
+            }
+        }
+        
+        if (listaDispositivosVigilancia.length === 0 && listaDispositivosPickup.length === 0) {
+            return Result.fail<ICodigoDosDispositivosPorTarefaDTO>("Não existem dispositivos na frota disponiveis");
+        }
+
+        return Result.ok<ICodigoDosDispositivosPorTarefaDTO>(listaDispositivosPorTarefaDTO);
     } catch (e) {
       throw e;
     }
