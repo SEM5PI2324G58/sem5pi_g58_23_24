@@ -10,7 +10,8 @@ namespace MDTarefasTest.Unit
             PickUpDelivery pickUpDelivery = new PickUpDelivery("12345", "Desc1", 
                                                                 "123456789", "ABC",
                                                                 "987654321", "CBA",
-                                                                "[cel(a1,1,1),cel(a1,2,2)]", "email@email.pt", "id");
+                                                                "A201", "A202",
+                                                                "[cel(a1,1,1),cel(a1,2,2)]", "email@email.pt", "id", "ROBO");
             Assert.Equal("id", pickUpDelivery.getId());
         }
 
@@ -20,7 +21,8 @@ namespace MDTarefasTest.Unit
            PickUpDelivery pickUpDelivery = new PickUpDelivery("12345", "Desc1", 
                                                                 "123456789", "ABC",
                                                                 "987654321", "CBA",
-                                                                "[cel(a1,1,1),cel(a1,2,2)]", "email@email.pt", "id");
+                                                                "A201", "A202",
+                                                                "[cel(a1,1,1),cel(a1,2,2)]", "email@email.pt", "id", "ROBO");
             Assert.Equal("Pendente", pickUpDelivery.getEstadoString());
         }
 
@@ -30,7 +32,8 @@ namespace MDTarefasTest.Unit
             PickUpDelivery pickUpDelivery = new PickUpDelivery("12345", "Desc1", 
                                                                 "123456789", "ABC",
                                                                 "987654321", "CBA",
-                                                                "[cel(a1,1,1),cel(a1,2,2)]", "email@email.pt", "id");
+                                                                "A201", "A202",
+                                                                "[cel(a1,1,1),cel(a1,2,2)]", "email@email.pt", "id", "ROBO");
             Assert.Equal("[cel(a1,1,1),cel(a1,2,2)]", pickUpDelivery.getPercursoString());
         }
 
@@ -40,7 +43,8 @@ namespace MDTarefasTest.Unit
             PickUpDelivery pickUpDelivery = new PickUpDelivery("12345", "Desc1", 
                                                                 "123456789", "ABC",
                                                                 "987654321", "CBA",
-                                                                "[cel(a1,1,1),cel(a1,2,2)]", "email@email.pt", "id");
+                                                                "A201", "A202",
+                                                                "[cel(a1,1,1),cel(a1,2,2)]", "email@email.pt", "id", "ROBO");
             Assert.Equal("email@email.pt", pickUpDelivery.getEmailRequisitorString());
         }
 
@@ -50,7 +54,8 @@ namespace MDTarefasTest.Unit
             PickUpDelivery pickUpDelivery = new PickUpDelivery("12345", "Desc1", 
                                                                 "123456789", "ABC",
                                                                 "987654321", "CBA",
-                                                                "[cel(a1,1,1),cel(a1,2,2)]", "email@email.pt", "id");
+                                                                "A201", "A202",
+                                                                "[cel(a1,1,1),cel(a1,2,2)]", "email@email.pt", "id", "ROBO");
             Assert.Equal("ABC", pickUpDelivery.getNomeContactoPickUpString());
         }
 
@@ -60,7 +65,8 @@ namespace MDTarefasTest.Unit
             PickUpDelivery pickUpDelivery = new PickUpDelivery("12345", "Desc1", 
                                                                 "123456789", "ABC",
                                                                 "987654321", "CBA",
-                                                                "[cel(a1,1,1),cel(a1,2,2)]", "email@email.pt", "id");
+                                                                "A201", "A202",
+                                                                "[cel(a1,1,1),cel(a1,2,2)]", "email@email.pt", "id", "ROBO");
             Assert.Equal("123456789", pickUpDelivery.getNumeroContactoPickUpString());
         }
 
@@ -70,7 +76,8 @@ namespace MDTarefasTest.Unit
             PickUpDelivery pickUpDelivery = new PickUpDelivery("12345", "Desc1", 
                                                                 "123456789", "ABC",
                                                                 "987654321", "CBA",
-                                                                "[cel(a1,1,1),cel(a1,2,2)]", "email@email.pt", "id");
+                                                                "A201", "A202",
+                                                                "[cel(a1,1,1),cel(a1,2,2)]", "email@email.pt", "id", "ROBO");
             Assert.Equal("CBA", pickUpDelivery.getNomeContactoDeliveryString());
         }
 
@@ -80,7 +87,8 @@ namespace MDTarefasTest.Unit
             PickUpDelivery pickUpDelivery = new PickUpDelivery("12345", "Desc1", 
                                                                 "123456789", "ABC",
                                                                 "987654321", "CBA",
-                                                                "[cel(a1,1,1),cel(a1,2,2)]", "email@email.pt", "id");
+                                                                "A201", "A202",
+                                                                "[cel(a1,1,1),cel(a1,2,2)]", "email@email.pt", "id", "ROBO");
             Assert.Equal("987654321", pickUpDelivery.getNumeroContactoDeliveryString());
         }
     }
