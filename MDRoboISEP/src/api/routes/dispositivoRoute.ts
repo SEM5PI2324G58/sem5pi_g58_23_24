@@ -35,4 +35,7 @@ export default (app: Router) => {
       })
     }),
     (req, res, next) => ctrl.inibirDispositivo(req, res, next));
+
+    route.get('/tipoTarefa',
+    (req, res, next) => ctrl.listarCodigoDosDispositivosDaFrotaPorTarefa(req, res, next));
 }

@@ -9,6 +9,7 @@ import IAdicionarRoboAFrotaDTO from '../../dto/IAdicionarRoboAFrotaDTO';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { ParsedQs } from 'qs';
 import IDispositivoInibirDTO from '../../dto/IDispositivoInibirDTO';
+import ICodigoDosDispositivosPorTarefaDTO from '../../dto/ICodigoDosDispositivosPorTarefaDTO';
 
 @Service()
 export default class DispositivoController implements IDispositivoController {
@@ -58,6 +59,28 @@ export default class DispositivoController implements IDispositivoController {
       const dispositivoOrError = await this.dispositivoServiceInstance.listarDispositivosDaFrota() as Result<IDispositivoDTO[]>;
       
       if (dispositivoOrError.isFailure) {
+        res.status(400);
+        return res.json(dispositivoOrError.errorValue());
+      }
+      
+      const dispositivoDTO = dispositivoOrError.getValue();
+      res.status(200);
+      return res.json(dispositivoDTO);
+      
+    }catch(e){
+      return next(e);
+    }
+  }
+
+  public async listarCodigoDosDispositivosDaFrotaPorTarefa(req: Request, res: Response, next: NextFunction) {
+    try{
+      const dispositivoOrError = await this.dispositivoServiceInstance.listarCodigoDosDispositivosDaFrotaPorTarefa() as Result<ICodigoDosDispositivosPorTarefaDTO>;
+      
+      if (dispositivoOrError.isFailure) {
+        if(String(dispositivoOrError.errorValue()) === "Não existem dispositivos na frota"){
+          res.status(404);
+          return res.json(dispositivoOrError.errorValue());
+        }
         res.status(400);
         return res.json(dispositivoOrError.errorValue());
       }
