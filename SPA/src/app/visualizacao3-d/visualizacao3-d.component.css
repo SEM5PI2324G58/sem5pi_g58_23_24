@@ -118,3 +118,11 @@ buttom:hover{
 .mat-dialog-content{
     text-align: center;
 }
+
+#tooltip {
+    position: absolute;
+    display: none;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #000;
+}

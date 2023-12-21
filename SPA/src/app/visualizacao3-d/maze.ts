@@ -455,4 +455,33 @@ export default class Maze {
     foundExit(position: THREE.Vector3): boolean {
         return Math.abs(position.x - this.exitLocation.x) < 0.5 * this.scale.x && Math.abs(position.z - this.exitLocation.z) < 0.5 * this.scale.z
     };
+
+    public getObjectNames(position: THREE.Vector3): string{
+        
+        let number = this.cartesianToCell(position);
+        if(this.elevadorCoord){
+            if(this.elevadorCoord.xCoord == number[0] && this.elevadorCoord.yCoord == number[1]){
+                return "Elevador - " + this.codigoEdificio;
+            }
+        }
+
+        if(this.salasCoord){
+            for(let i = 0; i < this.salasCoord.length; i++){
+                if(this.salasCoord[i].orientacaoPorta == "Norte"){
+                    if((number[0] == this.salasCoord[i].abcissaPorta || number[0] == this.salasCoord[i].abcissaPorta - 1) && number[1] == this.salasCoord[i].ordenadaPorta){
+                        return this.salasCoord[i].nome;
+                    }
+                }
+                if(this.salasCoord[i].orientacaoPorta == "Oeste"){
+                    if(number[0] == this.salasCoord[i].abcissaPorta  && (number[1] == this.salasCoord[i].ordenadaPorta || number[1] == this.salasCoord[i].ordenadaPorta - 1)){
+                        return this.salasCoord[i].nome;
+                    }
+                }
+                
+            }
+        }
+
+        return "";
+    }
+
 }
