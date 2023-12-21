@@ -15,6 +15,7 @@ export class CriarTipoRoboComponent {
   ];
   listaTipoTarefaSelecionados: string[] = [];
   add(marca:string, modelo:string): void {
+    this.listaTipoTarefaSelecionados = [];
     for(let i = 0; i < this.listaTipoTarefa.length; i++){
       if(this.listaTipoTarefa[i].selected === true){
         this.listaTipoTarefaSelecionados.push(this.listaTipoTarefa[i].label);
