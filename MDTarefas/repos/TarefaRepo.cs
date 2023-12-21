@@ -2,12 +2,13 @@ using MDTarefas.dataSchemas;
 using MDTarefas.mappers;
 using MDTarefas.Models;
 using MDTarefas.Models.tarefa;
+using MDTarefas.repos.IRepos;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 namespace MDTarefas.repo;
 
-public class TarefaRepo
+public class TarefaRepo : ITarefaRepo
 {
     private readonly IMongoCollection<TarefaSchema> _tarefaCollection;
 

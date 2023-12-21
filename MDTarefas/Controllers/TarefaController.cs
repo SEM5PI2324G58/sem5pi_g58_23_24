@@ -2,6 +2,7 @@ using MDTarefas.dto;
 using MDTarefas.Models.exceptions;
 using MDTarefas.Models.tarefa;
 using MDTarefas.Services;
+using MDTarefas.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MDTarefas.Controller;
@@ -10,9 +11,9 @@ namespace MDTarefas.Controller;
 [Route("/api/[controller]")]
 public class TarefaController : ControllerBase
 {
-    private readonly TarefaService _tarefaService;
+    private readonly ITarefaService _tarefaService;
 
-    public TarefaController(TarefaService tarefaService)
+    public TarefaController(ITarefaService tarefaService)
     {
         _tarefaService = tarefaService;
     }

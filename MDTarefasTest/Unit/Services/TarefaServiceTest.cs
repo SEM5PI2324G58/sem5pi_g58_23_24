@@ -6,7 +6,7 @@ public class TarefaServiceTest {
 
     [Fact]
     public async void ensureInvalidTipoTarefaThrowsException() {
-        var tarefaRepo = new Mock<TarefaRepo>();
+        var tarefaRepo = new Mock<ITarefaRepo>();
         var tarefaService = new TarefaService(tarefaRepo.Object);
 
         var criarTarefaDTO = new CriarTarefaDTO();
@@ -22,7 +22,7 @@ public class TarefaServiceTest {
 
     [Fact]
     public async void ensureMissingVigilanciaParametersThrowsException() {
-        var tarefaRepo = new Mock<TarefaRepo>();
+        var tarefaRepo = new Mock<ITarefaRepo>();
         var tarefaService = new TarefaService(tarefaRepo.Object);
 
         var criarTarefaDTO = new CriarTarefaDTO();
@@ -36,7 +36,7 @@ public class TarefaServiceTest {
     }
     [Fact]
     public async void ensureMissingPickUpDeliveryParametersThrowsException() {
-        var tarefaRepo = new Mock<TarefaRepo>();
+        var tarefaRepo = new Mock<ITarefaRepo>();
         var tarefaService = new TarefaService(tarefaRepo.Object);
 
         var criarTarefaDTO = new CriarTarefaDTO();

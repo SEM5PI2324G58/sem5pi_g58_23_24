@@ -2,18 +2,17 @@ using MDTarefas.dto;
 using MDTarefas.mappers;
 using MDTarefas.Models.exceptions;
 using MDTarefas.Models.tarefa;
-using MDTarefas.repo;
+using MDTarefas.repos.IRepos;
+using MDTarefas.Services.IServices;
 using MDTarefas.utils;
-using MongoDB.Driver;
-using System.Text.Json;
 
 namespace MDTarefas.Services
 {
-    public class TarefaService
+  public class TarefaService : ITarefaService
     {
-        private readonly TarefaRepo _tarefaRepository;
+        private readonly ITarefaRepo _tarefaRepository;
 
-        public TarefaService(TarefaRepo tarefaRepository)
+        public TarefaService(ITarefaRepo tarefaRepository)
         {
             _tarefaRepository = tarefaRepository;
         }
@@ -27,8 +26,12 @@ namespace MDTarefas.Services
             return listDTO;
         }
 
-        public async Task<Tarefa?> listarTarefaPorId(string id) {
-            return await _tarefaRepository.GetAsync(id);
+        public async Task<TarefaDTO?> listarTarefaPorId(string id) {
+            var tarefa = await _tarefaRepository.GetAsync(id);
+            if (tarefa == null) {
+                return null;
+            }
+            return TarefaMapper.toDTO(tarefa);
         }
 
         public async Task<TarefaDTO> criarTarefa(CriarTarefaDTO tarefaDTO) {

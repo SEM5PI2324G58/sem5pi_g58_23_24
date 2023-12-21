@@ -1,8 +1,8 @@
-using BookStoreApi.Models;
-using BookStoreApi.Services;
 using MDTarefas.Models;
 using MDTarefas.repo;
+using MDTarefas.repos.IRepos;
 using MDTarefas.Services;
+using MDTarefas.Services.IServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,8 +14,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<TarefaDatabaseSettings>(
     builder.Configuration.GetSection("TarefaDatabaseSettings"));
 
-builder.Services.AddSingleton<TarefaRepo>();
-builder.Services.AddScoped<TarefaService>();
+builder.Services.AddScoped<ITarefaRepo, TarefaRepo>();
+builder.Services.AddScoped<ITarefaService, TarefaService>();
 
 var app = builder.Build();
 
