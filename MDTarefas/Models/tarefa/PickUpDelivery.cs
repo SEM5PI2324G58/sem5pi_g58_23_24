@@ -29,7 +29,7 @@ namespace MDTarefas.Models.tarefa
             return this.DescricaoEntrega.getDescricaoEntregaString();
         }
 
-        public string getNomeContactoickUpString() {
+        public string getNomeContactoPickUpString() {
             return this.ContactoPickUp.getNomeString();
         }
 

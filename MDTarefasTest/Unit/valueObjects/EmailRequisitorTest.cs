@@ -30,10 +30,10 @@ public class EmailRequisitorTest{
     [Fact]
     public void ensureValidEmailRequisitorIsCreated() {
         
-        var emailRequisitor = new EmailRequisitor("escama@escama.pt");
+        var emailRequisitor = new EmailRequisitor("eskama@eskama.pt");
 
         Assert.NotNull(emailRequisitor);
-        Assert.Equal("escama@escama.pt",emailRequisitor.getEmailRequisitorString());
+        Assert.Equal("eskama@eskama.pt",emailRequisitor.getEmailRequisitorString());
 
     }
 

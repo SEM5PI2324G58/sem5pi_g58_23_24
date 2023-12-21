@@ -29,7 +29,7 @@ namespace MDTarefas.mappers
                                     pickUpDelivery.getEmailRequisitorString(),
                                     pickUpDelivery.getCodConfirmacaoString(), 
                                     pickUpDelivery.getDescricaoEntregaString(), 
-                                    pickUpDelivery.getNomeContactoickUpString(), 
+                                    pickUpDelivery.getNomeContactoPickUpString(), 
                                     pickUpDelivery.getNumeroContactoPickUpString(), 
                                     pickUpDelivery.getNomeContactoDeliveryString(), 
                                     pickUpDelivery.getNumeroContactoDeliveryString());
@@ -60,7 +60,7 @@ namespace MDTarefas.mappers
                                     pickUpDelivery.getEmailRequisitorString(),
                                     pickUpDelivery.getCodConfirmacaoString(), 
                                     pickUpDelivery.getDescricaoEntregaString(), 
-                                    pickUpDelivery.getNomeContactoickUpString(), 
+                                    pickUpDelivery.getNomeContactoPickUpString(), 
                                     pickUpDelivery.getNumeroContactoPickUpString(), 
                                     pickUpDelivery.getNomeContactoDeliveryString(), 
                                     pickUpDelivery.getNumeroContactoDeliveryString());
