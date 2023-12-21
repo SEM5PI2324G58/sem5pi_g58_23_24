@@ -46,43 +46,6 @@
     font-size: 16px;
   }
 
-  .checkbox {
-    margin-left: 10px ;
-    align-items: left;
-    width: calc(100%);
-    margin-top: 10px;
-    margin-bottom: 20px;
-  }
-  .checkbox label {
-    margin-left: 20px;
-  }
-
-  .second-header {
-    font-size: 17px;
-    margin-top: 20px;
-    align-items: left;
-    align-content: left;
-    display: flex;
-    margin-left: 10px;
-  }
-
-  .header{
-    margin-left: 17%; 
-    margin-right: 0.5%;
-    margin-top: 1%;
-    max-width: calc(100% - 17%); 
-    padding: 0px;
-    text-align: center;
-  }
-
-  .input-field input[type=checkbox]{ 
-    align-items: left;
-    align-content: left;
-    text-align: left;
-    flex: none;
-    margin-right: 5px;
-}
-
   .input-field select:required:invalid {
     color: #666;
   }
@@ -115,4 +78,12 @@
     border-radius: 5px;
   }
 
+  .header{
+    margin-left: 17%; 
+    margin-right: 0.5%;
+    margin-top: 1%;
+    max-width: calc(100% - 17%); 
+    padding: 0px;
+    text-align: center;
+  }
   

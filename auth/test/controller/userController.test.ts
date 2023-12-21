@@ -259,6 +259,48 @@ describe('User Controller ', () => {
         sinon.assert.calledOnce(res.json as sinon.SinonSpy);
         sinon.assert.calledWith(res.json as sinon.SinonSpy, "Conta criada com sucesso!");
         
-    });    
+    });
+    
+    /*it('ApproveOrRejectUtente com sucesso', async () => {
+            
+        let body = {
+            email: "marco@isep.ipp.pt",
+            estado : "aceito"
+        };
+
+        let req: Partial<Request> = {};
+        
+        req.body = body;
+
+        let res: Partial<Response> = {
+            status: sinon.spy(),
+            json: sinon.spy()
+        };
+        let next: Partial<NextFunction> = () => {};
+       
+        const hashedPassword = await UserPassword.create({ value: "Password10@" })
+
+        const user = User.create({
+            name: UserName.create("Marco Antonio").getValue(),
+            telefone: UserTelefone.create("914231321").getValue(),
+            nif: UserNumeroContribuinte.create("321123567").getValue(),
+            password: hashedPassword.getValue(),
+            role: Role.create("utente").getValue(),
+            estado: UserEstado.create("pendente").getValue()
+        }, UserEmail.create(body.email).getValue());
+
+        let userServiceInstance = Container.get("UserService");
+
+        sinon.stub(userServiceInstance, "approveOrRejectSignUp").returns(Result.ok<string>("Estado do utilizador alterado com sucesso!"));
+        
+        const userController = new UserController(userServiceInstance as IUserService);
+
+        let answer = await userController.approveOrRejectSignUp(<Request>req, <Response>res, <NextFunction>next);
+        
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, "Estado do utilizador alterado com sucesso!");
+    });*/
 
 });

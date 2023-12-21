@@ -47,6 +47,7 @@ import { SignupComponent } from './administrador/signup/signup.component';
 import { SidebarAdministradorComponent } from './administrador/sidebar/sidebar.component';
 import { SignupUtenteComponent } from './signup-utente/signup-utente.component';
 import { PoliticaPrivacidadeComponent } from './politica-privacidade/politica-privacidade.component';
+import { ApproveOrRejectUtenteComponent } from './administrador/approve-or-reject-utente/approve-or-reject-utente.component';
 
 @NgModule({
   declarations: [
@@ -91,7 +92,8 @@ import { PoliticaPrivacidadeComponent } from './politica-privacidade/politica-pr
     ExportarDadosPessoaisComponent,
     SignupComponent,
     SignupUtenteComponent,
-    PoliticaPrivacidadeComponent
+    PoliticaPrivacidadeComponent,
+    ApproveOrRejectUtenteComponent
   ],
   imports: [
     BrowserModule,

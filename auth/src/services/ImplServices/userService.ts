@@ -23,6 +23,7 @@ import { UserNumeroContribuinte } from '../../domain/user/userNumeroContribuinte
 import { UserName } from '../../domain/user/userName';
 import { UserTelefone } from '../../domain/user/userTelefone';
 import { ISignupUtenteDTO } from '../../dto/ISignupUtenteDTO';
+import { IApproveOrRejectSignUpDTO } from '../../dto/IApproveOrRejectUtenteDTO';
 
 @Service()
 export default class UserService implements IUserService {
@@ -39,7 +40,7 @@ export default class UserService implements IUserService {
         return Result.fail<String>("Utilizador já existe com email " + userDTO.email);
       }
 
-      const passwordResult = await UserPassword.create({value: userDTO.password});
+      const passwordResult = await UserPassword.create({ value: userDTO.password });
 
       const emailResult = UserEmail.create(userDTO.email);
       const roleResult = Role.create(userDTO.role);
@@ -92,7 +93,7 @@ export default class UserService implements IUserService {
             password: passwordResult.getValue(),
             role: roleResult.getValue(),
             estado: estadoResult.getValue(),
-            nif : null,
+            nif: null,
             name: nameResult.getValue(),
             telefone: telefoneResult.getValue()
           },
@@ -109,6 +110,50 @@ export default class UserService implements IUserService {
       return Result.ok<String>("Conta criada com sucesso!")
 
     } catch (e) {
+      throw e;
+    }
+  }
+
+  public async approveOrRejectSignUp(user: IApproveOrRejectSignUpDTO): Promise<Result<String>> {
+    try {
+      const userDocument = await this.userRepo.findByEmail(user.email);
+      const found = !!userDocument;
+
+      if (!found) {
+        return Result.fail<String>("Utilizador não existe com email " + user.email);
+      }
+
+      if (user.estado === "aceito") {
+        userDocument.aprove();
+
+      }
+      else if (user.estado === "rejeitado") {
+        userDocument.reject();
+      }
+      else {
+        return Result.fail<String>("Estado inválido");
+      }
+      await this.userRepo.save(userDocument);
+      return Result.ok<String>("Estado do utilizador alterado com sucesso!")
+    }
+    catch (e) {
+      throw e;
+    }
+  }
+
+  public async listarUtilizadoresPendentes(): Promise<Result<IUserDTO[]>> {
+    try {
+      const userDocument = await this.userRepo.listarUtilizadoresPendentes();
+      const found = !!userDocument;
+
+      if (!found) {
+        return Result.fail<IUserDTO[]>("Não existem utilizadores pendentes");
+      }
+
+      const userDTO = UserMap.toDTOList(userDocument);
+      return Result.ok<IUserDTO[]>(userDTO);
+    }
+    catch (e) {
       throw e;
     }
   }

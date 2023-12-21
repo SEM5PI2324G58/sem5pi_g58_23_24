@@ -12,6 +12,21 @@ import { UserTelefone } from "../domain/user/userTelefone";
 
 
 export class UserMap extends Mapper<User> {
+  
+  public static toDTOList(userDocument: User[]) {
+    const userDTOList: IUserDTO[] = [];
+    userDocument.forEach((user) => {
+      userDTOList.push(this.toDTOEmail(user));
+    });
+    return userDTOList;
+  }
+
+  public static toDTOEmail(user: User): IUserDTO {
+    const email = user.getEmail();
+    return {
+      email: email,
+    } as IUserDTO;
+  }
 
   public static toDTO(user: User): IUserDTO {
 

@@ -9,19 +9,19 @@ import { TipoRoboService } from 'src/serviceInfo/tipo-robo.service';
 })
 export class CriarTipoRoboComponent {
   constructor(private tipoRoboService: TipoRoboService) {}
-  listaTipoTarefa: string[] = ["Vigilância", "PickUp/Delivery"];
+  listaTipoTarefa = [
+    { id: 1, label: 'Vigilância', selected: false },
+    { id: 2, label: 'PickUp/Delivery', selected: false },
+  ];
   listaTipoTarefaSelecionados: string[] = [];
   add(marca:string, modelo:string): void {
-    this.tipoRoboService.criarTipoRobo(this.listaTipoTarefaSelecionados, marca, modelo);
-  }
-
-  selecionarCheckBox(tipoTarefa: string): void {
-    const index = this.listaTipoTarefaSelecionados.indexOf(tipoTarefa);
-
-    if (index === -1) {
-      this.listaTipoTarefaSelecionados.push(tipoTarefa);
-    } else {
-      this.listaTipoTarefaSelecionados.splice(index, 1);
+    this.listaTipoTarefaSelecionados = [];
+    for(let i = 0; i < this.listaTipoTarefa.length; i++){
+      if(this.listaTipoTarefa[i].selected === true){
+        this.listaTipoTarefaSelecionados.push(this.listaTipoTarefa[i].label);
+      }
     }
+    this.tipoRoboService.criarTipoRobo(this.listaTipoTarefaSelecionados, marca, modelo);
+
   }
 }

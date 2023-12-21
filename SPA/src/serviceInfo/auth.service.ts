@@ -12,7 +12,7 @@ export class AuthService {
     private userSubject: BehaviorSubject<User | null>;
     public user: Observable<User | null>;
     private loginUrl = "http://localhost:4500/api/user/login";
-    private signUpUrl = devEnvironment.AUTH_API_URL+"user/signup";
+    private signUpUrl = devEnvironment.AUTH_API_URL + "user/signup";
     private authUrl = devEnvironment.AUTH_API_URL + "user";
     httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -30,7 +30,7 @@ export class AuthService {
      * @param user data view model
      * @returns 
      */
-    signUp(name: string, email: string, telefone: string, nif: string|null, password: string, role: string) {
+    signUp(name: string, email: string, telefone: string, nif: string | null, password: string, role: string) {
 
         if (name == "" || name == undefined || name == null ||
             email == "" || email == undefined || email == null ||
@@ -52,28 +52,51 @@ export class AuthService {
         } as UserModel;
 
         if (nif !== null && nif !== "" && nif !== undefined) {
-            user.nif = nif; 
+            user.nif = nif;
         }
 
         return this.http.post<string>(this.signUpUrl, user, this.httpOptions)
             .pipe(catchError(this.handleError<string>("signup")))
             .subscribe(data => {
-                if(data != undefined){
-                this.log(data);
+                if (data != undefined) {
+                    this.log(data);
                 }
             });
     }
 
-    signupUtente(name: string, email: string, telefone: string,nif: string ,password: string): void {
-        
-        if(nif == ""|| nif == undefined || nif == null ||
-            name == "" || name == undefined || name == null ||
-            email == "" || email == undefined || email == null || 
-            telefone == "" || telefone == undefined || telefone == null || 
-            password == "" || password == undefined || password == null){
-            
+    approveOrReject(email: string, estado: string) {
+
+        if (email == "" || email == undefined || email == null ||
+            estado == "" || estado == undefined || estado == null) {
+
             this.log("Preencha todos os campos");
-            return ;
+            return;
+        }
+
+        let user: UserModel = {
+            email: email,
+            estado: estado
+        } as UserModel;
+
+        return this.http.patch<string>(this.authUrl + "/approveOrReject", user, this.httpOptions)
+            .pipe(catchError(this.handleError<string>("approveOrReject")))
+            .subscribe(data => {
+                if (data != undefined) {
+                    this.log(data);
+                }
+            });
+    }
+
+    signupUtente(name: string, email: string, telefone: string, nif: string, password: string): void {
+
+        if (nif == "" || nif == undefined || nif == null ||
+            name == "" || name == undefined || name == null ||
+            email == "" || email == undefined || email == null ||
+            telefone == "" || telefone == undefined || telefone == null ||
+            password == "" || password == undefined || password == null) {
+
+            this.log("Preencha todos os campos");
+            return;
         }
 
         let user = {
@@ -86,11 +109,13 @@ export class AuthService {
 
         this.http.post<string>(this.authUrl + "/signupUtente", user, this.httpOptions)
             .pipe(catchError(this.handleError<string>("signup")))
-            .subscribe({next: data => {
-                if(data != undefined){
-                    this.log(data);
+            .subscribe({
+                next: data => {
+                    if (data != undefined) {
+                        this.log(data);
+                    }
                 }
-            }});
+            });
     }
 
     /**
@@ -104,7 +129,7 @@ export class AuthService {
         let params = new HttpParams().set('email', email);
         params = params.append('password', password);
 
-        return this.http.get<any>(this.loginUrl, { params: params, headers: this.httpOptions.headers } )
+        return this.http.get<any>(this.loginUrl, { params: params, headers: this.httpOptions.headers })
             .pipe(
                 map(user => localStorage.setItem('user', JSON.stringify(user))),
                 catchError(this.handleError<User>("login"))
@@ -123,6 +148,18 @@ export class AuthService {
      */
     getToken(): string | null {
         return localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).token : null;
+    }
+
+    listarUtilizadoresPendentes(): Observable<any> {
+        return this.listarUtilizadoresPendentes2()
+    }
+
+    private listarUtilizadoresPendentes2(): Observable<any> {
+        return this.http.get<UserModel[]>(this.authUrl + "/listarUtilizadoresPendentes", this.httpOptions)
+            .pipe(
+                catchError(this.handleError<UserModel[]>('Listar Utilizadores Pendentes')),
+                map(data => data.map(item => item.email))
+            );
     }
 
     /**
