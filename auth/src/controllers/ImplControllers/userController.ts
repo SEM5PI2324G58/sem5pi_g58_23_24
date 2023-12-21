@@ -6,6 +6,7 @@ import IUserController from '../IControllers/IUserController';
 import IUserService from '../../services/IServices/IUserService';
 import { IUserDTO } from '../../dto/IUserDTO';
 import { ISignupUtenteDTO } from '../../dto/ISignupUtenteDTO';
+import { IApproveOrRejectSignUpDTO } from '../../dto/IApproveOrRejectUtenteDTO';
 
 @Service()
 export default class UserController implements IUserController {
@@ -38,7 +39,7 @@ export default class UserController implements IUserController {
               
             if (userOrError.isFailure) {
               let message = String(userOrError.errorValue());
-              if(message === "O utilizador com a informação fornecida já existe") {
+              if(message === "Utilizador já existe com email " + req.body.email) {
                 res.status(404);
                 return res.json( userOrError.errorValue());
               }
@@ -52,6 +53,26 @@ export default class UserController implements IUserController {
           catch (e) {
             return next(e);
           }
+    }
+
+    async approveOrRejectSignUp(req: Request, res: Response, next: NextFunction) {
+      try {
+          const userOrError = await this.userServiceInstance.approveOrRejectSignUp(req.body as IApproveOrRejectSignUpDTO);
+          if (userOrError.isFailure) {
+            let message = String(userOrError.errorValue());
+            if (message === "Utilizador não existe com email " + req.body.email) {
+              res.status(404);
+              return res.json( userOrError.errorValue());
+            }
+            return res.status(400).json( userOrError.errorValue());
+          }
+    
+          const userDTO = userOrError.getValue();
+          return res.json( userDTO );
+        }
+        catch (e) {
+          return next(e);
+        }
     }
 
     async signupUtente(req: Request, res: Response, next: NextFunction) {

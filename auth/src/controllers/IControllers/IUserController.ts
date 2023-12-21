@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 export default interface IUserController  {
 login(req: Request, res: Response, next: NextFunction);
 signup(req: Request, res: Response, next: NextFunction);
+approveOrRejectSignUp(req: Request, res: Response, next: NextFunction);
 signupUtente(req: Request, res: Response, next: NextFunction);
 delete(req: Request, res: Response, next: NextFunction);
-
 }

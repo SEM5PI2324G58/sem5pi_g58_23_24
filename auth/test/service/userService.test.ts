@@ -20,6 +20,7 @@ import "reflect-metadata";
 
 import 'mocha';
 import { IUserDTO } from "../../src/dto/IUserDTO";
+import { IApproveOrRejectSignUpDTO } from "../../src/dto/IApproveOrRejectUtenteDTO";
 
 
 describe('User Service ', () => {
@@ -175,4 +176,115 @@ describe('User Service ', () => {
 
     });
 
+    it ('approveOrRejectSignUp com sucesso caso aceito', async () => {
+        
+        let body = {
+            email: "marco@isep.ipp.pt",
+            estado : "aceito"
+        };
+       
+        const hashedPassword = await UserPassword.create({ value: "Password10@" })
+
+        const userRepoInstance = Container.get("UserRepo");
+       
+        const user = User.create({
+            name: UserName.create("Marco Antonio").getValue(),
+            telefone: UserTelefone.create("914231321").getValue(),
+            nif: UserNumeroContribuinte.create("321123567").getValue(),
+            password: hashedPassword.getValue(),
+            role: Role.create("utente").getValue(),
+            estado: UserEstado.create("pendente").getValue()
+        }, UserEmail.create(body.email).getValue());
+
+        sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(user.getValue()));
+        sinon.stub(userRepoInstance, "save").returns(Promise.resolve(user.getValue()));
+        
+        const service = new UserService(userRepoInstance as IUserRepo);
+        const answer = await service.approveOrRejectSignUp(body as IApproveOrRejectSignUpDTO);
+
+        expect(answer.getValue()).to.equal("Estado do utilizador alterado com sucesso!");
+    });
+
+    it ('approveOrRejectSignUp com sucesso caso rejeitado', async () => {
+        let body = {
+            email: "marco@isep.ipp.pt",
+            estado : "rejeitado"
+        };
+       
+        const hashedPassword = await UserPassword.create({ value: "Password10@" })
+
+        const userRepoInstance = Container.get("UserRepo");
+       
+        const user = User.create({
+            name: UserName.create("Marco Antonio").getValue(),
+            telefone: UserTelefone.create("914231321").getValue(),
+            nif: UserNumeroContribuinte.create("321123567").getValue(),
+            password: hashedPassword.getValue(),
+            role: Role.create("utente").getValue(),
+            estado: UserEstado.create("pendente").getValue()
+        }, UserEmail.create(body.email).getValue());
+
+        sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(user.getValue()));
+        sinon.stub(userRepoInstance, "save").returns(Promise.resolve(user.getValue()));
+        
+        const service = new UserService(userRepoInstance as IUserRepo);
+        const answer = await service.approveOrRejectSignUp(body as IApproveOrRejectSignUpDTO);
+
+        expect(answer.getValue()).to.equal("Estado do utilizador alterado com sucesso!");
+    });
+
+    it ('approveOrRejectSignUp falha porque o email não existe', async () => {
+        let body = {
+            email: "marco@isep.ipp.pt",
+            estado : "aceito"
+        };
+       
+        const hashedPassword = await UserPassword.create({ value: "Password10@" })
+
+        const userRepoInstance = Container.get("UserRepo");
+       
+        const user = User.create({
+            name: UserName.create("Marco Antonio").getValue(),
+            telefone: UserTelefone.create("914231321").getValue(),
+            nif: UserNumeroContribuinte.create("321123567").getValue(),
+            password: hashedPassword.getValue(),
+            role: Role.create("utente").getValue(),
+            estado: UserEstado.create("pendente").getValue()
+        }, UserEmail.create(body.email).getValue());
+
+        sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(null));
+        
+        const service = new UserService(userRepoInstance as IUserRepo);
+        const answer = await service.approveOrRejectSignUp(body as IApproveOrRejectSignUpDTO);
+
+        expect(answer.errorValue()).to.equal("Utilizador não existe com email " + user.getValue().getEmail());
+    });
+
+    it ('approveOrRejectSignUp falha porque o estado não é válido', async () => {
+        let body = {
+            email: "marco@isep.ipp.pt",
+            estado : "morto"
+        };
+       
+        const hashedPassword = await UserPassword.create({ value: "Password10@" })
+
+        const userRepoInstance = Container.get("UserRepo");
+       
+        const user = User.create({
+            name: UserName.create("Marco Antonio").getValue(),
+            telefone: UserTelefone.create("914231321").getValue(),
+            nif: UserNumeroContribuinte.create("321123567").getValue(),
+            password: hashedPassword.getValue(),
+            role: Role.create("utente").getValue(),
+            estado: UserEstado.create("pendente").getValue()
+        }, UserEmail.create(body.email).getValue());
+
+        sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(user.getValue()));
+        sinon.stub(userRepoInstance, "save").returns(Promise.resolve(user.getValue()));
+        
+        const service = new UserService(userRepoInstance as IUserRepo);
+        const answer = await service.approveOrRejectSignUp(body as IApproveOrRejectSignUpDTO);
+
+        expect(answer.errorValue()).to.equal("Estado inválido");
+    });
 });

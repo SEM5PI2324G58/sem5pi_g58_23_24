@@ -21,6 +21,14 @@ interface UserProps {
 }
 
 export class User extends AggregateRoot<UserProps> {
+  public reject() : boolean {
+    this.props.estado = UserEstado.create("rejeitado").getValue();
+    return true;
+  }
+  public aprove() : boolean {
+    this.props.estado = UserEstado.create("aceito").getValue();
+    return true;
+  }
 
   getEmail(): string {
     return String(this.id.toString());
@@ -29,7 +37,7 @@ export class User extends AggregateRoot<UserProps> {
   getName(): UserName {
     return this.props.name;
   }
-  
+
   getTelefone(): UserTelefone {
     return this.props.telefone;
   }
@@ -54,16 +62,16 @@ export class User extends AggregateRoot<UserProps> {
   getEstado(): UserEstado {
     return this.props.estado;
   }
-  
+
   setRole(value: Role) {
-      this.props.role = value;
+    this.props.role = value;
   }
 
-  private constructor (props: UserProps, id?: UserEmail) {
-    super(props,id);
+  private constructor(props: UserProps, id?: UserEmail) {
+    super(props, id);
   }
 
-  public static create (props: UserProps, id?: UserEmail): Result<User> {
+  public static create(props: UserProps, id?: UserEmail): Result<User> {
 
     const guardedProps = [
       { argument: props.name, argumentName: 'name' },
@@ -76,7 +84,7 @@ export class User extends AggregateRoot<UserProps> {
     const guardResult = Guard.againstNullOrUndefinedBulk(guardedProps);
     if (!guardResult.succeeded) {
       return Result.fail<User>(guardResult.message)
-    }     
+    }
     else {
       const user = new User({
         ...props
