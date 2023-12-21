@@ -18,13 +18,11 @@
             <input name="modeloTipoRobo" #modeloTipoRobo placeholder="Modelo do Tipo de Robot" />
             <span></span>
         </div>
-        <label class = "header">Tipos de tarefa:</label>
-        <div class = "checkbox">
-          <div *ngFor="let tipoTarefa of listaTipoTarefa">
-              <label><input type="checkbox" (change)="selecionarCheckBox(tipoTarefa)" />{{ tipoTarefa }}
-              </label>
-            
-          </div>
+        <label class = "second-header">Tipos de tarefa:</label>
+        <div *ngFor="let task of listaTipoTarefa">
+          <label class = checkbox>
+            <input type="checkbox" [(ngModel)]="task.selected" /> {{ task.label }}
+          </label>
         </div>
 
       <div class = "button-submit">
