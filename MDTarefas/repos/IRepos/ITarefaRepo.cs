@@ -6,7 +6,7 @@ namespace MDTarefas.repos.IRepos{
 
         Task<List<Tarefa>> GetAsync();
         Task<Tarefa?> GetAsync(string id);
-        Task CreateAsync(Tarefa newTarefa);
+        Task<Tarefa> CreateAsync(Tarefa newTarefa);
         Task UpdateAsync(string id, Tarefa updatedTarefa);
         Task RemoveAsync(string id);
 

@@ -11,10 +11,12 @@ namespace MDTarefas.Services
   public class TarefaService : ITarefaService
     {
         private readonly ITarefaRepo _tarefaRepository;
+        private readonly HttpClient httpClient;
 
-        public TarefaService(ITarefaRepo tarefaRepository)
+        public TarefaService(ITarefaRepo tarefaRepository, HttpClient httpClient)
         {
-            _tarefaRepository = tarefaRepository;
+            this._tarefaRepository = tarefaRepository;
+            this.httpClient = httpClient;
         }
 
         public async Task<List<TarefaDTO>> listarTarefas() {
@@ -104,20 +106,18 @@ namespace MDTarefas.Services
 
         private async Task<string> obterPercursoEntreSalas(string salaInicial, string salaFinal) {
             
-            using (HttpClient client = new HttpClient())
-            {
-                string baseUri = utils.Environments.MDRI_API_PLANEAMENTO_URL + "/caminhoEntreEdificios";
-                string finalUrl = $"{baseUri}?salaInicial={salaInicial}&salaFinal={salaFinal}";
+            string baseUri = utils.Environments.MDRI_API_PLANEAMENTO_URL + "/caminhoEntreEdificios";
+            string finalUrl = $"{baseUri}?salaInicial={salaInicial}&salaFinal={salaFinal}";
 
-                HttpResponseMessage response = await client.GetAsync(finalUrl);
+            HttpResponseMessage response = await this.httpClient.GetAsync(finalUrl);
 
-                if (response.IsSuccessStatusCode) {
-                    return await response.Content.ReadAsStringAsync();
-                } else {
-                    string errorMessage = await response.Content.ReadAsStringAsync();
-                    throw new BusinessRuleValidationException($"Pedido ao módulo de planeamento falhou.\nErro: {errorMessage}");
-                }
+            if (response.IsSuccessStatusCode) {
+                return await response.Content.ReadAsStringAsync();
+            } else {
+                string errorMessage = await response.Content.ReadAsStringAsync();
+                throw new BusinessRuleValidationException($"Pedido ao módulo de planeamento falhou.\nErro: {errorMessage}");
             }
+            
         }
     }
 }
