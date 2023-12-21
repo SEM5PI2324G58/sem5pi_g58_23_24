@@ -31,11 +31,13 @@ namespace MDTarefas.Services
             return await _tarefaRepository.GetAsync(id);
         }
 
-        public async Task<Tarefa> criarTarefa(CriarTarefaDTO tarefaDTO) {
+        public async Task<TarefaDTO> criarTarefa(CriarTarefaDTO tarefaDTO) {
             if (tarefaDTO.TipoTarefa.ToLower() == "pickupdelivery") {
-                return await criarPickUpDelivery(tarefaDTO);
+                var tarefa = await criarPickUpDelivery(tarefaDTO);
+                return TarefaMapper.toDTO(tarefa);
             } else if (tarefaDTO.TipoTarefa.ToLower() == "vigilancia") {
-                return await criarVigilancia(tarefaDTO);
+                var tarefa = await criarVigilancia(tarefaDTO);
+                return TarefaMapper.toDTO(tarefa);
             } else {
                 throw new BusinessRuleValidationException("Tipo de tarefa inválido");
             }
