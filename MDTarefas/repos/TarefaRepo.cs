@@ -2,11 +2,11 @@ using MDTarefas.dataSchemas;
 using MDTarefas.mappers;
 using MDTarefas.Models;
 using MDTarefas.Models.tarefa;
-using MDTarefas.repos.IRepos;
+using MDTarefas.services.IRepos;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace MDTarefas.repo;
+namespace MDTarefas.repos;
 
 public class TarefaRepo : ITarefaRepo
 {
