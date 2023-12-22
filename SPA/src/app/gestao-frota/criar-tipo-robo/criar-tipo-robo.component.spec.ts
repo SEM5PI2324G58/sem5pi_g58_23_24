@@ -5,6 +5,7 @@ import { MapaService } from '../../../serviceInfo/mapa.service';
 import {SidebarFrotaComponent} from '../sidebar-frota/sidebar-frota.component';
 import {MessageComponent} from '../../message/message.component';
 import { TipoRoboService } from 'src/serviceInfo/tipo-robo.service';
+import { FormsModule } from '@angular/forms';
 
 describe('CriarTipoRoboComponent', () => {
   let component: CriarTipoRoboComponent;
@@ -13,7 +14,7 @@ describe('CriarTipoRoboComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [CriarTipoRoboComponent, SidebarFrotaComponent, MessageComponent],
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, FormsModule],
       providers: [MapaService],
     })
     .compileComponents();
@@ -30,7 +31,9 @@ describe('CriarTipoRoboComponent', () => {
   it('Método add chama o método criarTipoRobo do tipoRoboService', () => {
     const marca = "marca";
     const modelo = "modelo";
-    const tipoTarefa = ["tipoTarefa1", "tipoTarefa2"];
+    component.listaTipoTarefa[0].selected = true;
+    component.listaTipoTarefa[1].selected = true;
+    let tipoTarefa = ['Vigilância', 'PickUp/Delivery'];
 
     let tipoRoboService = TestBed.inject(TipoRoboService);
     spyOn(component['tipoRoboService'], 'criarTipoRobo');
