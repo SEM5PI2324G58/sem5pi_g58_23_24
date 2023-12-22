@@ -92,7 +92,8 @@ namespace MDTarefas.mappers
                                     tarefaSchema.PercursoString, 
                                     tarefaSchema.EmailRequisitor, 
                                     tarefaSchema.Id,
-                                    tarefaSchema.CodDispositivo);
+                                    tarefaSchema.CodDispositivo,
+                                    tarefaSchema.EstadoString);
 
             } else if (tarefaSchema.TipoTarefa.Equals("PickUpDelivery") 
                         && tarefaSchema.CodConfirmacao != null && tarefaSchema.DescricaoEntrega != null
@@ -111,7 +112,8 @@ namespace MDTarefas.mappers
                                     tarefaSchema.PercursoString,
                                     tarefaSchema.EmailRequisitor,
                                     tarefaSchema.Id,
-                                    tarefaSchema.CodDispositivo);
+                                    tarefaSchema.CodDispositivo,
+                                    tarefaSchema.EstadoString);
             }
 
             throw new ArgumentException("Invalid TarefaSchema");
