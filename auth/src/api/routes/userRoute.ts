@@ -27,9 +27,9 @@ export default (app: Router) => {
     }),
     (req, res, next) => ctrl.signup(req, res, next));
 
-  route.get('/login',
+  route.post('/login',
     celebrate({
-      query: Joi.object({
+      body: Joi.object({
         email: Joi.string().required(),
         password: Joi.string().required()
       })
