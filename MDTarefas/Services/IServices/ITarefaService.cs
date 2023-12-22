@@ -5,5 +5,6 @@ namespace MDTarefas.Services.IServices {
         Task<List<TarefaDTO>> listarTarefas();
         Task<TarefaDTO?> listarTarefaPorId(string id);
         Task<TarefaDTO> criarTarefa(CriarTarefaDTO tarefaDTO);
+        Task<List<TarefaDTO>> listarTarefasPendentes();
     }
 }

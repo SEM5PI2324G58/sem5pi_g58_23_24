@@ -34,4 +34,17 @@ public class TarefaController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+
+    [HttpGet("tarefasPendentes")]
+    public async Task<ActionResult<TarefaDTO>> GetTarefasPendentes()
+    {
+        var tarefa = await _tarefaService.listarTarefasPendentes();
+
+        if (!tarefa.Any())
+        {
+            return NotFound();
+        }
+
+        return Ok(tarefa);
+    }
 }

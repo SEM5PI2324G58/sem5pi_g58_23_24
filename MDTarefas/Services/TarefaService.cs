@@ -119,5 +119,14 @@ namespace MDTarefas.Services
             }
             
         }
+
+        public async Task<List<TarefaDTO>> listarTarefasPendentes() {
+            List<Tarefa> list =  await _tarefaRepository.GetTarefasPendentesAsync();
+            List<TarefaDTO> listDTO = new List<TarefaDTO>();
+            foreach (Tarefa tarefa in list) {
+                listDTO.Add(TarefaMapper.toDTO(tarefa));
+            }
+            return listDTO;
+        }
     }
 }
