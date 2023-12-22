@@ -9,3 +9,6 @@ global using MDTarefas.dto;
 global using MDTarefas.Models.exceptions;
 global using MDTarefas.Models.tarefa;
 global using Microsoft.AspNetCore.Mvc;
+global using System.Net;
+global using System.Net.Http;
+global using Moq.Protected;
