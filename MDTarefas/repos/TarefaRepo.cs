@@ -47,6 +47,9 @@ public class TarefaRepo : ITarefaRepo
 
     public async Task<Tarefa?> GetAsync(string id){
         TarefaSchema schema = await _tarefaCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+        if (schema == null) {
+            return null;
+        }
         return TarefaMapper.toDomain(schema);
     }
 
@@ -55,8 +58,9 @@ public class TarefaRepo : ITarefaRepo
         return newTarefa;
     }
 
-    public async Task UpdateAsync(string id, Tarefa updatedTarefa) =>
+    public async Task UpdateAsync(string id, Tarefa updatedTarefa)   {
         await _tarefaCollection.ReplaceOneAsync(x => x.Id == id, TarefaMapper.toPersistance(updatedTarefa));
+    }
 
     public async Task<bool> RemoveAsync(string id){
         var result = await _tarefaCollection.DeleteOneAsync(x => x.Id == id);

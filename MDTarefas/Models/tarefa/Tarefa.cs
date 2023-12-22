@@ -35,6 +35,14 @@ namespace MDTarefas.Models.tarefa
             return this.Estado.getEstadoString();
         }
 
+        public void updateEstado(string estado) {
+            this.Estado = new Estado(estado);
+        }
+
+        public void updateCodigoRobo(string codigo) {
+            this.CodDispositivo = codigo;
+        }
+
         public string getPercursoString() {
             return this.Percurso.getPercursoString();
         }

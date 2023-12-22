@@ -5,6 +5,7 @@ using MDTarefas.Models.tarefa;
 using MDTarefas.services.IRepos;
 using MDTarefas.Services.IServices;
 using MDTarefas.utils;
+using MDTarefas.dataSchemas;
 
 namespace MDTarefas.Services.ImplServices
 {
@@ -133,6 +134,23 @@ namespace MDTarefas.Services.ImplServices
             if (!await _tarefaRepository.RemoveAsync(id)) {
                 throw new NotFoundException("Tarefa não existe");
             }
+        }
+
+        public async Task<TarefaDTO> alterarEstadoDaTarefa(alterarEstadoDaTarefaDTO tarefaDTO) { 
+            if (tarefaDTO.Id == null || tarefaDTO.Estado == null) {
+                throw new BusinessRuleValidationException("Id e estado da tarefa são obrigatórios");
+            }
+            Tarefa tarefa = await _tarefaRepository.GetAsync(tarefaDTO.Id);
+            if (tarefa == null) {
+                throw new NotFoundException("Tarefa não existe");
+            }
+            tarefa.updateEstado(tarefaDTO.Estado);
+            if (tarefaDTO.CodigoRobo != null) {
+                tarefa.updateCodigoRobo(tarefaDTO.CodigoRobo);
+            }
+            
+            await _tarefaRepository.UpdateAsync(tarefaDTO.Id, tarefa);
+            return TarefaMapper.toDTO(tarefa);
         }
     }
 }
