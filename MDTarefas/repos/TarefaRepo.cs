@@ -58,6 +58,9 @@ public class TarefaRepo : ITarefaRepo
     public async Task UpdateAsync(string id, Tarefa updatedTarefa) =>
         await _tarefaCollection.ReplaceOneAsync(x => x.Id == id, TarefaMapper.toPersistance(updatedTarefa));
 
-    public async Task RemoveAsync(string id) =>
-        await _tarefaCollection.DeleteOneAsync(x => x.Id == id);
+    public async Task<bool> RemoveAsync(string id){
+        var result = await _tarefaCollection.DeleteOneAsync(x => x.Id == id);
+        return result.IsAcknowledged && result.DeletedCount > 0;
+    }
+
 }

@@ -47,4 +47,17 @@ public class TarefaController : ControllerBase
 
         return Ok(tarefa);
     }
+    
+    [HttpDelete("{id:length(24)}")]
+    public async Task<IActionResult> Delete(string id)
+    {
+        try {
+            await _tarefaService.removerTarefaPorId(id);
+            return Ok("Removido com sucesso"); 
+        } catch (NotFoundException e) {
+            return NotFound(e.Message);
+        }
+
+    }
+
 }

@@ -128,5 +128,11 @@ namespace MDTarefas.Services
             }
             return listDTO;
         }
+
+        public async Task removerTarefaPorId(string id){
+            if (!await _tarefaRepository.RemoveAsync(id)) {
+                throw new NotFoundException("Tarefa não existe");
+            }
+        }
     }
 }
