@@ -1,6 +1,6 @@
 using MDTarefas.Models.tarefa;
 
-namespace MDTarefas.repos.IRepos{
+namespace MDTarefas.services.IRepos{
 
     public interface ITarefaRepo{
 

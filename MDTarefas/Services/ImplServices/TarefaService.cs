@@ -2,11 +2,11 @@ using MDTarefas.dto;
 using MDTarefas.mappers;
 using MDTarefas.Models.exceptions;
 using MDTarefas.Models.tarefa;
-using MDTarefas.repos.IRepos;
+using MDTarefas.services.IRepos;
 using MDTarefas.Services.IServices;
 using MDTarefas.utils;
 
-namespace MDTarefas.Services
+namespace MDTarefas.Services.ImplServices
 {
   public class TarefaService : ITarefaService
     {
