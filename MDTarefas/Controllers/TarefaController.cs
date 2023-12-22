@@ -42,7 +42,7 @@ public class TarefaController : ControllerBase
 
         if (!tarefa.Any())
         {
-            return NotFound();
+            return NotFound("Não existem tarefas pendentes");
         }
 
         return Ok(tarefa);
