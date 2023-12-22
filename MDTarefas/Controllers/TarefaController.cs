@@ -48,8 +48,8 @@ public class TarefaController : ControllerBase
         return Ok(tarefa);
     }
     
-    [HttpDelete("{id:length(24)}")]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete]
+    public async Task<IActionResult> Delete([FromQuery] string id)
     {
         try {
             await _tarefaService.removerTarefaPorId(id);
