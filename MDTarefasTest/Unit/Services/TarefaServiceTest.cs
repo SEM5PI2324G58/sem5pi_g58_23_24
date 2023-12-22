@@ -115,4 +115,92 @@ public class TarefaServiceTest {
         Assert.Equal(expectedTarefa.getNomeSalaInicialString(), res.SalaInicial);
         Assert.Equal(expectedTarefa.getNomeSalaFinalString(), res.SalaFinal);
     }
+
+    [Fact]
+    public async void GetTarefasPendentesDevolveDTOs() {
+        var tarefaRepo = new Mock<ITarefaRepo>();
+        var tarefaService = new TarefaService(tarefaRepo.Object, new HttpClient());
+
+        var tarefa = new PickUpDelivery(
+            "12345","DESC",
+            "123456789","NOMEPCIKUP",
+            "987654321","NOMEDELIVERY",
+            "A201","A202",
+            "[cel(a1,1,1),cel(a1,2,2)]","emailplaceholder","id",""
+        );    
+
+        var tarefa2 = new PickUpDelivery(
+            "12345","DESC",
+            "123456789","NOMEPCIKUP",
+            "987654321","NOMEDELIVERY",
+            "A201","A202",
+            "[cel(a1,1,1),cel(a1,2,2)]","emailplaceholder","id",""
+        );    
+
+        var tarefa3 = new PickUpDelivery(
+            "12345","DESC",
+            "123456789","NOMEPCIKUP",
+            "987654321","NOMEDELIVERY",
+            "A201","A202",
+            "[cel(a1,1,1),cel(a1,2,2)]","emailplaceholder","id",""
+        );    
+
+        var tarefas = new List<Tarefa>();
+        tarefas.Add(tarefa);
+        tarefas.Add(tarefa2);
+        tarefas.Add(tarefa3);
+
+        tarefaRepo.Setup(repo => repo.GetTarefasPendentesAsync())
+            .ReturnsAsync(tarefas);
+
+        var res = await tarefaService.listarTarefasPendentes();
+
+        Assert.Equal(3, res.Count);
+    }
+
+    [Fact]
+    public async void GetTarefasPendentesDevolveDTOPretendido() {
+        var tarefaRepo = new Mock<ITarefaRepo>();
+        var tarefaService = new TarefaService(tarefaRepo.Object, new HttpClient());
+
+        var tarefa = new PickUpDelivery(
+            "12345","DESC",
+            "123456789","NOMEPCIKUP",
+            "987654321","NOMEDELIVERY",
+            "A201","A202",
+            "[cel(a1,1,1),cel(a1,2,2)]","emailplaceholder","id",""
+        );    
+
+
+        var dto = new TarefaDTO(
+            "id","[cel(a1,1,1),cel(a1,2,2)]","Pendente",
+            "emailplaceholder","","12345","DESC",
+            "NOMEPCIKUP","123456789","NOMEDELIVERY","987654321",
+            "A201","A202"
+        );
+        
+        var tarefas = new List<Tarefa>();
+        tarefas.Add(tarefa);
+        
+
+        tarefaRepo.Setup(repo => repo.GetTarefasPendentesAsync())
+            .ReturnsAsync(tarefas);
+
+        var res = await tarefaService.listarTarefasPendentes();
+
+        Assert.Equal(res[0].TipoTarefa, dto.TipoTarefa);
+        Assert.Equal(res[0].Id, dto.Id);
+        Assert.Equal(res[0].PercursoString, dto.PercursoString);
+        Assert.Equal(res[0].EstadoString, dto.EstadoString);
+        Assert.Equal(res[0].EmailRequisitor, dto.EmailRequisitor);
+        Assert.Equal(res[0].CodDispositivo, dto.CodDispositivo);
+        Assert.Equal(res[0].CodConfirmacao, dto.CodConfirmacao);
+        Assert.Equal(res[0].DescricaoEntrega, dto.DescricaoEntrega);
+        Assert.Equal(res[0].NomePickUp, dto.NomePickUp);
+        Assert.Equal(res[0].NumeroPickUp, dto.NumeroPickUp);
+        Assert.Equal(res[0].NomeDelivery, dto.NomeDelivery);
+        Assert.Equal(res[0].NumeroDelivery, dto.NumeroDelivery);
+        Assert.Equal(res[0].SalaInicial, dto.SalaInicial);
+        Assert.Equal(res[0].SalaFinal, dto.SalaFinal);
+    }     
 }

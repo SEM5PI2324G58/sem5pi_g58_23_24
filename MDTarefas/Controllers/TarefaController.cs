@@ -40,7 +40,7 @@ public class TarefaController : ControllerBase
     {
         var tarefa = await _tarefaService.listarTarefasPendentes();
 
-        if (tarefa is null)
+        if (!tarefa.Any())
         {
             return NotFound();
         }
