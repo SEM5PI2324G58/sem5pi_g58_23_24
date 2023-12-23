@@ -140,8 +140,12 @@ export class AuthService {
         .pipe(catchError(this.handleError<User>('Login')))
         .subscribe({
             next: data =>{
-                localStorage.setItem('user',JSON.stringify(data))
-                this.router.navigate(['/dashboard']);
+                if (data != undefined) {
+                    localStorage.setItem('user',JSON.stringify(data))
+                    this.router.navigate(['/dashboard']);
+                } else {
+                    this.log("Erro de comunicação com o servidor de autenticação");
+                }
             }
         });
     }
