@@ -228,5 +228,148 @@ namespace MDTarefasTest.Unit.Controller
 
         }
 
+
+        [Fact]
+        public async void AlterarEstadoDaTarefaRetornaTarefa(){
+            var serviceMock = new Mock<ITarefaService>();
+
+            TarefaDTO tarefaDTO = new TarefaDTO();
+            tarefaDTO.Id = "id";
+            tarefaDTO.TipoTarefa = "PickUpDelivery";
+            tarefaDTO.CodConfirmacao = "12345";
+            tarefaDTO.DescricaoEntrega = "DESC";
+            tarefaDTO.NomePickUp = "NOMEPCIKUP";
+            tarefaDTO.NumeroPickUp = "123456789";
+            tarefaDTO.NomeDelivery = "NOMEDELIVERY";
+            tarefaDTO.NumeroDelivery = "987654321";
+            tarefaDTO.SalaInicial = "A201";
+            tarefaDTO.SalaFinal = "A202";
+            tarefaDTO.PercursoString = "[cel(a1,1,1),cel(a1,2,2)]";
+            tarefaDTO.EstadoString = "Aceite";
+            tarefaDTO.EmailRequisitor = "emailplaceholder";
+            tarefaDTO.CodDispositivo = "Robo1";
+
+            var alterarTarefaDTO = new AlterarEstadoDaTarefaDTO();
+            alterarTarefaDTO.Id = "id";
+            alterarTarefaDTO.Estado = "Aceite";
+            alterarTarefaDTO.CodigoRobo = "Robo1";
+
+
+            serviceMock.Setup(service => service.alterarEstadoDaTarefa(It.IsAny<AlterarEstadoDaTarefaDTO>()))
+                .ReturnsAsync(tarefaDTO);
+
+            var controller = new TarefaController(serviceMock.Object);
+
+            var res = await controller.AlterarEstadoDaTarefa(alterarTarefaDTO);
+
+            var okResult = Assert.IsType<OkObjectResult>(res.Result);
+            Assert.Equal(200, okResult.StatusCode);
+            Assert.Equal(tarefaDTO, okResult.Value);
+        }
+
+        [Fact]
+        public async void AlterarEstadoDaTarefaRetornaBadRequestForBusinessRuleValidationException(){
+            var serviceMock = new Mock<ITarefaService>();
+
+
+            var alterarTarefaDTO = new AlterarEstadoDaTarefaDTO();
+            alterarTarefaDTO.Id = "id";
+            alterarTarefaDTO.Estado = "Aceite";
+            alterarTarefaDTO.CodigoRobo = "Robo1";
+
+            var errorMessage = "Id e estado da tarefa são obrigatórios";
+            serviceMock.Setup(service => service.alterarEstadoDaTarefa(It.IsAny<AlterarEstadoDaTarefaDTO>()))
+                .ThrowsAsync(new BusinessRuleValidationException(errorMessage));
+
+            var controller = new TarefaController(serviceMock.Object);
+
+            var res = await controller.AlterarEstadoDaTarefa(alterarTarefaDTO);
+
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(res.Result);
+            Assert.Equal(400, badRequestResult.StatusCode);
+            Assert.Equal(errorMessage, badRequestResult.Value);
+        }
+
+        [Fact]
+        public async void AlterarEstadoDaTarefaRetornaNotFoundForNotFoundException(){
+            var serviceMock = new Mock<ITarefaService>();
+
+
+            var alterarTarefaDTO = new AlterarEstadoDaTarefaDTO();
+            alterarTarefaDTO.Id = "id";
+            alterarTarefaDTO.Estado = "Aceite";
+            alterarTarefaDTO.CodigoRobo = "Robo1";
+
+            var errorMessage = "Tarefa não existe";
+            serviceMock.Setup(service => service.alterarEstadoDaTarefa(It.IsAny<AlterarEstadoDaTarefaDTO>()))
+                .ThrowsAsync(new NotFoundException(errorMessage));
+
+            var controller = new TarefaController(serviceMock.Object);
+
+            var res = await controller.AlterarEstadoDaTarefa(alterarTarefaDTO);
+
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(res.Result);
+            Assert.Equal(404, notFoundResult.StatusCode);
+            Assert.Equal(errorMessage, notFoundResult.Value);
+        }
+
+        [Fact]
+        public async void ControllerServiceAlterarEstadoDaTarefaRetornaTarefa(){
+            var tarefaRepo = new Mock<ITarefaRepo>();
+            var httpClient = new HttpClient();
+
+            var tarefa = new PickUpDelivery(
+                "12345","DESC",
+                "123456789","NOMEPCIKUP",
+                "987654321","NOMEDELIVERY",
+                "A201","A202",
+                "[cel(a1,1,1),cel(a1,2,2)]","emailplaceholder","id",""
+            );    
+
+
+            var returnDTO = new TarefaDTO(
+                "id","[cel(a1,1,1),cel(a1,2,2)]","Aceite",
+                "emailplaceholder","Robo1","12345","DESC",
+                "NOMEPCIKUP","123456789","NOMEDELIVERY","987654321",
+                "A201","A202"
+            );
+            
+            var tarefaDTO = new AlterarEstadoDaTarefaDTO();
+            tarefaDTO.Id = "id";
+            tarefaDTO.Estado = "Aceite";
+            tarefaDTO.CodigoRobo = "Robo1";
+
+            tarefaRepo.Setup(repo => repo.GetAsync(It.IsAny<string>()))
+                .ReturnsAsync(tarefa);
+            tarefaRepo.Setup(repo => repo.UpdateAsync(It.IsAny<string>(), It.IsAny<Tarefa>()));
+
+            var tarefaService = new TarefaService(tarefaRepo.Object, httpClient);
+
+            var controller = new TarefaController(tarefaService); 
+
+            var res = await controller.AlterarEstadoDaTarefa(tarefaDTO);
+
+            var okResult = Assert.IsType<OkObjectResult>(res.Result);
+            
+            var dtoRes = Assert.IsType<TarefaDTO>(okResult.Value);
+
+
+            Assert.Equal(200, okResult.StatusCode);
+            Assert.Equal(returnDTO.Id, dtoRes.Id);
+            Assert.Equal(returnDTO.TipoTarefa, dtoRes.TipoTarefa);
+            Assert.Equal(returnDTO.CodConfirmacao, dtoRes.CodConfirmacao);
+            Assert.Equal(returnDTO.DescricaoEntrega, dtoRes.DescricaoEntrega);
+            Assert.Equal(returnDTO.NomePickUp, dtoRes.NomePickUp);
+            Assert.Equal(returnDTO.NumeroPickUp, dtoRes.NumeroPickUp);
+            Assert.Equal(returnDTO.NomeDelivery, dtoRes.NomeDelivery);
+            Assert.Equal(returnDTO.NumeroDelivery, dtoRes.NumeroDelivery);
+            Assert.Equal(returnDTO.SalaInicial, dtoRes.SalaInicial);
+            Assert.Equal(returnDTO.SalaFinal, dtoRes.SalaFinal);
+            Assert.Equal(returnDTO.PercursoString, dtoRes.PercursoString);
+            Assert.Equal(returnDTO.EstadoString, dtoRes.EstadoString);
+            Assert.Equal(returnDTO.EmailRequisitor, dtoRes.EmailRequisitor);
+            Assert.Equal(returnDTO.CodDispositivo, dtoRes.CodDispositivo);
+
+        }
     }
 }

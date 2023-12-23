@@ -136,7 +136,7 @@ namespace MDTarefas.Services.ImplServices
             }
         }
 
-        public async Task<TarefaDTO> alterarEstadoDaTarefa(alterarEstadoDaTarefaDTO tarefaDTO) { 
+        public async Task<TarefaDTO> alterarEstadoDaTarefa(AlterarEstadoDaTarefaDTO tarefaDTO) { 
             if (tarefaDTO.Id == null || tarefaDTO.Estado == null) {
                 throw new BusinessRuleValidationException("Id e estado da tarefa são obrigatórios");
             }
@@ -145,9 +145,14 @@ namespace MDTarefas.Services.ImplServices
                 throw new NotFoundException("Tarefa não existe");
             }
             tarefa.updateEstado(tarefaDTO.Estado);
-            if (tarefaDTO.CodigoRobo != null) {
-                tarefa.updateCodigoRobo(tarefaDTO.CodigoRobo);
+            if (tarefa.getEstadoString() == "Aceite") {
+                if (tarefaDTO.CodigoRobo != null) {
+                    tarefa.updateCodigoRobo(tarefaDTO.CodigoRobo);
+                }else{
+                    throw new BusinessRuleValidationException("Código do robô é obrigatório caso a tarefa seja aceite");
+                }
             }
+            
             
             await _tarefaRepository.UpdateAsync(tarefaDTO.Id, tarefa);
             return TarefaMapper.toDTO(tarefa);

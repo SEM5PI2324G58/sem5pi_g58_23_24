@@ -1,6 +1,6 @@
 namespace MDTarefas.dto;
 
-public class alterarEstadoDaTarefaDTO
+public class AlterarEstadoDaTarefaDTO
 {
     public string Estado { get; set; }
     public string Id { get; set; }

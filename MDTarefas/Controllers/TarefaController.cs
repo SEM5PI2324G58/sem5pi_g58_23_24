@@ -61,11 +61,11 @@ public class TarefaController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<ActionResult<TarefaDTO>> Create(alterarEstadoDaTarefaDTO tarefaDTO)
+    public async Task<ActionResult<TarefaDTO>> AlterarEstadoDaTarefa(AlterarEstadoDaTarefaDTO alterarTarefaDTO)
     {
         try {
-            TarefaDTO tarefacriada = await _tarefaService.alterarEstadoDaTarefa(tarefaDTO);
-            return Ok(tarefacriada);  
+            TarefaDTO tarefa = await _tarefaService.alterarEstadoDaTarefa(alterarTarefaDTO);
+            return Ok(tarefa);  
         } catch (BusinessRuleValidationException e) {
             return BadRequest(e.Message);
         }catch (NotFoundException e) {
