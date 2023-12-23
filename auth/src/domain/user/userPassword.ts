@@ -4,6 +4,7 @@ import { Guard } from "../../core/logic/Guard";
 import * as bcrypt from 'bcrypt-nodejs';
 import * as argon2 from 'argon2';
 import { randomBytes } from 'crypto';
+import { has } from "lodash";
 
 
 
@@ -70,25 +71,27 @@ export class UserPassword extends ValueObject<UserPasswordProps> {
   }
 
   public static async create(props: UserPasswordProps): Promise<Result<UserPassword>> {
-
     const password = props.value;
-
-    const nullOrUndefinedResult = Guard.againstNullOrUndefined(password, 'password');
-    const passwordLengthResult = Guard.isPasswordGreaterOrEqualThan(password, 10);
-    const passwordUppercaseResult = Guard.passwordContainsUppercaseLetter(password);
-    const passwordLowercaseResult = Guard.passwordContainsLowercaseLetter(password);
-    const passwordDigitResult = Guard.passwordContainsDigit(password);
-    const passwordSymbolResult = Guard.passwordContainsSymbol(password);
-    const result = Guard.combine([nullOrUndefinedResult, passwordLengthResult, passwordUppercaseResult, passwordLowercaseResult, passwordDigitResult, passwordSymbolResult]);
-
-    if (!result.succeeded) {
-      return Result.fail<UserPassword>(result.message);
+    let hashedPassword: string = null;
+    if (props.hashed || props.hashed === false) {
+      hashedPassword = password;
     }
+    else {
+      const nullOrUndefinedResult = Guard.againstNullOrUndefined(password, 'password');
+      const passwordLengthResult = Guard.isPasswordGreaterOrEqualThan(password, 10);
+      const passwordUppercaseResult = Guard.passwordContainsUppercaseLetter(password);
+      const passwordLowercaseResult = Guard.passwordContainsLowercaseLetter(password);
+      const passwordDigitResult = Guard.passwordContainsDigit(password);
+      const passwordSymbolResult = Guard.passwordContainsSymbol(password);
+      const result = Guard.combine([nullOrUndefinedResult, passwordLengthResult, passwordUppercaseResult, passwordLowercaseResult, passwordDigitResult, passwordSymbolResult]);
 
-    const salt = randomBytes(32);
-    const hashedPassword = await argon2.hash(password, { salt });
+      if (!result.succeeded) {
+        return Result.fail<UserPassword>(result.message);
+      }
 
-
+      const salt = randomBytes(32);
+      hashedPassword = await argon2.hash(password, { salt });
+    }
     return Result.ok<UserPassword>(new UserPassword({
       value: hashedPassword,
       hashed: true
