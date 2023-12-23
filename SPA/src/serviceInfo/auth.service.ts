@@ -130,6 +130,12 @@ export class AuthService {
      * @returns 
      */
     login(email: string, password: string) {
+        if (email == "" || email == undefined || email == null ||
+            password == "" || password == undefined || password == null) {
+
+            this.log("É necessário email e password");
+            return;
+        }
         return this.http.post<any>(this.loginUrl, { email, password })
         .pipe(catchError(this.handleError<User>('Login')))
         .subscribe({
