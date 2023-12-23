@@ -125,16 +125,15 @@ export class AuthService {
      * @returns 
      */
     login(email: string, password: string) {
-
-        let params = new HttpParams().set('email', email);
-        params = params.append('password', password);
-
-        return this.http.get<any>(this.loginUrl, { params: params, headers: this.httpOptions.headers })
-            .pipe(
-                map(user => localStorage.setItem('user', JSON.stringify(user))),
-                catchError(this.handleError<User>("login"))
-            );
+        return this.http.post<any>(this.loginUrl, { email, password })
+        .pipe(catchError(this.handleError<User>('Login')))
+        .subscribe({
+            next: data =>{
+                localStorage.setItem('user',JSON.stringify(data))
+            }
+        });
     }
+    
 
     /**
      * Remove o utilizador da local storage
