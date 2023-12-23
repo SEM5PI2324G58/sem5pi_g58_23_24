@@ -6,6 +6,9 @@ import { map } from 'rxjs';
 import { UserModel } from 'src/dataModel/userModel';
 import { MessageService } from './message.service';
 import { devEnvironment } from 'src/environments/environment.development';
+import { Router } from '@angular/router';
+
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
@@ -18,7 +21,9 @@ export class AuthService {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
 
-    constructor(private http: HttpClient, private messageService: MessageService) {
+    constructor(private http: HttpClient, 
+                private messageService: MessageService,
+                private router: Router) {
         this.userSubject = new BehaviorSubject<User | null>(
             JSON.parse(localStorage.getItem('user')!)
         );
@@ -130,6 +135,7 @@ export class AuthService {
         .subscribe({
             next: data =>{
                 localStorage.setItem('user',JSON.stringify(data))
+                this.router.navigate(['/dashboard']);
             }
         });
     }
