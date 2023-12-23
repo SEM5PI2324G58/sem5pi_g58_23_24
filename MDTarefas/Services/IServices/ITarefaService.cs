@@ -6,5 +6,7 @@ namespace MDTarefas.Services.IServices {
         Task<TarefaDTO?> listarTarefaPorId(string id);
         Task<TarefaDTO> criarTarefa(CriarTarefaDTO tarefaDTO);
         Task<List<TarefaDTO>> listarTarefasPendentes();
+        Task removerTarefaPorId(string id);
+        Task<TarefaDTO> alterarEstadoDaTarefa(AlterarEstadoDaTarefaDTO tarefaDTO);
     }
 }

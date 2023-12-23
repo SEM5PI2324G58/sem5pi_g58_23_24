@@ -1,7 +1,7 @@
 using MDTarefas.Models;
-using MDTarefas.repo;
-using MDTarefas.repos.IRepos;
-using MDTarefas.Services;
+using MDTarefas.repos;
+using MDTarefas.services.IRepos;
+using MDTarefas.Services.ImplServices;
 using MDTarefas.Services.IServices;
 
 var builder = WebApplication.CreateBuilder(args);

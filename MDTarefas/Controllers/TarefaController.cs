@@ -42,9 +42,37 @@ public class TarefaController : ControllerBase
 
         if (!tarefa.Any())
         {
-            return NotFound();
+            return NotFound("Não existem tarefas pendentes");
         }
 
         return Ok(tarefa);
     }
+    
+    [HttpDelete]
+    public async Task<IActionResult> Delete([FromQuery] string id)
+    {
+        try {
+            await _tarefaService.removerTarefaPorId(id);
+            return Ok("Removido com sucesso"); 
+        } catch (NotFoundException e) {
+            return NotFound(e.Message);
+        }
+
+    }
+
+    [HttpPut]
+    public async Task<ActionResult<TarefaDTO>> AlterarEstadoDaTarefa(AlterarEstadoDaTarefaDTO alterarTarefaDTO)
+    {
+        try {
+            TarefaDTO tarefa = await _tarefaService.alterarEstadoDaTarefa(alterarTarefaDTO);
+            return Ok(tarefa);  
+        } catch (BusinessRuleValidationException e) {
+            return BadRequest(e.Message);
+        }catch (NotFoundException e) {
+            return NotFound(e.Message);
+        }catch (Exception e) {
+            return BadRequest(e.Message);
+        }
+    }
+
 }
