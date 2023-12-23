@@ -203,4 +203,173 @@ public class TarefaServiceTest {
         Assert.Equal(res[0].SalaInicial, dto.SalaInicial);
         Assert.Equal(res[0].SalaFinal, dto.SalaFinal);
     }     
+
+    [Fact]
+    public async void alterarEstadoDaTarefaTemSucessoParaAceite() {
+        var tarefaRepo = new Mock<ITarefaRepo>();
+        var tarefaService = new TarefaService(tarefaRepo.Object, new HttpClient());
+
+        var tarefa = new PickUpDelivery(
+            "12345","DESC",
+            "123456789","NOMEPCIKUP",
+            "987654321","NOMEDELIVERY",
+            "A201","A202",
+            "[cel(a1,1,1),cel(a1,2,2)]","emailplaceholder","id",""
+        );    
+
+
+        var returnDTO = new TarefaDTO(
+            "id","[cel(a1,1,1),cel(a1,2,2)]","Aceite",
+            "emailplaceholder","Robo1","12345","DESC",
+            "NOMEPCIKUP","123456789","NOMEDELIVERY","987654321",
+            "A201","A202"
+        );
+        
+        var tarefaDTO = new AlterarEstadoDaTarefaDTO();
+        tarefaDTO.Id = "id";
+        tarefaDTO.Estado = "Aceite";
+        tarefaDTO.CodigoRobo = "Robo1";
+
+        tarefaRepo.Setup(repo => repo.GetAsync(It.IsAny<string>()))
+            .ReturnsAsync(tarefa);
+        tarefaRepo.Setup(repo => repo.UpdateAsync(It.IsAny<string>(), It.IsAny<Tarefa>()));
+            
+
+        var res = await tarefaService.alterarEstadoDaTarefa(tarefaDTO);
+
+        Assert.Equal(res.TipoTarefa, returnDTO.TipoTarefa);
+        Assert.Equal(res.Id, returnDTO.Id);
+        Assert.Equal(res.PercursoString, returnDTO.PercursoString);
+        Assert.Equal(res.EstadoString, returnDTO.EstadoString);
+        Assert.Equal(res.EmailRequisitor, returnDTO.EmailRequisitor);
+        Assert.Equal(res.CodDispositivo, returnDTO.CodDispositivo);
+        Assert.Equal(res.CodConfirmacao, returnDTO.CodConfirmacao);
+        Assert.Equal(res.DescricaoEntrega, returnDTO.DescricaoEntrega);
+        Assert.Equal(res.NomePickUp, returnDTO.NomePickUp);
+        Assert.Equal(res.NumeroPickUp, returnDTO.NumeroPickUp);
+        Assert.Equal(res.NomeDelivery, returnDTO.NomeDelivery);
+        Assert.Equal(res.NumeroDelivery, returnDTO.NumeroDelivery);
+        Assert.Equal(res.SalaInicial, returnDTO.SalaInicial);
+        Assert.Equal(res.SalaFinal, returnDTO.SalaFinal);
+    } 
+
+    [Fact]
+    public async void alterarEstadoDaTarefaFalhaSeEstadoAceiteENaoExistirRobo() {
+        var tarefaRepo = new Mock<ITarefaRepo>();
+        var tarefaService = new TarefaService(tarefaRepo.Object, new HttpClient());
+
+        var tarefa = new PickUpDelivery(
+            "12345","DESC",
+            "123456789","NOMEPCIKUP",
+            "987654321","NOMEDELIVERY",
+            "A201","A202",
+            "[cel(a1,1,1),cel(a1,2,2)]","emailplaceholder","id",""
+        );    
+
+
+        var returnDTO = new TarefaDTO(
+            "id","[cel(a1,1,1),cel(a1,2,2)]","Aceite",
+            "emailplaceholder","Robo1","12345","DESC",
+            "NOMEPCIKUP","123456789","NOMEDELIVERY","987654321",
+            "A201","A202"
+        );
+        
+        var tarefaDTO = new AlterarEstadoDaTarefaDTO();
+        tarefaDTO.Id = "id";
+        tarefaDTO.Estado = "Aceite";
+
+        tarefaRepo.Setup(repo => repo.GetAsync(It.IsAny<string>()))
+            .ReturnsAsync(tarefa);
+
+        async Task ActAsync() =>  await tarefaService.alterarEstadoDaTarefa(tarefaDTO);
+
+        var exception = await Assert.ThrowsAsync<BusinessRuleValidationException>(ActAsync);
+
+        Assert.Equal("Código do robô é obrigatório caso a tarefa seja aceite", exception.Message);
+
+
+    } 
+
+
+    [Fact]
+    public async void alterarEstadoDaTarefaFalhaEstadoInvalido() {
+        var tarefaRepo = new Mock<ITarefaRepo>();
+        var tarefaService = new TarefaService(tarefaRepo.Object, new HttpClient());
+
+        var tarefa = new PickUpDelivery(
+            "12345","DESC",
+            "123456789","NOMEPCIKUP",
+            "987654321","NOMEDELIVERY",
+            "A201","A202",
+            "[cel(a1,1,1),cel(a1,2,2)]","emailplaceholder","id",""
+        );    
+
+        
+        var tarefaDTO = new AlterarEstadoDaTarefaDTO();
+        tarefaDTO.Id = "id";
+        tarefaDTO.Estado = "asasjkj";
+
+        tarefaRepo.Setup(repo => repo.GetAsync(It.IsAny<string>()))
+            .ReturnsAsync(tarefa);
+
+        async Task ActAsync() =>  await tarefaService.alterarEstadoDaTarefa(tarefaDTO);
+
+        var exception = await Assert.ThrowsAsync<BusinessRuleValidationException>(ActAsync);
+
+        Assert.Equal("Estado inválido", exception.Message);
+       
+    } 
+
+    [Fact]
+    public async void alterarEstadoDaTarefaFalhaSeATarefaNaoExistir() {
+        var tarefaRepo = new Mock<ITarefaRepo>();
+        var tarefaService = new TarefaService(tarefaRepo.Object, new HttpClient());
+
+        var tarefa = new PickUpDelivery(
+            "12345","DESC",
+            "123456789","NOMEPCIKUP",
+            "987654321","NOMEDELIVERY",
+            "A201","A202",
+            "[cel(a1,1,1),cel(a1,2,2)]","emailplaceholder","id",""
+        );    
+
+        
+        var tarefaDTO = new AlterarEstadoDaTarefaDTO();
+        tarefaDTO.Id = "id";
+        tarefaDTO.Estado = "Rejeitado";
+
+        tarefaRepo.Setup(repo => repo.GetAsync(It.IsAny<string>()))
+            .ReturnsAsync((Tarefa)null);
+
+        async Task ActAsync() =>  await tarefaService.alterarEstadoDaTarefa(tarefaDTO);
+
+        var exception = await Assert.ThrowsAsync<NotFoundException>(ActAsync);
+
+        Assert.Equal("Tarefa não existe", exception.Message);
+    } 
+
+    [Fact]
+    public async void alterarEstadoDaTarefaFalhaSeNaoExistirId() {
+        var tarefaRepo = new Mock<ITarefaRepo>();
+        var tarefaService = new TarefaService(tarefaRepo.Object, new HttpClient());
+
+        var tarefa = new PickUpDelivery(
+            "12345","DESC",
+            "123456789","NOMEPCIKUP",
+            "987654321","NOMEDELIVERY",
+            "A201","A202",
+            "[cel(a1,1,1),cel(a1,2,2)]","emailplaceholder","id",""
+        );    
+
+        
+        var tarefaDTO = new AlterarEstadoDaTarefaDTO();
+        tarefaDTO.Estado = "Rejeitado";
+
+        async Task ActAsync() =>  await tarefaService.alterarEstadoDaTarefa(tarefaDTO);
+
+        var exception = await Assert.ThrowsAsync<BusinessRuleValidationException>(ActAsync);
+
+        Assert.Equal("Id e estado da tarefa são obrigatórios", exception.Message);
+    } 
+
 }

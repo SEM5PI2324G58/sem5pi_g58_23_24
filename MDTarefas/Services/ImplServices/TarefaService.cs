@@ -2,11 +2,12 @@ using MDTarefas.dto;
 using MDTarefas.mappers;
 using MDTarefas.Models.exceptions;
 using MDTarefas.Models.tarefa;
-using MDTarefas.repos.IRepos;
+using MDTarefas.services.IRepos;
 using MDTarefas.Services.IServices;
 using MDTarefas.utils;
+using MDTarefas.dataSchemas;
 
-namespace MDTarefas.Services
+namespace MDTarefas.Services.ImplServices
 {
   public class TarefaService : ITarefaService
     {
@@ -127,6 +128,34 @@ namespace MDTarefas.Services
                 listDTO.Add(TarefaMapper.toDTO(tarefa));
             }
             return listDTO;
+        }
+
+        public async Task removerTarefaPorId(string id){
+            if (!await _tarefaRepository.RemoveAsync(id)) {
+                throw new NotFoundException("Tarefa não existe");
+            }
+        }
+
+        public async Task<TarefaDTO> alterarEstadoDaTarefa(AlterarEstadoDaTarefaDTO tarefaDTO) { 
+            if (tarefaDTO.Id == null || tarefaDTO.Estado == null) {
+                throw new BusinessRuleValidationException("Id e estado da tarefa são obrigatórios");
+            }
+            Tarefa tarefa = await _tarefaRepository.GetAsync(tarefaDTO.Id);
+            if (tarefa == null) {
+                throw new NotFoundException("Tarefa não existe");
+            }
+            tarefa.updateEstado(tarefaDTO.Estado);
+            if (tarefa.getEstadoString() == "Aceite") {
+                if (tarefaDTO.CodigoRobo != null) {
+                    tarefa.updateCodigoRobo(tarefaDTO.CodigoRobo);
+                }else{
+                    throw new BusinessRuleValidationException("Código do robô é obrigatório caso a tarefa seja aceite");
+                }
+            }
+            
+            
+            await _tarefaRepository.UpdateAsync(tarefaDTO.Id, tarefa);
+            return TarefaMapper.toDTO(tarefa);
         }
     }
 }

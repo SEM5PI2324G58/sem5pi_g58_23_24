@@ -1,6 +1,6 @@
 using MDTarefas.Models.tarefa;
 
-namespace MDTarefas.repos.IRepos{
+namespace MDTarefas.services.IRepos{
 
     public interface ITarefaRepo{
 
@@ -9,7 +9,7 @@ namespace MDTarefas.repos.IRepos{
         Task<List<Tarefa>> GetTarefasPendentesAsync();
         Task<Tarefa> CreateAsync(Tarefa newTarefa);
         Task UpdateAsync(string id, Tarefa updatedTarefa);
-        Task RemoveAsync(string id);
+        Task<bool> RemoveAsync(string id);
 
     }
 

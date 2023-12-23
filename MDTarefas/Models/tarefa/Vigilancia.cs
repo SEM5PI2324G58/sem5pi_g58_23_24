@@ -15,6 +15,15 @@ namespace MDTarefas.Models.tarefa
             this.CodEdificio = new CodEdificio(codEdificio);
             this.NumeroPiso = new NumeroPiso(numeroPiso);
         }
+        
+        //FOR PERSISTANCE
+        public Vigilancia(string nome, string numero, 
+                            string codEdificio, int numeroPiso,
+                            string percurso, string email, string id, string codDispositivo, string estado) : base(id, percurso, email, codDispositivo, estado) {
+            this.Contacto = new Contacto(new Nome(nome), new NumeroTelefone(numero));
+            this.CodEdificio = new CodEdificio(codEdificio);
+            this.NumeroPiso = new NumeroPiso(numeroPiso);
+        }
 
         public string getContactoNomeString() {
             return this.Contacto.getNomeString();
