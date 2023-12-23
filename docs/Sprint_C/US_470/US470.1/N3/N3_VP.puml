@@ -3,7 +3,7 @@ autonumber
 
 participant "Controller" as ctrl
 participant "ImplServices" as service
-participant "Models" as domain
+participant "Tarefa" as domain
 participant "Repos" as repo
 
 
