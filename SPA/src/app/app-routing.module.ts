@@ -36,6 +36,8 @@ import { SignupUtenteComponent } from './signup-utente/signup-utente.component';
 import { PoliticaPrivacidadeComponent } from './politica-privacidade/politica-privacidade.component';
 import { ApproveOrRejectUtenteComponent } from './administrador/approve-or-reject-utente/approve-or-reject-utente.component';
 import { LoginComponent } from './login/login.component';
+import { AprovarTarefaComponent } from './gestao-planeamento/aprovar-tarefa/aprovar-tarefa.component';
+
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full'},
@@ -75,7 +77,8 @@ const routes: Routes = [
   { path: 'signupUtente', component: SignupUtenteComponent},
   { path: 'politicaPrivacidade', component: PoliticaPrivacidadeComponent},
   { path: 'approveOrRejectUtente', component: ApproveOrRejectUtenteComponent},
-  { path: 'login', component: LoginComponent}
+  { path: 'login', component: LoginComponent},
+  { path: 'aprovarTarefas', component: AprovarTarefaComponent}
   
 ];
 
