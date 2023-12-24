@@ -6,6 +6,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { devEnvironment } from 'src/environments/environment.development';
 import { Dispositivo } from '../dataModel/dispositivo';
 import { MessageService } from './message.service';
+import CodigoDosDispositivosPorTarefa from 'src/dataModel/codigoDosDispositivosPorTarefa';
 
 @Injectable({
   providedIn: 'root'
@@ -65,6 +66,13 @@ export class DispositivoService {
 
         }
       });
+  }
+
+  listarCodigoDosDispositivosDaFrotaPorTarefa(): Observable<CodigoDosDispositivosPorTarefa> {
+    return this.http.get<CodigoDosDispositivosPorTarefa>(this.dispositivoUrl + "/tipoTarefa", this.httpOptions)
+      .pipe(
+        catchError(this.handleError<CodigoDosDispositivosPorTarefa>('Listar Códigos dos Dispositivos da Frota por Tarefa')),
+      );
   }
 
 
