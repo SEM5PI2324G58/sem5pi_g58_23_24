@@ -5,17 +5,20 @@ import { AuthService } from './auth.service';
 import { HttpClient } from '@angular/common/http';
 import { Utilizador } from 'src/dataModel/utilizador';
 import { of } from 'rxjs';
+import { Router } from '@angular/router';
 
 describe('AuthService', () => {
 
   let service: AuthService;
   let httpClient: HttpClient;
+  let router: Router;
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule]
     });
     service = TestBed.inject(AuthService);
     httpClient = TestBed.inject(HttpClient);
+    router = TestBed.inject(Router);
   });
 
 
@@ -68,6 +71,78 @@ describe('AuthService', () => {
     const postSpy = spyOn(httpClient, 'post').and.returnValue(of(testData));
     service.signUp(testData.name, testData.email, testData.telefone, testData.nif, testData.password, testData.role);
     expect(postSpy).toHaveBeenCalledWith(devEnvironment.AUTH_API_URL + "user/signup", testData, service.httpOptions);
+  });
+
+  it('Método login chama o método post do HttpClient', () => {
+    const inputData = {
+      email: "email@isep.ipp.pt",
+      password: "Password10@",
+    }
+
+    const returnData = {
+      user: { nome : "user", role : "admin" },
+      token: "token"
+    }
+
+    const postSpy = spyOn(httpClient, 'post').and.returnValue(of(returnData));
+    const navigateSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    service.login(inputData.email, inputData.password);
+    expect(postSpy).toHaveBeenCalledWith(devEnvironment.AUTH_API_URL + "user/login", inputData,);
+    expect(navigateSpy).toHaveBeenCalledWith(['/dashboard']);
+  });
+
+  it('Método login não chama o método post do HttpClient caso não exista email', () => {
+    const inputData = {
+      email: "email@isep.ipp.pt",
+      password: "Password10@",
+    }
+
+    const returnData = {
+      user: { nome : "user", role : "admin" },
+      token: "token"
+    }
+
+    const postSpy = spyOn(httpClient, 'post').and.returnValue(of(returnData));
+    const navigateSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    service.login(inputData.email, inputData.password);
+    expect(postSpy).toHaveBeenCalledWith(devEnvironment.AUTH_API_URL + "user/login", inputData,);
+    expect(navigateSpy).toHaveBeenCalledWith(['/dashboard']);
+  });
+
+  it('Método login não chama o método post do HttpClient caso não exista email', () => {
+    const inputData = {
+      email: "",
+      password: "Password10@",
+    }
+
+    const returnData = {
+      user: { nome : "user", role : "admin" },
+      token: "token"
+    }
+
+    const postSpy = spyOn(httpClient, 'post').and.returnValue(of(returnData));
+    const navigateSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    service.login(inputData.email, inputData.password);
+    expect(postSpy).not.toHaveBeenCalled();
+    expect(navigateSpy).not.toHaveBeenCalled();
+  });
+
+  it('Método login não chama o método post do HttpClient caso não exista password', () => {
+    const inputData = {
+      email: "",
+      password: "Password10@",
+    }
+
+    const returnData = {
+      user: { nome : "user", role : "admin" },
+      token: "token"
+    }
+
+    const postSpy = spyOn(httpClient, 'post').and.returnValue(of(returnData));
+    const navigateSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    service.login(inputData.email, inputData.password);
+    expect(postSpy).not.toHaveBeenCalled();
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 
 });

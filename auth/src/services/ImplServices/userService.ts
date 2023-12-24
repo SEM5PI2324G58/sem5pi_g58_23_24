@@ -163,13 +163,15 @@ export default class UserService implements IUserService {
     const user = await this.userRepo.findByEmail(email);
 
     if (!user) {
-      throw new Error('User not registered');
+      return Result.fail<{ token: string }>('Não existe um utilizador com estas credenciais');
     }
 
     /**
      * We use verify from argon2 to prevent 'timing based' attacks
      */
-    const isValidPassword = await argon2.verify(user.getPassword().getValue(), password);
+    var databasePassword = user.getPassword().getValue();
+    
+    const isValidPassword = await argon2.verify(databasePassword, password);
     if (isValidPassword) {
       const token = this.generateToken(user) as string;
 
@@ -177,7 +179,7 @@ export default class UserService implements IUserService {
 
       return Result.ok<{ user: IUserDTO, token: string }>({ user: userDTOResult, token: token });
     } else {
-      throw new Error('Invalid Password');
+      return Result.fail<{ token: string }>('Password inválida');
     }
   }
 
