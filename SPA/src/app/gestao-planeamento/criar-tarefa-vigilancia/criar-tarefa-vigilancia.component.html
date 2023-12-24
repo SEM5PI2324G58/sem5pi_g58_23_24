@@ -1,1 +1,44 @@
-<p>criar-tarefa-vigilancia works!</p>
+<html>
+    <body>
+        <div class="sidebar">
+            <app-sidebar-gestao-planeamento></app-sidebar-gestao-planeamento>
+        </div>
+        <div class="header">
+            <h1>Criar tarefa Vigilância</h1>
+        </div>
+        <form class="conteudo" [formGroup]="myForm">
+            <div class = "input-field"> 
+                <input formControlName="nomeVigilancia" name="nomeVigilancia" #nomeVigilancia placeholder="Nome do contacto de vigilância*" required />
+            </div>
+
+            <div class = "input-field"> 
+                <input formControlName="numeroVigilancia" name="numeroVigilancia" #numeroVigilancia placeholder="Numero de telefone do contacto de vigilância*" required/>
+            </div>
+            
+            <div class = "input-field">
+                <!-- TODO (change) = "methodListarPisos"-->
+                <select formControlName="codigoEd" id="codigoEd" name="codigoEd" required>
+                  <option value="" disabled selected>Codigo Edificio *</option>
+                  <!-- TODO colocar a listagem do Ed : <option *ngFor="let option of listaCodEd" [value]="option">{{ option }}</option> --> 
+                </select>
+            </div>
+
+            <div class = "input-field">
+                <select formControlName="numeroPiso" id="numeroPiso" name="numeroPiso" required>
+                  <option value="" disabled selected>Número piso *</option>
+                  <!-- TODO colocar a listagem dos numeros do piso do ed : <option *ngFor="let option of listaPisos" [value]="option">{{ option }}</option> --> 
+                </select>
+            </div>
+            
+              <div class = "button-submit">
+                <!-- TODO (click) = "methdX"-->
+                <button type="button" class="add-button"> Criar</button>
+            </div>
+
+
+            <app-message></app-message>
+        </form>
+    </body>
+</html>
+
+
