@@ -448,3 +448,75 @@ bfs2(Dest,[LA|Outros],Path):-
         Novos),
     append(Outros,Novos,Todos),
     bfs2(Dest,Todos,Path).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+tarefa_caminho_tempo(X1, Y1, PisoInicio1, X2, Y2, PisoFim1, X3, Y3, PisoInicio2, X4, Y4, PisoFim2,
+               CustoTotal1, CustoTotal2) :- 
+
+    % Custo do fim de T1 para o início de T2
+    caminho_pontos_piso(X2, Y2, PisoFim1, X3, Y3, PisoInicio2, _, LLig1, _, Custo1),
+    calcula_tempo_adicional(LLig1, TempoAdicional1),
+    CustoTotal1 is Custo1 + TempoAdicional1,
+
+    % Custo do fim de T2 para o início de T1
+    caminho_pontos_piso(X4, Y4, PisoFim2, X1, Y1, PisoInicio1, _, LLig2, _, Custo2),
+    calcula_tempo_adicional(LLig2, TempoAdicional2),
+    CustoTotal2 is Custo2 + TempoAdicional2.
+
+% Função auxiliar para calcular o tempo adicional com base em LLig
+calcula_tempo_adicional(LLig, TempoAdicional) :-
+    findall(Tipo, member(Tipo, LLig), Tipos),
+    conta_tempo(Tipos, 0, TempoAdicional).
+
+% Conta o tempo adicional com base nos tipos de ligação
+conta_tempo([], Tempo, Tempo).
+conta_tempo([elev(_, _)|T], TempoAcum, TempoTotal) :-
+    NovoTempo is TempoAcum + 10,
+    conta_tempo(T, NovoTempo, TempoTotal).
+conta_tempo([cor(_, _)|T], TempoAcum, TempoTotal) :-
+    NovoTempo is TempoAcum + 5,
+    conta_tempo(T, NovoTempo, TempoTotal).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Predicado para processar todas as combinações de pares de tarefas
+processar_tarefas(ListaTarefas, Resultados) :-
+    findall(Res, combinar_tarefas(ListaTarefas, Res), ResultadosTemp),
+    append(ResultadosTemp, Resultados).
+
+% Combina as tarefas da lista, chamando tarefa_caminho_tempo para cada par.
+combinar_tarefas([], []).
+combinar_tarefas([Tarefa|Tarefas], Res) :-
+    combinar_com_resto(Tarefa, Tarefas, ResParciais),
+    combinar_tarefas(Tarefas, ResResto),
+    append(ResParciais, ResResto, Res).
+
+% Chama tarefa_caminho_tempo para a tarefa atual com cada uma das outras tarefas da lista.
+combinar_com_resto(_, [], []).
+combinar_com_resto(Tarefa1, [Tarefa2|Tarefas], [ResParcial|ResResto]) :-
+    Tarefa1 = tarefa(Nome1, X1, Y1, PisoInicio1, X2, Y2, PisoFim1),
+    Tarefa2 = tarefa(Nome2, X3, Y3, PisoInicio2, X4, Y4, PisoFim2),
+    tarefa_caminho_tempo(X1, Y1, PisoInicio1, X2, Y2, PisoFim1, X3, Y3, PisoInicio2, X4, Y4, PisoFim2, Custo1, Custo2),
+    ResParcial = tempos(Nome1, Nome2, Custo1, Nome2, Nome1, Custo2),
+    combinar_com_resto(Tarefa1, Tarefas, ResResto).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Predicado para processar a lista de resultados e fazer assert para cada tempos
+processar_e_assert_resultados([],_).
+processar_e_assert_resultados([tempos(Tarefa1, Tarefa2, Custo1, Tarefa2Reverso, Tarefa1Reverso, Custo2)|Resto],Nome) :-
+    assert(tempo(Nome,Tarefa1, Tarefa2, Custo1)),
+    assert(tempo(Nome,Tarefa2Reverso, Tarefa1Reverso, Custo2)),
+    processar_e_assert_resultados(Resto,Nome).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+processar_tarefas_e_assert(ListaTarefas,Nome) :-
+    processar_tarefas(ListaTarefas, Resultados),
+    processar_e_assert_resultados(Resultados,Nome).
+
+iterar_robots([]).
+iterar_robots([robot(Nome, ListaTarefas) | RestoRobots]) :-
+    processar_tarefas_e_assert(ListaTarefas,Nome),
+    iterar_robots(RestoRobots).
