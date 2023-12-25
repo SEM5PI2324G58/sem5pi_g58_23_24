@@ -6,6 +6,9 @@ import { map } from 'rxjs';
 import { UserModel } from 'src/dataModel/userModel';
 import { MessageService } from './message.service';
 import { devEnvironment } from 'src/environments/environment.development';
+import { Router } from '@angular/router';
+
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
@@ -18,7 +21,9 @@ export class AuthService {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
 
-    constructor(private http: HttpClient, private messageService: MessageService) {
+    constructor(private http: HttpClient, 
+                private messageService: MessageService,
+                private router: Router) {
         this.userSubject = new BehaviorSubject<User | null>(
             JSON.parse(localStorage.getItem('user')!)
         );
@@ -125,16 +130,26 @@ export class AuthService {
      * @returns 
      */
     login(email: string, password: string) {
+        if (email == "" || email == undefined || email == null ||
+            password == "" || password == undefined || password == null) {
 
-        let params = new HttpParams().set('email', email);
-        params = params.append('password', password);
-
-        return this.http.get<any>(this.loginUrl, { params: params, headers: this.httpOptions.headers })
-            .pipe(
-                map(user => localStorage.setItem('user', JSON.stringify(user))),
-                catchError(this.handleError<User>("login"))
-            );
+            this.log("É necessário email e password");
+            return;
+        }
+        return this.http.post<any>(this.loginUrl, { email, password })
+        .pipe(catchError(this.handleError<User>('Login')))
+        .subscribe({
+            next: data =>{
+                if (data != undefined) {
+                    localStorage.setItem('user',JSON.stringify(data))
+                    this.router.navigate(['/dashboard']);
+                } else {
+                    this.log("Erro de comunicação com o servidor de autenticação");
+                }
+            }
+        });
     }
+    
 
     /**
      * Remove o utilizador da local storage
