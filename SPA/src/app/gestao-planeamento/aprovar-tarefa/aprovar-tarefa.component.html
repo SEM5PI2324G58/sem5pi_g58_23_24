@@ -70,8 +70,8 @@
                 <td style="max-width: 100px;border-bottom: 1px solid #000000;border-left: 1px solid #000000;padding: 8px;overflow-wrap: break-word;">
                     {{ tarefa.tipoTarefa }}</td>
                 <td style="max-width: 80px;border-bottom: 1px solid #000000;border-left: 1px solid #000000;padding: 8px;overflow-wrap: break-word;">
-                  <span *ngIf="tarefa.salaInicial">{{ tarefa.SalaInicial - tarefa.SalaFinal}}</span>
-                  <span *ngIf="!tarefa.salaInicial">-</span></td>
+                  <span *ngIf="tarefa.salaFinal">{{tarefa.salaInicial}} - {{tarefa.salaFinal}}</span>
+                  <span *ngIf="!tarefa.salaFinal">-</span></td>
                 <td style="max-width: 60px;border-bottom: 1px solid #000000;border-left: 1px solid #000000;padding: 8px;overflow-wrap: break-word;">
                   <span *ngIf="tarefa.codEdificio">{{ tarefa.codEdificio}} - {{tarefa.numeroPiso}}</span>
                   <span *ngIf="!tarefa.codEdificio">-</span></td>
