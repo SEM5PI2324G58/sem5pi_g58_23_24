@@ -14,7 +14,7 @@ export class CriarTarefaVigilanciaComponent {
 
   myForm!: FormGroup;
   listaCodEdificios!: string[];
-  listaNumeroPisos!: string[];
+  listaNumeroPisos!: number[];
 
   constructor(private fb: FormBuilder,
               private tarefaService: TarefaService,
@@ -47,9 +47,9 @@ export class CriarTarefaVigilanciaComponent {
     
     this.pisoService.listarNumeroPisos(codigo).subscribe({
       next: data => {
-        let aux: string[] = [];
+        let aux: number[] = [];
         for (let i = 0; i < data.length; i++) {
-          aux.push(data[i].toString());
+          aux.push(data[i]);
         }
         this.listaNumeroPisos = aux;
       },error: error => {
@@ -59,4 +59,12 @@ export class CriarTarefaVigilanciaComponent {
     });
   }
 
+  public criarTarefaVigilancia(): void {
+    const nome = this.myForm.get('nomeVigilancia')?.value;
+    const numero = this.myForm.get('numeroVigilancia')?.value;
+    const codigo = this.myForm.get('codigoEd')?.value;
+    const numeroPiso = this.myForm.get('numeroPiso')?.value;
+
+    this.tarefaService.criarTarefaVigilancia(nome, numero, codigo, numeroPiso);
+  }
 }
