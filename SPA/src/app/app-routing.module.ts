@@ -37,6 +37,8 @@ import { PoliticaPrivacidadeComponent } from './politica-privacidade/politica-pr
 import { ApproveOrRejectUtenteComponent } from './administrador/approve-or-reject-utente/approve-or-reject-utente.component';
 import { LoginComponent } from './login/login.component';
 import { AprovarTarefaComponent } from './gestao-planeamento/aprovar-tarefa/aprovar-tarefa.component';
+import { CriarTarefaVigilanciaComponent } from './gestao-planeamento/criar-tarefa-vigilancia/criar-tarefa-vigilancia.component';
+import { CriarTarefaPickUpDeliveryComponent } from './gestao-planeamento/criar-tarefa-pick-up-delivery/criar-tarefa-pick-up-delivery.component';
 
 
 const routes: Routes = [
@@ -78,8 +80,9 @@ const routes: Routes = [
   { path: 'politicaPrivacidade', component: PoliticaPrivacidadeComponent},
   { path: 'approveOrRejectUtente', component: ApproveOrRejectUtenteComponent},
   { path: 'login', component: LoginComponent},
-  { path: 'aprovarTarefas', component: AprovarTarefaComponent}
-  
+  { path: 'aprovarTarefas', component: AprovarTarefaComponent},
+  { path: 'criarTarefaVigilancia', component: CriarTarefaVigilanciaComponent},
+  { path: 'criarTarefaPickUpDelivery', component: CriarTarefaPickUpDeliveryComponent}
 ];
 
 @NgModule({

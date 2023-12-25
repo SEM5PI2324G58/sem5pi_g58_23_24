@@ -50,6 +50,8 @@ import { PoliticaPrivacidadeComponent } from './politica-privacidade/politica-pr
 import { ApproveOrRejectUtenteComponent } from './administrador/approve-or-reject-utente/approve-or-reject-utente.component';
 import { LoginComponent } from './login/login.component';
 import { AprovarTarefaComponent } from './gestao-planeamento/aprovar-tarefa/aprovar-tarefa.component';
+import { CriarTarefaVigilanciaComponent } from './gestao-planeamento/criar-tarefa-vigilancia/criar-tarefa-vigilancia.component';
+import { CriarTarefaPickUpDeliveryComponent } from './gestao-planeamento/criar-tarefa-pick-up-delivery/criar-tarefa-pick-up-delivery.component';
 
 @NgModule({
   declarations: [
@@ -97,7 +99,9 @@ import { AprovarTarefaComponent } from './gestao-planeamento/aprovar-tarefa/apro
     PoliticaPrivacidadeComponent,
     ApproveOrRejectUtenteComponent,
     LoginComponent,
-    AprovarTarefaComponent
+    AprovarTarefaComponent,
+    CriarTarefaVigilanciaComponent,
+    CriarTarefaPickUpDeliveryComponent
   ],
   imports: [
     BrowserModule,
