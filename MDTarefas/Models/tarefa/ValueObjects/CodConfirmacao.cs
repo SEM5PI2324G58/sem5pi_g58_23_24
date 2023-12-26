@@ -8,7 +8,7 @@ namespace MDTarefas.Models.tarefa.ValueObjects
         private string Codigo = null!;
 
         public CodConfirmacao(string codigo) {
-            if (StringValidations.isNullOrEmpty(codigo) || !StringValidations.isNumeric(codigo) || 
+            if (StringValidations.isNullEmptyOrBlank(codigo) || !StringValidations.isNumeric(codigo) || 
                 !StringValidations.hasLengthBetweenOrEqualTo(codigo, 4, 6)) {
                 throw new BusinessRuleValidationException("Código de confirmação deve ser um número com 4 a 6 dígitos");
             }

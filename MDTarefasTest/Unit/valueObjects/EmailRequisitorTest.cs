@@ -12,18 +12,29 @@ public class EmailRequisitorTest{
 
         var exception = Assert.Throws<BusinessRuleValidationException>(act);
 
-        Assert.Equal("Email do requisitor não pode ser nulo ou vazio",exception.Message);
+        Assert.Equal("Email do requisitor não pode ser nulo, vazio ou apenas conter espaços",exception.Message);
+
+    }
+
+    [Fact]
+    public void ensureEmailRequisitorNotEmpty() {
+        
+        Action act = () => new EmailRequisitor("");
+
+        var exception = Assert.Throws<BusinessRuleValidationException>(act);
+
+        Assert.Equal("Email do requisitor não pode ser nulo, vazio ou apenas conter espaços",exception.Message);
 
     }
 
     [Fact]
     public void ensureEmailRequisitorNotBlank() {
         
-        Action act = () => new EmailRequisitor("");
+        Action act = () => new EmailRequisitor("          ");
 
         var exception = Assert.Throws<BusinessRuleValidationException>(act);
 
-        Assert.Equal("Email do requisitor não pode ser nulo ou vazio",exception.Message);
+        Assert.Equal("Email do requisitor não pode ser nulo, vazio ou apenas conter espaços",exception.Message);
 
     }
 

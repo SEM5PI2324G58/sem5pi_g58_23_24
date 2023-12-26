@@ -13,18 +13,29 @@ public class NomeTest
         var exception = Assert.Throws<BusinessRuleValidationException>(act);
 
 
-        Assert.Equal("Nome não pode ser nulo ou vazio",exception.Message);
+        Assert.Equal("Nome não pode ser nulo, vazio ou apenas conter espaços",exception.Message);
+
+    }
+
+    [Fact]
+    public void ensureNameNotEmpty() {
+        
+        Action act = () => new Nome("");
+
+        var exception = Assert.Throws<BusinessRuleValidationException>(act);
+
+        Assert.Equal("Nome não pode ser nulo, vazio ou apenas conter espaços",exception.Message);
 
     }
 
     [Fact]
     public void ensureNameNotBlank() {
         
-        Action act = () => new Nome("");
+        Action act = () => new Nome("       ");
 
         var exception = Assert.Throws<BusinessRuleValidationException>(act);
 
-        Assert.Equal("Nome não pode ser nulo ou vazio",exception.Message);
+        Assert.Equal("Nome não pode ser nulo, vazio ou apenas conter espaços",exception.Message);
 
     }
 
