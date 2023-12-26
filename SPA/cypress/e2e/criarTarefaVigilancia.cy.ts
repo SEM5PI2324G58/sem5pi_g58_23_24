@@ -1,4 +1,6 @@
-describe('Criar elevador', () => {
+var id : string;
+
+describe('Criar vigilancia', () => {
 
     beforeEach(() => {
         cy.intercept('POST', '/api/Tarefa').as('createTarefa');
@@ -14,18 +16,25 @@ describe('Criar elevador', () => {
         
         cy.wait('@getPisosEdificio')
         cy.get('[name="numeroPiso"]').select('1');
-
+        
         cy.get('[name="nomeVigilancia"]').type('ABC');
         cy.get('[name="numeroVigilancia"]').type('123456789');
-
-
+        
+        
         cy.get('button').click();
         cy.wait('@createTarefa').then((interception) => {
             expect(interception?.response?.statusCode).to.eq(201);
+            id = interception.response?.body.id;
         })
     })
-
+    
     afterEach(() => {        
-        //TODO apagar tarefa
+        cy.intercept('DELETE', '/api/Tarefa?id='+id).as('deleteTarefa');
+        cy.visit('/apagarTarefa');
+        cy.get('[name="id"]').type(id);
+        cy.get('button').click();
+        cy.wait('@deleteTarefa').then((interception) => {
+            expect(interception?.response?.statusCode).to.eq(200);
+        })
     });
 })
