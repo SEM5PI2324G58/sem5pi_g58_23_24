@@ -141,8 +141,21 @@ export class AuthService {
         .subscribe({
             next: data =>{
                 if (data != undefined) {
+                    console.log(data);
                     localStorage.setItem('user',JSON.stringify(data))
-                    this.router.navigate(['/dashboard']);
+                    if(data.user.role == "admin"){
+                        this.router.navigate(['/administrador']);
+                    } else if (data.user.role == "utente") {
+                        this.router.navigate(['/conta']);
+                    } else if (data.user.role == "gestor de tarefas") {
+                        this.router.navigate(['/gestaoPlaneamento']);
+                    } else if (data.user.role == "gestor de campus") {
+                        this.router.navigate(['/gestaoCampus']);
+                    } else if (data.user.role == "gestor de frota") {
+                        this.router.navigate(['/gestaoFrota']);
+                    }else{
+                        this.router.navigate(['/dashboard']);
+                    }
                 } else {
                     this.log("Erro de comunicação com o servidor de autenticação");
                 }
@@ -150,12 +163,23 @@ export class AuthService {
         });
     }
     
+    public getUsername(): string {
+        let username = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).user.name : null;
+        if(username == null){
+            return "Sem Nome"
+        }
+        return username;
+    }
+
 
     /**
      * Remove o utilizador da local storage
      * @returns 
      */
-    logout() { localStorage.removeItem('user'); }
+    logout() { 
+        localStorage.removeItem('user'); 
+        this.router.navigate(['/login']);
+    }
 
     /**
      * Obtém o token do utilizador
@@ -185,7 +209,6 @@ export class AuthService {
      */
     private handleError<T>(operation = 'operation', result?: T) {
         return (error: any): Observable<T> => {
-            this.logout();
             this.log(`${operation} failed: ${error.error}`);
             return of(result as T);
         };

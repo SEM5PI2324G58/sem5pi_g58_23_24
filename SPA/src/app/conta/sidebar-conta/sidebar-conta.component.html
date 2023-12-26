@@ -3,7 +3,7 @@
 <html>
 <body>
     <div class="sidebar">
-        <a class = "dropdown" routerLink="">Home</a>
+        <a routerLink="/conta">Home</a>
         <div class="dropdown">
             <a>Criar tarefa</a>
             <div class="dropdown-content">
@@ -14,6 +14,9 @@
         <a routerLink="">Alterar Dados</a>
         <a routerLink="/exportarDadosPessoais">Exportar Dados</a>
         <a routerLink="">Cancelar Conta</a>
+        <div class="logout">
+            <a (click)="logout()">Logout</a>
+        </div> 
     </div>
 </body>
 </html>

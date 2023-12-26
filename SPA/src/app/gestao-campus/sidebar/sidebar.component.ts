@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from 'src/serviceInfo/auth.service';
 
 @Component({
   selector: 'app-sidebarGestaoCampus',
@@ -7,4 +8,9 @@ import { Component } from '@angular/core';
 })
 export class SidebarComponent {
 
+  constructor(private authService: AuthService) { }
+
+  logout() {
+    this.authService.logout();
+  }
 }

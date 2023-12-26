@@ -48,3 +48,19 @@
 .dropdown:hover .dropdown-content {
     display: block;
 }
+
+.logout {
+    position: fixed; 
+    bottom: 0;
+    margin-bottom: 25px;
+    width: 15%; 
+    text-decoration: none;
+    color: #fff;
+    display: block;
+    background-color: #333;
+    word-wrap: break-word;
+}
+
+.logout:hover {
+    background-color: #555;
+}

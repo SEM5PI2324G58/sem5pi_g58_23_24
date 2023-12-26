@@ -42,7 +42,7 @@
         </div>
 
         <div class="input-field" *ngIf="selectedRole === 'utente'">
-            <input name="nif" #nif placeholder="Numero de Contribuinte do Utilizador " />
+            <input name="nif" #nif placeholder="Numero de Contribuinte do Utilizador" (change)="changeNif(nif.value)" />
             <span></span>
         </div>
 
