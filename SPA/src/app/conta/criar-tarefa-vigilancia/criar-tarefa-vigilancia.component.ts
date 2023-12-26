@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Edificio } from 'src/dataModel/edificio';
 import { EdificioService } from 'src/serviceInfo/edificio.service';
 import { PisoService } from 'src/serviceInfo/piso.service';
 import { TarefaService } from 'src/serviceInfo/tarefa.service';
