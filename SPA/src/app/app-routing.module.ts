@@ -39,6 +39,7 @@ import { LoginComponent } from './login/login.component';
 import { AprovarTarefaComponent } from './gestao-planeamento/aprovar-tarefa/aprovar-tarefa.component';
 import { CriarTarefaVigilanciaComponent } from './conta/criar-tarefa-vigilancia/criar-tarefa-vigilancia.component';
 import { CriarTarefaPickUpDeliveryComponent } from './conta/criar-tarefa-pick-up-delivery/criar-tarefa-pick-up-delivery.component';
+import { DeleteTarefaComponent } from './gestao-planeamento/delete-tarefa/delete-tarefa.component';
 
 
 const routes: Routes = [
@@ -82,7 +83,8 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent},
   { path: 'aprovarTarefas', component: AprovarTarefaComponent},
   { path: 'criarTarefaVigilancia', component: CriarTarefaVigilanciaComponent},
-  { path: 'criarTarefaPickUpDelivery', component: CriarTarefaPickUpDeliveryComponent}
+  { path: 'criarTarefaPickUpDelivery', component: CriarTarefaPickUpDeliveryComponent},
+  { path: 'apagarTarefa', component: DeleteTarefaComponent}
 ];
 
 @NgModule({

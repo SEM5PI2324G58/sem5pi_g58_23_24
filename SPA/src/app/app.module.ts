@@ -52,6 +52,7 @@ import { LoginComponent } from './login/login.component';
 import { AprovarTarefaComponent } from './gestao-planeamento/aprovar-tarefa/aprovar-tarefa.component';
 import { CriarTarefaVigilanciaComponent } from './conta/criar-tarefa-vigilancia/criar-tarefa-vigilancia.component';
 import { CriarTarefaPickUpDeliveryComponent } from './conta/criar-tarefa-pick-up-delivery/criar-tarefa-pick-up-delivery.component';
+import { DeleteTarefaComponent } from './gestao-planeamento/delete-tarefa/delete-tarefa.component';
 
 @NgModule({
   declarations: [
@@ -101,7 +102,8 @@ import { CriarTarefaPickUpDeliveryComponent } from './conta/criar-tarefa-pick-up
     LoginComponent,
     AprovarTarefaComponent,
     CriarTarefaVigilanciaComponent,
-    CriarTarefaPickUpDeliveryComponent
+    CriarTarefaPickUpDeliveryComponent,
+    DeleteTarefaComponent
   ],
   imports: [
     BrowserModule,
