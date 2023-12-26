@@ -3,7 +3,7 @@
 <html>
 <body>
     <div class="sidebar">
-        <a routerLink="">Home</a>
+        <a routerLink="/gestaoCampus">Home</a>
         <div class="dropdown">
             <a>Edifício</a>
             <div class="dropdown-content">
@@ -47,6 +47,10 @@
             </div>
         </div>
         <a routerLink="/carregarMapa">Carregar Mapa</a>
+        <a routerLink="/visualizacao3D">Visualização 3D</a>
+        <div class="logout">
+            <a (click)="logout()">Logout</a>
+        </div>  
     </div>
 </body>
 </html>

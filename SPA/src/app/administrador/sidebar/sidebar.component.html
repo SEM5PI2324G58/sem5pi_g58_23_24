@@ -3,7 +3,7 @@
 <html>
 <body>
     <div class="sidebar">
-        <a routerLink="">Home</a>
+        <a routerLink="/administrador">Home</a>
         <div class="dropdown">
             <a>Utilizador</a>
             <div class="dropdown-content">
@@ -13,6 +13,9 @@
                 <a routerLink="/approveOrRejectUtente">Aprovar Pedidos</a>
             </div>
         </div>
+        <div class="logout">
+            <a (click)="logout()">Logout</a>
+        </div>    
     </div>
 </body>
 </html>

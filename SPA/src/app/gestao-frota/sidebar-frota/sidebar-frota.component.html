@@ -3,7 +3,7 @@
 <html>
 <body>
     <div class="sidebar">
-        <a routerLink="">Home</a>
+        <a routerLink="/gestaoFrota">Home</a>
         <div class="dropdown">
             <a>Tipo Robot</a>
             <div class="dropdown-content">
@@ -19,6 +19,10 @@
                 <a routerLink="/inibirDispositivo">Inibir robot</a>
             </div>
         </div>
+        <a routerLink="/visualizacao3D">Visualização 3D</a>
+        <div class="logout">
+            <a (click)="logout()">Logout</a>
+        </div>    
     </div>
 </body>
 </html>

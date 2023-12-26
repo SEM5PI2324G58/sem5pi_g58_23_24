@@ -13,6 +13,10 @@ export class SignupComponent {
   selectedRole: string | null = null; 
   nif : string | null = null;
 
+  changeNif(nif: string): void {
+    this.nif = nif;
+  }
+
 
   add(name:string, email:string, telefone:string, password:string, role:string): void {
     console.log(name, email, telefone, this.nif, password, role);
