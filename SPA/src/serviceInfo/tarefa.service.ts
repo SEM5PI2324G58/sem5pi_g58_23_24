@@ -184,6 +184,27 @@ export class TarefaService {
       );
   }
 
+  public deleteTarefa(id: string ){
+    if(id == null || id == undefined || id == ""){
+      this.log(`ERRO: O id da tarefa é obrigatório`);
+      return;
+    }
+
+    let params = new HttpParams().set('id', id);
+    
+    this.http.delete(this.tarefaUrl, { params: params, responseType: 'text' })
+    .pipe(catchError(this.handleError('Apagar tarefa')))
+    .subscribe({
+        next: data=>{
+        if(data != null && data != undefined){
+          this.log(`Tarefa foi apagada com sucesso`);
+        }
+      }
+    });
+    
+
+  }
+
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       
