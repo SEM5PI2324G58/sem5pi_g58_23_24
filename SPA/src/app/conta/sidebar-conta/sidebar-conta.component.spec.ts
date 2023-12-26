@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SidebarFrotaComponent } from './sidebar-frota.component';
+import { SidebarContaComponent } from './sidebar-conta.component';
 import { AuthService } from 'src/serviceInfo/auth.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-describe('SidebarFrotaComponent', () => {
-  let component: SidebarFrotaComponent;
-  let fixture: ComponentFixture<SidebarFrotaComponent>;
+describe('SidebarContaComponent', () => {
+  let component: SidebarContaComponent;
+  let fixture: ComponentFixture<SidebarContaComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [SidebarFrotaComponent],
+      declarations: [SidebarContaComponent],
       imports: [HttpClientTestingModule],
       providers: [AuthService],
     });
-    fixture = TestBed.createComponent(SidebarFrotaComponent);
+    fixture = TestBed.createComponent(SidebarContaComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -22,7 +22,7 @@ describe('SidebarFrotaComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
+  
   it('deve chamar o método logout do Authservice', () => {
     spyOn(component['authService'], 'logout');
 
@@ -33,4 +33,5 @@ describe('SidebarFrotaComponent', () => {
 
     expect(authService.logout).toHaveBeenCalled();
   });
+
 });

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SidebarFrotaComponent } from './sidebar-frota.component';
+import { SidebarGestaoPlaneamentoComponent } from './sidebar-gestao-planeamento.component';
 import { AuthService } from 'src/serviceInfo/auth.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-describe('SidebarFrotaComponent', () => {
-  let component: SidebarFrotaComponent;
-  let fixture: ComponentFixture<SidebarFrotaComponent>;
+describe('SidebarGestaoPlaneamentoComponent', () => {
+  let component: SidebarGestaoPlaneamentoComponent;
+  let fixture: ComponentFixture<SidebarGestaoPlaneamentoComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [SidebarFrotaComponent],
+      declarations: [SidebarGestaoPlaneamentoComponent],
       imports: [HttpClientTestingModule],
       providers: [AuthService],
     });
-    fixture = TestBed.createComponent(SidebarFrotaComponent);
+    fixture = TestBed.createComponent(SidebarGestaoPlaneamentoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

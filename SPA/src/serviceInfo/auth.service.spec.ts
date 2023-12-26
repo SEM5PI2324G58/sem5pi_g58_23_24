@@ -88,7 +88,7 @@ describe('AuthService', () => {
     const navigateSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
     service.login(inputData.email, inputData.password);
     expect(postSpy).toHaveBeenCalledWith(devEnvironment.AUTH_API_URL + "user/login", inputData,);
-    expect(navigateSpy).toHaveBeenCalledWith(['/dashboard']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/administrador']);
   });
 
   it('Método login não chama o método post do HttpClient caso não exista email', () => {
@@ -106,7 +106,7 @@ describe('AuthService', () => {
     const navigateSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
     service.login(inputData.email, inputData.password);
     expect(postSpy).toHaveBeenCalledWith(devEnvironment.AUTH_API_URL + "user/login", inputData,);
-    expect(navigateSpy).toHaveBeenCalledWith(['/dashboard']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/administrador']);
   });
 
   it('Método login não chama o método post do HttpClient caso não exista email', () => {
