@@ -8,10 +8,10 @@ namespace MDTarefas.Models.tarefa.ValueObjects
         private string EmailString = null!;
 
         public EmailRequisitor(string email) {
-            if (StringValidations.isNullOrEmpty(email)) {
-                throw new BusinessRuleValidationException("Email do requisitor não pode ser nulo ou vazio");
+            if (StringValidations.isNullEmptyOrBlank(email)) {
+                throw new BusinessRuleValidationException("Email do requisitor não pode ser nulo, vazio ou apenas conter espaços");
             }
-            this.EmailString = email;
+            this.EmailString = email.Trim();
         }
 
         public string getEmailRequisitorString() {

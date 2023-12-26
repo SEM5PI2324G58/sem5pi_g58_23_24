@@ -7,7 +7,7 @@ namespace MDTarefas.Models.tarefa.ValueObjects{
         private string NumeroTelefoneString = null!;
 
         public NumeroTelefone(string numeroTelefoneString) {
-            if ( StringValidations.isNullOrEmpty(numeroTelefoneString) ||
+            if ( StringValidations.isNullEmptyOrBlank(numeroTelefoneString) ||
                 !StringValidations.isNumeric(numeroTelefoneString) || 
                 numeroTelefoneString.Length != 9) {
                 throw new BusinessRuleValidationException("Número de telefone deve ser um número com 9 dígitos");

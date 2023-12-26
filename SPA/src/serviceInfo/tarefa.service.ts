@@ -7,6 +7,7 @@ import { devEnvironment } from 'src/environments/environment.development';
 import { MessageService } from './message.service';
 import AlterarEstadoDaTarefa from 'src/dataModel/alterarEstadoDaTarefa';
 import Tarefa from 'src/dataModel/tarefa';
+import { CriarVigilancia } from 'src/dataModel/criarVigilancia';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,51 @@ export class TarefaService {
   };
 
   constructor(private messageService: MessageService, private http: HttpClient) { }
+
+  public criarTarefaVigilancia(nomeVigilancia: string, numeroVigilancia: string, codigoEd: string, numeroPiso: number): void{
+
+    if (this.validarDadosVigilancia(nomeVigilancia, numeroVigilancia, codigoEd, numeroPiso)){
+      let tarefaDataModel = {
+        tipoTarefa: "Vigilancia",
+        nomeVigilancia: nomeVigilancia,
+        numeroVigilancia: numeroVigilancia,
+        codEdificio: codigoEd,
+        numeroPiso: numeroPiso
+      } as CriarVigilancia;
+  
+      
+      this.http.post<Tarefa>(this.tarefaUrl, tarefaDataModel, this.httpOptions)
+      .pipe(catchError(this.handleError<Tarefa>('Criar tarefa de vigilância')))
+      .subscribe({
+          next: data=>{
+            if(data != null && data != undefined){
+              this.log(`Tarefa criada com sucesso`);
+            }
+          }
+      });
+      
+    }
+  }
+
+  private validarDadosVigilancia(nomeVigilancia: string, numeroVigilancia: string, codigoEd: string, numeroPiso: number): boolean{
+    if(nomeVigilancia == null || nomeVigilancia == undefined || nomeVigilancia == ""){
+      this.log(`ERRO: O nome do contacto de vigilância é um campo obrigatório`);
+      return false;
+    }
+    if(numeroVigilancia == null || numeroVigilancia == undefined || numeroVigilancia == ""){
+      this.log(`ERRO: O numero do contacto de vigilância é um campo obrigatório`);
+      return false;
+    }
+    if(codigoEd == null || codigoEd == undefined || codigoEd == ""){
+      this.log(`ERRO: O código do edifício é um campo obrigatório`);
+      return false;
+    }
+    if(numeroPiso == null || numeroPiso == undefined){
+      this.log(`ERRO: O número do piso é um campo obrigatório`);
+      return false;
+    }
+    return true;
+  }
 
   alterarEstadoTarefa(idTarefa: string, estado: string, codigoRobo: string): void{
     if(idTarefa == null || idTarefa == undefined || idTarefa == ""){

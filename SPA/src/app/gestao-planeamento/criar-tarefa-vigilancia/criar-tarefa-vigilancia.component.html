@@ -16,23 +16,21 @@
             </div>
             
             <div class = "input-field">
-                <!-- TODO (change) = "methodListarPisos"-->
-                <select formControlName="codigoEd" id="codigoEd" name="codigoEd" required>
+                <select formControlName="codigoEd" id="codigoEd" name="codigoEd" (change) = "listarNumeroPisos()"required>
                   <option value="" disabled selected>Codigo Edificio *</option>
-                  <!-- TODO colocar a listagem do Ed : <option *ngFor="let option of listaCodEd" [value]="option">{{ option }}</option> --> 
+                  <option *ngFor="let option of listaCodEdificios" [value]="option">{{ option }}</option>
                 </select>
             </div>
 
             <div class = "input-field">
                 <select formControlName="numeroPiso" id="numeroPiso" name="numeroPiso" required>
                   <option value="" disabled selected>Número piso *</option>
-                  <!-- TODO colocar a listagem dos numeros do piso do ed : <option *ngFor="let option of listaPisos" [value]="option">{{ option }}</option> --> 
+                  <option *ngFor="let option of listaNumeroPisos" [value]="option">{{ option }}</option> 
                 </select>
             </div>
             
               <div class = "button-submit">
-                <!-- TODO (click) = "methdX"-->
-                <button type="button" class="add-button"> Criar</button>
+                <button type="button" class="add-button" (click)="criarTarefaVigilancia()"> Criar</button>
             </div>
 
 

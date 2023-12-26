@@ -13,18 +13,29 @@ public class CodEdificioTest
         var exception = Assert.Throws<BusinessRuleValidationException>(act);
 
 
-        Assert.Equal("Código do edifício não pode ser nulo ou vazio",exception.Message);
+        Assert.Equal("Código do edifício não pode ser nulo, vazio ou apenas conter espaços",exception.Message);
+
+    }
+
+    [Fact]
+    public void ensureCodEdificioNotEmpty() {
+        
+        Action act = () => new CodEdificio("");
+
+        var exception = Assert.Throws<BusinessRuleValidationException>(act);
+
+        Assert.Equal("Código do edifício não pode ser nulo, vazio ou apenas conter espaços",exception.Message);
 
     }
 
     [Fact]
     public void ensureCodEdificioNotBlank() {
         
-        Action act = () => new CodEdificio("");
+        Action act = () => new CodEdificio("    ");
 
         var exception = Assert.Throws<BusinessRuleValidationException>(act);
 
-        Assert.Equal("Código do edifício não pode ser nulo ou vazio",exception.Message);
+        Assert.Equal("Código do edifício não pode ser nulo, vazio ou apenas conter espaços",exception.Message);
 
     }
 

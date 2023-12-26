@@ -8,10 +8,10 @@ namespace MDTarefas.Models.tarefa.ValueObjects{
         private string NomeString = null!;
 
         public Nome(string nomeString) {
-            if (StringValidations.isNullOrEmpty(nomeString)) {
-                throw new BusinessRuleValidationException("Nome não pode ser nulo ou vazio");
+            if (StringValidations.isNullEmptyOrBlank(nomeString) ) {
+                throw new BusinessRuleValidationException("Nome não pode ser nulo, vazio ou apenas conter espaços");
             }
-            this.NomeString = nomeString;
+            this.NomeString = nomeString.Trim();
         }
 
         public string getNomeString() {

@@ -8,7 +8,7 @@ namespace MDTarefas.Models.tarefa.ValueObjects
         private string PercursoString = null!;
 
         public Percurso(string percursoString) {
-            if (StringValidations.isNullOrEmpty(percursoString)) {
+            if (StringValidations.isNullEmptyOrBlank(percursoString)) {
                 throw new BusinessRuleValidationException("Percurso não pode ser nulo ou vazio");
             }
             this.PercursoString = percursoString;

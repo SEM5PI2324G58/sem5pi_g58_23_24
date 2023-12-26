@@ -7,10 +7,10 @@ namespace MDTarefas.Models.tarefa.ValueObjects{
         private string NomeSalaString = null!;
 
         public NomeSala(string nomeSala) {
-            if(StringValidations.isNullOrEmpty(nomeSala)) {
-                throw new BusinessRuleValidationException("Nome da sala não pode ser nulo ou vazio");
+            if(StringValidations.isNullEmptyOrBlank(nomeSala)) {
+                throw new BusinessRuleValidationException("Nome da sala não pode ser nulo, vazio ou apenas conter espaços");
             }
-            this.NomeSalaString = nomeSala;
+            this.NomeSalaString = nomeSala.Trim();
         }
 
         public string getNomeSalaString() {

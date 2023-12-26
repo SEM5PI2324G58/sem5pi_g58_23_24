@@ -14,18 +14,29 @@ public class DescricaoEntregaTest {
 
         var exception = Assert.Throws<BusinessRuleValidationException>(act);
 
-        Assert.Equal("Descrição de entrega deve ter apenas caracteres alfuanuméricos e espaços, ter no máximo 1000 caracteres e não pode ser vazia",exception.Message);
+        Assert.Equal("Descrição de entrega deve ter apenas caracteres alfuanuméricos e espaços, ter no máximo 1000 caracteres e não pode ser vazia, nula ou apenas conter espaços",exception.Message);
     }
 
     [Fact]
-    public void ensureDescricaoNotBlank() {
+    public void ensureDescricaoNotEmpty() {
         
         Action act = () => new DescricaoEntrega("");
 
         var exception = Assert.Throws<BusinessRuleValidationException>(act);
 
-        Assert.Equal("Descrição de entrega deve ter apenas caracteres alfuanuméricos e espaços, ter no máximo 1000 caracteres e não pode ser vazia",exception.Message);
+        Assert.Equal("Descrição de entrega deve ter apenas caracteres alfuanuméricos e espaços, ter no máximo 1000 caracteres e não pode ser vazia, nula ou apenas conter espaços",exception.Message);
     }
+
+    [Fact]
+    public void ensureDescricaoNotBlank() {
+        
+        Action act = () => new DescricaoEntrega("            ");
+
+        var exception = Assert.Throws<BusinessRuleValidationException>(act);
+
+        Assert.Equal("Descrição de entrega deve ter apenas caracteres alfuanuméricos e espaços, ter no máximo 1000 caracteres e não pode ser vazia, nula ou apenas conter espaços",exception.Message);
+    }
+
 
 
     [Fact]
@@ -35,7 +46,7 @@ public class DescricaoEntregaTest {
 
         var exception = Assert.Throws<BusinessRuleValidationException>(act);
         
-        Assert.Equal("Descrição de entrega deve ter apenas caracteres alfuanuméricos e espaços, ter no máximo 1000 caracteres e não pode ser vazia",exception.Message);
+        Assert.Equal("Descrição de entrega deve ter apenas caracteres alfuanuméricos e espaços, ter no máximo 1000 caracteres e não pode ser vazia, nula ou apenas conter espaços",exception.Message);
     }
 
     [Fact]
@@ -51,7 +62,7 @@ public class DescricaoEntregaTest {
 
         var exception = Assert.Throws<BusinessRuleValidationException>(act);
         
-        Assert.Equal("Descrição de entrega deve ter apenas caracteres alfuanuméricos e espaços, ter no máximo 1000 caracteres e não pode ser vazia",exception.Message);
+        Assert.Equal("Descrição de entrega deve ter apenas caracteres alfuanuméricos e espaços, ter no máximo 1000 caracteres e não pode ser vazia, nula ou apenas conter espaços",exception.Message);
     }
 
     [Fact]

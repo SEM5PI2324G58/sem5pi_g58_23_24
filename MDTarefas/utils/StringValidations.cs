@@ -4,8 +4,8 @@ namespace MDTarefas.utils
 {
     public static class StringValidations
     {
-        public static bool isNullOrEmpty(this string? str) {
-            return str == null || str == "";
+        public static bool isNullEmptyOrBlank(this string? str) {
+            return str == null || str == "" || str.Trim() == "";
         }
 
         public static bool isAlphanumericOrWhiteSpace(string str) {

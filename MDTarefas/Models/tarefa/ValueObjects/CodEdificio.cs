@@ -9,9 +9,9 @@ namespace MDTarefas.Models.tarefa.ValueObjects
 
         public CodEdificio(string codEdificio)
         {
-            if (StringValidations.isNullOrEmpty(codEdificio))
+            if (StringValidations.isNullEmptyOrBlank(codEdificio))
             {
-                throw new BusinessRuleValidationException("Código do edifício não pode ser nulo ou vazio");
+                throw new BusinessRuleValidationException("Código do edifício não pode ser nulo, vazio ou apenas conter espaços");
             }
 
             this.CodEdificioString = codEdificio;
