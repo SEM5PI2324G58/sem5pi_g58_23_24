@@ -8,6 +8,7 @@ import { MessageService } from './message.service';
 import AlterarEstadoDaTarefa from 'src/dataModel/alterarEstadoDaTarefa';
 import Tarefa from 'src/dataModel/tarefa';
 import { CriarVigilancia } from 'src/dataModel/criarVigilancia';
+import { CriarPickUpDelivery } from 'src/dataModel/criarPickUPDelivery';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,74 @@ export class TarefaService {
   };
 
   constructor(private messageService: MessageService, private http: HttpClient) { }
+
+  public criarTarefaPickUpDelivery(codConf: string, desc: string, nomePickup: string, numeroPickup: string, nomeDelivery: string, numeroDelivery: string, salaInicial: string, salaFinal: string): void{
+
+    if (this.validarDadosPickUpDelivery(codConf, desc, nomePickup, numeroPickup, nomeDelivery, numeroDelivery, salaInicial, salaFinal)){
+      let tarefaDataModel = {
+        tipoTarefa: "PickUpDelivery",
+        codConfirmacao: codConf,
+        descricaoEntrega: desc,
+        nomePickUp: nomePickup,
+        numeroPickUp: numeroPickup,
+        nomeDelivery: nomeDelivery,
+        numeroDelivery: numeroDelivery,
+        salaInicial: salaInicial,
+        salaFinal: salaFinal
+      } as CriarPickUpDelivery;
+  
+      
+      this.http.post<Tarefa>(this.tarefaUrl, tarefaDataModel, this.httpOptions)
+      .pipe(catchError(this.handleError<Tarefa>('Criar tarefa de pickUp&Delivery')))
+      .subscribe({
+          next: data=>{ 
+            if(data != null && data != undefined){
+              this.log(`Tarefa criada com sucesso`);
+            }
+          }
+      });
+      
+    }
+  }
+
+  private validarDadosPickUpDelivery(codConf: string, desc: string, 
+                                      nomePickup: string, numeroPickup: string, 
+                                      nomeDelivery: string, numeroDelivery: string, 
+                                      salaInicial: string, salaFinal: string): boolean{
+    if(codConf == null || codConf == undefined || codConf == ""){
+      this.log(`ERRO: O código de confirmação é um campo obrigatório`);
+      return false;
+    }
+    if(desc == null || desc == undefined || desc == ""){
+      this.log(`ERRO: A descrição da entrega é um campo obrigatório`);
+      return false;
+    }
+    if(nomePickup == null || nomePickup == undefined || nomePickup == ""){
+      this.log(`ERRO: O nome do contacto de pickup é um campo obrigatório`);
+      return false;
+    }
+    if(numeroPickup == null || numeroPickup == undefined || numeroPickup == ""){
+      this.log(`ERRO: O numero do contacto de pickup é um campo obrigatório`);
+      return false;
+    }
+    if(nomeDelivery == null || nomeDelivery == undefined || nomeDelivery == ""){
+      this.log(`ERRO: O nome do contacto de delivery é um campo obrigatório`);
+      return false;
+    }
+    if(numeroDelivery == null || numeroDelivery == undefined || numeroDelivery == ""){
+      this.log(`ERRO: O numero do contacto de delivery é um campo obrigatório`);
+      return false;
+    }
+    if(salaInicial == null || salaInicial == undefined || salaInicial == ""){
+      this.log(`ERRO: A sala inicial é um campo obrigatório`);
+      return false;
+    }
+    if(salaFinal == null || salaFinal == undefined || salaFinal == ""){
+      this.log(`ERRO: A sala final é um campo obrigatório`);
+      return false;
+    }
+    return true;
+  }
 
   public criarTarefaVigilancia(nomeVigilancia: string, numeroVigilancia: string, codigoEd: string, numeroPiso: number): void{
 
