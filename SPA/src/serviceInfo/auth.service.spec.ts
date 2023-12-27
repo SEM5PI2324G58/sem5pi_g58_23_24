@@ -145,4 +145,24 @@ describe('AuthService', () => {
     expect(navigateSpy).not.toHaveBeenCalled();
   });
 
+  it('Método alterarDadosUtente chama método PUT do HttpClient', () => {
+    const inputData = {
+      email: "1211417@isep.ipp.pt",
+      name: "name",
+      telefone: "966432123",
+      nif: "123123123",
+    }
+
+    const returnData = {
+      name: "name",
+      telefone: "966432123",
+      nif: "123123123",
+    }
+
+    const postSpy = spyOn(httpClient, 'put').and.returnValue(of(returnData));
+    
+    service.alterarDadosUtente(inputData.name, inputData.telefone, inputData.nif);
+    expect(postSpy).toHaveBeenCalledWith(devEnvironment.AUTH_API_URL + "user", inputData, service.httpOptions);
+  });
+
 });
