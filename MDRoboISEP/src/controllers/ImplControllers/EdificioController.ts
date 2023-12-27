@@ -6,18 +6,21 @@ import IEdificioController from '../IControllers/IEdificioController';
 import IEdificioService from '../../services/IServices/IEdificioService';
 import IEdificioDTO from '../../dto/IEdificioDTO';
 import IListarEdMinEMaxPisosDTO from '../../dto/IListarEdMinEMaxPisosDTO';
-import { ParamsDictionary } from 'express-serve-static-core';
-import { ParsedQs } from 'qs';
 import IPlaneamentoCaminhosDTO from '../../dto/IPlaneamentoCaminhosDTO';
 import ICoordenadasPontosDTO from '../../dto/ICoordenadasPontosDTO';
-
+import IAuthService from '../../services/IServices/IAuthService';
 @Service()
 export default class EdificioController implements IEdificioController /* TODO: extends ../core/infra/BaseController */ {
   constructor(
-      @Inject(config.services.edificio.name) private edificioServiceInstance : IEdificioService
+      @Inject(config.services.edificio.name) private edificioServiceInstance : IEdificioService,
+      @Inject(config.services.auth.name) private authServiceInstance : IAuthService
   ) {}
   public async getInformacaoPlaneamento(req: Request, res: Response, next: NextFunction) {
     try{
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus', 'gestor de frota', 'gestor de tarefas']);
+      if(authOrError.isFailure){
+        return res.send();
+      }
       let props: ICoordenadasPontosDTO = {
         x_origem: Number(req.body.x_origem),
         y_origem: Number(req.body.y_origem),
@@ -43,6 +46,10 @@ export default class EdificioController implements IEdificioController /* TODO: 
 
   public async criarEdificio(req: Request, res: Response, next: NextFunction) {
     try{
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus']);
+      if(authOrError.isFailure){
+        return res.send();
+      }
       const edificioOrError = await this.edificioServiceInstance.criarEdificio(req.body as IEdificioDTO) as Result<IEdificioDTO>;
       if (edificioOrError.isFailure) {
         res.status(400);
@@ -59,6 +66,10 @@ export default class EdificioController implements IEdificioController /* TODO: 
   
   public async listarEdificioMinEMaxPisos(req: Request, res: Response, next: NextFunction) {
     try{
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus']);
+      if(authOrError.isFailure){
+        return res.send();
+      }
       let props ={ minPisos: Number(req.query.minPisos), maxPisos: Number(req.query.maxPisos) };
       const edificioOrError = await this.edificioServiceInstance.listarEdificioMinEMaxPisos(props as IListarEdMinEMaxPisosDTO) as Result<IEdificioDTO[]>;
       if (edificioOrError.isFailure) {
@@ -79,6 +90,10 @@ export default class EdificioController implements IEdificioController /* TODO: 
 
   public async listarEdificios(req: Request, res: Response, next: NextFunction) {
     try{
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus', 'gestor de frota', 'gestor de tarefas']);
+      if(authOrError.isFailure){
+        return res.send();
+      }
       const listaEdificiosOrError = await this.edificioServiceInstance.listarEdificios() as Result<IEdificioDTO[]>;
       if (listaEdificiosOrError.isFailure) {
         if(String(listaEdificiosOrError.errorValue()) === "Não existem edificios"){
@@ -97,6 +112,10 @@ export default class EdificioController implements IEdificioController /* TODO: 
 
   public async editarEdificio(req: Request, res: Response, next: NextFunction){
     try{
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus']);
+      if(authOrError.isFailure){
+        return res.send();
+      }
       const edificioOrError = await this.edificioServiceInstance.editarEdificio(req.body as IEdificioDTO) as Result<IEdificioDTO>;
       if (edificioOrError.isFailure) {
         if(String(edificioOrError.errorValue()) === "Edificio não existe"){
@@ -115,6 +134,10 @@ export default class EdificioController implements IEdificioController /* TODO: 
 
   public async deleteEdificio(req: Request, res: Response, next: NextFunction){
     try{
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus']);
+      if(authOrError.isFailure){
+        return res.send();
+      }
       let props = req.query.codEdificio as string;
       const edificioOrError = await this.edificioServiceInstance.deleteEdificio(props) as Result<IEdificioDTO>;
       if (edificioOrError.isFailure) {

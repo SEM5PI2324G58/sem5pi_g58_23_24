@@ -107,7 +107,7 @@ export class EdificioService {
     return (error: any): Observable<T> => {
       
 
-      this.log(`${operation} falhou: ${error.error}`);
+      this.log(`${operation} falhou: ${error.message}`);
 
       return of(result as T);
     };

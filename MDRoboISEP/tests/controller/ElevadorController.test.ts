@@ -24,7 +24,7 @@ import { MarcaElevador } from '../../src/domain/elevador/MarcaElevador';
 import { ModeloElevador } from '../../src/domain/elevador/ModeloElevador';
 import { NumeroSerieElevador } from '../../src/domain/elevador/NumeroSerieElevador';
 import IElevadorDTO from '../../src/dto/IElevadorDTO';
-
+import IAuthService from '../../src/services/IServices/IAuthService';
 
 
 describe('ElevadorController', () => {
@@ -121,7 +121,9 @@ describe('ElevadorController', () => {
         let elevadorServiceInstance = Container.get(elevadorServiceClass);
         Container.set("ElevadorService", elevadorServiceInstance);
 
-
+        let authServiceClass = require('../../src/services/ImplServices/AuthService').default;
+        let authServiceInstance = Container.get(authServiceClass);
+        Container.set("AuthService", authServiceInstance);
     });
     
     afterEach(function() {
@@ -151,10 +153,12 @@ describe('ElevadorController', () => {
         let next: Partial<NextFunction> = () => {};
 
         let elevadorServicoInstance = Container.get("ElevadorService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
 
         sinon.stub(elevadorServicoInstance, 'criarElevador').returns(Promise.resolve(Result.ok<ICriarElevadorDTO>(body as ICriarElevadorDTO)))
 
-        const elevadorController = new ElevadorController(elevadorServicoInstance as IElevadorService)
+        const elevadorController = new ElevadorController(elevadorServicoInstance as IElevadorService, authServiceInstance as IAuthService)
 
         await elevadorController.criarElevador(<Request>req, <Response>res, <NextFunction>next);
 
@@ -196,6 +200,8 @@ describe('ElevadorController', () => {
         let elevadorRepoInstance = Container.get("ElevadorRepo");
         let edificioRepoInstance = Container.get("EdificioRepo");
         let elevadorServiceInstance = Container.get("ElevadorService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
 
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioSemElevador")));
         sinon.stub(elevadorRepoInstance, "getMaxId").returns(Promise.resolve(1));
@@ -203,7 +209,7 @@ describe('ElevadorController', () => {
         sinon.stub(edificioRepoInstance, "save").returns(Promise.resolve(null));
         
         const elevadorServiceSpy = sinon.spy(elevadorServiceInstance,"criarElevador")
-        const elevadorController = new ElevadorController(elevadorServiceInstance as IElevadorService)
+        const elevadorController = new ElevadorController(elevadorServiceInstance as IElevadorService, authServiceInstance as IAuthService)
 
         let answer = await elevadorController.criarElevador(<Request>req, <Response>res, <NextFunction>next);
         
@@ -244,10 +250,12 @@ describe('ElevadorController', () => {
         let next: Partial<NextFunction> = () => {};
 
         let elevadorServicoInstance = Container.get("ElevadorService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
 
         sinon.stub(elevadorServicoInstance, 'editarElevador').returns(Promise.resolve(Result.ok<ICriarElevadorDTO>(body as ICriarElevadorDTO)))
 
-        const elevadorController = new ElevadorController(elevadorServicoInstance as IElevadorService)
+        const elevadorController = new ElevadorController(elevadorServicoInstance as IElevadorService, authServiceInstance as IAuthService)
 
         let answer = await elevadorController.editarElevador(<Request>req, <Response>res, <NextFunction>next);
 
@@ -288,12 +296,14 @@ describe('ElevadorController', () => {
         let elevadorRepoInstance = Container.get("ElevadorRepo");
         let edificioRepoInstance = Container.get("EdificioRepo");
         let elevadorServiceInstance = Container.get("ElevadorService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
 
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(Container.get("edificioComElevador")));
         sinon.stub(elevadorRepoInstance, "save").returns(Promise.resolve(null))
         
         const elevadorServiceSpy = sinon.spy(elevadorServiceInstance,"editarElevador")
-        const elevadorController = new ElevadorController(elevadorServiceInstance as IElevadorService)
+        const elevadorController = new ElevadorController(elevadorServiceInstance as IElevadorService, authServiceInstance as IAuthService)
 
         let answer = await elevadorController.editarElevador(<Request>req, <Response>res, <NextFunction>next);
         sinon.assert.calledOnce(res.status as sinon.SinonSpy);
@@ -334,10 +344,12 @@ describe('ElevadorController', () => {
         let next: Partial<NextFunction> = () => {};
 
         let elevadorServiceInstance = Container.get("ElevadorService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
 
         sinon.stub(elevadorServiceInstance, 'listarElevadoresDoEdificio').returns(Promise.resolve(Result.ok<IElevadorDTO>(elevadorDTO)));
 
-        const elevadorController = new ElevadorController(elevadorServiceInstance as IElevadorService);
+        const elevadorController = new ElevadorController(elevadorServiceInstance as IElevadorService, authServiceInstance as IAuthService);
         
         await elevadorController.listarElevadoresDoEdificio(<Request>req, <Response>res, <NextFunction>next);
         
@@ -369,11 +381,13 @@ describe('ElevadorController', () => {
         let next: Partial<NextFunction> = () => {};
 
         let elevadorServiceInstance = Container.get("ElevadorService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
         let edificioRepoInstance = Container.get("EdificioRepo");
 
         sinon.stub(edificioRepoInstance, 'findByDomainId').returns(Promise.resolve(Container.get("edificioComElevador")));
 
-        const elevadorController = new ElevadorController(elevadorServiceInstance as IElevadorService);
+        const elevadorController = new ElevadorController(elevadorServiceInstance as IElevadorService, authServiceInstance as IAuthService);
         
         await elevadorController.listarElevadoresDoEdificio(<Request>req, <Response>res, <NextFunction>next);
         

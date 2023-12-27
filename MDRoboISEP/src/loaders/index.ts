@@ -180,6 +180,10 @@ export default async ({ expressApp }) => {
     path: config.repos.mapa.path
   }
 
+  const authService = {
+    name: config.services.auth.name,
+    path: config.services.auth.path
+  }
   const roleService = {
     name: config.services.role.name,
     path: config.services.role.path
@@ -276,6 +280,7 @@ export default async ({ expressApp }) => {
       mapaRepo
     ],
     services: [
+      authService,
       roleService,
       edificioService,
       elevadorService,

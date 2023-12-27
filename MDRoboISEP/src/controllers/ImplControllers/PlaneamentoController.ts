@@ -4,15 +4,20 @@ import config from "../../../config";
 
 import IPlaneamentoController from '../IControllers/IPlaneamentoController';
 import IPlaneamentoService from '../../services/IServices/IPlaneamentoService';
-
+import IAuthService from '../../services/IServices/IAuthService';
 @Service()
 export default class PlaneamentoController implements IPlaneamentoController{
   constructor(
-      @Inject(config.services.planeamento.name) private pisoServiceInstance : IPlaneamentoService
+      @Inject(config.services.planeamento.name) private pisoServiceInstance : IPlaneamentoService,
+      @Inject(config.services.auth.name) private authServiceInstance : IAuthService
   ) {}
   
   async encontrarCaminhosEntreEdificios(req: Request, res: Response, next: NextFunction) {
     try {
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de tarefas']);
+      if(authOrError.isFailure){
+        return res.send();
+      }
       const salaInicial = req.query.salaInicial as string;
       const salaFinal = req.query.salaFinal as string;
       const planeamentoOrError = await this.pisoServiceInstance.encontrarCaminhosEntreEdificios(salaInicial, salaFinal);

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms'; // Import FormsModule
 import { ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
@@ -54,6 +54,8 @@ import { CriarTarefaVigilanciaComponent } from './conta/criar-tarefa-vigilancia/
 import { CriarTarefaPickUpDeliveryComponent } from './conta/criar-tarefa-pick-up-delivery/criar-tarefa-pick-up-delivery.component';
 import { DeleteTarefaComponent } from './gestao-planeamento/delete-tarefa/delete-tarefa.component';
 import { AlterarDadosUtenteComponent } from './conta/alterar-dados-utente/alterar-dados-utente.component';
+import { AuthenticationInterceptor } from '../app/core/interceptor/interceptor';
+
 
 @NgModule({
   declarations: [
@@ -116,7 +118,11 @@ import { AlterarDadosUtenteComponent } from './conta/alterar-dados-utente/altera
     NgMultiSelectDropDownModule.forRoot(),
     TableModule
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthenticationInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
