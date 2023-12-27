@@ -11,14 +11,20 @@ import { Result } from "../../core/logic/Result";
 import IEditarPisoDTO from '../../dto/IEditarPisoDTO';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { ParsedQs } from 'qs';
+import IAuthService from '../../services/IServices/IAuthService';
 
 @Service()
 export default class PisoController implements IPisoController {
   constructor(
-      @Inject(config.services.piso.name) private pisoServiceInstance : IPisoService
+      @Inject(config.services.piso.name) private pisoServiceInstance : IPisoService,
+      @Inject(config.services.auth.name) private authServiceInstance : IAuthService
   ) {}
   async listarPisosComMapa(req: Request, res: Response, next: NextFunction) {
     try {
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus', 'gestor de frota', 'gestor de tarefas', 'utente', 'admin']);
+      if(authOrError.isFailure){
+        return res.send();
+      }
       const pisoOrError = await this.pisoServiceInstance.listarPisosComMapa(req.query.codigo as string);
         
       if (pisoOrError.isFailure) {
@@ -40,6 +46,10 @@ export default class PisoController implements IPisoController {
 
   public async criarPiso(req: Request, res: Response, next: NextFunction) {
     try {
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus']);
+      if(authOrError.isFailure){
+        return res.send();
+      }
       const pisoOrError = await this.pisoServiceInstance.criarPiso(req.body as ICriarPisoDTO);
         
       if (pisoOrError.isFailure) {
@@ -62,6 +72,10 @@ export default class PisoController implements IPisoController {
 
   public async listarTodosOsPisosDeUmEdificio(req: Request, res: Response, next: NextFunction) {
     try {
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus']);
+      if(authOrError.isFailure){
+        return res.send();
+      }
       const pisoOrError = await this.pisoServiceInstance.listarTodosOsPisosDeUmEdificio(req.query.codigo as string);
         
       if (pisoOrError.isFailure) {
@@ -83,6 +97,10 @@ export default class PisoController implements IPisoController {
 
   public async editarPiso(req: Request, res: Response, next: NextFunction) {
     try {
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus']);
+      if(authOrError.isFailure){
+        return res.send();
+      }
       const pisoOrError = await this.pisoServiceInstance.editarPiso(req.body as IEditarPisoDTO);
         
       if (pisoOrError.isFailure) {

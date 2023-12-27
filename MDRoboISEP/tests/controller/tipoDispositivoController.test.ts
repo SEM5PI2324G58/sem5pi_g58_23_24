@@ -10,6 +10,8 @@ import { IdTipoDispositivo } from '../../src/domain/tipoDispositivo/IdTipoDispos
 import { TipoTarefa } from '../../src/domain/tipoDispositivo/TipoTarefa';
 import { Marca } from '../../src/domain/tipoDispositivo/Marca';
 import { Modelo } from '../../src/domain/tipoDispositivo/Modelo';
+import IAuthService from '../../src/services/IServices/IAuthService';
+import 'reflect-metadata';
 
 describe('Tipo Dispositivo Controller', () => {
     const sandbox = sinon.createSandbox();
@@ -23,9 +25,20 @@ describe('Tipo Dispositivo Controller', () => {
         let tipoDispositvoRepoInstance = Container.get(tipoDispositivoRepoClass);
         Container.set("TipoDispositivoRepo", tipoDispositvoRepoInstance);
 
+        let dispositivoSchemaInstance = require('../../src/persistence/schemas/DispositivoSchema').default;
+        Container.set("DispositivoSchema", dispositivoSchemaInstance);
+
+        let dispositivoRepoClass = require('../../src/repos/DispositivoRepo').default;
+        let dispositivoRepoInstance = Container.get(dispositivoRepoClass);
+        Container.set("DispositivoRepo", dispositivoRepoInstance);
+
         let tipoDispositivoServiceClass = require('../../src/services/ImplServices/TipoDispositivoService').default;
         let tipoDispositivoServiceInstance = Container.get(tipoDispositivoServiceClass);
         Container.set("TipoDispositivoService", tipoDispositivoServiceInstance);
+
+        let authServiceClass = require('../../src/services/ImplServices/AuthService').default;
+        let authServiceInstance = Container.get(authServiceClass);
+        Container.set("AuthService", authServiceInstance);
     });
 
     afterEach(function() {
@@ -57,9 +70,11 @@ describe('Tipo Dispositivo Controller', () => {
 
         let next: Partial<NextFunction> = () => {};
         let tipoDispositivoService = Container.get("TipoDispositivoService");
+        let authService = Container.get("AuthService");
+        sinon.stub(authService, "checkAuth").returns(Result.ok<void>());
         sinon.stub(tipoDispositivoService, "criarTipoDispositivo").returns(Promise.resolve(Result.ok<ITipoDispositivoDTO>(bodyEsperado as ITipoDispositivoDTO)));
 
-        let tipoDispositivoController = new TipoDispositivoController(tipoDispositivoService as ITipoDispositivoService);
+        let tipoDispositivoController = new TipoDispositivoController(tipoDispositivoService as ITipoDispositivoService, authService as IAuthService);
         // Act
         await tipoDispositivoController.criarTipoDispositivo(<Request>req, <Response>res, <NextFunction>next);
 
@@ -98,6 +113,8 @@ describe('Tipo Dispositivo Controller', () => {
         const tipoDispositivo = TipoDispositivo.create(tipoDispositivoProps, IdTipoDispositivo.create(1).getValue()).getValue();
 
         let tipoDispositivoService = Container.get("TipoDispositivoService");
+        let authService = Container.get("AuthService");
+        sinon.stub(authService, "checkAuth").returns(Result.ok<void>());
         const tipoDispositivoServiceSpy = sinon.spy(tipoDispositivoService, 'criarTipoDispositivo');
 
         let tipoDispositivoRepo = Container.get("TipoDispositivoRepo");
@@ -105,7 +122,7 @@ describe('Tipo Dispositivo Controller', () => {
         sinon.stub(tipoDispositivoRepo, "getMaxId").returns(Promise.resolve(0));
         sinon.stub(tipoDispositivoRepo, "save").returns(Promise.resolve(tipoDispositivo));
 
-        let tipoDispositivoController = new TipoDispositivoController(tipoDispositivoService as ITipoDispositivoService);
+        let tipoDispositivoController = new TipoDispositivoController(tipoDispositivoService as ITipoDispositivoService, authService as IAuthService);
         await tipoDispositivoController.criarTipoDispositivo(<Request>req, <Response>res, <NextFunction>next);
 
         sinon.assert.calledOnce(res.status as sinon.SinonSpy);
@@ -144,6 +161,8 @@ describe('Tipo Dispositivo Controller', () => {
         }
 
         let tipoDispositivoService = Container.get("TipoDispositivoService");
+        let authService = Container.get("AuthService");
+        sinon.stub(authService, "checkAuth").returns(Result.ok<void>());
         let tipoDispositivoServiceSpy = sinon.spy(tipoDispositivoService, 'criarTipoDispositivo');
         let tipoDispositivoRepo = Container.get("TipoDispositivoRepo");
         let tipoDispositivoSchema = Container.get("TipoDispositivoSchema");
@@ -152,7 +171,7 @@ describe('Tipo Dispositivo Controller', () => {
         sinon.stub(tipoDispositivoSchema, "findOne").returns(Promise.resolve(null));
         sinon.stub(tipoDispositivoSchema, "create").returns(Promise.resolve(tipoDispositivoPeristence));
 
-        let tipoDispositivoController = new TipoDispositivoController(tipoDispositivoService as ITipoDispositivoService);
+        let tipoDispositivoController = new TipoDispositivoController(tipoDispositivoService as ITipoDispositivoService, authService as IAuthService);
         await tipoDispositivoController.criarTipoDispositivo(<Request>req, <Response>res, <NextFunction>next);
         
         sinon.assert.calledOnce(res.status as sinon.SinonSpy);

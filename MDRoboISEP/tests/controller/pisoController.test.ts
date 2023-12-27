@@ -29,7 +29,7 @@ import { IdPonto } from '../../src/domain/ponto/IdPonto';
 import IEdificioDTO from "../../src/dto/IEdificioDTO";
 import IPisoDTO from "../../src/dto/IPisoDTO";
 import IEditarPisoDTO from "../../src/dto/IEditarPisoDTO";
-
+import IAuthService from "../../src/services/IServices/IAuthService";
 
 
 describe('PisoController', () => {
@@ -48,6 +48,9 @@ describe('PisoController', () => {
         let pontoSchemaInstance = require('../../src/persistence/schemas/PontoSchema').default;
         Container.set("PontoSchema", pontoSchemaInstance);
 
+        let elevadorSchemaInstance = require('../../src/persistence/schemas/ElevadorSchema').default;
+        Container.set("ElevadorSchema", elevadorSchemaInstance);
+
         let pontoRepoClass = require('../../src/repos/PontoRepo').default;
         let pontoRepoInstance = Container.get(pontoRepoClass);
         Container.set("PontoRepo", pontoRepoInstance);
@@ -64,6 +67,10 @@ describe('PisoController', () => {
         let pisoServiceInstance = Container.get(pisoServiceClass);
         Container.set("PisoService", pisoServiceInstance);
 
+
+        let authServiceClass = require('../../src/services/ImplServices/AuthService').default;
+        let authServiceInstance = Container.get(authServiceClass);
+        Container.set("AuthService", authServiceInstance);
 
     });
     
@@ -93,12 +100,12 @@ describe('PisoController', () => {
 
     
         let pisoServiceInstance = Container.get("PisoService");
-        
-        
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
 
         sinon.stub(pisoServiceInstance, 'criarPiso').returns(Promise.resolve(Result.ok<ICriarPisoDTO>(body as ICriarPisoDTO)));
 
-        const pisoController = new PisoController(pisoServiceInstance as IPisoService);
+        const pisoController = new PisoController(pisoServiceInstance as IPisoService, authServiceInstance as IAuthService);
         
         // Act
         await pisoController.criarPiso(<Request>req, <Response>res, <NextFunction>next);
@@ -152,9 +159,11 @@ describe('PisoController', () => {
 
 
         let pisoServiceInstance = Container.get("PisoService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
         const pisoServiceSpy = sinon.spy(pisoServiceInstance, 'criarPiso');
 
-        const pisoController = new PisoController(pisoServiceInstance as IPisoService);
+        const pisoController = new PisoController(pisoServiceInstance as IPisoService, authServiceInstance as IAuthService);
 
 		// Act
 		let answer = await pisoController.criarPiso(<Request>req, <Response>res, <NextFunction>next);
@@ -211,7 +220,6 @@ describe('PisoController', () => {
 
         const pisoSchemaInstance = Container.get("PisoSchema");
         const edificioSchemaInstance = Container.get("EdificioSchema");
-        const pontoSchemaInstance = Container.get("PontoSchema");
 
         sinon.stub(edificioSchemaInstance, "findOne").returns(edificioDoc);
         sinon.stub(pisoSchemaInstance, "find").returns(null);
@@ -220,8 +228,10 @@ describe('PisoController', () => {
         sinon.stub(edificioSchemaInstance, "create").returns(edificioDoc as IEdificioPersistence);
 
         let pisoServiceInstance = Container.get("PisoService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
         const pisoServiceSpy = sinon.spy(pisoServiceInstance,'criarPiso');
-        const pisoController = new PisoController(pisoServiceInstance as IPisoService);
+        const pisoController = new PisoController(pisoServiceInstance as IPisoService, authServiceInstance as IAuthService);
 
         let answer = await pisoController.criarPiso(<Request>req, <Response>res, <NextFunction>next);
 
@@ -258,10 +268,12 @@ describe('PisoController', () => {
         let next: Partial<NextFunction> = () => {};
 
         let pisoServiceInstance = Container.get("PisoService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
 
         sinon.stub(pisoServiceInstance, 'listarTodosOsPisosDeUmEdificio').returns(Promise.resolve(Result.ok<IPisoDTO>((pisoDTO))));
 
-        const pisoController = new PisoController(pisoServiceInstance as IPisoService);
+        const pisoController = new PisoController(pisoServiceInstance as IPisoService, authServiceInstance as IAuthService);
         
         // Act
         await pisoController.listarTodosOsPisosDeUmEdificio(<Request>req, <Response>res, <NextFunction>next);
@@ -309,11 +321,13 @@ describe('PisoController', () => {
         edificio.addPiso(piso);
         
         let pisoServiceInstance = Container.get("PisoService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
         let edificioRepoInstance = Container.get("EdificioRepo");
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(edificio));
 
         const pisoServiceSpy = sinon.spy(pisoServiceInstance, 'listarTodosOsPisosDeUmEdificio');
-        const pisoController = new PisoController(pisoServiceInstance as IPisoService);
+        const pisoController = new PisoController(pisoServiceInstance as IPisoService, authServiceInstance as IAuthService);
                 
         // Act
         await pisoController.listarTodosOsPisosDeUmEdificio(<Request>req, <Response>res, <NextFunction>next);
@@ -370,8 +384,10 @@ describe('PisoController', () => {
 
             
         let pisoServiceInstance = Container.get("PisoService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
         const pisoServiceSpy = sinon.spy(pisoServiceInstance, 'listarTodosOsPisosDeUmEdificio');
-        const pisoController = new PisoController(pisoServiceInstance as IPisoService);
+        const pisoController = new PisoController(pisoServiceInstance as IPisoService, authServiceInstance as IAuthService);
                 
         // Act
         let answer = await pisoController.listarTodosOsPisosDeUmEdificio(<Request>req, <Response>res, <NextFunction>next);
@@ -416,10 +432,12 @@ describe('PisoController', () => {
         let next: Partial<NextFunction> = () => {};
 
         let pisoServiceInstance = Container.get("PisoService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
 
         sinon.stub(pisoServiceInstance, 'editarPiso').returns(Promise.resolve(Result.ok<IPisoDTO>((pisoDTO))));
 
-        const pisoController = new PisoController(pisoServiceInstance as IPisoService);
+        const pisoController = new PisoController(pisoServiceInstance as IPisoService, authServiceInstance as IAuthService);
         
         // Act
         await pisoController.editarPiso(<Request>req, <Response>res, <NextFunction>next);
@@ -476,12 +494,14 @@ describe('PisoController', () => {
         edificio.addPiso(piso);
         
         let pisoServiceInstance = Container.get("PisoService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
         let edificioRepoInstance = Container.get("EdificioRepo");
         let pisoRepoInstance = Container.get("PisoRepo");
         sinon.stub(edificioRepoInstance, "findByDomainId").returns(Promise.resolve(edificio));
         sinon.stub(pisoRepoInstance, "save").returns(Promise.resolve(piso2));
         const pisoServiceSpy = sinon.spy(pisoServiceInstance, 'editarPiso');
-        const pisoController = new PisoController(pisoServiceInstance as IPisoService);
+        const pisoController = new PisoController(pisoServiceInstance as IPisoService, authServiceInstance as IAuthService);
                 
         // Act
         await pisoController.editarPiso(<Request>req, <Response>res, <NextFunction>next);
@@ -537,12 +557,14 @@ describe('PisoController', () => {
         const edificioSchemaInstance = Container.get("EdificioSchema");
         const pisoSchemaInstance = Container.get("PisoSchema");
         let pisoServiceInstance = Container.get("PisoService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
         sinon.stub(edificioSchemaInstance, "findOne").returns(edificioPersistence);
         sinon.stub(pisoSchemaInstance, "findOne").returns(pisoPersistence);
 
 
         const pisoServiceSpy = sinon.spy(pisoServiceInstance, 'editarPiso');
-        const pisoController = new PisoController(pisoServiceInstance as IPisoService);
+        const pisoController = new PisoController(pisoServiceInstance as IPisoService, authServiceInstance as IAuthService);
                 
         // Act
         let answer = await pisoController.editarPiso(<Request>req, <Response>res, <NextFunction>next);

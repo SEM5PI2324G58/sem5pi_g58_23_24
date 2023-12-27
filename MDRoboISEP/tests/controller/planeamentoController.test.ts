@@ -35,10 +35,12 @@ import { IdPassagem } from "../../src/domain/passagem/IdPassagem";
 import { Passagem } from "../../src/domain/passagem/Passagem";
 import IPlaneamentoService from '../../src/services/IServices/IPlaneamentoService';
 import PlaneamentoController from '../../src/controllers/ImplControllers/PlaneamentoController';
+import IAuthService from '../../src/services/IServices/IAuthService';
 
 describe('PlaneamentoService', () => {
     const sandbox = sinon.createSandbox();
-    beforeEach(() => {
+    beforeEach(function() {
+        this.timeout(300000);
         Container.reset();
         let edificioSchemaInstance = require('../../src/persistence/schemas/EdificioSchema').default;
         Container.set("EdificioSchema", edificioSchemaInstance);
@@ -47,11 +49,47 @@ describe('PlaneamentoService', () => {
         let edificioRepoInstance = Container.get(edificioRepoClass);
         Container.set("EdificioRepo", edificioRepoInstance);
 
+        let pisoSchemaInstance = require('../../src/persistence/schemas/PisoSchema').default;
+        Container.set("PisoSchema", pisoSchemaInstance);
+
+        let pisoRepoClass = require('../../src/repos/PisoRepo').default;
+        let pisoRepoInstance = Container.get(pisoRepoClass);
+        Container.set("PisoRepo", pisoRepoInstance);
+
+        let elevadorSchemaInstance = require('../../src/persistence/schemas/ElevadorSchema').default;
+        Container.set("ElevadorSchema", elevadorSchemaInstance);
+
+        let elevadorRepoClass = require('../../src/repos/ElevadorRepo').default;
+        let elevadorRepoInstance = Container.get(elevadorRepoClass);
+        Container.set("ElevadorRepo", elevadorRepoInstance);
+        
         let salaSchemaInstance = require('../../src/persistence/schemas/SalaSchema').default;
-        Container.set("salaSchema", salaSchemaInstance);
+        Container.set("SalaSchema", salaSchemaInstance);
         let salaRepoClass = require('../../src/repos/SalaRepo').default;
         let salaRepoInstance = Container.get(salaRepoClass);
-        Container.set("salaRepo", salaRepoInstance);
+        Container.set("SalaRepo", salaRepoInstance);
+
+        let passagemSchemaInstance = require('../../src/persistence/schemas/PassagemSchema').default;
+        Container.set("PassagemSchema", passagemSchemaInstance);
+
+        let passagemRepoClass = require('../../src/repos/PassagemRepo').default;
+        let passagemRepoInstance = Container.get(passagemRepoClass);
+        Container.set("PassagemRepo", passagemRepoInstance);
+
+        let mapaSchemaInstance = require('../../src/persistence/schemas/MapaSchema').default;
+        Container.set("MapaSchema", mapaSchemaInstance);
+
+        let mapaRepoClass = require('../../src/repos/MapaRepo').default;
+        let mapaRepoInstance = Container.get(mapaRepoClass);
+        Container.set("MapaRepo", mapaRepoInstance);
+
+        let edificioServiceClass = require('../../src/services/ImplServices/EdificioService').default;
+        let edificioServiceInstance = Container.get(edificioServiceClass);
+        Container.set("EdificioService", edificioServiceInstance);
+
+        let authServiceClass = require('../../src/services/ImplServices/AuthService').default;
+        let authServiceInstance = Container.get(authServiceClass);
+        Container.set("AuthService", authServiceInstance);
 
         let planeamentoServiceClass = require('../../src/services/ImplServices/PlaneamentoService').default;
         let planeamentoServiceInstance = Container.get(planeamentoServiceClass);
@@ -59,7 +97,7 @@ describe('PlaneamentoService', () => {
 
     });
 
-    afterEach(() => {
+    afterEach(function() {
         sinon.restore();
         sandbox.restore();
     });
@@ -81,9 +119,11 @@ describe('PlaneamentoService', () => {
         let next: Partial<NextFunction> = () => { };
 
         let planeamentoServiceInstance = Container.get("PlaneamentoService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, "checkAuth").returns(Result.ok<void>());
         sinon.stub(planeamentoServiceInstance, "encontrarCaminhosEntreEdificios").resolves(Result.ok<String>("ED02"));
 
-        let planeamentoController = new PlaneamentoController(planeamentoServiceInstance as IPlaneamentoService);
+        let planeamentoController = new PlaneamentoController(planeamentoServiceInstance as IPlaneamentoService, authServiceInstance as IAuthService);
 
         await planeamentoController.encontrarCaminhosEntreEdificios(req as Request, res as Response, next as NextFunction);
 
@@ -178,6 +218,8 @@ describe('PlaneamentoService', () => {
         let next: Partial<NextFunction> = () => { };
 
         let planeamentoServiceInstance = Container.get("PlaneamentoService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, "checkAuth").returns(Result.ok<void>());
         sinon.stub(planeamentoServiceInstance, "encontrarCaminhosEntreEdificios").resolves(Result.ok<String>("ED02"));
 
         let stub = sinon.stub(edificioRepoInstance, "findByPiso");
@@ -188,7 +230,7 @@ describe('PlaneamentoService', () => {
         stub2.onCall(0).resolves(salaOrError.getValue());
         stub2.onCall(1).resolves(salaOrError2.getValue());
 
-        let planeamentoController = new PlaneamentoController(planeamentoServiceInstance as IPlaneamentoService);
+        let planeamentoController = new PlaneamentoController(planeamentoServiceInstance as IPlaneamentoService, authServiceInstance as IAuthService);
 
         await planeamentoController.encontrarCaminhosEntreEdificios(req as Request, res as Response, next as NextFunction);
 

@@ -21,6 +21,8 @@ import IListarPassagemDTO from '../../src/dto/IListarPassagemDTO';
 import { IdPiso } from '../../src/domain/piso/IdPiso';
 import { Mapa } from '../../src/domain/mapa/Mapa';
 import { IdPassagem } from '../../src/domain/passagem/IdPassagem';
+import IAuthService from '../../src/services/IServices/IAuthService';
+import 'reflect-metadata';
 
 
 describe('PassagemController', () => {
@@ -35,17 +37,27 @@ describe('PassagemController', () => {
             descricaoPiso: DescricaoPiso.create("Ola").getValue(),
             mapa: mapa,
         }, IdPiso.create(1).getValue()).getValue();
-
+        
         let piso2 = Piso.create({
             numeroPiso:  NumeroPiso.create(1).getValue(),
             descricaoPiso: DescricaoPiso.create("Ola").getValue(),
             mapa: mapa,
         }, IdPiso.create(2).getValue()).getValue();
-
+        
         let passagem = Passagem.create({
             pisoA: piso1,
             pisoB: piso2,
         }, IdPassagem.create(1).getValue()).getValue();
+        
+        let edificioSchemaInstance = require('../../src/persistence/schemas/EdificioSchema').default;
+        Container.set("EdificioSchema", edificioSchemaInstance);
+
+        let edificioRepoClass = require('../../src/repos/EdificioRepo').default;
+        let edificioRepoInstance = Container.get(edificioRepoClass);
+        Container.set("EdificioRepo", edificioRepoInstance);
+
+        let pisoSchemaInstance = require('../../src/persistence/schemas/PisoSchema').default;
+        Container.set("PisoSchema", pisoSchemaInstance);
 
         Container.set("Piso1", piso1);
         Container.set("Piso2", piso2);
@@ -62,6 +74,11 @@ describe('PassagemController', () => {
         let passagemServiceClass = require('../../src/services/ImplServices/PassagemService').default;
         let passagemServiceInstance = Container.get(passagemServiceClass);
         Container.set("PassagemService", passagemServiceInstance);
+
+        let authServiceClass = require('../../src/services/ImplServices/AuthService').default;
+        let authServiceInstance = Container.get(authServiceClass);
+        Container.set("AuthService", authServiceInstance);
+
 
         let pisoRepoClass = require('../../src/repos/PisoRepo').default;
         let pisoRepoInstance = Container.get(pisoRepoClass);
@@ -92,9 +109,12 @@ describe('PassagemController', () => {
 
         let next: Partial<NextFunction> = () => { };
         let passagemServiceInstance = Container.get("PassagemService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
         sinon.stub(passagemServiceInstance, 'criarPassagem').returns(Promise.resolve(Result.ok<IPassagemDTO>(body as IPassagemDTO)));
 
-        let passagemController = new PassagemController(passagemServiceInstance as IPassagemService);
+        let passagemController = new PassagemController(passagemServiceInstance as IPassagemService, authServiceInstance as IAuthService);
+        
 
         // Act
         await passagemController.criarPassagem(<Request>req, <Response>res, <NextFunction>next);
@@ -162,9 +182,11 @@ describe('PassagemController', () => {
         stubRepoo.onCall(1).returns(Promise.resolve(edificioB));
 
         let passagemServiceInstance = Container.get("PassagemService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
         const passagemServiceSpy = sinon.spy(passagemServiceInstance, 'criarPassagem');
 
-        const passagemController = new PassagemController(passagemServiceInstance as IPassagemService);
+        const passagemController = new PassagemController(passagemServiceInstance as IPassagemService, authServiceInstance as IAuthService);
 
         // Act
         await passagemController.criarPassagem(<Request>req, <Response>res, <NextFunction>next);
@@ -244,9 +266,11 @@ describe('PassagemController', () => {
         stubPisoRepo.onCall(1).returns(Promise.resolve(pisoB));
 
         let passagemServiceInstance = Container.get("PassagemService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
         const passagemServiceSpy = sinon.spy(passagemServiceInstance, 'criarPassagem');
 
-        const pisoController = new PassagemController(passagemServiceInstance as IPassagemService);
+        const pisoController = new PassagemController(passagemServiceInstance as IPassagemService, authServiceInstance as IAuthService);
 
         await pisoController.criarPassagem(<Request>req, <Response>res, <NextFunction>next);
 
@@ -284,10 +308,11 @@ describe('PassagemController', () => {
         let next: Partial<NextFunction> = () => {};
 
         let passagemServiceInstance = Container.get("PassagemService");
-
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
         sinon.stub(passagemServiceInstance, 'listarPassagensPorParDeEdificios').returns(Promise.resolve(Result.ok<IListarPassagemDTO[]>(listaDTO)));
 
-        const passagemController = new PassagemController(passagemServiceInstance as IPassagemService);
+        const passagemController = new PassagemController(passagemServiceInstance as IPassagemService, authServiceInstance as IAuthService);
         
         await passagemController.listarPassagensPorParDeEdificios(<Request>req, <Response>res, <NextFunction>next);
 
@@ -324,11 +349,13 @@ describe('PassagemController', () => {
         let next: Partial<NextFunction> = () => {};
 
         let passagemServiceInstance = Container.get("PassagemService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
         let passagemRepoInstance = Container.get("PassagemRepo");
 
         sinon.stub(passagemRepoInstance, 'findAll').returns(Promise.resolve([Container.get("Passagem")]));
 
-        const passagemController = new PassagemController(passagemServiceInstance as IPassagemService);
+        const passagemController = new PassagemController(passagemServiceInstance as IPassagemService, authServiceInstance as IAuthService);
         
         await passagemController.listarPassagensPorParDeEdificios(<Request>req, <Response>res, <NextFunction>next);
 
@@ -374,6 +401,8 @@ describe('PassagemController', () => {
         let next: Partial<NextFunction> = () => {};
 
         let passagemServiceInstance = Container.get("PassagemService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
         let pisoRepoInstance = Container.get("PisoRepo");
         let passagemSchemaInstance = Container.get("PassagemSchema");
 
@@ -383,7 +412,7 @@ describe('PassagemController', () => {
         stubFindByIdPisoRepo.onCall(0).returns(Promise.resolve(Container.get("Piso1")));
         stubFindByIdPisoRepo.onCall(1).returns(Promise.resolve(Container.get("Piso2")));
 
-        const passagemController = new PassagemController(passagemServiceInstance as IPassagemService);
+        const passagemController = new PassagemController(passagemServiceInstance as IPassagemService, authServiceInstance as IAuthService);
         
         await passagemController.listarPassagensPorParDeEdificios(<Request>req, <Response>res, <NextFunction>next);
 

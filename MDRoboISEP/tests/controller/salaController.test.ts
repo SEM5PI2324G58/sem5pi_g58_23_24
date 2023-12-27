@@ -27,6 +27,8 @@ import ISalaRepo from '../../src/services/IRepos/ISalaRepo';
 import { Sala } from '../../src/domain/sala/Sala';
 import { ISalaPersistence } from '../../src/dataschema/ISalaPersistence';
 import { Mapa } from '../../src/domain/mapa/Mapa';
+import IAuthService from '../../src/services/IServices/IAuthService';
+import 'reflect-metadata';
 
 
 describe('SalaController', () => {
@@ -42,9 +44,20 @@ describe('SalaController', () => {
         let salaRepoInstance = Container.get(salaRepoClass);
         Container.set("SalaRepo", salaRepoInstance);
 
+        let edificioSchemaInstance = require('../../src/persistence/schemas/EdificioSchema').default;
+        Container.set("EdificioSchema", edificioSchemaInstance);
+
+        let edificioRepoClass = require('../../src/repos/EdificioRepo').default;
+        let edificioRepoInstance = Container.get(edificioRepoClass);
+        Container.set("EdificioRepo", edificioRepoInstance);
+
         let salaServiceClass = require('../../src/services/ImplServices/SalaService').default;
         let salaServiceInstance = Container.get(salaServiceClass);
         Container.set("SalaService", salaServiceInstance);
+
+        let authServiceClass = require('../../src/services/ImplServices/AuthService').default;
+        let authServiceInstance = Container.get(authServiceClass);
+        Container.set("AuthService", authServiceInstance);
     });
     afterEach(function () {
         sinon.restore();
@@ -71,9 +84,11 @@ describe('SalaController', () => {
 
         let next: Partial<NextFunction> = () => { };
         let salaServiceInstance = Container.get("SalaService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
         sinon.stub(salaServiceInstance, 'criarSala').returns(Promise.resolve(Result.ok<ISalaDTO>(body as ISalaDTO)));
 
-        let salaController = new SalaController(salaServiceInstance as ISalaService);
+        let salaController = new SalaController(salaServiceInstance as ISalaService, authServiceInstance as IAuthService);
 
         // Act
         await salaController.criarSala(<Request>req, <Response>res, <NextFunction>next);
@@ -126,9 +141,11 @@ describe('SalaController', () => {
         stubRepo2.onCall(0).returns(Promise.resolve(Sala));
        
         let salaServiceInstance = Container.get("SalaService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, 'checkAuth').returns(Result.ok<void>());
         const salaServiceSpy = sinon.spy(salaServiceInstance, 'criarSala');
 
-        const salaController = new SalaController(salaServiceInstance as ISalaService);
+        const salaController = new SalaController(salaServiceInstance as ISalaService, authServiceInstance as IAuthService);
 
         // Act
         await salaController.criarSala(<Request>req, <Response>res, <NextFunction>next);

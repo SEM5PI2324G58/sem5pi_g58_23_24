@@ -30,9 +30,9 @@ export default class PisoService implements IPisoService {
     constructor(
         @Inject(config.repos.piso.name) private pisoRepo: IPisoRepo,
         @Inject(config.repos.edificio.name) private edifRepo: IEdificioRepo,
-        @Inject(config.repos.elevador.name) private elevadorRepo: IElevadorRepo,
+        //@Inject(config.repos.elevador.name) private elevadorRepo: IElevadorRepo,
         // @Inject(config.repos.sala.name) private salaRepo : IElevadorService,
-        @Inject(config.services.elevador.name) private elevadorServiceInstance: IElevadorService
+        //@Inject(config.services.elevador.name) private elevadorServiceInstance: IElevadorService
         // @Inject(config.services.sala.name) private salaServiceInstance : ISalaService
 
     ) { }

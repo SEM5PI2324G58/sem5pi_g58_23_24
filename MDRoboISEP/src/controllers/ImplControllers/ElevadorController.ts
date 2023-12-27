@@ -4,16 +4,21 @@ import config from "../../../config";
 import IElevadorService from "../../services/IServices/IElevadorService";
 import { NextFunction, Request, Response } from "express";
 import ICriarElevadorDTO from "../../dto/ICriarElevadorDTO";
-
+import IAuthService from "../../services/IServices/IAuthService";
 
 @Service()
 export default class ElevadorController implements IElevadorController{
     constructor(
-        @Inject(config.services.elevador.name) private elevadorServiceInstance : IElevadorService
+        @Inject(config.services.elevador.name) private elevadorServiceInstance : IElevadorService,
+        @Inject(config.services.auth.name) private authServiceInstance : IAuthService
     ){}
 
     public async criarElevador(req: Request, res: Response, next: NextFunction) {
         try {
+            let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus']);
+            if(authOrError.isFailure){
+              return res.send();
+            }
             const elevadorOrError = await this.elevadorServiceInstance.criarElevador(req.body as ICriarElevadorDTO);
               
             if (elevadorOrError.isFailure) {
@@ -38,6 +43,11 @@ export default class ElevadorController implements IElevadorController{
 
     public async editarElevador(req: Request, res: Response, next: NextFunction) {
         try {
+            let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus']);
+            if(authOrError.isFailure){
+              return res.send();
+            }
+
             const elevadorOrError = await this.elevadorServiceInstance.editarElevador(req.body as ICriarElevadorDTO);
               
             if (elevadorOrError.isFailure) {
@@ -60,6 +70,10 @@ export default class ElevadorController implements IElevadorController{
 
     public async listarElevadoresDoEdificio(req: Request, res: Response, next: NextFunction) {
         try {
+            let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus']);
+            if(authOrError.isFailure){
+              return res.send();
+            }
             const listaElevadoresOrErro = await this.elevadorServiceInstance.listarElevadoresDoEdificio(req.query.edificio as string);
               
             if (listaElevadoresOrErro.isFailure) {

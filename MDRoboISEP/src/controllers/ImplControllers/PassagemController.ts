@@ -10,13 +10,19 @@ import IListarPassagemDTO from '../../dto/IListarPassagemDTO';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { ParsedQs } from 'qs';
 import IListarPisoComPassagensDTO from '../../dto/IListarPisoComPassagensDTO';
+import IAuthService from '../../services/IServices/IAuthService';
 
 @Service()
 export default class PassagemController implements IPassagemController /* TODO: extends ../core/infra/BaseController */ {
   constructor(
-      @Inject(config.services.passagem.name) private passagemServiceInstance : IPassagemService
+      @Inject(config.services.passagem.name) private passagemServiceInstance : IPassagemService,
+      @Inject(config.services.auth.name) private authServiceInstance : IAuthService
   ) {}
   public async editarPassagens(req: Request, res: Response, next: NextFunction) {
+    let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus']);
+    if(authOrError.isFailure){
+      return res.send();
+    }
     try {
       const passagemOrError = await this.passagemServiceInstance.editarPassagens(req.body as IPassagemDTO) as Result<IPassagemDTO>;
       if (passagemOrError.isFailure) {
@@ -37,6 +43,10 @@ export default class PassagemController implements IPassagemController /* TODO: 
 
   public async listarPisosComPassagens(req: Request, res: Response, next: NextFunction) {
     try{
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus']);
+      if(authOrError.isFailure){
+        return res.send();
+      }
       const passagemOrError = await this.passagemServiceInstance.listarPisosComPassagens();
       if (passagemOrError.isFailure) {
         return res.status(400).json(passagemOrError.errorValue());
@@ -51,6 +61,10 @@ export default class PassagemController implements IPassagemController /* TODO: 
 
   public async criarPassagem(req: Request, res: Response, next: NextFunction) {
     try{
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus']);
+      if(authOrError.isFailure){
+        return res.send();
+      }
       const passagemOrError = await this.passagemServiceInstance.criarPassagem(req.body as IPassagemDTO) as Result<IPassagemDTO>;
       if (passagemOrError.isFailure) {
         let message = String(passagemOrError.errorValue());
@@ -70,7 +84,10 @@ export default class PassagemController implements IPassagemController /* TODO: 
 
   public async listarPassagensPorParDeEdificios(req: Request, res: Response, next: NextFunction) {
     try{
-      
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus']);
+      if(authOrError.isFailure){
+        return res.send();
+      }
       const edificioACodParam = req.query.edificioACod as string;
       const edificioBCodParam = req.query.edificioBCod as string;
 

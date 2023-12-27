@@ -8,15 +8,20 @@ import { Result } from "../../core/logic/Result";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
 import IExportarMapaDTO from "../../dto/IExportarMapaDTO";
-
+import IAuthService from "../../services/IServices/IAuthService";
 @Service()
 export default class MapaController implements IMapaController {
     constructor(
-        @Inject(config.services.mapa.name) private mapaServiceInstance : IMapaService
+        @Inject(config.services.mapa.name) private mapaServiceInstance : IMapaService,
+        @Inject(config.services.auth.name) private authServiceInstance : IAuthService
     ) {}
     
     public async carregarMapa(req: Request, res: Response, next: NextFunction) {
         try{
+            let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus']);
+            if(authOrError.isFailure){
+              return res.send();
+            }
             let mapaOrError = await this.mapaServiceInstance.carregarMapa(req.body as ICarregarMapaDTO);
             if(mapaOrError.isFailure){
                 let erro = String(mapaOrError.errorValue());
@@ -39,6 +44,10 @@ export default class MapaController implements IMapaController {
     }
     public async exportarMapa(req: Request, res: Response, next: NextFunction) {
         try{
+            let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus', 'gestor de frota', 'gestor de tarefas', 'utente', 'admin']);
+            if(authOrError.isFailure){
+              return res.send();
+            }
             let mapaOrError = await this.mapaServiceInstance.exportarMapa({codigoEdificio:req.query.codEdificio as string,
                     numeroPiso: +(req.query.numPiso as string)}as IExportarMapaDTO);
             if(mapaOrError.isFailure){
@@ -60,6 +69,10 @@ export default class MapaController implements IMapaController {
 
     public async exportarMapaAtravesDeUmaPassagemEPiso(req: Request, res: Response, next: NextFunction) {
         try{
+            let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus', 'gestor de frota', 'gestor de tarefas', 'utente', 'admin']);
+            if(authOrError.isFailure){
+              return res.send();
+            }
             let idPassagem = req.query.idPassagem as unknown as number;
             let codEd = req.query.codEd as string;
             let numeroPiso = req.query.numeroPiso as unknown as number;

@@ -135,6 +135,10 @@ export default {
   },
 
   services: {
+    auth: {
+      name: "AuthService",
+      path: "../services/ImplServices/authService"
+    },
     edificio: {
       name: "EdificioService",
       path: "../services/ImplServices/EdificioService"

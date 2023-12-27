@@ -34,7 +34,8 @@ import { IdPiso } from "../../src/domain/piso/IdPiso";
 import { NumeroPiso } from "../../src/domain/piso/NumeroPiso";
 import { TipoPonto } from "../../src/domain/mapa/TipoPonto";
 import IExportarMapaDTO from "../../src/dto/IExportarMapaDTO";
-
+import IAuthService from "../../src/services/IServices/IAuthService";
+import 'reflect-metadata';
 
 describe('Mapa Controller', () => {
     const sandbox = sinon.createSandbox();
@@ -42,39 +43,43 @@ describe('Mapa Controller', () => {
         this.timeout(300000);
         Container.reset();
 
-        let mapaSchemaInstance = require('../../src/persistence/schemas/MapaSchema').default;
-        Container.set("mapaSchema", mapaSchemaInstance);
-        let mapaRepoClass = require('../../src/repos/MapaRepo').default;
-        let mapaRepoInstance = Container.get(mapaRepoClass);
-        Container.set("mapaRepo", mapaRepoInstance);
-
         let pisoSchemaInstance = require('../../src/persistence/schemas/PisoSchema').default;
-        Container.set("pisoSchema", pisoSchemaInstance);
+        Container.set("PisoSchema", pisoSchemaInstance);
         let pisoRepoClass = require('../../src/repos/PisoRepo').default;
         let pisoRepoInstance = Container.get(pisoRepoClass);
-        Container.set("pisoRepo", pisoRepoInstance);
+        Container.set("PisoRepo", pisoRepoInstance);
+        
+        let mapaSchemaInstance = require('../../src/persistence/schemas/MapaSchema').default;
+        Container.set("MapaSchema", mapaSchemaInstance);
+        let mapaRepoClass = require('../../src/repos/MapaRepo').default;
+        let mapaRepoInstance = Container.get(mapaRepoClass);
+        Container.set("MapaRepo", mapaRepoInstance);
 
         let edificioSchemaInstance = require('../../src/persistence/schemas/EdificioSchema').default;
-        Container.set("edificioSchema", edificioSchemaInstance);
+        Container.set("EdificioSchema", edificioSchemaInstance);
         let edificioRepoClass = require('../../src/repos/EdificioRepo').default;
         let edificioRepoInstance = Container.get(edificioRepoClass);
-        Container.set("edificioRepo", edificioRepoInstance);
+        Container.set("EdificioRepo", edificioRepoInstance);
 
         let salaSchemaInstance = require('../../src/persistence/schemas/SalaSchema').default;
-        Container.set("salaSchema", salaSchemaInstance);
+        Container.set("SalaSchema", salaSchemaInstance);
         let salaRepoClass = require('../../src/repos/SalaRepo').default;
         let salaRepoInstance = Container.get(salaRepoClass);
-        Container.set("salaRepo", salaRepoInstance);
+        Container.set("SalaRepo", salaRepoInstance);
 
         let passagemSchemaInstance = require('../../src/persistence/schemas/PassagemSchema').default;
-        Container.set("passagemSchema", passagemSchemaInstance);
+        Container.set("PassagemSchema", passagemSchemaInstance);
         let passagemRepoClass = require('../../src/repos/PassagemRepo').default;
         let passagemRepoInstance = Container.get(passagemRepoClass);
-        Container.set("passagemRepo", passagemRepoInstance);
+        Container.set("PassagemRepo", passagemRepoInstance);
 
         let mapaServiceClass = require('../../src/services/ImplServices/MapaService').default;
         let mapaServiceInstance = Container.get(mapaServiceClass);
         Container.set("MapaService", mapaServiceInstance);
+
+        let authServiceClass = require('../../src/services/ImplServices/AuthService').default;
+        let authServiceInstance = Container.get(authServiceClass);
+        Container.set("AuthService", authServiceInstance);
 
         let descricaoPiso = DescricaoPiso.create("Ola").getValue();
 		let idPiso = IdPiso.create(1).getValue();
@@ -189,9 +194,11 @@ describe('Mapa Controller', () => {
         let next: Partial<NextFunction> = () => {};
 
         let mapaServiceInstance = Container.get("MapaService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, "checkAuth").returns(Result.ok<void>());
         sinon.stub(mapaServiceInstance, "carregarMapa").returns(Promise.resolve(Result.ok<ICarregarMapaDTO>(body as ICarregarMapaDTO)));
 
-        const mapaController = new MapaController(mapaServiceInstance as IMapaService);
+        const mapaController = new MapaController(mapaServiceInstance as IMapaService, authServiceInstance as IAuthService);
         await mapaController.carregarMapa(req as Request, res as Response, next as NextFunction);
 
         sinon.assert.calledOnce(res.status as sinon.SinonSpy);
@@ -279,7 +286,9 @@ describe('Mapa Controller', () => {
         sinon.stub(pisoRepoInstance, 'save').returns(Promise.resolve(Container.get('piso5x5Vazio')));
         
         let mapaServiceInstance = Container.get("MapaService");
-        const mapaController = new MapaController(mapaServiceInstance as IMapaService);
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, "checkAuth").returns(Result.ok<void>());
+        const mapaController = new MapaController(mapaServiceInstance as IMapaService, authServiceInstance as IAuthService);
         
         let result = await mapaController.carregarMapa(req as Request, res as Response, next as NextFunction);
 
@@ -319,8 +328,9 @@ describe('Mapa Controller', () => {
 
         let mapaServiceInstance = Container.get("MapaService");
         sinon.stub(mapaServiceInstance, "exportarMapa").returns(Promise.resolve(Result.ok<IExportarMapaDTO>(exportarMapaDTO)));
-
-        const mapaController = new MapaController(mapaServiceInstance as IMapaService);
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, "checkAuth").returns(Result.ok<void>());
+        const mapaController = new MapaController(mapaServiceInstance as IMapaService, authServiceInstance as IAuthService);
         await mapaController.exportarMapa(req as Request, res as Response, next as NextFunction);
 
         sinon.assert.calledOnce(res.status as sinon.SinonSpy);
@@ -371,7 +381,8 @@ describe('Mapa Controller', () => {
         let next: Partial<NextFunction> = () => {};
 
         let mapaServiceInstance = Container.get("MapaService");
-
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, "checkAuth").returns(Result.ok<void>());
 
         let edificioRepoInstance = Container.get("EdificioRepo") as IEdificioRepo;
 
@@ -379,7 +390,7 @@ describe('Mapa Controller', () => {
         sinon.stub(edificioRepoInstance, 'findByDomainId').returns(Promise.resolve(edificio));
 
 
-        const mapaController = new MapaController(mapaServiceInstance as IMapaService);
+        const mapaController = new MapaController(mapaServiceInstance as IMapaService, authServiceInstance as IAuthService);
         await mapaController.exportarMapa(req as Request, res as Response, next as NextFunction);
 
         sinon.assert.calledOnce(res.status as sinon.SinonSpy);
@@ -438,9 +449,11 @@ describe('Mapa Controller', () => {
         let next: Partial<NextFunction> = () => {};
 
         let mapaServiceInstance = Container.get("MapaService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(authServiceInstance, "checkAuth").returns(Result.ok<void>());
         sinon.stub(mapaServiceInstance, "exportarMapaAtravesDeUmaPassagemEPiso").returns(Promise.resolve(Result.ok<IExportarMapaDTO>(exportarMapaDTO)));
 
-        const mapaController = new MapaController(mapaServiceInstance as IMapaService);
+        const mapaController = new MapaController(mapaServiceInstance as IMapaService, authServiceInstance as IAuthService);
         await mapaController.exportarMapaAtravesDeUmaPassagemEPiso(req as Request, res as Response, next as NextFunction);
 
         sinon.assert.calledOnce(res.status as sinon.SinonSpy);
