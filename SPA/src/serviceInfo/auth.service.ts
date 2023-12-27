@@ -7,6 +7,7 @@ import { UserModel } from 'src/dataModel/userModel';
 import { MessageService } from './message.service';
 import { devEnvironment } from 'src/environments/environment.development';
 import { Router } from '@angular/router';
+import AlterarDadosUtente from 'src/dataModel/alterarDadosUtente';
 
 
 @Injectable({ providedIn: 'root' })
@@ -199,6 +200,36 @@ export class AuthService {
                 catchError(this.handleError<UserModel[]>('Listar Utilizadores Pendentes')),
                 map(data => data.map(item => item.email))
             );
+    }
+
+    public alterarDadosUtente(nome: string, tel: string, nif: string){
+        
+
+        let updateUserDataModel = {} as AlterarDadosUtente;
+        //TODO remover este email
+        updateUserDataModel.email = "1211417@isep.ipp.pt";
+
+        if (nome != "" && nome != undefined && nome != null) {
+            updateUserDataModel.name = nome;
+        }
+
+        if (tel != "" && tel != undefined && tel != null) {
+            updateUserDataModel.telefone = tel;
+        }
+
+        if (nif != "" && nif != undefined && nif != null) {
+            updateUserDataModel.nif = nif;
+        }
+        console.log(updateUserDataModel);
+        this.http.put<AlterarDadosUtente>(this.authUrl, updateUserDataModel, this.httpOptions)
+            .pipe(catchError(this.handleError<AlterarDadosUtente>("Alterar dados")))
+            .subscribe({
+                next: data => {
+                    if (data != undefined) {
+                        this.log("Dados alterados com sucesso!");
+                    }
+                }
+            });
     }
 
     /**
