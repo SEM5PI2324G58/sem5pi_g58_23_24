@@ -207,7 +207,7 @@ export class AuthService {
 
         let updateUserDataModel = {} as AlterarDadosUtente;
         //TODO remover este email
-        updateUserDataModel.email = "1211417@isep.ipp.pt";
+        updateUserDataModel.email = "utilizadorTeste@isep.ipp.pt";
 
         if (nome != "" && nome != undefined && nome != null) {
             updateUserDataModel.name = nome;
