@@ -21,6 +21,7 @@ import "reflect-metadata";
 import 'mocha';
 import { IUserDTO } from "../../src/dto/IUserDTO";
 import { IApproveOrRejectSignUpDTO } from "../../src/dto/IApproveOrRejectUtenteDTO";
+import { IUpdateUserDTO } from "../../src/dto/IUpdateUserDTO";
 
 
 describe('User Service ', () => {
@@ -286,5 +287,95 @@ describe('User Service ', () => {
         const answer = await service.approveOrRejectSignUp(body as IApproveOrRejectSignUpDTO);
 
         expect(answer.errorValue()).to.equal("Estado inválido");
+    });
+
+    it ('alterarDadosUser tem sucesso ', async () => {
+        let updateDTO = {
+            email: "marco@isep.ipp.pt",
+            nif: "999999999",
+            telefone: "918765432",
+            nome : "Nome1"
+        };
+       
+        const hashedPassword = await UserPassword.create({ value: "Password10@" })
+
+        const userRepoInstance = Container.get("UserRepo");
+       
+        const user = User.create({
+            name: UserName.create("Marco Antonio").getValue(),
+            telefone: UserTelefone.create("914231321").getValue(),
+            nif: UserNumeroContribuinte.create("321123567").getValue(),
+            password: hashedPassword.getValue(),
+            role: Role.create("utente").getValue(),
+            estado: UserEstado.create("pendente").getValue()
+        }, UserEmail.create("marco@isep.ipp.pt").getValue());
+
+        sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(user.getValue()));
+        sinon.stub(userRepoInstance, "save").returns(Promise.resolve(user.getValue()));
+        
+        const service = new UserService(userRepoInstance as IUserRepo);
+        const answer = await service.alterarDadosUser(updateDTO as IUpdateUserDTO);
+
+        expect(answer.getValue()).to.equal(updateDTO);
+    });
+
+    it ('alterarDadosUser falha quando o user não existe', async () => {
+        let updateDTO = {
+            email: "marco@isep.ipp.pt",
+            nif: "999999999",
+            telefone: "918765432",
+            nome : "Nome1"
+        };
+       
+        const hashedPassword = await UserPassword.create({ value: "Password10@" })
+
+        const userRepoInstance = Container.get("UserRepo");
+       
+        const user = User.create({
+            name: UserName.create("Marco Antonio").getValue(),
+            telefone: UserTelefone.create("914231321").getValue(),
+            nif: UserNumeroContribuinte.create("321123567").getValue(),
+            password: hashedPassword.getValue(),
+            role: Role.create("utente").getValue(),
+            estado: UserEstado.create("pendente").getValue()
+        }, UserEmail.create("marco@isep.ipp.pt").getValue());
+
+        sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(null));
+        sinon.stub(userRepoInstance, "save").returns(Promise.resolve(user.getValue()));
+        
+        const service = new UserService(userRepoInstance as IUserRepo);
+        const answer = await service.alterarDadosUser(updateDTO as IUpdateUserDTO);
+
+        expect(answer.errorValue()).to.equal("Não existe um utilizador com este email");
+    });
+
+    it ('alterarDadosUser falha quando o nif novo não é válido', async () => {
+        let updateDTO = {
+            email: "marco@isep.ipp.pt",
+            nif: "nif",
+            telefone: "918765432",
+            nome : "Nome1"
+        };
+       
+        const hashedPassword = await UserPassword.create({ value: "Password10@" })
+
+        const userRepoInstance = Container.get("UserRepo");
+       
+        const user = User.create({
+            name: UserName.create("Marco Antonio").getValue(),
+            telefone: UserTelefone.create("914231321").getValue(),
+            nif: UserNumeroContribuinte.create("321123567").getValue(),
+            password: hashedPassword.getValue(),
+            role: Role.create("utente").getValue(),
+            estado: UserEstado.create("pendente").getValue()
+        }, UserEmail.create("marco@isep.ipp.pt").getValue());
+
+        sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(user.getValue()));
+        sinon.stub(userRepoInstance, "save").returns(Promise.resolve(user.getValue()));
+        
+        const service = new UserService(userRepoInstance as IUserRepo);
+        const answer = await service.alterarDadosUser(updateDTO as IUpdateUserDTO);
+
+        expect(answer.errorValue()).to.equal("O numero de contribuinte tem que ter 9 digitos.");
     });
 });

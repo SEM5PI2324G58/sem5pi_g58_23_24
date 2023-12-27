@@ -21,6 +21,7 @@ import "reflect-metadata";
 
 import 'mocha';
 import IUserService from "../../src/services/IServices/IUserService";
+import { IUpdateUserDTO } from '../../src/dto/IUpdateUserDTO';
 
 
 describe('User Controller ', () => {
@@ -303,4 +304,129 @@ describe('User Controller ', () => {
         sinon.assert.calledWith(res.json as sinon.SinonSpy, "Estado do utilizador alterado com sucesso!");
     });*/
 
+    it('alterarDadosUserController sucesso', async () => {
+
+        let body = {
+            "email": "Marcoantonio@isep.ipp.pt",
+            "telefone": "914231321",
+            "nif": "321123567",
+            "nome" : "MarcoNov0"
+        };
+
+        let req: Partial<Request> = {};
+        
+        req.body = body;
+
+        let res: Partial<Response> = {
+            status: sinon.spy(),
+            json: sinon.spy()
+        };
+        let next: Partial<NextFunction> = () => {};
+
+
+        let userServiceInstance = Container.get("UserService");
+
+        sinon.stub(userServiceInstance, "alterarDadosUser").returns(Result.ok<IUpdateUserDTO>(body));
+        
+
+        const userController = new UserController(userServiceInstance as IUserService);
+
+        let answer = await userController.alterarDadosUser(<Request>req, <Response>res, <NextFunction>next);
+
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, body);
+        
+    });
+
+    it('alterarDadosUserController falha quando nif inválido', async () => {
+
+        let body = {
+            "email": "Marcoantonio@isep.ipp.pt",
+            "telefone": "914231321",
+            "nif": "nif",
+            "nome" : "MarcoNov0"
+        };
+
+        let req: Partial<Request> = {};
+        
+        req.body = body;
+
+        let res: Partial<Response> = {
+            status: sinon.spy(),
+            json: sinon.spy()
+        };
+        let next: Partial<NextFunction> = () => {};
+
+
+        let userServiceInstance = Container.get("UserService");
+
+        sinon.stub(userServiceInstance, "alterarDadosUser").returns(Result.fail<IUpdateUserDTO>("O numero de contribuinte tem que ter 9 digitos."));
+        
+
+        const userController = new UserController(userServiceInstance as IUserService);
+
+        let answer = await userController.alterarDadosUser(<Request>req, <Response>res, <NextFunction>next);
+
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 400);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, "O numero de contribuinte tem que ter 9 digitos.");
+        
+    });
+
+
+    it('alterarDadosUtente com sucesso Controller + Service', async () => {
+
+        let body = {
+            "email": "Marcoantonio@isep.ipp.pt",
+            "telefone": "914444555",
+            "nif": "999888999",
+            "nome" : "MarcoNov0"
+        };
+
+        let req: Partial<Request> = {};
+        
+        req.body = body;
+
+        let res: Partial<Response> = {
+            status: sinon.spy(),
+            json: sinon.spy()
+        };
+        let next: Partial<NextFunction> = () => {};
+
+
+        const hashedPassword = await UserPassword.create({ value: "Password10@" });
+        
+        const user = User.create({
+            name: UserName.create("Marco Antonio").getValue(),
+            telefone: UserTelefone.create("914231321").getValue(),
+            nif: UserNumeroContribuinte.create("321123567").getValue(),
+            password: hashedPassword.getValue(),
+            role: Role.create("utente").getValue(),
+            estado: UserEstado.create("pendente").getValue()
+        }, UserEmail.create("marco@isep.ipp.pt").getValue()).getValue();
+
+        let userService = Container.get("UserService");
+        const userServiceSpy = sinon.spy(userService, 'alterarDadosUser');
+
+        let userRepoInstance = Container.get("UserRepo");
+
+        sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(user));
+        sinon.stub(userRepoInstance, "save").returns(Promise.resolve(user));
+        
+
+        const userController = new UserController(userService as IUserService);
+
+        let answer = await userController.alterarDadosUser(<Request>req, <Response>res, <NextFunction>next);
+
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
+        sinon.assert.calledOnce(userServiceSpy);
+        sinon.assert.calledWith(userServiceSpy, body);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, body);
+        
+    });
 });
