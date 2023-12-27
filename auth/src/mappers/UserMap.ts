@@ -12,7 +12,7 @@ import { UserTelefone } from "../domain/user/userTelefone";
 
 
 export class UserMap extends Mapper<User> {
-  
+
   public static toDTOList(userDocument: User[]) {
     const userDTOList: IUserDTO[] = [];
     userDocument.forEach((user) => {
@@ -38,15 +38,28 @@ export class UserMap extends Mapper<User> {
     const nif = user.getNif();
     const name = user.getName();
 
-    return {
-      name: name.getValue(),
-      email: email,
-      telefone: telefone.getValue(),
-      nif: nif.getValue(),
-      password: password.getValue(),
-      estado: estado.getValue(),
-      role: role.getValue(),
-    } as IUserDTO;
+    if (nif == null || nif == undefined) {
+      return {
+        name: name.getValue(),
+        email: email,
+        telefone: telefone.getValue(),
+        nif: null,
+        password: password.getValue(),
+        estado: estado.getValue(),
+        role: role.getValue(),
+      } as IUserDTO;
+    }
+    else {
+      return {
+        name: name.getValue(),
+        email: email,
+        telefone: telefone.getValue(),
+        nif: nif.getValue(),
+        password: password.getValue(),
+        estado: estado.getValue(),
+        role: role.getValue(),
+      } as IUserDTO;
+    }
   }
 
   public static toDTONomeRole(user: User): IUserDTO {
