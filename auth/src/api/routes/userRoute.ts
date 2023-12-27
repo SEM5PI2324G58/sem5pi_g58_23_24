@@ -48,7 +48,7 @@ export default (app: Router) => {
     }),
     (req, res, next) => ctrl.signupUtente(req, res, next));
 
-    route.patch('/approveOrReject',
+  route.patch('/approveOrReject',
     celebrate({
       body: Joi.object({
         email: Joi.string().required(),
@@ -70,4 +70,15 @@ export default (app: Router) => {
       })
     }),
     (req, res, next) => ctrl.delete(req, res, next));
+
+  route.put('',
+    celebrate({
+      body: Joi.object({
+        email: Joi.string().required(),
+        name: Joi.string(),
+        telefone: Joi.string(),
+        nif: Joi.string(),
+      })
+    }),
+    (req, res, next) => ctrl.alterarDadosUser(req, res, next));
 };
