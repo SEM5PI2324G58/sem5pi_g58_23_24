@@ -276,17 +276,17 @@ export default class UserService implements IUserService {
     return Result.ok<IUserDTO>(UserMap.toDTO(user));
   }
 
-  public async alterarDadosUser(updateUserDTO: IUpdateUserDTO): Promise<Result<IUserDTO>> {
+  public async alterarDadosUser(updateUserDTO: IUpdateUserDTO): Promise<Result<IUpdateUserDTO>> {
     let user = await this.userRepo.findByEmail(updateUserDTO.email);
     if (!user) {
-      return Result.fail<IUserDTO>("Não existe um utilizador com este email")
+      return Result.fail<IUpdateUserDTO>("Não existe um utilizador com este email")
     }
 
     if (updateUserDTO.name){
       let nameResult = UserName.create(updateUserDTO.name);
       
       if (nameResult.isFailure) {
-        return Result.fail<IUserDTO>(nameResult.errorValue().toString());
+        return Result.fail<IUpdateUserDTO>(nameResult.errorValue().toString());
       }
       
       user.updateName(nameResult.getValue());
@@ -296,7 +296,7 @@ export default class UserService implements IUserService {
       let telefoneResult = UserTelefone.create(updateUserDTO.telefone);
 
       if (telefoneResult.isFailure) {
-        return Result.fail<IUserDTO>(telefoneResult.errorValue().toString());
+        return Result.fail<IUpdateUserDTO>(telefoneResult.errorValue().toString());
       }
 
       user.updateTelefone(telefoneResult.getValue());
@@ -306,7 +306,7 @@ export default class UserService implements IUserService {
       let nifResult = UserNumeroContribuinte.create(updateUserDTO.nif);
 
       if (nifResult.isFailure) {
-        return Result.fail<IUserDTO>(nifResult.errorValue().toString());
+        return Result.fail<IUpdateUserDTO>(nifResult.errorValue().toString());
       }
 
       user.updateNif(nifResult.getValue());
@@ -314,6 +314,6 @@ export default class UserService implements IUserService {
 
     await this.userRepo.save(user);
 
-    return Result.ok<IUserDTO>(UserMap.toDTO(user)); 
+    return Result.ok<IUpdateUserDTO>(updateUserDTO); 
   }
 }
