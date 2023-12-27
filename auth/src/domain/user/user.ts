@@ -93,4 +93,17 @@ export class User extends AggregateRoot<UserProps> {
       return Result.ok<User>(user);
     }
   }
+
+  public updateName(name: UserName): void {
+    this.props.name = name;
+  }
+
+  public updateTelefone(telefone: UserTelefone): void {
+    this.props.telefone = telefone;
+  }
+
+  public updateNif(nif: UserNumeroContribuinte): void {
+    this.props.nif = nif;
+  }
+
 }

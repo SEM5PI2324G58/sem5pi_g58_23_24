@@ -1,6 +1,7 @@
 import { Result } from "../../core/logic/Result";
 import { IApproveOrRejectSignUpDTO } from "../../dto/IApproveOrRejectUtenteDTO";
 import { ISignupUtenteDTO } from "../../dto/ISignupUtenteDTO";
+import { IUpdateUserDTO } from "../../dto/IUpdateUserDTO";
 import { IUserDTO } from "../../dto/IUserDTO";
 
 export default interface IUserService  {
@@ -10,4 +11,5 @@ export default interface IUserService  {
   SignIn(email: string, password: string): Promise<Result<{ token: string }>>;
   signupUtente(signupUtente: ISignupUtenteDTO): Promise<Result<String>>;
   delete(email: string): Promise<Result<IUserDTO>>;
+  alterarDadosUser(updateUserDTO: IUpdateUserDTO): Promise<Result<IUserDTO>>;
 }

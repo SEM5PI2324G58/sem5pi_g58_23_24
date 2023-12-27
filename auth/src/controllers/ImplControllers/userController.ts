@@ -7,6 +7,9 @@ import IUserService from '../../services/IServices/IUserService';
 import { IUserDTO } from '../../dto/IUserDTO';
 import { ISignupUtenteDTO } from '../../dto/ISignupUtenteDTO';
 import { IApproveOrRejectSignUpDTO } from '../../dto/IApproveOrRejectUtenteDTO';
+import { ParamsDictionary } from 'express-serve-static-core';
+import { ParsedQs } from 'qs';
+import { IUpdateUserDTO } from '../../dto/IUpdateUserDTO';
 
 @Service()
 export default class UserController implements IUserController {
@@ -123,6 +126,28 @@ export default class UserController implements IUserController {
       const userDTO = userOrError.getValue();
       return res.json(userDTO);
     } catch (e) {
+      throw next(e);
+    }
+  }
+
+  public async alterarDadosUser(req: Request, res: Response, next: NextFunction){
+    try{
+      const userOrError = await this.userServiceInstance.alterarDadosUser(req.body as IUpdateUserDTO);
+      
+      if(userOrError.isFailure){
+        if (String(userOrError.errorValue()) === "Não existe um utilizador com este email"){
+          res.status(404);
+          return res.json(userOrError.errorValue());
+        }
+        res.status(400);
+        return res.json(userOrError.errorValue());
+      }
+      
+      const userDTO = userOrError.getValue();
+      res.status(200);
+      return res.json(userDTO);
+    
+    } catch(e) {
       throw next(e);
     }
   }
