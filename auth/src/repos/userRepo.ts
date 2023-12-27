@@ -50,6 +50,10 @@ export default class UserRepo implements IUserRepo {
         userDocument.password = user.getPassword().getValue();
         userDocument.role = user.getRole().getValue();
         userDocument.estado = user.getEstado().getValue();
+        
+        if(userDocument.nif != null){
+          userDocument.nif = user.getNif().getValue();
+        }
         await userDocument.save();
 
         return user;
