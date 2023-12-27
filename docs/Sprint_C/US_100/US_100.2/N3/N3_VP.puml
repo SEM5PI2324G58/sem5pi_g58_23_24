@@ -10,7 +10,7 @@ participant "Repository" as repo
 
 [o-> ctrl: PUT(json)
 activate ctrl
-ctrl -> service: alterarDadosUser(userDTO) 
+ctrl -> service: alterarDadosUser(updateUserDTO) 
 activate service
 service -> repo : getById(idUser)
 activate repo
