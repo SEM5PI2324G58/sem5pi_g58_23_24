@@ -64,6 +64,10 @@ export default {
     user: {
       name: "UserService",
       path: "../services/ImplServices/userService"
+    },
+    auth: {
+      name: "AuthService",
+      path: "../services/ImplServices/authService"
     }
   },
 };

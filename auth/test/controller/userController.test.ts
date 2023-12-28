@@ -22,7 +22,7 @@ import "reflect-metadata";
 import 'mocha';
 import IUserService from "../../src/services/IServices/IUserService";
 import { IUpdateUserDTO } from '../../src/dto/IUpdateUserDTO';
-
+import IAuthService from '../../src/services/IServices/IAuthService';
 
 describe('User Controller ', () => {
 
@@ -41,6 +41,10 @@ describe('User Controller ', () => {
         let userServiceClass = require('../../src/services/ImplServices/userService').default;
         let userServiceInstance = Container.get(userServiceClass);
         Container.set("UserService", userServiceInstance);
+
+        let authServiceClass = require('../../src/services/ImplServices/authService').default;
+        let authServiceInstance = Container.get(authServiceClass);
+        Container.set("AuthService", authServiceInstance);
 
     });
     
@@ -67,8 +71,10 @@ describe('User Controller ', () => {
             };
             let next: Partial<NextFunction> = () => {};
             let userServiceInstance = Container.get("UserService");
+            let authServiceInstance = Container.get("AuthService");
             sinon.stub(userServiceInstance, "SignUp").returns(Result.ok<string>("Conta criada com sucesso!"));
-            const userController = new UserController(userServiceInstance as IUserService);
+            sinon.stub(authServiceInstance, "checkAuth").returns(Result.ok<void>());
+            const userController = new UserController(userServiceInstance as IUserService, authServiceInstance as IAuthService);
             let answer = await userController.signup(<Request>req, <Response>res, <NextFunction>next);
             sinon.assert.calledOnce(res.status as sinon.SinonSpy);
             sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
@@ -109,14 +115,15 @@ describe('User Controller ', () => {
         let user = User.create(userProps, UserEmail.create(body.email).getValue());
 
         let userService = Container.get("UserService");
+        let authService = Container.get("AuthService");
         const userServiceSpy = sinon.spy(userService, 'SignUp');
 
         let userRepoInstance = Container.get("UserRepo");
 
         sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(null));
         sinon.stub(userRepoInstance, "save").returns(Promise.resolve(user));
-
-        const userController = new UserController(userService as IUserService);
+        sinon.stub(authService, "checkAuth").returns(Result.ok<void>());
+        const userController = new UserController(userService as IUserService, authService as IAuthService);
         let answer = await userController.signup(<Request>req, <Response>res, <NextFunction>next);
         sinon.assert.calledOnce(res.status as sinon.SinonSpy);
         sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
@@ -147,11 +154,13 @@ describe('User Controller ', () => {
 
 
         let userServiceInstance = Container.get("UserService");
+        let authServiceInstance = Container.get("AuthService");
 
         sinon.stub(userServiceInstance, "signupUtente").returns(Result.ok<string>("Conta criada com sucesso!"));
+        sinon.stub(authServiceInstance, "checkAuth").returns(Result.ok<void>());
         
 
-        const userController = new UserController(userServiceInstance as IUserService);
+        const userController = new UserController(userServiceInstance as IUserService, authServiceInstance as IAuthService);
 
         let answer = await userController.signupUtente(<Request>req, <Response>res, <NextFunction>next);
 
@@ -184,11 +193,12 @@ describe('User Controller ', () => {
 
 
         let userServiceInstance = Container.get("UserService");
+        let authServiceInstance = Container.get("AuthService");
 
         sinon.stub(userServiceInstance, "signupUtente").returns(Result.fail<string>("Já existe um utilizador com esse email"));
-        
+        sinon.stub(authServiceInstance, "checkAuth").returns(Result.ok<void>());
 
-        const userController = new UserController(userServiceInstance as IUserService);
+        const userController = new UserController(userServiceInstance as IUserService, authServiceInstance as IAuthService);
 
         let answer = await userController.signupUtente(<Request>req, <Response>res, <NextFunction>next);
 
@@ -241,15 +251,16 @@ describe('User Controller ', () => {
         let user = User.create(userProps, UserEmail.create(body.email).getValue());
 
         let userService = Container.get("UserService");
+        let authService = Container.get("AuthService");
         const userServiceSpy = sinon.spy(userService, 'signupUtente');
 
         let userRepoInstance = Container.get("UserRepo");
 
         sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(null));
         sinon.stub(userRepoInstance, "save").returns(Promise.resolve(user));
-        
+        sinon.stub(authService, "checkAuth").returns(Result.ok<void>());
 
-        const userController = new UserController(userService as IUserService);
+        const userController = new UserController(userService as IUserService, authService as IAuthService);
 
         let answer = await userController.signupUtente(<Request>req, <Response>res, <NextFunction>next);
 
@@ -325,11 +336,11 @@ describe('User Controller ', () => {
 
 
         let userServiceInstance = Container.get("UserService");
-
+        let authServiceInstance = Container.get("AuthService");
         sinon.stub(userServiceInstance, "alterarDadosUser").returns(Result.ok<IUpdateUserDTO>(body));
-        
+        sinon.stub(authServiceInstance, "checkAuth").returns(Result.ok<void>());
 
-        const userController = new UserController(userServiceInstance as IUserService);
+        const userController = new UserController(userServiceInstance as IUserService, authServiceInstance as IAuthService);
 
         let answer = await userController.alterarDadosUser(<Request>req, <Response>res, <NextFunction>next);
 
@@ -361,11 +372,11 @@ describe('User Controller ', () => {
 
 
         let userServiceInstance = Container.get("UserService");
-
+        let authServiceInstance = Container.get("AuthService");
         sinon.stub(userServiceInstance, "alterarDadosUser").returns(Result.fail<IUpdateUserDTO>("O numero de contribuinte tem que ter 9 digitos."));
-        
+        sinon.stub(authServiceInstance, "checkAuth").returns(Result.ok<void>());
 
-        const userController = new UserController(userServiceInstance as IUserService);
+        const userController = new UserController(userServiceInstance as IUserService, authServiceInstance as IAuthService);
 
         let answer = await userController.alterarDadosUser(<Request>req, <Response>res, <NextFunction>next);
 
@@ -412,12 +423,12 @@ describe('User Controller ', () => {
         const userServiceSpy = sinon.spy(userService, 'alterarDadosUser');
 
         let userRepoInstance = Container.get("UserRepo");
-
+        let authServiceInstance = Container.get("AuthService");
         sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(user));
         sinon.stub(userRepoInstance, "save").returns(Promise.resolve(user));
-        
+        sinon.stub(authServiceInstance, "checkAuth").returns(Result.ok<void>());
 
-        const userController = new UserController(userService as IUserService);
+        const userController = new UserController(userService as IUserService, authServiceInstance as IAuthService);
 
         let answer = await userController.alterarDadosUser(<Request>req, <Response>res, <NextFunction>next);
 
