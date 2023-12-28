@@ -89,6 +89,22 @@
             </div>
         </div>
     </div>
+    <div class="cdk-overlay-container">
+        <div *ngIf="popupPisosElevadorOpen" class="dialogElevador"> 
+            <div class="header">
+                <p>Utilizar elevador para mudar de piso</p>
+                <label for="selectItems">Pisos disponíveis: </label>
+                <select id="selectItems">
+                    <option *ngFor="let item of listaPisosServidos" [value]="item">{{ item }}</option>
+                </select>
+            </div>
+            
+            <div class="buttonElevador">
+                <button>Mudar</button>
+                <button (click)="fecharPopup()"> Cancelar</button>
+            </div>
+        </div>
+    </div>
     <div id="tooltip" style="position: absolute; display: none; background-color: #fff; padding: 5px; border: 1px solid #000; z-index: 1000;"></div>
 
     <div class="canvas">

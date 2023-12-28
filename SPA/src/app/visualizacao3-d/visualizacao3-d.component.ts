@@ -74,6 +74,8 @@ export class Visualizacao3DComponent implements AfterViewInit {
   multipleViewsCheckBox: any;
   userInterfaceCheckBox: any;
   popupOpen: boolean = false;
+  popupPisosElevadorOpen: boolean = false;
+  listaPisosServidos: number[] = [1,2,3,4];
   carregouPiso: boolean = false;
   context1!: CanvasRenderingContext2D | null;
   texture1!: THREE.Texture;
@@ -1077,6 +1079,18 @@ export class Visualizacao3DComponent implements AfterViewInit {
       ;
   }
 
+  collisionWithPortaElevador(position: THREE.Vector3) {
+      return this.maze.distanceToWestPortaElevador(position) < this.player.radius
+      || this.maze.distanceToEastPortaElevador(position) < this.player.radius
+      || this.maze.distanceToNorthPortaElevador(position) < this.player.radius
+      || this.maze.distanceToSouthPortaElevador(position) < this.player.radius
+      ;
+  }
+
+  fecharPopup() {
+    this.popupPisosElevadorOpen = false;
+  }
+
   atravessarPassagem(resposta: boolean) {
     if(resposta == true){
       this.mapaService.exportarMapaAtravesDeUmaPassagemEPiso(this.idPassagemAtravessar,this.maze.codigoEdificio,this.maze.numeroPiso).subscribe((data: ExportarMapa) => {
@@ -1309,46 +1323,52 @@ export class Visualizacao3DComponent implements AfterViewInit {
           this.player.object.direction
         );
         if (this.player.keyStates.backward) {
+
           const newPosition = new THREE.Vector3(
             -coveredDistance * Math.sin(direction),
             0.0,
             -coveredDistance * Math.cos(direction)
           ).add(this.player.object.position);
+
           if (this.collision(newPosition)) {
 
-          } else {
-            if (this.collisionWithPassage(newPosition)) {
+          } else if (this.collisionWithPassage(newPosition)) {
               this.idPassagemAtravessar = this.maze.idPassagem(newPosition, this.player.radius);
               this.popupOpen = true;
-              
-            } else {
-              this.player.object.position.set(
-                newPosition.x,
-                newPosition.y,
-                newPosition.z
-              );        
-            }
+          } else if (this.collisionWithPortaElevador(newPosition)){
+              this.popupPisosElevadorOpen = true;
+          } else {
+            this.player.object.position.set(
+              newPosition.x,
+              newPosition.y,
+              newPosition.z
+            );        
           }
           
         } else if (this.player.keyStates.forward) {
+          
           const newPosition = new THREE.Vector3(
             coveredDistance * Math.sin(direction),
             0.0,
             coveredDistance * Math.cos(direction)
           ).add(this.player.object.position);
+          
           if (this.collision(newPosition)) {
-          } else {
-            if (this.collisionWithPassage(newPosition)) {
+
+          } else if (this.collisionWithPassage(newPosition)) {
               this.idPassagemAtravessar = this.maze.idPassagem(newPosition, this.player.radius);
               this.popupOpen = true;
-              
-            } else {
-              this.player.object.position.set(
-                newPosition.x,
-                newPosition.y,
-                newPosition.z
-              );        
-            }
+          } else if (this.collisionWithPortaElevador(newPosition)){
+              this.popupPisosElevadorOpen = true;
+
+
+          } else {
+            this.player.object.position.set(
+              newPosition.x,
+              newPosition.y,
+              newPosition.z
+            );        
+          
           }
           
           /*
