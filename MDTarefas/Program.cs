@@ -20,6 +20,7 @@ builder.Services.Configure<TarefaDatabaseSettings>(
 
 builder.Services.AddScoped<ITarefaRepo, TarefaRepo>();
 builder.Services.AddScoped<ITarefaService, TarefaService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddHttpClient();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
