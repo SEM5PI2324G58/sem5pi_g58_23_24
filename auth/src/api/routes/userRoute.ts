@@ -83,9 +83,5 @@ export default (app: Router) => {
     (req, res, next) => ctrl.alterarDadosUser(req, res, next));
 
     route.delete('/utente',
-    celebrate({headers: Joi.object({
-      authorization: Joi.string().required()
-    })
-    }),
     (req, res, next) => ctrl.deleteUtente(req, res, next));
 };
