@@ -20,6 +20,14 @@
 iniciar_servidor(PORT) :-
     http_server(http_dispatch, [port(PORT)]).
 
+% Manipulador para pedido de tempo entre tarefas
+:- http_handler('/tarefa/tempo', tempo_handler, []).
+
+tempo_handler(Request) :-
+    make_request_MDTarefa(Request),
+    Robot = Request.robot,
+    iterar_robots(Robot).
+
 % Manipulador para caminho entre pontos de um piso
 :- http_handler('/caminho/pontos_piso', caminho_pontos_piso_handler, []).
 
