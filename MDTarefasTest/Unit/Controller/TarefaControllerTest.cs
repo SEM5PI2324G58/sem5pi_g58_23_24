@@ -1,3 +1,6 @@
+using MDTarefas.Services.ImplServices;
+using Microsoft.AspNetCore.Http;
+
 namespace MDTarefasTest.Unit.Controller
 {
     public class TarefaControllerTest
@@ -6,11 +9,16 @@ namespace MDTarefasTest.Unit.Controller
         public async void ensureInvalidParametersReturnsBadRequest()
         {
             var serviceMock = new Mock<ITarefaService>();
+            var authMock = new Mock<IAuthService>();
+ 
             var errorMessage = "Tipo de tarefa inválido";
             serviceMock.Setup(service => service.criarTarefa(It.IsAny<CriarTarefaDTO>()))
                 .ThrowsAsync(new BusinessRuleValidationException(errorMessage));
-
-            var controller = new TarefaController(serviceMock.Object);
+            authMock.Setup(auth => auth.IsAuthenticated(It.IsAny<HttpRequest>()))
+                .Returns(true);
+            authMock.Setup(auth => auth.IsAuthorized(It.IsAny<HttpRequest>(), It.IsAny<string[]>()))
+                .Returns(true);
+            var controller = new TarefaController(serviceMock.Object, authMock.Object);
 
             CriarTarefaDTO criarTarefaDTO = new CriarTarefaDTO();
             criarTarefaDTO.TipoTarefa = "FAIL";
@@ -26,7 +34,8 @@ namespace MDTarefasTest.Unit.Controller
         public async void ensureValidParametersReturnsCreated()
         {
             var serviceMock = new Mock<ITarefaService>();
-
+            var authMock = new Mock<IAuthService>();
+ 
             TarefaDTO returnTarefaDTO = new TarefaDTO();
             returnTarefaDTO.Id = "id";
             returnTarefaDTO.TipoTarefa = "PickUpDelivery";
@@ -41,9 +50,11 @@ namespace MDTarefasTest.Unit.Controller
 
             serviceMock.Setup(service => service.criarTarefa(It.IsAny<CriarTarefaDTO>()))
                 .ReturnsAsync(returnTarefaDTO);
-
-            var controller = new TarefaController(serviceMock.Object);
-
+            authMock.Setup(auth => auth.IsAuthenticated(It.IsAny<HttpRequest>()))
+                .Returns(true);
+            authMock.Setup(auth => auth.IsAuthorized(It.IsAny<HttpRequest>(), It.IsAny<string[]>()))
+                .Returns(true);
+            var controller = new TarefaController(serviceMock.Object, authMock.Object);
 
             CriarTarefaDTO criarTarefaDTO = new CriarTarefaDTO();
             criarTarefaDTO.TipoTarefa = "PICkUPDELIVERY";
@@ -88,11 +99,15 @@ namespace MDTarefasTest.Unit.Controller
 
             // Mock the repository
             var tarefaRepoMock = new Mock<ITarefaRepo>();
-            
+            var authMock = new Mock<IAuthService>();
+ 
             tarefaRepoMock.Setup(repo => repo.CreateAsync(It.IsAny<Tarefa>()))
                 .ReturnsAsync((Tarefa tarefa) => tarefa);        
             
-
+            authMock.Setup(auth => auth.IsAuthenticated(It.IsAny<HttpRequest>()))
+                .Returns(true);
+            authMock.Setup(auth => auth.IsAuthorized(It.IsAny<HttpRequest>(), It.IsAny<string[]>()))
+                .Returns(true);
             // Create the service
             var tarefaService = new TarefaService(tarefaRepoMock.Object, httpClient);
 
@@ -110,7 +125,7 @@ namespace MDTarefasTest.Unit.Controller
 
             
 
-            var controller = new TarefaController(tarefaService);
+            var controller = new TarefaController(tarefaService, authMock.Object);
 
             var res = await controller.Create(criarTarefaDTO);
 
@@ -132,10 +147,16 @@ namespace MDTarefasTest.Unit.Controller
         [Fact]
         public async void listarTarefasPendentesDevolveNotFoundCasoNaoExistamTarefas(){
             var serviceMock = new Mock<ITarefaService>();
+            var authMock = new Mock<IAuthService>();
             serviceMock.Setup(service => service.listarTarefasPendentes())
                 .ReturnsAsync(new List<TarefaDTO>());
 
-            var controller = new TarefaController(serviceMock.Object);
+            authMock.Setup(auth => auth.IsAuthenticated(It.IsAny<HttpRequest>()))
+                .Returns(true);
+            authMock.Setup(auth => auth.IsAuthorized(It.IsAny<HttpRequest>(), It.IsAny<string[]>()))
+                .Returns(true);
+            var controller = new TarefaController(serviceMock.Object, authMock.Object);
+            
 
             var res = await controller.GetTarefasPendentes();
 
@@ -147,6 +168,7 @@ namespace MDTarefasTest.Unit.Controller
         [Fact]
         public async void listarTarefasPendentesDevolveTarefasPendentes(){
             var serviceMock = new Mock<ITarefaService>();
+            var authMock = new Mock<IAuthService>();
 
             TarefaDTO tarefaDTO = new TarefaDTO();
             tarefaDTO.Id = "id";
@@ -164,8 +186,11 @@ namespace MDTarefasTest.Unit.Controller
 
             serviceMock.Setup(service => service.listarTarefasPendentes())
                 .ReturnsAsync(new List<TarefaDTO>(){tarefaDTO});
-
-            var controller = new TarefaController(serviceMock.Object);
+            authMock.Setup(auth => auth.IsAuthenticated(It.IsAny<HttpRequest>()))
+                .Returns(true);
+            authMock.Setup(auth => auth.IsAuthorized(It.IsAny<HttpRequest>(), It.IsAny<string[]>()))
+                .Returns(true);
+            var controller = new TarefaController(serviceMock.Object, authMock.Object);
 
             var res = await controller.GetTarefasPendentes();
 
@@ -177,6 +202,7 @@ namespace MDTarefasTest.Unit.Controller
         [Fact]
         public async void controllerServiceListarTarefasPendentesDevolveTarefasPendentes(){
             var tarefaRepoMock = new Mock<ITarefaRepo>();
+            var authMock = new Mock<IAuthService>();
             var httpClient = new HttpClient();
 
             Tarefa tarefa = new PickUpDelivery(
@@ -203,10 +229,13 @@ namespace MDTarefasTest.Unit.Controller
 
             tarefaRepoMock.Setup(repo => repo.GetTarefasPendentesAsync())
                 .ReturnsAsync(new List<Tarefa>(){tarefa});
-
+            authMock.Setup(auth => auth.IsAuthenticated(It.IsAny<HttpRequest>()))
+                .Returns(true);
+            authMock.Setup(auth => auth.IsAuthorized(It.IsAny<HttpRequest>(), It.IsAny<string[]>()))
+                .Returns(true);
             var tarefaService = new TarefaService(tarefaRepoMock.Object, httpClient);
 
-            var controller = new TarefaController(tarefaService);
+            var controller = new TarefaController(tarefaService, authMock.Object);
 
             var res = await controller.GetTarefasPendentes();
 
@@ -232,6 +261,8 @@ namespace MDTarefasTest.Unit.Controller
         [Fact]
         public async void AlterarEstadoDaTarefaRetornaTarefa(){
             var serviceMock = new Mock<ITarefaService>();
+            var authMock = new Mock<IAuthService>();
+ 
 
             TarefaDTO tarefaDTO = new TarefaDTO();
             tarefaDTO.Id = "id";
@@ -257,8 +288,11 @@ namespace MDTarefasTest.Unit.Controller
 
             serviceMock.Setup(service => service.alterarEstadoDaTarefa(It.IsAny<AlterarEstadoDaTarefaDTO>()))
                 .ReturnsAsync(tarefaDTO);
-
-            var controller = new TarefaController(serviceMock.Object);
+            authMock.Setup(auth => auth.IsAuthenticated(It.IsAny<HttpRequest>()))
+                .Returns(true);
+            authMock.Setup(auth => auth.IsAuthorized(It.IsAny<HttpRequest>(), It.IsAny<string[]>()))
+                .Returns(true);
+            var controller = new TarefaController(serviceMock.Object, authMock.Object);
 
             var res = await controller.AlterarEstadoDaTarefa(alterarTarefaDTO);
 
@@ -270,7 +304,8 @@ namespace MDTarefasTest.Unit.Controller
         [Fact]
         public async void AlterarEstadoDaTarefaRetornaBadRequestForBusinessRuleValidationException(){
             var serviceMock = new Mock<ITarefaService>();
-
+            var authMock = new Mock<IAuthService>();
+ 
 
             var alterarTarefaDTO = new AlterarEstadoDaTarefaDTO();
             alterarTarefaDTO.Id = "id";
@@ -280,8 +315,11 @@ namespace MDTarefasTest.Unit.Controller
             var errorMessage = "Id e estado da tarefa são obrigatórios";
             serviceMock.Setup(service => service.alterarEstadoDaTarefa(It.IsAny<AlterarEstadoDaTarefaDTO>()))
                 .ThrowsAsync(new BusinessRuleValidationException(errorMessage));
-
-            var controller = new TarefaController(serviceMock.Object);
+            authMock.Setup(auth => auth.IsAuthenticated(It.IsAny<HttpRequest>()))
+                .Returns(true);
+            authMock.Setup(auth => auth.IsAuthorized(It.IsAny<HttpRequest>(), It.IsAny<string[]>()))
+                .Returns(true);
+            var controller = new TarefaController(serviceMock.Object, authMock.Object);
 
             var res = await controller.AlterarEstadoDaTarefa(alterarTarefaDTO);
 
@@ -293,7 +331,8 @@ namespace MDTarefasTest.Unit.Controller
         [Fact]
         public async void AlterarEstadoDaTarefaRetornaNotFoundForNotFoundException(){
             var serviceMock = new Mock<ITarefaService>();
-
+            var authMock = new Mock<IAuthService>();
+ 
 
             var alterarTarefaDTO = new AlterarEstadoDaTarefaDTO();
             alterarTarefaDTO.Id = "id";
@@ -303,8 +342,11 @@ namespace MDTarefasTest.Unit.Controller
             var errorMessage = "Tarefa não existe";
             serviceMock.Setup(service => service.alterarEstadoDaTarefa(It.IsAny<AlterarEstadoDaTarefaDTO>()))
                 .ThrowsAsync(new NotFoundException(errorMessage));
-
-            var controller = new TarefaController(serviceMock.Object);
+            authMock.Setup(auth => auth.IsAuthenticated(It.IsAny<HttpRequest>()))
+                .Returns(true);
+            authMock.Setup(auth => auth.IsAuthorized(It.IsAny<HttpRequest>(), It.IsAny<string[]>()))
+                .Returns(true);
+            var controller = new TarefaController(serviceMock.Object, authMock.Object);
 
             var res = await controller.AlterarEstadoDaTarefa(alterarTarefaDTO);
 
@@ -316,6 +358,8 @@ namespace MDTarefasTest.Unit.Controller
         [Fact]
         public async void ControllerServiceAlterarEstadoDaTarefaRetornaTarefa(){
             var tarefaRepo = new Mock<ITarefaRepo>();
+            var authMock = new Mock<IAuthService>();
+ 
             var httpClient = new HttpClient();
 
             var tarefa = new PickUpDelivery(
@@ -345,7 +389,11 @@ namespace MDTarefasTest.Unit.Controller
 
             var tarefaService = new TarefaService(tarefaRepo.Object, httpClient);
 
-            var controller = new TarefaController(tarefaService); 
+            authMock.Setup(auth => auth.IsAuthenticated(It.IsAny<HttpRequest>()))
+                .Returns(true);
+            authMock.Setup(auth => auth.IsAuthorized(It.IsAny<HttpRequest>(), It.IsAny<string[]>()))
+                .Returns(true);
+            var controller = new TarefaController(tarefaService, authMock.Object); 
 
             var res = await controller.AlterarEstadoDaTarefa(tarefaDTO);
 
