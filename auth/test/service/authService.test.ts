@@ -129,4 +129,24 @@ describe('AuthService ', () => {
         let answer = authService.checkAuth(req, res, ['gestor de tarefas']);
         expect(answer.isSuccess).to.equal(false);
     });
+
+
+    it('obter email retorna o email', async () => {
+      let token = jwt.sign({
+            id: 123,
+            email: "default@email.com", // We are gonna use this in the middleware 'isAuth'
+            role: "gestor de tarefas",
+            firstName: "nome1",
+            lastName: "nome2",
+            exp: 2524608000000,
+          },
+          config.jwtSecret,
+        );
+        let req: any = {};
+        req.headers = { "authorization": "Bearer " + token };
+      const authService = new AuthService();
+      let answer = authService.obterEmail(req);
+      expect(answer.isSuccess).to.equal(true);
+      expect(answer.getValue()).to.equal("default@email.com");
+  });
 });

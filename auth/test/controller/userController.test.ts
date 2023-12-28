@@ -15,6 +15,9 @@ import { UserTelefone } from '../../src//domain/user/userTelefone';
 import { Request, Response, NextFunction } from 'express';
 import UserController from '../../src/controllers/ImplControllers/UserController';
 import { Result } from '../../src/core/logic/Result';
+import jwt from 'jsonwebtoken';
+import config from '../../config';
+
 
 
 import "reflect-metadata";
@@ -440,4 +443,201 @@ describe('User Controller ', () => {
         sinon.assert.calledWith(res.json as sinon.SinonSpy, body);
         
     });
+    
+    it('deleteUtente tem sucesso', async () => {
+
+        let req: Partial<Request> = {};
+        
+        let token = jwt.sign({
+            id: 123,
+            email: "marco@isep.ipp.pt",
+            role: "utente",
+            firstName: "nome1",
+            lastName: "nome2",
+            exp: 2524608000000,
+          },
+          config.jwtSecret,
+        );
+
+        req.headers = { "authorization": "Bearer " + token };
+
+        let res: Partial<Response> = {
+            status: sinon.spy(),
+            json: sinon.spy()
+        };
+        let next: Partial<NextFunction> = () => {};
+
+
+        let userServiceInstance = Container.get("UserService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(userServiceInstance, "deleteUtente").returns(Result.ok<string>("Utilizador removido com sucesso"));
+        sinon.stub(authServiceInstance, "checkAuth").returns(Result.ok<void>());
+
+        const userController = new UserController(userServiceInstance as IUserService, authServiceInstance as IAuthService);
+
+        let answer = await userController.deleteUtente(<Request>req, <Response>res, <NextFunction>next);
+
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, "Utilizador removido com sucesso");
+       
+    });
+
+    it('deleteUtente falha caso o utente não existe', async () => {
+
+        let req: Partial<Request> = {};
+        
+        let token = jwt.sign({
+            id: 123,
+            email: "marco@isep.ipp.pt",
+            role: "utente",
+            firstName: "nome1",
+            lastName: "nome2",
+            exp: 2524608000000,
+          },
+          config.jwtSecret,
+        );
+
+        req.headers = { "authorization": "Bearer " + token };
+
+        let res: Partial<Response> = {
+            status: sinon.spy(),
+            json: sinon.spy()
+        };
+        let next: Partial<NextFunction> = () => {};
+
+
+        let userServiceInstance = Container.get("UserService");
+        let authServiceInstance = Container.get("AuthService");
+        sinon.stub(userServiceInstance, "deleteUtente").returns(Result.fail<string>("Utilizador não existe"));
+        sinon.stub(authServiceInstance, "checkAuth").returns(Result.ok<void>());
+
+        const userController = new UserController(userServiceInstance as IUserService, authServiceInstance as IAuthService);
+
+        let answer = await userController.deleteUtente(<Request>req, <Response>res, <NextFunction>next);
+
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 404);
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, "Utilizador não existe");
+       
+    });
+
+    it('userController + userService + authservice deleteUtente tem sucesso', async () => {
+
+        let req: Partial<Request> = {};
+        
+        let token = jwt.sign({
+            id: 123,
+            email: "marco@isep.ipp.pt",
+            role: "utente",
+            firstName: "nome1",
+            lastName: "nome2",
+            exp: 2524608000000,
+          },
+          config.jwtSecret,
+        );
+
+        req.headers = { "authorization": "Bearer " + token };
+
+        let res: Partial<Response> = {
+            status: sinon.spy(),
+            json: sinon.spy()
+        };
+        let next: Partial<NextFunction> = () => {};
+
+        const hashedPassword = await UserPassword.create({ value: "Password10@" })
+       
+        const user = User.create({
+            name: UserName.create("Marco Antonio").getValue(),
+            telefone: UserTelefone.create("914231321").getValue(),
+            nif: UserNumeroContribuinte.create("321123567").getValue(),
+            password: hashedPassword.getValue(),
+            role: Role.create("utente").getValue(),
+            estado: UserEstado.create("pendente").getValue()
+        }, UserEmail.create("marco@isep.ipp.pt").getValue());
+
+        let authServiceInstance = Container.get("AuthService");
+
+
+        let userService = Container.get("UserService");
+        const userServiceSpy = sinon.spy(userService, 'deleteUtente');
+        let userRepoInstance = Container.get("UserRepo");
+
+        sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(user));
+        sinon.stub(userRepoInstance, "delete").returns(Promise.resolve(true));
+        
+        const userController = new UserController(userService as IUserService, authServiceInstance as IAuthService);
+
+        
+        let answer = await userController.deleteUtente(<Request>req, <Response>res, <NextFunction>next);
+
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 200);
+        sinon.assert.calledOnce(userServiceSpy);
+        sinon.assert.calledWith(userServiceSpy, "marco@isep.ipp.pt");
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, "Utilizador removido com sucesso");
+        
+    });
+
+
+    it('userController + userService + authservice deleteUtente falha se o utente não existir', async () => {
+
+        let req: Partial<Request> = {};
+        
+        let token = jwt.sign({
+            id: 123,
+            email: "marco@isep.ipp.pt",
+            role: "utente",
+            firstName: "nome1",
+            lastName: "nome2",
+            exp: 2524608000000,
+          },
+          config.jwtSecret,
+        );
+
+        req.headers = { "authorization": "Bearer " + token };
+
+        let res: Partial<Response> = {
+            status: sinon.spy(),
+            json: sinon.spy()
+        };
+        let next: Partial<NextFunction> = () => {};
+
+        const hashedPassword = await UserPassword.create({ value: "Password10@" })
+       
+        const user = User.create({
+            name: UserName.create("Marco Antonio").getValue(),
+            telefone: UserTelefone.create("914231321").getValue(),
+            nif: UserNumeroContribuinte.create("321123567").getValue(),
+            password: hashedPassword.getValue(),
+            role: Role.create("utente").getValue(),
+            estado: UserEstado.create("pendente").getValue()
+        }, UserEmail.create("marco@isep.ipp.pt").getValue());
+
+        let authServiceInstance = Container.get("AuthService");
+
+
+        let userService = Container.get("UserService");
+        const userServiceSpy = sinon.spy(userService, 'deleteUtente');
+        let userRepoInstance = Container.get("UserRepo");
+
+        sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(null));
+        
+        const userController = new UserController(userService as IUserService, authServiceInstance as IAuthService);
+
+        
+        let answer = await userController.deleteUtente(<Request>req, <Response>res, <NextFunction>next);
+
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 404);
+        sinon.assert.calledOnce(userServiceSpy);
+        sinon.assert.calledWith(userServiceSpy, "marco@isep.ipp.pt");
+        sinon.assert.calledOnce(res.json as sinon.SinonSpy);
+        sinon.assert.calledWith(res.json as sinon.SinonSpy, "Utilizador não existe");
+        
+    });
+
 });

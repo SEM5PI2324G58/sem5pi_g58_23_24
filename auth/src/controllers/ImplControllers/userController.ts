@@ -180,10 +180,10 @@ export default class UserController implements IUserController {
       if(email.isFailure){
         if(String(email.errorValue()) === "Sessão expirada"){
           res.status(440);
-          res.send()        
+          return res.send();          
         }else{
           res.status(401);
-          res.send();
+          return res.send();
         }
       }
       const userOrError = await this.userServiceInstance.deleteUtente(email.getValue());
@@ -196,6 +196,7 @@ export default class UserController implements IUserController {
         return res.json(userOrError.errorValue());
       }
       const resposta = userOrError.getValue();
+      res.status(200);
       return res.json(resposta);
     } catch(e) {
       throw next(e);

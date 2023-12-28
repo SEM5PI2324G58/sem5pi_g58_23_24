@@ -378,4 +378,71 @@ describe('User Service ', () => {
 
         expect(answer.errorValue()).to.equal("O numero de contribuinte tem que ter 9 digitos.");
     });
+
+    it ('DeleteUtente tem sucesso ', async () => {
+        let email = "default@isep.ipp.pt";
+       
+        const hashedPassword = await UserPassword.create({ value: "Password10@" })
+
+        const userRepoInstance = Container.get("UserRepo");
+       
+        const user = User.create({
+            name: UserName.create("Marco Antonio").getValue(),
+            telefone: UserTelefone.create("914231321").getValue(),
+            nif: UserNumeroContribuinte.create("321123567").getValue(),
+            password: hashedPassword.getValue(),
+            role: Role.create("utente").getValue(),
+            estado: UserEstado.create("pendente").getValue()
+        }, UserEmail.create("default@isep.ipp.pt").getValue());
+
+        sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(user.getValue()));
+        sinon.stub(userRepoInstance, "delete").returns(Promise.resolve(true));
+        
+        const service = new UserService(userRepoInstance as IUserRepo);
+        const answer = await service.deleteUtente(email);
+
+        expect(answer.getValue()).to.equal("Utilizador removido com sucesso");
+
+    });
+
+    it ('DeleteUtente falha se o user não existir ', async () => {
+        let email = "default@isep.ipp.pt";
+       
+        const userRepoInstance = Container.get("UserRepo");
+
+        sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(null));
+        
+        const service = new UserService(userRepoInstance as IUserRepo);
+        const answer = await service.deleteUtente(email);
+
+        expect(answer.errorValue()).to.equal("Utilizador não existe");
+
+    });
+
+    it ('DeleteUtente falha se delete falhar ', async () => {
+        let email = "default@isep.ipp.pt";
+       
+        const hashedPassword = await UserPassword.create({ value: "Password10@" })
+
+        const userRepoInstance = Container.get("UserRepo");
+       
+        const user = User.create({
+            name: UserName.create("Marco Antonio").getValue(),
+            telefone: UserTelefone.create("914231321").getValue(),
+            nif: UserNumeroContribuinte.create("321123567").getValue(),
+            password: hashedPassword.getValue(),
+            role: Role.create("utente").getValue(),
+            estado: UserEstado.create("pendente").getValue()
+        }, UserEmail.create("default@isep.ipp.pt").getValue());
+
+        sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(user.getValue()));
+        sinon.stub(userRepoInstance, "delete").returns(Promise.resolve(false));
+        
+        const service = new UserService(userRepoInstance as IUserRepo);
+        const answer = await service.deleteUtente(email);
+
+
+        expect(answer.errorValue()).to.equal("Não foi possivel remover o utilizador");
+
+    });
 });
