@@ -10,11 +10,13 @@ import { IApproveOrRejectSignUpDTO } from '../../dto/IApproveOrRejectUtenteDTO';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { ParsedQs } from 'qs';
 import { IUpdateUserDTO } from '../../dto/IUpdateUserDTO';
+import IAuthService from '../../services/IServices/IAuthService';
 
 @Service()
 export default class UserController implements IUserController {
   constructor(
-    @Inject(config.services.user.name) private userServiceInstance: IUserService
+    @Inject(config.services.user.name) private userServiceInstance: IUserService,
+    @Inject(config.services.auth.name) private authServiceInstance: IAuthService
   ) { }
   async login(req: Request, res: Response, next: NextFunction) {
     try {
@@ -60,6 +62,10 @@ export default class UserController implements IUserController {
 
   async approveOrRejectSignUp(req: Request, res: Response, next: NextFunction) {
     try {
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['admin']);
+      if(authOrError.isFailure){
+        return res.send();
+      }
       const userOrError = await this.userServiceInstance.approveOrRejectSignUp(req.body as IApproveOrRejectSignUpDTO);
       if (userOrError.isFailure) {
         let message = String(userOrError.errorValue());
@@ -80,6 +86,10 @@ export default class UserController implements IUserController {
 
   async listarUtilizadoresPendentes(req: Request, res: Response, next: NextFunction) {
     try {
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['admin']);
+      if(authOrError.isFailure){
+        return res.send();
+      }
       const userOrError = await this.userServiceInstance.listarUtilizadoresPendentes();
       if (userOrError.isFailure) {
         let message = String(userOrError.errorValue());
@@ -99,6 +109,10 @@ export default class UserController implements IUserController {
 
   async signupUtente(req: Request, res: Response, next: NextFunction) {
     try {
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['utente']);
+      if(authOrError.isFailure){
+        return res.send();
+      }
       const userOrError = await this.userServiceInstance.signupUtente(req.body as ISignupUtenteDTO);
 
       if (userOrError.isFailure) {
@@ -116,6 +130,10 @@ export default class UserController implements IUserController {
 
 
   public async delete(req: Request, res: Response, next: NextFunction) {
+    let authOrError = this.authServiceInstance.checkAuth(req, res, ['admin']);
+    if(authOrError.isFailure){
+      return res.send();
+    }
     try {
       let props = String(req.query.email);
       const userOrError = await this.userServiceInstance.delete(props);
@@ -131,6 +149,10 @@ export default class UserController implements IUserController {
   }
 
   public async alterarDadosUser(req: Request, res: Response, next: NextFunction){
+    let authOrError = this.authServiceInstance.checkAuth(req, res, ['utente']);
+    if(authOrError.isFailure){
+      return res.send();
+    }
     try{
       const userOrError = await this.userServiceInstance.alterarDadosUser(req.body as IUpdateUserDTO);
       

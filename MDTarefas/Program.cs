@@ -3,6 +3,10 @@ using MDTarefas.repos;
 using MDTarefas.services.IRepos;
 using MDTarefas.Services.ImplServices;
 using MDTarefas.Services.IServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +21,17 @@ builder.Services.Configure<TarefaDatabaseSettings>(
 builder.Services.AddScoped<ITarefaRepo, TarefaRepo>();
 builder.Services.AddScoped<ITarefaService, TarefaService>();
 builder.Services.AddHttpClient();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("my sakdfho2390asjod$%jl)!sdjas0i secret"))
+        };
+    });
 
 builder.Services.AddCors(options =>
 {
@@ -30,6 +45,8 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -30,6 +30,11 @@ export default async ({ expressApp }) => {
     path: config.services.user.path
   }
 
+  const authService = {
+    name: config.services.auth.name,
+    path: config.services.auth.path
+  }
+
 
   await dependencyInjectorLoader({
     mongoConnection,
@@ -44,6 +49,7 @@ export default async ({ expressApp }) => {
     ],
     services: [
       userService,
+      authService
     ]
   });
   Logger.info('✌️ Schemas, Controllers, Repositories, Services, etc. loaded');
