@@ -8,4 +8,5 @@ export default interface IUserController  {
     signupUtente(req: Request, res: Response, next: NextFunction);
     delete(req: Request, res: Response, next: NextFunction);
     alterarDadosUser(req: Request, res: Response, next: NextFunction);
+    deleteUtente(req: Request, res: Response, next: NextFunction);
 }

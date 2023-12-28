@@ -12,4 +12,5 @@ export default interface IUserService  {
   signupUtente(signupUtente: ISignupUtenteDTO): Promise<Result<String>>;
   delete(email: string): Promise<Result<IUserDTO>>;
   alterarDadosUser(updateUserDTO: IUpdateUserDTO): Promise<Result<IUpdateUserDTO>>;
+  deleteUtente(email: string): Promise<Result<String>>;
 }

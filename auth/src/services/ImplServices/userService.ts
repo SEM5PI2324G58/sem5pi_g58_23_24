@@ -276,6 +276,20 @@ export default class UserService implements IUserService {
     return Result.ok<IUserDTO>(UserMap.toDTO(user));
   }
 
+  public async deleteUtente(email: string): Promise<Result<string>> {
+
+    const user = await this.userRepo.findByEmail(email);
+    if (user === null) {
+      return Result.fail<string>("Utilizador não existe")
+    }
+    if(await this.userRepo.delete(user)){
+      return Result.ok<string>("Utilizador removido com sucesso");
+    }else{
+      return Result.fail<string>("Não foi possivel remover o utilizador");
+    }
+    
+  }
+
   public async alterarDadosUser(updateUserDTO: IUpdateUserDTO): Promise<Result<IUpdateUserDTO>> {
     let user = await this.userRepo.findByEmail(updateUserDTO.email);
     if (!user) {

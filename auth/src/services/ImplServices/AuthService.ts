@@ -73,4 +73,26 @@ export default class AuthService implements IAuthService {
             return Result.fail<boolean>("Erro na autenticação");
         }
     }
+
+    public obterEmail(req: Request): Result<string> {
+      try{
+          const authenticationHeader = req.headers["authorization"] as string;
+          if(authenticationHeader === undefined){
+              return Result.fail<string>("Não está autenticado");
+          }
+          const token = authenticationHeader.split(" ")[1];
+          const decoded = jwt.verify(token, config.jwtSecret);
+
+          const email = (decoded as any).email;
+          if (email) {
+            return Result.ok<string>(email);
+          }
+          return Result.fail<string>("Não está autenticado");
+      }catch(e){
+          if(e.name === "TokenExpiredError"){
+              return Result.fail<string>("Sessão expirada");
+          }
+          return Result.fail<string>("Erro na autenticação");
+      }
+  }
 }

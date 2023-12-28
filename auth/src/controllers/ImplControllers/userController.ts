@@ -109,10 +109,6 @@ export default class UserController implements IUserController {
 
   async signupUtente(req: Request, res: Response, next: NextFunction) {
     try {
-      let authOrError = this.authServiceInstance.checkAuth(req, res, ['utente']);
-      if(authOrError.isFailure){
-        return res.send();
-      }
       const userOrError = await this.userServiceInstance.signupUtente(req.body as ISignupUtenteDTO);
 
       if (userOrError.isFailure) {
@@ -169,6 +165,38 @@ export default class UserController implements IUserController {
       res.status(200);
       return res.json(userDTO);
     
+    } catch(e) {
+      throw next(e);
+    }
+  }
+
+  public async deleteUtente(req: Request, res: Response, next: NextFunction){
+    let authOrError = this.authServiceInstance.checkAuth(req, res, ['utente']);
+    if(authOrError.isFailure){
+      return res.send();
+    }
+    try{
+      let email =  this.authServiceInstance.obterEmail(req);
+      if(email.isFailure){
+        if(String(email.errorValue()) === "Sessão expirada"){
+          res.status(440);
+          res.send()        
+        }else{
+          res.status(401);
+          res.send();
+        }
+      }
+      const userOrError = await this.userServiceInstance.deleteUtente(email.getValue());
+      if (userOrError.isFailure) {
+        if (String(userOrError.errorValue()) === "Utilizador não existe"){
+          res.status(404);
+          return res.json(userOrError.errorValue());
+        }
+        res.status(400);
+        return res.json(userOrError.errorValue());
+      }
+      const resposta = userOrError.getValue();
+      return res.json(resposta);
     } catch(e) {
       throw next(e);
     }

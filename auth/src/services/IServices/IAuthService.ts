@@ -5,4 +5,5 @@ export default interface IAuthService {
     isAuthenticaded(req: Request): Result<boolean>;
     isAuthorized(req: Request, authorizedRoles: string[]): Result<boolean>;
     checkAuth(req: Request, res:Response, authorizedRoles: string[]): Result<void>;
+    obterEmail(req: Request): Result<string>;
 }
