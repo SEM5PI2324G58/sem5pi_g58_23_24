@@ -90,7 +90,7 @@ export default class EdificioController implements IEdificioController /* TODO: 
 
   public async listarEdificios(req: Request, res: Response, next: NextFunction) {
     try{
-      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus', 'gestor de frota', 'gestor de tarefas']);
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus', 'gestor de frota', 'gestor de tarefas', 'utente']);
       if(authOrError.isFailure){
         return res.send();
       }

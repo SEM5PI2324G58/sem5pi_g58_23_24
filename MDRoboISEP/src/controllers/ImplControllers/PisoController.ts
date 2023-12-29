@@ -72,7 +72,7 @@ export default class PisoController implements IPisoController {
 
   public async listarTodosOsPisosDeUmEdificio(req: Request, res: Response, next: NextFunction) {
     try {
-      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus']);
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus', 'utente']);
       if(authOrError.isFailure){
         return res.send();
       }

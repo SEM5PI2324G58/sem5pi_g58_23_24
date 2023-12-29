@@ -5,7 +5,16 @@ describe('Criar vigilancia', () => {
     beforeEach(() => {
         cy.intercept('POST', '/api/Tarefa').as('createTarefa');
         cy.intercept('GET', '/api/edificio').as('getEdificio');
+        cy.intercept('POST', '/api/user/login').as('login');
         cy.intercept('GET', '/api/piso?codigo=A').as('getPisosEdificio');
+
+        // Login
+        cy.visit('/login');
+        cy.get('[name="email"]').type('1211417@isep.ipp.pt');
+        cy.get('[name="password"]').type('Password10@');
+        cy.get('button').click();
+        cy.wait('@login')
+
     });
     
     it('Criar vigilância sucesso e2e', () => {
@@ -28,7 +37,16 @@ describe('Criar vigilancia', () => {
         })
     })
     
-    afterEach(() => {        
+    afterEach(() => {
+
+        // Login
+        cy.visit('/login');
+        cy.get('[name="email"]').type('gestortarefas@isep.ipp.pt');
+        cy.get('[name="password"]').type('Password10@');
+        cy.get('button').click();
+        cy.wait('@login')
+
+
         cy.intercept('DELETE', '/api/Tarefa?id='+id).as('deleteTarefa');
         cy.visit('/apagarTarefa');
         cy.get('[name="id"]').type(id);
