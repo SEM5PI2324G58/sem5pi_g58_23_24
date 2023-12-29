@@ -43,7 +43,7 @@ public class TarefaController : ControllerBase
         try{
             if (!_authService.IsAuthenticated(Request)) {
                 return Unauthorized("Não está autenticado");
-            }else if (!_authService.IsAuthorized(Request, ["gestor de tarefas"])) {
+            }else if (!_authService.IsAuthorized(Request, ["utente"])) {
                 return Forbid("Não tem permissões para aceder a este recurso");
             }
         }catch (Exception e){
