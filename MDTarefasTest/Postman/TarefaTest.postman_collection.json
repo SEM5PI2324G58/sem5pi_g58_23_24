@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "87f0041d-70bf-4ed6-83d6-852a197f525b",
+		"_postman_id": "0a76d9a9-8df1-4fcf-b115-a8d022437a93",
 		"name": "TarefaTest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "30690787"
+		"_exporter_id": "30673359"
 	},
 	"item": [
 		{
@@ -100,7 +100,7 @@
 				"auth": {
 					"type": "jwt",
 					"jwt": {
-						"payload": "      {\n        \"id\": 123,\n        \"email\": \"default@email.com\",\n        \"role\": \"gestor de tarefas\",\n        \"firstName\": \"nome1\",\n        \"lastName\": \"nome2\",\n        \"exp\": 2524608000000\n      }",
+						"payload": "      {\n        \"id\": 123,\n        \"email\": \"default@email.com\",\n        \"role\": \"utente\",\n        \"firstName\": \"nome1\",\n        \"lastName\": \"nome2\",\n        \"exp\": 2524608000000\n      }",
 						"header": "",
 						"isSecretBase64Encoded": false,
 						"secret": "my sakdfho2390asjod$%jl)!sdjas0i secret",
@@ -170,7 +170,7 @@
 				"auth": {
 					"type": "jwt",
 					"jwt": {
-						"payload": "      {\n        \"id\": 123,\n        \"email\": \"default@email.com\",\n        \"role\": \"gestor de tarefas\",\n        \"firstName\": \"nome1\",\n        \"lastName\": \"nome2\",\n        \"exp\": 2524608000000\n      }",
+						"payload": "      {\n        \"id\": 123,\n        \"email\": \"default@email.com\",\n        \"role\": \"utente\",\n        \"firstName\": \"nome1\",\n        \"lastName\": \"nome2\",\n        \"exp\": 2524608000000\n      }",
 						"header": "",
 						"isSecretBase64Encoded": false,
 						"secret": "my sakdfho2390asjod$%jl)!sdjas0i secret",
