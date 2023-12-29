@@ -15,7 +15,7 @@ export class AuthService {
 
     private userSubject: BehaviorSubject<User | null>;
     public user: Observable<User | null>;
-    private loginUrl = "http://localhost:4500/api/user/login";
+    private loginUrl = devEnvironment.AUTH_API_URL +  "user/login";
     private signUpUrl = devEnvironment.AUTH_API_URL + "user/signup";
     private authUrl = devEnvironment.AUTH_API_URL + "user";
     httpOptions = {
@@ -206,8 +206,6 @@ export class AuthService {
         
 
         let updateUserDataModel = {} as AlterarDadosUtente;
-        //TODO remover este email
-        updateUserDataModel.email = "utilizadorTeste@isep.ipp.pt";
 
         if (nome != "" && nome != undefined && nome != null) {
             updateUserDataModel.name = nome;
@@ -221,7 +219,7 @@ export class AuthService {
             updateUserDataModel.nif = nif;
         }
         console.log(updateUserDataModel);
-        this.http.put<AlterarDadosUtente>(this.authUrl + "/utente", updateUserDataModel, this.httpOptions)
+        this.http.put<AlterarDadosUtente>(this.authUrl, updateUserDataModel, this.httpOptions)
             .pipe(catchError(this.handleError<AlterarDadosUtente>("Alterar dados")))
             .subscribe({
                 next: data => {

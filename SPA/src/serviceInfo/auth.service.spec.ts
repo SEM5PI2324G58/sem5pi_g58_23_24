@@ -147,7 +147,6 @@ describe('AuthService', () => {
 
   it('Método alterarDadosUtente chama método PUT do HttpClient', () => {
     const inputData = {
-      email: "1211417@isep.ipp.pt",
       name: "name",
       telefone: "966432123",
       nif: "123123123",
