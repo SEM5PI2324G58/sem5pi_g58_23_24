@@ -93,14 +93,14 @@
         <div *ngIf="popupPisosElevadorOpen" class="dialogElevador"> 
             <div class="header">
                 <p>Utilizar elevador para mudar de piso</p>
-                <label for="selectItems">Pisos disponíveis: </label>
-                <select id="selectItems">
+                <label for="selectItems">Piso: </label>
+                <select id="selectItems" [(ngModel)]="numeroPisoUsarElevador">
                     <option *ngFor="let item of listaPisosServidos" [value]="item">{{ item }}</option>
                 </select>
             </div>
             
             <div class="buttonElevador">
-                <button>Mudar</button>
+                <button (click)="usarElevador(numeroPisoUsarElevador)">Mudar</button>
                 <button (click)="fecharPopup()"> Cancelar</button>
             </div>
         </div>

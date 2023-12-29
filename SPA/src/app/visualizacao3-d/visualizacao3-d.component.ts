@@ -264,6 +264,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
   userInterface!: UserInterface;
   subwindowsPanel!: HTMLElement | null;
   idPassagemAtravessar: number = -1;
+  numeroPisoUsarElevador: number = Number.MIN_SAFE_INTEGER;
 
 
   private get canvas(): HTMLCanvasElement {
@@ -1134,6 +1135,47 @@ export class Visualizacao3DComponent implements AfterViewInit {
     }else{
       this.popupOpen = false;
     }
+  }
+
+  usarElevador(piso: number){
+    if(piso == this.maze.numeroPiso){
+      alert("Você já está neste piso!");
+    }else if(piso === Number.MIN_SAFE_INTEGER){
+      alert("Por favor, selecione um piso");
+    }else{
+      this.mapaService.exportarMapa(this.maze.codigoEdificio, this.numeroPisoUsarElevador).subscribe((data: ExportarMapa) => {
+        // Set posição inicial do robo como a posição do elevador
+        if (data.elevador.orientacao === 'Norte'){
+          data.posicaoInicialRobo.x = data.elevador.xCoord - 1;
+          data.posicaoInicialRobo.y = data.elevador.yCoord;
+        }else if (data.elevador.orientacao === 'Sul'){
+          data.posicaoInicialRobo.x = data.elevador.xCoord + 1;
+          data.posicaoInicialRobo.y = data.elevador.yCoord;
+        } else if (data.elevador.orientacao === 'Este'){
+          data.posicaoInicialRobo.x = data.elevador.xCoord;
+          data.posicaoInicialRobo.y = data.elevador.yCoord + 1;
+        } else if (data.elevador.orientacao === 'Oeste'){
+          data.posicaoInicialRobo.x = data.elevador.xCoord;
+          data.posicaoInicialRobo.y = data.elevador.yCoord - 1;
+        }
+        this.mapa = data;
+        this.createScene();
+        this.popupPisosElevadorOpen = false;
+        this.codigo.value = this.maze.codigoEdificio;
+        this.pisoService.listarPisosMapa(this.codigo.value).subscribe({ 
+          next: (data) => {
+            this.listaNumeroPisos = data;
+            this.numeroPiso.value = piso.toString();
+          },
+          error: (error) => {
+            console.error('Error fetching floor numbers:', error);
+            this.listaNumeroPisos = [];
+          },
+          complete: () => { },
+        });
+      });
+    }
+    this.numeroPisoUsarElevador = Number.MIN_SAFE_INTEGER;
   }
 
   update() {
