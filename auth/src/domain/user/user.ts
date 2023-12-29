@@ -106,4 +106,28 @@ export class User extends AggregateRoot<UserProps> {
     this.props.nif = nif;
   }
 
+  public returnName(): string {
+    return this.props.name.props.name;
+  }
+
+  public returnTelefone(): string {
+    return this.props.telefone.props.value;
+  }
+
+  public returnNif(): string | null {
+    if(this.props.nif){
+      return this.props.nif.props.numero;
+    }else{
+      return null;
+    }
+  }
+
+  public returnRole(): string {
+    return this.props.role.props.tipo;
+  }
+
+  public returnEstado(): string {
+    return this.props.estado.props.estado;
+  }
+
 }
