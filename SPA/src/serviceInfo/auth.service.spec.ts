@@ -165,4 +165,15 @@ describe('AuthService', () => {
     expect(postSpy).toHaveBeenCalledWith(devEnvironment.AUTH_API_URL + "user", inputData, service.httpOptions);
   });
 
+  it('Método deleteUtente chama método delete do HttpClient', () => {
+    
+    let returnData = "User deleted";
+
+    const deleteSpy = spyOn(httpClient, 'delete').and.returnValue(of(returnData));
+    const navigateSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    service.deleteUtente();
+    expect(deleteSpy).toHaveBeenCalledWith(devEnvironment.AUTH_API_URL + "user/utente", service.httpOptions);
+    expect(navigateSpy).toHaveBeenCalledWith(['/login']);
+  }); 
+
 });
