@@ -322,6 +322,12 @@ describe('User Controller ', () => {
     it('alterarDadosUserController sucesso', async () => {
 
         let body = {
+            "telefone": "914231321",
+            "nif": "321123567",
+            "nome" : "MarcoNov0"
+        };
+        
+        let returnService = {
             "email": "Marcoantonio@isep.ipp.pt",
             "telefone": "914231321",
             "nif": "321123567",
@@ -341,8 +347,9 @@ describe('User Controller ', () => {
 
         let userServiceInstance = Container.get("UserService");
         let authServiceInstance = Container.get("AuthService");
-        sinon.stub(userServiceInstance, "alterarDadosUser").returns(Result.ok<IUpdateUserDTO>(body));
+        sinon.stub(userServiceInstance, "alterarDadosUser").returns(Result.ok<IUpdateUserDTO>(returnService as IUpdateUserDTO));
         sinon.stub(authServiceInstance, "checkAuth").returns(Result.ok<void>());
+        sinon.stub(authServiceInstance, "obterEmail").returns(Result.ok<string>("Marcoantonio@isep.ipp.pt"));
 
         const userController = new UserController(userServiceInstance as IUserService, authServiceInstance as IAuthService);
 
@@ -358,7 +365,6 @@ describe('User Controller ', () => {
     it('alterarDadosUserController falha quando nif inválido', async () => {
 
         let body = {
-            "email": "Marcoantonio@isep.ipp.pt",
             "telefone": "914231321",
             "nif": "nif",
             "nome" : "MarcoNov0"
@@ -379,6 +385,7 @@ describe('User Controller ', () => {
         let authServiceInstance = Container.get("AuthService");
         sinon.stub(userServiceInstance, "alterarDadosUser").returns(Result.fail<IUpdateUserDTO>("O numero de contribuinte tem que ter 9 digitos."));
         sinon.stub(authServiceInstance, "checkAuth").returns(Result.ok<void>());
+        sinon.stub(authServiceInstance, "obterEmail").returns(Result.ok<string>("Marcoantonio@isep.ipp.pt"));
 
         const userController = new UserController(userServiceInstance as IUserService, authServiceInstance as IAuthService);
 
@@ -395,7 +402,6 @@ describe('User Controller ', () => {
     it('alterarDadosUtente com sucesso Controller + Service', async () => {
 
         let body = {
-            "email": "Marcoantonio@isep.ipp.pt",
             "telefone": "914444555",
             "nif": "999888999",
             "nome" : "MarcoNov0"
@@ -431,6 +437,7 @@ describe('User Controller ', () => {
         sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(user));
         sinon.stub(userRepoInstance, "save").returns(Promise.resolve(user));
         sinon.stub(authServiceInstance, "checkAuth").returns(Result.ok<void>());
+        sinon.stub(authServiceInstance, "obterEmail").returns(Result.ok<string>("Marcoantonio@isep.ipp.pt"));
 
         const userController = new UserController(userService as IUserService, authServiceInstance as IAuthService);
 
