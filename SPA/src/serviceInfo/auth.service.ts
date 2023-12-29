@@ -221,7 +221,7 @@ export class AuthService {
             updateUserDataModel.nif = nif;
         }
         console.log(updateUserDataModel);
-        this.http.put<AlterarDadosUtente>(this.authUrl, updateUserDataModel, this.httpOptions)
+        this.http.put<AlterarDadosUtente>(this.authUrl + "/utente", updateUserDataModel, this.httpOptions)
             .pipe(catchError(this.handleError<AlterarDadosUtente>("Alterar dados")))
             .subscribe({
                 next: data => {
@@ -251,6 +251,20 @@ export class AuthService {
      */
     public log(message: string) {
         this.messageService.add(`${message}`);
+    }
+
+    public deleteUtente() {
+        this.http.delete<string>(this.authUrl + '/utente', this.httpOptions)
+            .pipe(catchError(this.handleError<string>("Delete Utente")))
+            .subscribe({
+                next: data => {
+                    if (data != undefined) {
+                        localStorage.removeItem('user'); 
+                        this.router.navigate(['/login']);
+                        this.log("Delete Utente com sucesso!");
+                    }
+                }
+            });
     }
 
 }
