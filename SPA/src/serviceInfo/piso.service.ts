@@ -19,6 +19,7 @@ export class PisoService {
   
   private pisoUrl = devEnvironment.MDRI_API_URL + 'piso';
   private pisoMapaUrl = devEnvironment.MDRI_API_URL + 'piso/pisosComMapa';
+  private pisoServidoPorElevadorUrl = devEnvironment.MDRI_API_URL + 'piso/pisosServidosPorElevador';
   
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -143,6 +144,15 @@ export class PisoService {
       );
   }
 
+  public listarPisosServidosPorElevador(codigo: string): Observable<number[]> {
+    let params = new HttpParams().set('codigoEd', codigo);
+  
+    return this.http.get<Piso[]>(this.pisoServidoPorElevadorUrl, { params: params, headers: this.httpOptions.headers })
+      .pipe(
+        catchError(this.handleError<Piso[]>('Listar Piso Servido por Elevador')),
+        map(data => data.map(item => item.numeroPiso))
+      );
+  }
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {

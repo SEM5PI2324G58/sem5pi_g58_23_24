@@ -165,6 +165,26 @@ export class Visualizacao3DComponent implements AfterViewInit {
     }
   }
 
+  listarNumeroPisosServidosPorElevador(): void {
+    const codigo = this.codigo.options.item(this.codigo.selectedIndex)?.value;
+
+    if (codigo === '') {
+      this.listaPisosServidos = [];
+    } else {
+      this.pisoService.listarPisosServidosPorElevador(codigo).subscribe({
+        next: (data) => {
+          this.listaPisosServidos = data;
+          console.log(this.listaPisosServidos);
+        },
+        error: (error) => {
+          console.error('Error fetching floor numbers:', error);
+          this.listaPisosServidos = [];
+        },
+        complete: () => { },
+      });
+    }
+  }
+
   private setListaPontosPorEdificio(): void {
     let edificioAtual:string = this.listaPontos[0].edificio;
     let pisoAtual:number = this.listaPontos[0].piso;
@@ -988,6 +1008,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
         case 'codigo':
           if(!this.automaticMode){
             this.listarNumeroPisos();
+            this.listarNumeroPisosServidosPorElevador();
           }
           break;
         case 'numeroPiso':
