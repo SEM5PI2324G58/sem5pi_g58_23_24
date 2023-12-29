@@ -3,6 +3,7 @@ import { IApproveOrRejectSignUpDTO } from "../../dto/IApproveOrRejectUtenteDTO";
 import { ISignupUtenteDTO } from "../../dto/ISignupUtenteDTO";
 import { IUpdateUserDTO } from "../../dto/IUpdateUserDTO";
 import { IUserDTO } from "../../dto/IUserDTO";
+import { IDadosPessoaisDTO } from "../../dto/IDadosPessoaisDTO";
 
 export default interface IUserService  {
   SignUp(userDTO: IUserDTO): Promise<Result<String>>;
@@ -13,4 +14,5 @@ export default interface IUserService  {
   delete(email: string): Promise<Result<IUserDTO>>;
   alterarDadosUser(updateUserDTO: IUpdateUserDTO): Promise<Result<IUpdateUserDTO>>;
   deleteUtente(email: string): Promise<Result<String>>;
+  copiaDadosPessoais(email:string):Promise<Result<IDadosPessoaisDTO>>
 }

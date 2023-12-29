@@ -25,6 +25,7 @@ import { UserTelefone } from '../../domain/user/userTelefone';
 import { ISignupUtenteDTO } from '../../dto/ISignupUtenteDTO';
 import { IApproveOrRejectSignUpDTO } from '../../dto/IApproveOrRejectUtenteDTO';
 import { IUpdateUserDTO } from '../../dto/IUpdateUserDTO';
+import { IDadosPessoaisDTO } from '../../dto/IDadosPessoaisDTO';
 
 @Service()
 export default class UserService implements IUserService {
@@ -329,5 +330,22 @@ export default class UserService implements IUserService {
     await this.userRepo.save(user);
 
     return Result.ok<IUpdateUserDTO>(updateUserDTO); 
+  }
+
+  public async copiaDadosPessoais(email:string):Promise<Result<IDadosPessoaisDTO>>{
+    let user = await this.userRepo.findByEmail(email);
+    if(!user){
+      return Result.fail<IDadosPessoaisDTO> ("Não existe um utilizador com este email");
+    }
+    let userDTO = {
+      name : user.returnName(),
+      email : email,
+      telefone : user.returnTelefone(),
+    }as IDadosPessoaisDTO;
+
+    if(user.returnNif() != null){
+      userDTO.nif = user.returnNif();
+    }
+    return Result.ok<IDadosPessoaisDTO>(userDTO);
   }
 }

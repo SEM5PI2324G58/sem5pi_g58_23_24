@@ -202,5 +202,28 @@ export default class UserController implements IUserController {
       throw next(e);
     }
   }
-
+  public async copiaDadosPessoais(req: Request, res: Response, next: NextFunction){
+    let authOrError = this.authServiceInstance.checkAuth(req, res, ['utente']);
+    if(authOrError.isFailure){
+      return res.send();
+    }
+    try{
+      let email = this.authServiceInstance.obterEmail(req);
+      if(email.isFailure){
+        res.status(440);
+        return res;
+      }else{
+        let dadosPessoaisOrFail = await this.userServiceInstance.copiaDadosPessoais(email.getValue());
+        if(dadosPessoaisOrFail.isFailure){
+          res.status(400);
+          return res.json(dadosPessoaisOrFail.errorValue());
+        }else{
+          res.status(200);
+          return res.json(dadosPessoaisOrFail.getValue());
+        }
+      }
+    }catch(e){
+      throw next(e);
+    }
+  }
 }

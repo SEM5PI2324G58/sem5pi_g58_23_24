@@ -9,4 +9,5 @@ export default interface IUserController  {
     delete(req: Request, res: Response, next: NextFunction);
     alterarDadosUser(req: Request, res: Response, next: NextFunction);
     deleteUtente(req: Request, res: Response, next: NextFunction);
+    copiaDadosPessoais(req: Request, res: Response, next: NextFunction);
 }
