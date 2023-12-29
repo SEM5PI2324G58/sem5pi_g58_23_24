@@ -84,4 +84,7 @@ export default (app: Router) => {
 
     route.delete('/utente',
     (req, res, next) => ctrl.deleteUtente(req, res, next));
+
+    route.get('/utente',
+    (req, res, next) => ctrl.copiaDadosPessoais(req, res, next));
 };
