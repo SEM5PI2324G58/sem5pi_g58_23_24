@@ -50,5 +50,13 @@ export default (app: Router) => {
       })
     }),
     (req, res, next) => ctrl.listarPisosComMapa(req, res, next) );
+
+    route.get('/pisosServidosPorElevador',
+    celebrate({
+      query: Joi.object({
+        codigoEd: Joi.string().required(),
+      })
+    }),
+    (req, res, next) => ctrl.listarPisosServidosPorElevador(req, res, next) );
   
 };

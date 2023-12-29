@@ -268,4 +268,21 @@ export default class PisoService implements IPisoService {
         return Result.ok<IPisoDTO>(PisoMap.toDTO(piso));
     }
 
+    public async listarPisosServidosPorElevador(codigoEd: string): Promise<Result<IPisoDTO[]>> {
+        const edificio = await this.edifRepo.findByDomainId(codigoEd);
+        let flag = !!edificio;
+        if (!flag) {
+            return Result.fail<IPisoDTO[]>("O edificio com o código " + codigoEd + " não existe");
+        }
+        let listaPisos = edificio.returnElevador().pisoServidosComMapa();
+
+        let listaPisosDTO: IPisoDTO[] = [];
+        for (let elem of listaPisos) {
+            listaPisosDTO.push(await PisoMap.toDTO(elem));
+        }
+        if (listaPisosDTO.length > 0) {
+            return Result.ok<IPisoDTO[]>(listaPisosDTO);
+        }
+        return Result.fail<IPisoDTO[]>("O elevador desse edificio não serve nenhum piso");
+    }
 }

@@ -117,8 +117,35 @@ export default class PisoController implements IPisoController {
       const pisoDTO = pisoOrError.getValue();
       res.status(200);
       return res.json( pisoDTO );
-  }catch (e) {
+    }catch (e) {
+        return next(e);
+    }
+  }
+
+  public async listarPisosServidosPorElevador(req: Request, res: Response, next: NextFunction) {
+    try {
+      let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus', 'gestor de frota', 'gestor de tarefas']);
+      if(authOrError.isFailure){
+        return res.send();
+      }
+      const pisoOrError = await this.pisoServiceInstance.listarPisosServidosPorElevador(req.query.codigoEd as string);
+        
+      if (pisoOrError.isFailure) {
+        let message = String(pisoOrError.errorValue());
+        if(message === "O edificio com o código " + req.query.codigoEd +" não existe" || message === "O elevador desse edificio não serve nenhum piso"){
+          return res.status(404).json( pisoOrError.errorValue());
+        }
+        return res.json( pisoOrError.errorValue()).status(400).send();
+      }
+
+      const pisoDTO = pisoOrError.getValue();
+      res.status(200);
+      return res.json( pisoDTO );
+    }
+    catch (e) {
       return next(e);
-  }
-  }
+    }
+  };
+
+
 }

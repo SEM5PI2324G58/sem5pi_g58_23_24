@@ -9,4 +9,5 @@ export default interface IPisoService  {
   listarTodosOsPisosDeUmEdificio(codigo: string): Promise<Result<IPisoDTO[]>>;
   editarPiso(editarPisoDTO: IEditarPisoDTO): Promise<Result<IPisoDTO>>;
   //carregarPiso(json : string): Promise<Result<IPisoDTO>>;
+  listarPisosServidosPorElevador(codigoEd: string): Promise<Result<IPisoDTO[]>>;
 }
