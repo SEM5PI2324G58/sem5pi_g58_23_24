@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ContaService } from './conta.service';
 import { HttpClient } from '@angular/common/http';
-import { Utilizador } from 'src/dataModel/utilizador';
+import { DadosPessoaisUser } from 'src/dataModel/dadosPessoaisUser';
 import { of } from 'rxjs';
 
 describe('ContaService', () => {
@@ -26,11 +26,11 @@ describe('ContaService', () => {
   });
 
   it('Método exportarDadosPessoais chama o método get do HttpClient', () => {
-    const testData: Utilizador = {role: "role", email: "email", password: "password", estado: "estado", nome: "nome", telefone: 123456789, contribuinte: 123456789};
+    const testData: DadosPessoaisUser = {email: "email", name: "nome", telefone: "123456789", nif: "123456789"};
 
     const getSpy = spyOn(httpClient, 'get').and.returnValue(of(testData));
 
     service.exportarDadosPessoais();
-    expect(getSpy).toHaveBeenCalledWith(devEnvironment.MDRI_API_URL + 'conta', service.httpOptions);
+    expect(getSpy).toHaveBeenCalledWith(devEnvironment.AUTH_API_URL + 'user/utente', service.httpOptions);
   });
 });

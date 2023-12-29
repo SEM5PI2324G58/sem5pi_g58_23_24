@@ -9,19 +9,17 @@ import { ContaService } from 'src/serviceInfo/conta.service';
 export class ExportarDadosPessoaisComponent {
   constructor(private contaService : ContaService) { }
   export(): void {
-    let dadosPessoais;
-    this.contaService.exportarDadosPessoais().subscribe(data =>{
-      dadosPessoais = data;
+    this.contaService.exportarDadosPessoais().subscribe(dadosPessoais =>{
+      if(dadosPessoais === null || dadosPessoais === undefined){
+        return;
+      }
+      const blob = new Blob([JSON.stringify(dadosPessoais)], { type: 'application/json' });
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'DadosPessoais.json';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     });
-    if(dadosPessoais === null || dadosPessoais === undefined){
-      return;
-    }
-    const blob = new Blob([JSON.stringify(dadosPessoais)], { type: 'application/json' });
-    const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    link.download = 'DadosPessoais.json';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   }
 }

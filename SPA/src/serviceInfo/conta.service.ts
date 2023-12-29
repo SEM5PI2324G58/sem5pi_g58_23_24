@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Utilizador } from '../dataModel/utilizador';
+import { DadosPessoaisUser } from '../dataModel/dadosPessoaisUser';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { devEnvironment } from 'src/environments/environment.development';
@@ -12,7 +12,7 @@ import { MessageService } from './message.service';
 })
 export class ContaService {
 
-  private contaUrl = devEnvironment.MDRI_API_URL + 'conta';
+  private authUrl = devEnvironment.AUTH_API_URL + 'user/'
   
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -20,10 +20,10 @@ export class ContaService {
   
   constructor(private messageService: MessageService, private http: HttpClient) { }
 
-  public exportarDadosPessoais(): Observable<Utilizador> {
-    return this.http.get<Utilizador>(this.contaUrl, this.httpOptions)
+  public exportarDadosPessoais(): Observable<DadosPessoaisUser> {
+    return this.http.get<DadosPessoaisUser>(this.authUrl + 'utente', this.httpOptions)
       .pipe(
-        catchError(this.handleError<Utilizador>('Exportar Dados Pessoais'))
+        catchError(this.handleError<DadosPessoaisUser>('Exportar Dados Pessoais'))
       );
   }
 
@@ -31,7 +31,7 @@ export class ContaService {
     return (error: any): Observable<T> => {
       
 
-      this.log(`${operation} falhou: ${error.error}`);
+      this.log(`${operation} falhou: ${error.message}`);
 
       return of(result as T);
     };
