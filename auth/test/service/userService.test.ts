@@ -22,7 +22,7 @@ import 'mocha';
 import { IUserDTO } from "../../src/dto/IUserDTO";
 import { IApproveOrRejectSignUpDTO } from "../../src/dto/IApproveOrRejectUtenteDTO";
 import { IUpdateUserDTO } from "../../src/dto/IUpdateUserDTO";
-
+import { IDadosPessoaisDTO } from "../../src/dto/IDadosPessoaisDTO";
 
 describe('User Service ', () => {
 
@@ -444,5 +444,42 @@ describe('User Service ', () => {
 
         expect(answer.errorValue()).to.equal("Não foi possivel remover o utilizador");
 
+    });
+
+    it ('copiaDadosPessoais tem sucesso se utilizador existir', async () => {
+        const userRepoInstance = Container.get("UserRepo");
+        let email = "marco@isep.ipp.pt";
+        let userDTO = {
+            name: "Marco Antonio",
+            email: email,
+            telefone: "914231321",
+            nif: "321123567"
+        } as IDadosPessoaisDTO;
+        let nif : string = "";
+        if( userDTO.nif != undefined){
+            nif = userDTO.nif;
+        }
+        const hashedPassword = await UserPassword.create({ value: "Password10@" })
+        const user = User.create({
+            name: UserName.create(userDTO.name).getValue(),
+            telefone: UserTelefone.create(userDTO.telefone).getValue(),
+            nif: UserNumeroContribuinte.create(nif).getValue(),
+            password: hashedPassword.getValue(),
+            role: Role.create("utente").getValue(),
+            estado: UserEstado.create("pendente").getValue()
+        }, UserEmail.create(email).getValue());
+        sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(user.getValue()));
+        const service = new UserService(userRepoInstance as IUserRepo);
+        const answer = await service.copiaDadosPessoais(email);
+        expect(answer.getValue()).to.deep.equal(userDTO);
+    });
+
+    it ('copiaDadosPessoais falha se utilizador não existir', async () => {
+        const userRepoInstance = Container.get("UserRepo");
+        let email = "marco@isep.ipp.pt";
+        sinon.stub(userRepoInstance, "findByEmail").returns(Promise.resolve(null));
+        const service = new UserService(userRepoInstance as IUserRepo);
+        const answer = await service.copiaDadosPessoais(email);
+        expect(answer.errorValue()).to.equal("Não existe um utilizador com este email");
     });
 });
