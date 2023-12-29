@@ -150,7 +150,12 @@ export default class UserController implements IUserController {
       return res.send();
     }
     try{
-      const userOrError = await this.userServiceInstance.alterarDadosUser(req.body as IUpdateUserDTO);
+      
+      let email = this.authServiceInstance.obterEmail(req);
+      let inputDTO = req.body as IUpdateUserDTO;
+      inputDTO.email = email.getValue();
+      
+      const userOrError = await this.userServiceInstance.alterarDadosUser(inputDTO);
       
       if(userOrError.isFailure){
         if (String(userOrError.errorValue()) === "Não existe um utilizador com este email"){

@@ -74,7 +74,6 @@ export default (app: Router) => {
   route.put('',
     celebrate({
       body: Joi.object({
-        email: Joi.string().required(),
         name: Joi.string(),
         telefone: Joi.string(),
         nif: Joi.string(),
