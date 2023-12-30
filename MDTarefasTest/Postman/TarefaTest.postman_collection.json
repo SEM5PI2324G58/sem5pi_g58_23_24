@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "0a76d9a9-8df1-4fcf-b115-a8d022437a93",
+		"_postman_id": "d2bfed45-c89b-4e2e-8d41-4dffe309bc0f",
 		"name": "TarefaTest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "30673359"
+		"_exporter_id": "30695664"
 	},
 	"item": [
 		{
@@ -75,7 +75,7 @@
 							"    \"id\": pm.environment.get(\"idVigilancia\"),\r",
 							"    \"percursoString\": \"percursoVigilanciaPlaceholder\",\r",
 							"    \"estadoString\": \"Pendente\",\r",
-							"    \"emailRequisitor\": \"emailPlaceholder\",\r",
+							"    \"emailRequisitor\": \"default@email.com\",\r",
 							"    \"codDispositivo\": \"\",\r",
 							"    \"codConfirmacao\": null,\r",
 							"    \"descricaoEntrega\": null,\r",
@@ -145,7 +145,7 @@
 							"    \"id\": pm.environment.get(\"idPickUpDelivery\"),\r",
 							"    \"percursoString\": \"[celPiso(a2,6,4),celPiso(a2,6,5),celPiso(a2,6,6)]\",\r",
 							"    \"estadoString\": \"Pendente\",\r",
-							"    \"emailRequisitor\": \"emailPlaceholder\",\r",
+							"    \"emailRequisitor\": \"default@email.com\",\r",
 							"    \"codDispositivo\": \"\",\r",
 							"    \"codConfirmacao\": \"1234\",\r",
 							"    \"descricaoEntrega\": \"DESC BOA\",\r",
@@ -266,7 +266,7 @@
 							"        \"id\": jsonData.id,\r",
 							"        \"percursoString\": \"percursoVigilanciaPlaceholder\",\r",
 							"        \"estadoString\": \"Aceite\",\r",
-							"        \"emailRequisitor\": \"emailPlaceholder\",\r",
+							"        \"emailRequisitor\": \"default@email.com\",\r",
 							"        \"codDispositivo\": \"Robo1\",\r",
 							"        \"codConfirmacao\": null,\r",
 							"        \"descricaoEntrega\": null,\r",
@@ -336,7 +336,7 @@
 							"        \"id\": id,\r",
 							"        \"percursoString\": \"percursoVigilanciaPlaceholder\",\r",
 							"        \"estadoString\": \"Aceite\",\r",
-							"        \"emailRequisitor\": \"emailPlaceholder\",\r",
+							"        \"emailRequisitor\": \"default@email.com\",\r",
 							"        \"codDispositivo\": \"Robo1\",\r",
 							"        \"codConfirmacao\": null,\r",
 							"        \"descricaoEntrega\": null,\r",

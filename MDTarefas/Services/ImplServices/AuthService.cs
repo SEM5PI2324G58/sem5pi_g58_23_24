@@ -52,5 +52,22 @@ namespace MDTarefas.Services.ImplServices
             }
             return false;
         }
+
+        public string? GetEmail(HttpRequest req)
+        {
+            if(req.Headers.TryGetValue("Authorization", out var authHeader)){
+                var token = authHeader.ToString().Split(" ")[1];
+                var tokenClaim = JwtUtils.DecodeJwt(token);
+                if(tokenClaim == null){
+                    return null;
+                }
+                var email = tokenClaim.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress");
+                if(email == null){
+                    return null;
+                }
+                return email.Value;
+            }
+            return null;
+        }
     }
 }

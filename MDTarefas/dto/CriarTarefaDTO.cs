@@ -4,7 +4,7 @@ public class CriarTarefaDTO
 {
     public string TipoTarefa { get; set; } = null!; // "PickUpDelivery" or "Vigilancia"
     // For both types of Tarefa
-    
+    public string? Email { get; set; }
     // For PickUp&Delivery
     public string? CodConfirmacao { get; set; }
     public string? DescricaoEntrega { get; set; }
