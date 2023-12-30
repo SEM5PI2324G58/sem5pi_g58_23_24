@@ -14,7 +14,7 @@ public class TarefaServiceTest {
         var criarTarefaDTO = new CriarTarefaDTO();
         criarTarefaDTO.TipoTarefa = "invalido";
 
-        async Task ActAsync() => await tarefaService.criarTarefa(criarTarefaDTO);
+        async Task ActAsync() => await tarefaService.criarTarefa(criarTarefaDTO, "token");
 
         var exception = await Assert.ThrowsAsync<BusinessRuleValidationException>(ActAsync);
 
@@ -30,7 +30,7 @@ public class TarefaServiceTest {
         var criarTarefaDTO = new CriarTarefaDTO();
         criarTarefaDTO.TipoTarefa = "vigilancia";
 
-        async Task ActAsync() => await tarefaService.criarTarefa(criarTarefaDTO);
+        async Task ActAsync() => await tarefaService.criarTarefa(criarTarefaDTO,"token");
 
         var exception = await Assert.ThrowsAsync<BusinessRuleValidationException>(ActAsync);
 
@@ -44,7 +44,7 @@ public class TarefaServiceTest {
         var criarTarefaDTO = new CriarTarefaDTO();
         criarTarefaDTO.TipoTarefa = "PICkUPDELIVERY";
 
-        async Task ActAsync() => await tarefaService.criarTarefa(criarTarefaDTO);
+        async Task ActAsync() => await tarefaService.criarTarefa(criarTarefaDTO,"token");
 
         var exception = await Assert.ThrowsAsync<BusinessRuleValidationException>(ActAsync);
 
@@ -105,7 +105,7 @@ public class TarefaServiceTest {
         criarTarefaDTO.Email = "email@email.com";
 
 
-        var res = await tarefaService.criarTarefa(criarTarefaDTO);
+        var res = await tarefaService.criarTarefa(criarTarefaDTO,"token");
 
         Assert.Equal(expectedTarefa.getCodConfirmacaoString(), res.CodConfirmacao);
         Assert.Equal(expectedTarefa.getDescricaoEntregaString(), res.DescricaoEntrega);

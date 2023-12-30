@@ -8,6 +8,7 @@ using MDTarefas.utils;
 using MDTarefas.dataSchemas;
 using System.Text.Json;
 using System.Text;
+using System.Net.Http.Headers;
 
 namespace MDTarefas.Services.ImplServices
 {
@@ -39,7 +40,8 @@ namespace MDTarefas.Services.ImplServices
             return TarefaMapper.toDTO(tarefa);
         }
 
-        public async Task<TarefaDTO> criarTarefa(CriarTarefaDTO tarefaDTO) {
+        public async Task<TarefaDTO> criarTarefa(CriarTarefaDTO tarefaDTO, string jwtToken) {
+            this.httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {jwtToken}");
             if (tarefaDTO.TipoTarefa.ToLower() == "pickupdelivery") {
                 var tarefa = await criarPickUpDelivery(tarefaDTO);
                 return TarefaMapper.toDTO(tarefa);
@@ -94,12 +96,15 @@ namespace MDTarefas.Services.ImplServices
 
             string id = RandomHexStringGenerator.GenerateRandomHex(24);
 
+            string percurso = await obterPercursoVigilancia(tarefaDTO.CodEdificio, tarefaDTO.NumeroPiso ?? 1);
+            percurso = percurso.Trim('\"');
+
             Vigilancia tarefa = new Vigilancia(
                 tarefaDTO.NomeVigilancia,
                 tarefaDTO.NumeroVigilancia,
                 tarefaDTO.CodEdificio,
                 tarefaDTO.NumeroPiso ?? 0, // Se null então 0 (nunca vai ser null, mas o compilador não sabe disso)
-                "percursoVigilanciaPlaceholder",
+                percurso,
                 tarefaDTO.Email,
                 id,
                 "" // CodDispositivo só é atualizado quando a tarefa é aceite
@@ -113,6 +118,22 @@ namespace MDTarefas.Services.ImplServices
             
             string baseUri = utils.Environments.MDRI_API_PLANEAMENTO_URL + "/caminhoEntreEdificios";
             string finalUrl = $"{baseUri}?salaInicial={salaInicial}&salaFinal={salaFinal}";
+
+            HttpResponseMessage response = await this.httpClient.GetAsync(finalUrl);
+
+            if (response.IsSuccessStatusCode) {
+                return await response.Content.ReadAsStringAsync();
+            } else {
+                string errorMessage = await response.Content.ReadAsStringAsync();
+                throw new BusinessRuleValidationException($"Pedido ao módulo de planeamento falhou.\nErro: {errorMessage}");
+            }
+            
+        }
+
+        private async Task<string> obterPercursoVigilancia(string codigoEd, int numeroPiso) {
+            
+            string baseUri = utils.Environments.MDRI_API_PLANEAMENTO_URL + "/caminhoVigilancia";
+            string finalUrl = $"{baseUri}?codigoEd={codigoEd}&numeroPiso={numeroPiso}";
 
             HttpResponseMessage response = await this.httpClient.GetAsync(finalUrl);
 
