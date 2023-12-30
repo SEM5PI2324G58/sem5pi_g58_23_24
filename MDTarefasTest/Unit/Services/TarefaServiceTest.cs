@@ -59,7 +59,7 @@ public class TarefaServiceTest {
             "123456789","NOMEPCIKUP",
             "987654321","NOMEDELIVERY",
             "A201","A202",
-            "[cel(a1,1,1),cel(a1,2,2)]","emailplaceholder","id",""
+            "[cel(a1,1,1),cel(a1,2,2)]","email@email.com","id",""
         );    
 
         // To mock the http request, we need to mock the HttpMessageHandler (Client calls MessageHandler)
@@ -102,6 +102,7 @@ public class TarefaServiceTest {
         criarTarefaDTO.NumeroDelivery = "987654321";
         criarTarefaDTO.SalaInicial = "A201";
         criarTarefaDTO.SalaFinal = "A202";
+        criarTarefaDTO.Email = "email@email.com";
 
 
         var res = await tarefaService.criarTarefa(criarTarefaDTO);

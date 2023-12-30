@@ -40,6 +40,7 @@ public class TarefaController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<TarefaDTO>> Create(CriarTarefaDTO tarefa)
     {
+        // Auth
         try{
             if (!_authService.IsAuthenticated(Request)) {
                 return Unauthorized("Não está autenticado");
@@ -49,9 +50,18 @@ public class TarefaController : ControllerBase
         }catch (Exception e){
             return Unauthorized(e.Message);
         }
+
         try {
+            var email = _authService.GetEmail(Request);
+            if (email == null) {
+                return Unauthorized("Não foi possível obter o email do utilizador autenticado");
+            }
+            tarefa.Email = email;
+            
             TarefaDTO tarefacriada = await _tarefaService.criarTarefa(tarefa);
+            
             return Created(tarefacriada.Id,tarefacriada);  
+        
         } catch (BusinessRuleValidationException e) {
             return BadRequest(e.Message);
         }

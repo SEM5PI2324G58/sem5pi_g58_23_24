@@ -18,6 +18,8 @@ namespace MDTarefasTest.Unit.Controller
                 .Returns(true);
             authMock.Setup(auth => auth.IsAuthorized(It.IsAny<HttpRequest>(), It.IsAny<string[]>()))
                 .Returns(true);
+            authMock.Setup(auth => auth.GetEmail(It.IsAny<HttpRequest>()))
+                .Returns("email@email.com");
             var controller = new TarefaController(serviceMock.Object, authMock.Object);
 
             CriarTarefaDTO criarTarefaDTO = new CriarTarefaDTO();
@@ -54,6 +56,8 @@ namespace MDTarefasTest.Unit.Controller
                 .Returns(true);
             authMock.Setup(auth => auth.IsAuthorized(It.IsAny<HttpRequest>(), It.IsAny<string[]>()))
                 .Returns(true);
+            authMock.Setup(auth => auth.GetEmail(It.IsAny<HttpRequest>()))
+                .Returns("email@email.com");
             var controller = new TarefaController(serviceMock.Object, authMock.Object);
 
             CriarTarefaDTO criarTarefaDTO = new CriarTarefaDTO();
@@ -108,6 +112,8 @@ namespace MDTarefasTest.Unit.Controller
                 .Returns(true);
             authMock.Setup(auth => auth.IsAuthorized(It.IsAny<HttpRequest>(), It.IsAny<string[]>()))
                 .Returns(true);
+                authMock.Setup(auth => auth.GetEmail(It.IsAny<HttpRequest>()))
+                .Returns("email@email.com");
             // Create the service
             var tarefaService = new TarefaService(tarefaRepoMock.Object, httpClient);
 
@@ -141,6 +147,8 @@ namespace MDTarefasTest.Unit.Controller
             Assert.Equal("987654321", dtoRes.NumeroDelivery);
             Assert.Equal("A201", dtoRes.SalaInicial);
             Assert.Equal("A202", dtoRes.SalaFinal);
+            Assert.Equal("[cel(a1,1,1),cel(a1,2,2)]", dtoRes.PercursoString);
+            Assert.Equal("email@email.com", dtoRes.EmailRequisitor);
         }
 
         
