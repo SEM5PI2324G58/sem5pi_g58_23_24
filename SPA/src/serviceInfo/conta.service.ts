@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { DadosPessoaisUser } from '../dataModel/dadosPessoaisUser';
 import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 import { devEnvironment } from 'src/environments/environment.development';
 
 import { MessageService } from './message.service';
@@ -23,6 +23,9 @@ export class ContaService {
   public exportarDadosPessoais(): Observable<DadosPessoaisUser> {
     return this.http.get<DadosPessoaisUser>(this.authUrl + 'utente', this.httpOptions)
       .pipe(
+        tap((dadosPessoais: DadosPessoaisUser) => {
+          this.log('Os dados foram exportados com sucesso!'); // Log if the HTTP request is successful
+        }),
         catchError(this.handleError<DadosPessoaisUser>('Exportar Dados Pessoais'))
       );
   }
