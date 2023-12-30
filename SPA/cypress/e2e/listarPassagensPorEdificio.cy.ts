@@ -9,6 +9,12 @@ describe('Listar passagens por par de edifícios', () => {
         cy.intercept('GET', '/api//passagem/listarPassagensPorParDeEdificios?edificioACod=T1&edificioBCod=T2').as('getPassagensPorEdificio');
         cy.intercept('DELETE', '/api/edificio?codEdificio=T1').as('apagarEdificio');
         
+        cy.intercept('POST', '/api/user/login').as('login');
+        cy.visit('/login');
+        cy.get('[name="email"]').type('gestorcampus@isep.ipp.pt');
+        cy.get('[name="password"]').type('Password10@');
+        cy.get('button').click();
+        cy.wait('@login');
         
         //Criar 2 edificio
         cy.visit('/criarEdificio')
@@ -85,5 +91,7 @@ describe('Listar passagens por par de edifícios', () => {
         cy.get('[name="codigo"]').type('T2');
         cy.get('button').click();
         cy.wait('@apagarEdificio');
+
+        cy.get('[class="logout"]').click();
     });
 })

@@ -9,6 +9,14 @@ describe('Inibir dispositivos', () => {
         
         cy.intercept('POST', '/api/tipoDispositivo').as('createTipoDispositivo');
         cy.intercept('POST', '/api/dispositivo').as('createDispositivo');
+
+        cy.intercept('POST', '/api/user/login').as('login');
+        cy.visit('/login');
+        cy.get('[name="email"]').type('gestorfrota@isep.ipp.pt');
+        cy.get('[name="password"]').type('Password10@');
+        cy.get('button').click();
+        cy.wait('@login');
+
         
         //Criar um tipo de dispositivo
         cy.visit('/criarTipoRobo')
@@ -68,7 +76,7 @@ describe('Inibir dispositivos', () => {
         } else {
             cy.log('Erro');
         }
-
+        cy.get('[class="logout"]').click();
     });
     
 });

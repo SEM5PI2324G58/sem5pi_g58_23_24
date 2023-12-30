@@ -3,6 +3,14 @@ describe('Tipo de Robo', () => {
     beforeEach(() => {
         
         cy.intercept('POST', '/api/tipoDispositivo').as('createTipoRobo');
+
+        cy.intercept('POST', '/api/user/login').as('login');
+        cy.visit('/login');
+        cy.get('[name="email"]').type('gestorfrota@isep.ipp.pt');
+        cy.get('[name="password"]').type('Password10@');
+        cy.get('button').click();
+        cy.wait('@login');
+
     });
     
     it('Criar tipo de robot com sucesso', () => {
@@ -32,6 +40,8 @@ describe('Tipo de Robo', () => {
               cy.log('Erro');
             }
         });
+
+        cy.get('[class="logout"]').click();
     })
 
     afterEach(() => {
