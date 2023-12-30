@@ -135,4 +135,30 @@ public class TarefaController : ControllerBase
         }
     }
 
+    [HttpGet("carregarTarefasNoPlaneamento")]
+    public async Task<ActionResult<TarefaDTO>> CarregarTarefasNoPlaneamento([FromQuery] bool algoritmo)
+    {
+
+        try{
+            if (!_authService.IsAuthenticated(Request)) {
+                return Unauthorized("Não está autenticado");
+            }else if (!_authService.IsAuthorized(Request, ["gestor de tarefas"])) {
+                return Forbid("Não tem permissões para aceder a este recurso");
+            }
+        }catch (Exception e){
+            return Unauthorized(e.Message);
+        }
+
+        try {
+            var res = await _tarefaService.carregarTarefasNoPlaneamento(algoritmo);
+            return Ok(res);  
+        } catch (BusinessRuleValidationException e) {
+            return BadRequest(e.Message);
+        }catch (NotFoundException e) {
+            return NotFound(e.Message);
+        }catch (Exception e) {
+            return BadRequest(e.Message);
+        }
+    }
+
 }

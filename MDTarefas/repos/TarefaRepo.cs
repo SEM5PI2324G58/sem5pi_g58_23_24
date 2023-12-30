@@ -45,7 +45,19 @@ public class TarefaRepo : ITarefaRepo
     return entityList;
 }
 
-    public async Task<Tarefa?> GetAsync(string id){
+       public async Task<List<Tarefa>> GetTarefasAceitesAsync()
+    {
+        List<TarefaSchema> schemaList = await _tarefaCollection.Find(x => x.EstadoString == "Aceite").ToListAsync();
+        List<Tarefa> entityList = new List<Tarefa>();
+        foreach (TarefaSchema tarefa in schemaList)
+        {
+            entityList.Add(TarefaMapper.toDomain(tarefa));
+        }
+        return entityList;
+    }
+
+    public async Task<Tarefa?> GetAsync(string id)
+    {
         TarefaSchema schema = await _tarefaCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
         if (schema == null) {
             return null;
