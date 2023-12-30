@@ -529,7 +529,23 @@ iterar_robots([robot(Nome, ListaTarefas) | RestoRobots]) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%% Algoritmo genético %%%%%%%%%%%%%%%%%%%%%%%
 
-genetico(robot(_, ListaTarefas),Resultado):-
+genetico_lista_robots([],[]).
+
+genetico_lista_robots([robot(Nome, ListaTarefas) | RestoRobots], [robot(Nome, ListaTarefasFinal) | RestoRobotsFinal]) :-!,
+    length(ListaTarefas, NumTarefas),
+    NumTarefas > 2,
+    write(ListaTarefas),nl,
+    genetico(ListaTarefas, ListaTarefasFinal),
+    genetico_lista_robots(RestoRobots, RestoRobotsFinal).
+
+
+%Utiliza a função do david
+%genetico_lista_robots([robot(Nome, ListaTarefas) | RestoRobots], [robot(Nome, ListaTarefasFinal) | RestoRobotsFinal]) :-
+%
+%    genetico_lista_robots(RestoRobots, RestoRobotsFinal).
+
+
+genetico(ListaTarefas,Resultado):-
     criar_lista_tarefas(ListaTarefas,ListaTarefasFinal),
     gera(ListaTarefasFinal,ResultadoSemInformacao),
     obter_tarefas_com_informacao(ResultadoSemInformacao,Resultado).

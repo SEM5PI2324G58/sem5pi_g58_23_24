@@ -56,6 +56,7 @@ import { DeleteTarefaComponent } from './gestao-planeamento/delete-tarefa/delete
 import { AlterarDadosUtenteComponent } from './conta/alterar-dados-utente/alterar-dados-utente.component';
 import { AuthenticationInterceptor } from '../app/core/interceptor/interceptor';
 import { DeleteUtenteComponent } from './conta/delete-utente/delete-utente.component';
+import { ObterTarefaComponent } from './gestao-planeamento/obter-tarefa/obter-tarefa.component';
 
 
 @NgModule({
@@ -109,7 +110,8 @@ import { DeleteUtenteComponent } from './conta/delete-utente/delete-utente.compo
     CriarTarefaPickUpDeliveryComponent,
     DeleteTarefaComponent,
     AlterarDadosUtenteComponent,
-    DeleteUtenteComponent
+    DeleteUtenteComponent,
+    ObterTarefaComponent
   ],
   imports: [
     BrowserModule,

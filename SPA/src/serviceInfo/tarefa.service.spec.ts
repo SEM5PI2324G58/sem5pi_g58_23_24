@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 import { devEnvironment } from 'src/environments/environment.development';
@@ -10,14 +10,14 @@ import AlterarEstadoDaTarefa from 'src/dataModel/alterarEstadoDaTarefa';
 import { CriarVigilancia } from 'src/dataModel/criarVigilancia';
 import { CriarPickUpDelivery } from 'src/dataModel/criarPickUPDelivery';
 
-describe('TarefaService', () => { 
+describe('TarefaService', () => {
   let service: TarefaService;
   const tarefaUrl = devEnvironment.MDTarefas_API_URL + 'Tarefa';
   let httpClient: HttpClient;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ HttpClientTestingModule]
+      imports: [HttpClientTestingModule]
     });
     service = TestBed.inject(TarefaService);
     httpClient = TestBed.inject(HttpClient);
@@ -46,18 +46,18 @@ describe('TarefaService', () => {
       nomeVigilancia: "Cavaco Silva",
       numeroPiso: 1,
       numeroVigilancia: "987654321",
-      percursoString:"percursoVigilanciaPlaceholder",
+      percursoString: "percursoVigilanciaPlaceholder",
       tipoTarefa: "Vigilancia"
-      } as unknown as Tarefa;
+    } as unknown as Tarefa;
 
     const putSpy = spyOn(httpClient, 'put').and.returnValue(of(tarefaMock));
 
     service.alterarEstadoTarefa(testDataInsert.Id, testDataInsert.Estado, testDataInsert.CodigoRobo);
-    
-    expect(putSpy).toHaveBeenCalledWith(tarefaUrl,testDataInsert,service.httpOptions);
+
+    expect(putSpy).toHaveBeenCalledWith(tarefaUrl, testDataInsert, service.httpOptions);
   });
 
-  
+
   it('Método alterarEstadoTarefa chama o método PUT do HttpClient quando o estado é rejeitada', () => {
 
     const testDataInsert = {
@@ -76,18 +76,18 @@ describe('TarefaService', () => {
       nomeVigilancia: "Cavaco Silva",
       numeroPiso: 1,
       numeroVigilancia: "987654321",
-      percursoString:"percursoVigilanciaPlaceholder",
+      percursoString: "percursoVigilanciaPlaceholder",
       tipoTarefa: "Vigilancia"
-      } as unknown as Tarefa;
+    } as unknown as Tarefa;
 
     const putSpy = spyOn(httpClient, 'put').and.returnValue(of(tarefaMock));
 
     service.alterarEstadoTarefa(testDataInsert.Id, testDataInsert.Estado, testDataInsert.CodigoRobo);
-    
-    expect(putSpy).toHaveBeenCalledWith(tarefaUrl,testDataInsert,service.httpOptions);
+
+    expect(putSpy).toHaveBeenCalledWith(tarefaUrl, testDataInsert, service.httpOptions);
   });
 
-  
+
   it('Método alterarEstadoTarefa não chama o método PUT do HttpClient quando o id esta vazio', () => {
 
     const testDataInsert = {
@@ -107,14 +107,14 @@ describe('TarefaService', () => {
       nomeVigilancia: "Cavaco Silva",
       numeroPiso: 1,
       numeroVigilancia: "987654321",
-      percursoString:"percursoVigilanciaPlaceholder",
+      percursoString: "percursoVigilanciaPlaceholder",
       tipoTarefa: "Vigilancia"
-      } as unknown as Tarefa;
+    } as unknown as Tarefa;
 
     const putSpy = spyOn(httpClient, 'put').and.returnValue(of(tarefaMock));
 
     service.alterarEstadoTarefa(testDataInsert.Id, testDataInsert.Estado, testDataInsert.CodigoRobo);
-    
+
     expect(putSpy).not.toHaveBeenCalled();
   });
 
@@ -137,14 +137,14 @@ describe('TarefaService', () => {
       nomeVigilancia: "Cavaco Silva",
       numeroPiso: 1,
       numeroVigilancia: "987654321",
-      percursoString:"percursoVigilanciaPlaceholder",
+      percursoString: "percursoVigilanciaPlaceholder",
       tipoTarefa: "Vigilancia"
-      } as unknown as Tarefa;
+    } as unknown as Tarefa;
 
     const putSpy = spyOn(httpClient, 'put').and.returnValue(of(tarefaMock));
 
     service.alterarEstadoTarefa(testDataInsert.Id, testDataInsert.Estado, testDataInsert.CodigoRobo);
-    
+
     expect(putSpy).not.toHaveBeenCalled();
   });
 
@@ -177,13 +177,13 @@ describe('TarefaService', () => {
       numeroVigilancia: "987654321",
       codEdificio: "A",
       numeroPiso: 1
-      } as unknown as Tarefa;
+    } as unknown as Tarefa;
 
     const postSpy = spyOn(httpClient, 'post').and.returnValue(of(returnPost));
 
     service.criarTarefaVigilancia(testDataInsert.nomeVigilancia, testDataInsert.numeroVigilancia, testDataInsert.codEdificio, testDataInsert.numeroPiso);
-    
-    expect(postSpy).toHaveBeenCalledWith(tarefaUrl,testDataInsert,service.httpOptions);
+
+    expect(postSpy).toHaveBeenCalledWith(tarefaUrl, testDataInsert, service.httpOptions);
   });
 
   it('Método criarTarefaVigilancia não chama o método POST do HttpClient quando o nome é vazio', () => {
@@ -215,12 +215,12 @@ describe('TarefaService', () => {
       numeroVigilancia: "987654321",
       codEdificio: "A",
       numeroPiso: 1
-      } as unknown as Tarefa;
+    } as unknown as Tarefa;
 
     const postSpy = spyOn(httpClient, 'post').and.returnValue(of(returnPost));
 
     service.criarTarefaVigilancia(testDataInsert.nomeVigilancia, testDataInsert.numeroVigilancia, testDataInsert.codEdificio, testDataInsert.numeroPiso);
-    
+
     expect(postSpy).not.toHaveBeenCalled();
   });
 
@@ -253,12 +253,12 @@ describe('TarefaService', () => {
       numeroVigilancia: "987654321",
       codEdificio: "A",
       numeroPiso: 1
-      } as unknown as Tarefa;
+    } as unknown as Tarefa;
 
     const postSpy = spyOn(httpClient, 'post').and.returnValue(of(returnPost));
 
     service.criarTarefaVigilancia(testDataInsert.nomeVigilancia, testDataInsert.numeroVigilancia, testDataInsert.codEdificio, testDataInsert.numeroPiso);
-    
+
     expect(postSpy).not.toHaveBeenCalled();
   });
 
@@ -301,7 +301,7 @@ describe('TarefaService', () => {
 
     service.criarTarefaPickUpDelivery(testDataInsert.codConfirmacao, testDataInsert.descricaoEntrega, testDataInsert.nomePickUp, testDataInsert.numeroPickUp, testDataInsert.nomeDelivery, testDataInsert.numeroDelivery, testDataInsert.salaInicial, testDataInsert.salaFinal);
 
-    expect(postSpy).toHaveBeenCalledWith(tarefaUrl,testDataInsert,service.httpOptions);
+    expect(postSpy).toHaveBeenCalledWith(tarefaUrl, testDataInsert, service.httpOptions);
   });
 
   it('Método criarTarefaPickUpDelivery não chama o método POST do HttpClient quando o codigo de confimação é vazio', () => {
@@ -471,4 +471,28 @@ describe('TarefaService', () => {
 
     expect(postSpy).not.toHaveBeenCalled();
   });
+
+  it('Metodo obterTarefa chama o método GET do HttpClient quando os dados são válidos', () => {
+    const testDataInsert = {
+      criterio: "estado",
+      valor: "aceite",
+    }
+
+    const fakeResponse = of([/* dados simulados de resposta */]);
+
+    const getSpy = spyOn(httpClient, 'get').and.returnValue(fakeResponse);
+
+    service.obterTarefa(testDataInsert.criterio, testDataInsert.valor);
+
+    const params = new HttpParams()
+      .set('criterio', testDataInsert.criterio)
+      .set('valor', testDataInsert.valor);
+
+    expect(getSpy).toHaveBeenCalledWith(
+      tarefaUrl + "/obterTarefasPorCriterio",
+      { params }
+    );
+  });
+
+  it 
 });

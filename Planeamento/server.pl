@@ -20,13 +20,49 @@
 iniciar_servidor(PORT) :-
     http_server(http_dispatch, [port(PORT)]).
 
+% Manipulador para pedido de informação do mapa
+:- http_handler('/carregarMapa', mapa_handler, []).
+
+mapa_handler(Request) :-
+        http_read_json_dict(Request,Dict,[]),
+        process_mapa_json(Dict),
+        reply_json('mapa carregado com sucesso').
+
+process_mapa_json(Dict):- 
+    retractall(pisos(_,_)),
+    retractall(elevador(_,_)),
+    retractall(coordElevador(_,_,_)),
+    retractall(corredor(_,_,_,_)),
+    retractall(coordCorredor(_,_,_,_,_,_,_,_,_,_)),
+    retractall(salas(_,_)),
+    retractall(coordPorta(_,_,_)),
+    retractall(m(_,_,_,_)),
+    retractall(dim_ed(_,_,_)),
+    ListaPiso = Dict.pisos,
+    ListaElev = Dict.elevadores,
+    ListaCoordElev = Dict.coordElevadores,
+    ListaCorr = Dict.corredores,
+    ListaCoordCorr = Dict.coordCorredores,
+    ListaSalas = Dict.salas,
+    ListaCoordPortas = Dict.coordPortas,
+    ListaMatrizMapa = Dict.listaMatrizMapa,
+    ListaDimensoes = Dict.dimensoes,
+    obter_dados(ListaPiso, ListaElev, ListaCoordElev, ListaCorr, ListaCoordCorr, ListaSalas, ListaCoordPortas, ListaMatrizMapa, ListaDimensoes).
+
+
 % Manipulador para pedido de tempo entre tarefas
 :- http_handler('/tarefa/tempo', tempo_handler, []).
 
 tempo_handler(Request) :-
-    make_request_MDTarefa(Request),
-    Robot = Request.robot,
-    iterar_robots(Robot).
+        http_read_json_dict(Request,Dict,[]),
+        process_json(Dict, Result, RobotResults, TarefaResults),
+        Robot = RobotResults,
+        iterar_robots(Robot),
+        with_output_to(atom(RobotJ), write(Robot)),
+        with_output_to(atom(ResultJ), write(Result)),
+        R = json{'resultado': ResultJ , 'obtido': RobotJ},
+        reply_json(R).
+
 
 % Manipulador para caminho entre pontos de um piso
 :- http_handler('/caminho/pontos_piso', caminho_pontos_piso_handler, []).
@@ -614,8 +650,8 @@ combinar_com_resto(Tarefa1, [Tarefa2|Tarefas], [ResParcial|ResResto]) :-
 % Predicado para processar a lista de resultados e fazer assert para cada tempos
 processar_e_assert_resultados([],_).
 processar_e_assert_resultados([tempos(Tarefa1, Tarefa2, Custo1, Tarefa2Reverso, Tarefa1Reverso, Custo2)|Resto],Nome) :-
-    assert(tempo(Nome,Tarefa1, Tarefa2, Custo1)),
-    assert(tempo(Nome,Tarefa2Reverso, Tarefa1Reverso, Custo2)),
+    assertz(tempo(Nome,Tarefa1, Tarefa2, Custo1)),
+    assertz(tempo(Nome,Tarefa2Reverso, Tarefa1Reverso, Custo2)),
     processar_e_assert_resultados(Resto,Nome).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -628,3 +664,14 @@ iterar_robots([]).
 iterar_robots([robot(Nome, ListaTarefas) | RestoRobots]) :-
     processar_tarefas_e_assert(ListaTarefas,Nome),
     iterar_robots(RestoRobots).
+
+process_json(Dict, Result, RobotResults, TaskResults) :-
+    Robots = Dict.get(robot),
+    findall(robot(Name, TaskList), 
+            (member(RobotStr, Robots),
+             term_string(Term, RobotStr),
+             Term = robot(Name, TaskList)), RobotResults),
+    findall(tarefa(Id, N1, N2, P1, N3, N4, P2),
+            (member(robot(_, Tasks), RobotResults),
+             member(tarefa(Id, N1, N2, P1, N3, N4, P2), Tasks)), TaskResults),
+    Result = {robots: RobotResults, tasks: TaskResults}.

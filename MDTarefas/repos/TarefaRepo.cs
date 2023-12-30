@@ -45,7 +45,19 @@ public class TarefaRepo : ITarefaRepo
     return entityList;
 }
 
-    public async Task<Tarefa?> GetAsync(string id){
+       public async Task<List<Tarefa>> GetTarefasAceitesAsync()
+    {
+        List<TarefaSchema> schemaList = await _tarefaCollection.Find(x => x.EstadoString == "Aceite").ToListAsync();
+        List<Tarefa> entityList = new List<Tarefa>();
+        foreach (TarefaSchema tarefa in schemaList)
+        {
+            entityList.Add(TarefaMapper.toDomain(tarefa));
+        }
+        return entityList;
+    }
+
+    public async Task<Tarefa?> GetAsync(string id)
+    {
         TarefaSchema schema = await _tarefaCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
         if (schema == null) {
             return null;
@@ -65,6 +77,33 @@ public class TarefaRepo : ITarefaRepo
     public async Task<bool> RemoveAsync(string id){
         var result = await _tarefaCollection.DeleteOneAsync(x => x.Id == id);
         return result.IsAcknowledged && result.DeletedCount > 0;
+    }
+
+       public async Task<List<Tarefa>> GetTarefasByEstado(string valor) {
+        List<TarefaSchema> schemaList = await _tarefaCollection.Find(x => x.EstadoString == valor).ToListAsync();
+        List<Tarefa> entityList = new List<Tarefa>();
+        foreach (TarefaSchema tarefa in schemaList) {
+            entityList.Add(TarefaMapper.toDomain(tarefa));
+        }
+        return entityList;
+    }
+
+    public async Task<List<Tarefa>> GetTarefasByTipo(string valor){
+        List<TarefaSchema> schemaList = await _tarefaCollection.Find(x => x.TipoTarefa == valor).ToListAsync();
+        List<Tarefa> entityList = new List<Tarefa>();
+        foreach (TarefaSchema tarefa in schemaList) {
+            entityList.Add(TarefaMapper.toDomain(tarefa));
+        }
+        return entityList;
+    }
+
+    public async Task<List<Tarefa>> GetTarefasByUtente(string valor){
+        List<TarefaSchema> schemaList = await _tarefaCollection.Find(x => x.EmailRequisitor == valor).ToListAsync();
+        List<Tarefa> entityList = new List<Tarefa>();
+        foreach (TarefaSchema tarefa in schemaList) {
+            entityList.Add(TarefaMapper.toDomain(tarefa));
+        }
+        return entityList;
     }
 
 }

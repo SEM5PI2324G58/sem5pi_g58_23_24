@@ -9,6 +9,7 @@ import AlterarEstadoDaTarefa from 'src/dataModel/alterarEstadoDaTarefa';
 import Tarefa from 'src/dataModel/tarefa';
 import { CriarVigilancia } from 'src/dataModel/criarVigilancia';
 import { CriarPickUpDelivery } from 'src/dataModel/criarPickUPDelivery';
+import { forEach } from 'lodash';
 
 @Injectable({
   providedIn: 'root'
@@ -175,6 +176,32 @@ export class TarefaService {
           }
       }
     });;
+  }
+
+  obterTarefa(criterio: string| null, valor: string | null) : Observable<Tarefa[] | null>{
+      if (criterio == null || criterio == undefined || criterio == ""){
+        this.log(`ERRO: O critério de pesquisa é obrigatório`);
+        return of(null);
+      }
+      if (valor == null || valor == undefined || valor == ""){
+        this.log(`ERRO: O valor de pesquisa é obrigatório`);
+        return of(null);
+      }
+      let params = new HttpParams().set('criterio', criterio).set('valor', valor);
+      console.log(criterio);
+      console.log(valor);
+
+      return this.http.get<Tarefa[]>(this.tarefaUrl + "/obterTarefasPorCriterio", { params: params })
+      .pipe(
+        catchError(this.handleError<Tarefa[]>('Obter tarefa')),
+        tap(data => {
+          if (data) {
+            this.log(`Tarefas obtidas com sucesso:`);
+          } else {
+            this.log(`Não foram encontradas tarefas`);
+          }
+        })
+      );
   }
 
   public getTarefasPendentes(): Observable<Tarefa[]> {

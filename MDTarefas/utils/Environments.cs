@@ -7,5 +7,7 @@ namespace MDTarefas.utils
         public const string MDRI_API_URL = "http://10.9.10.58:4000/api";
 
         public const string MDRI_API_PLANEAMENTO_URL = MDRI_API_URL + "/planeamento";  
+
+        public const string  PLANEAMENTO_API_URL = "http://10.9.11.58:8000";
     }
 }

@@ -6,6 +6,8 @@ using MDTarefas.services.IRepos;
 using MDTarefas.Services.IServices;
 using MDTarefas.utils;
 using MDTarefas.dataSchemas;
+using System.Text.Json;
+using System.Text;
 
 namespace MDTarefas.Services.ImplServices
 {
@@ -159,5 +161,60 @@ namespace MDTarefas.Services.ImplServices
             await _tarefaRepository.UpdateAsync(tarefaDTO.Id, tarefa);
             return TarefaMapper.toDTO(tarefa);
         }
+
+    
+        public async Task<TarefasParaOPlaneamentoDTO> carregarTarefasNoPlaneamento(bool algoritmo) {
+            List<Tarefa> list =  await _tarefaRepository.GetTarefasAceitesAsync();
+            if (list.Count == 0) {
+                throw new BusinessRuleValidationException("Não existem tarefas aceites");
+            }
+            string response = await comunicacaoComPlaneamentoAsync(TarefaMapper.toTarefasParaOPlaneamentoDTO(list,algoritmo));
+            return TarefaMapper.toTarefasParaOPlaneamentoDTO(list, algoritmo);
+        }
+
+        public async Task<string> comunicacaoComPlaneamentoAsync(TarefasParaOPlaneamentoDTO list) {
+            string baseUri = utils.Environments.PLANEAMENTO_API_URL + "/tarefa/tempo";
+            HttpContent content = new StringContent(JsonSerializer.Serialize(list), Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await this.httpClient.PostAsync(baseUri,  content);
+
+            if (!response.IsSuccessStatusCode) {
+                string errorMessage = await response.Content.ReadAsStringAsync();
+                throw new BusinessRuleValidationException($"Pedido ao módulo de planeamento falhou.\nErro: {errorMessage}");
+            }
+            else{
+                return await response.Content.ReadAsStringAsync();
+            }
+
+        }
+
+        public async Task<List<TarefaDTO>> obterTarefasPorCriterio(string criterio, string valor) {
+            if (criterio.isNullEmptyOrBlank()) {
+                throw new BusinessRuleValidationException("Criterio é obrigatório");
+            }
+            List<Tarefa> list = new List<Tarefa>();
+            if (criterio == "estado") {
+                list = await _tarefaRepository.GetTarefasByEstado(valor); 
+            }
+            else if (criterio == "tipo") {
+                list = await _tarefaRepository.GetTarefasByTipo(valor);
+            }
+            else if (criterio == "utente"){
+                list = await _tarefaRepository.GetTarefasByUtente(valor);
+            }
+            else {
+                throw new BusinessRuleValidationException("Criterio inválido");
+            }
+            
+            if (list.Count == 0) {
+                throw new NotFoundException("Não existem tarefas com esse critério");
+            }
+
+            List<TarefaDTO> listDTO = new List<TarefaDTO>();
+            foreach (Tarefa tarefa in list) {
+                listDTO.Add(TarefaMapper.toDTO(tarefa));
+            }
+            return listDTO;
+        }
     }
-}
+} 
