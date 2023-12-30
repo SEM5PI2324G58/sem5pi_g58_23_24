@@ -187,5 +187,34 @@ namespace MDTarefas.Services.ImplServices
             }
 
         }
-    } 
-}
+
+        public async Task<List<TarefaDTO>> obterTarefasPorCriterio(string criterio, string valor) {
+            if (criterio.isNullEmptyOrBlank()) {
+                throw new BusinessRuleValidationException("Criterio é obrigatório");
+            }
+            List<Tarefa> list = new List<Tarefa>();
+            if (criterio == "estado") {
+                list = await _tarefaRepository.GetTarefasByEstado(valor); 
+            }
+            else if (criterio == "tipo") {
+                list = await _tarefaRepository.GetTarefasByTipo(valor);
+            }
+            else if (criterio == "utente"){
+                list = await _tarefaRepository.GetTarefasByUtente(valor);
+            }
+            else {
+                throw new BusinessRuleValidationException("Criterio inválido");
+            }
+            
+            if (list.Count == 0) {
+                throw new NotFoundException("Não existem tarefas com esse critério");
+            }
+
+            List<TarefaDTO> listDTO = new List<TarefaDTO>();
+            foreach (Tarefa tarefa in list) {
+                listDTO.Add(TarefaMapper.toDTO(tarefa));
+            }
+            return listDTO;
+        }
+    }
+} 

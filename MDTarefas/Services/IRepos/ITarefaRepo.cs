@@ -11,7 +11,9 @@ namespace MDTarefas.services.IRepos{
         Task<Tarefa> CreateAsync(Tarefa newTarefa);
         Task UpdateAsync(string id, Tarefa updatedTarefa);
         Task<bool> RemoveAsync(string id);
-
+        Task<List<Tarefa>> GetTarefasByEstado(string valor);
+        Task<List<Tarefa>> GetTarefasByTipo(string valor);
+        Task<List<Tarefa>> GetTarefasByUtente(string valor);
     }
 
 }

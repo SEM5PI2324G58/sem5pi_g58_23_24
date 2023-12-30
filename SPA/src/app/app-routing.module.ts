@@ -42,6 +42,7 @@ import { CriarTarefaPickUpDeliveryComponent } from './conta/criar-tarefa-pick-up
 import { DeleteTarefaComponent } from './gestao-planeamento/delete-tarefa/delete-tarefa.component';
 import { AlterarDadosUtenteComponent } from './conta/alterar-dados-utente/alterar-dados-utente.component';
 import { DeleteUtenteComponent } from './conta/delete-utente/delete-utente.component';
+import { ObterTarefaComponent } from './gestao-planeamento/obter-tarefa/obter-tarefa.component';
 
 
 const routes: Routes = [
@@ -88,7 +89,8 @@ const routes: Routes = [
   { path: 'criarTarefaPickUpDelivery', component: CriarTarefaPickUpDeliveryComponent},
   { path: 'apagarTarefa', component: DeleteTarefaComponent},
   {path: 'alterarDadosUtente', component: AlterarDadosUtenteComponent},
-  {path: 'deleteUtente', component: DeleteUtenteComponent}
+  {path: 'deleteUtente', component: DeleteUtenteComponent},
+  { path: 'obterTarefa', component: ObterTarefaComponent},
 ];
 
 @NgModule({
