@@ -17,6 +17,7 @@ caminho_pontos_piso/10, aStar/4]).
 :-dynamic prob_cruzamento/1.
 :-dynamic prob_mutacao/1.
 :-dynamic tarefas/1.
+:-dynamic tempo_alvo/1.
 % Dados que vão ser obtidos atraves do pedido da informação do mapa ao MDRI
 % Lista de pisos de cada edifício
 % pisos(IdEdificio,[IdPiso1,IdPiso2,IdPiso3])
@@ -588,11 +589,15 @@ inicializa(ListaTarefas):-
     DP is 6, % Dimensão da população
     PC is 0.8, % Probabilidade de cruzamento
     PM is 0.8, % Probabilidade de mutação
+    PTA is 0.4, % Percentagem do tempo atual
     (retract(geracoes(_));true), assertz(geracoes(NG)),
 	(retract(populacao(_));true), assertz(populacao(DP)),
 	(retract(prob_cruzamento(_));true), assertz(prob_cruzamento(PC)),
 	(retract(prob_mutacao(_));true), assertz(prob_mutacao(PM)),
     length(ListaTarefas,NumT),
+    avalia(ListaTarefas,Tempo),
+    TempoAlvo is Tempo * PTA,
+    (retract(tempo_alvo(_));true), assertz(tempo_alvo(TempoAlvo)),
     (retract(tarefas(_));true), assertz(tarefas(NumT)).
 
 gera(ListaTarefas,Resultado):-
@@ -683,12 +688,13 @@ btroca([X|L1],[X|L2]):-btroca(L1,L2).
 
 %Caso de paragem chegou ao fim das gerações
 gera_geracao(G,G,Pop, ResultadoFinal):-!,
-    [ResultadoFinal*Tempo | RestoPop] = Pop,
+    [ResultadoFinal*_ | _] = Pop,
 	write('Geração '), write(G), write(':'), nl, write(Pop), nl.
 %Caso de paragem chegou a uma solução com tempo inferior a algo
-gera_geracao(N,G,Pop, ResultadoFinal):- 
-    [ResultadoFinal*Tempo | RestoPop] = Pop,
-    Tempo =< 7,
+gera_geracao(N,_,Pop, ResultadoFinal):- 
+    [ResultadoFinal*Tempo | _] = Pop,
+    tempo_alvo(TempoAlvo),
+    Tempo =< TempoAlvo,
     write('Geração '), write(N), write(':'), nl, write(Pop), nl.
 %Geração Propriamente dita
 gera_geracao(N,G,Pop, ResultadoFinal):-
