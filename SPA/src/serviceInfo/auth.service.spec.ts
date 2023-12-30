@@ -175,4 +175,33 @@ describe('AuthService', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/login']);
   }); 
 
+  it('Método approveOrReject chama método PUT do HttpClient', () => {
+    const inputData = {
+      email: "user@isep.ipp.pt",
+      estado: "aceito",
+    }
+
+    const postSpy = spyOn(httpClient, 'patch').and.returnValue(of("certo"));
+    service.approveOrReject(inputData.email, inputData.estado);
+    expect(postSpy).toHaveBeenCalledWith(devEnvironment.AUTH_API_URL + "user/approveOrReject", inputData, service.httpOptions);
+  });
+
+  it('Método listarUtilizadoresPendentes chama método GET do HttpClient', () => {
+    const returnData =
+      [
+        {
+          email: "user@isep.ipp.pt",
+          name: "name",
+          telefone: "966432123",
+          nif: "123123123",
+        }
+      ];
+
+    const getSpy = spyOn(httpClient, 'get').and.returnValue(of(returnData));
+    service.listarUtilizadoresPendentes();
+    expect(getSpy).toHaveBeenCalledWith(devEnvironment.AUTH_API_URL + "user/listarUtilizadoresPendentes", service.httpOptions);
+  }
+  );
+
+
 });
