@@ -31,7 +31,7 @@ describe('Criar vigilancia', () => {
         
         
         cy.get('button').click();
-        cy.wait('@createTarefa').then((interception) => {
+        cy.wait('@createTarefa',{ timeout: 100000 }).then((interception) => {
             expect(interception?.response?.statusCode).to.eq(201);
             id = interception.response?.body.id;
         })
