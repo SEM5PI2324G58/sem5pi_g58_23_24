@@ -21,6 +21,7 @@ import { initial, isEqual } from 'lodash';
 import DoorAnimations from './doorAnimations';
 import { MapaService } from 'src/serviceInfo/mapa.service';
 import { ActivatedRoute } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 
 
 @Component({
@@ -88,9 +89,25 @@ export class Visualizacao3DComponent implements AfterViewInit {
     private edificioService: EdificioService,
     private mapaService: MapaService,
     private route: ActivatedRoute,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
+
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        // Perform your specific task here
+        if(this.canvas){
+          this.canvas.remove();
+          const elements = document.body.querySelectorAll('.lil-gui');
+          elements.forEach((element) => {
+            if (element.parentNode) {
+              element.parentNode.removeChild(element);
+            }
+          });
+        }
+      }
+    });
 
     this.route.paramMap.subscribe(params => {
       // Check if the parameter with key 'yourParamName' exists in the URL
