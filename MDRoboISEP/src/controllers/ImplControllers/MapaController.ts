@@ -93,4 +93,28 @@ export default class MapaController implements IMapaController {
             return next(e);
         }
     }
+
+    public async exportarMapaParaOPlaneamento(req: Request, res: Response, next: NextFunction) {
+        try{
+            let authOrError = this.authServiceInstance.checkAuth(req, res, ['gestor de campus', 'gestor de frota', 'gestor de tarefas', 'utente', 'admin']);
+            if(authOrError.isFailure){
+              return res.send();
+            }
+            let mapaOrError = await this.mapaServiceInstance.exportarMapaParaOPlaneamento();
+            if(mapaOrError.isFailure){
+                let erro = String(mapaOrError.errorValue());
+                if(erro === "O Edifício que inseriu não existe." || erro === "O piso que inseriu não existe."){
+                    res.status(404);
+                }else{
+                    res.status(400);
+                }
+                return res.json(mapaOrError.errorValue());
+            }
+            const mapaDTO = mapaOrError.getValue();
+            res.status(200);
+            return res.json(mapaDTO);
+        }catch(e){
+            return next(e);
+        }
+    }
 }

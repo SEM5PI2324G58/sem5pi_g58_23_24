@@ -8,5 +8,6 @@ namespace MDTarefas.Services.IServices {
         Task<List<TarefaDTO>> listarTarefasPendentes();
         Task removerTarefaPorId(string id);
         Task<TarefaDTO> alterarEstadoDaTarefa(AlterarEstadoDaTarefaDTO tarefaDTO);
+        Task<TarefasParaOPlaneamentoDTO> carregarTarefasNoPlaneamento(bool algoritmo);
     }
 }

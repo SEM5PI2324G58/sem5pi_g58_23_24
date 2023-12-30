@@ -59,4 +59,11 @@ export default (app: Router) => {
             })
         }),
         (req, res, next) => ctrl.exportarMapaAtravesDeUmaPassagemEPiso(req, res, next));
+
+        route.post('/exportarMapaParaOPlaneamento',
+        celebrate({
+            body: Joi.object({
+            })
+        }),
+        (req, res, next) => ctrl.exportarMapaParaOPlaneamento(req, res, next));
     };
