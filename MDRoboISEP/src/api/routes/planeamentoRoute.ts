@@ -20,4 +20,13 @@ export default (app: Router) => {
             })
         }),
         (req, res, next) => ctrl.encontrarCaminhosEntreEdificios(req, res, next));
+
+    route.get('/caminhoVigilancia',
+        celebrate({
+            query: Joi.object({
+                codigoEd: Joi.string().required(),
+                numeroPiso: Joi.string().required(),
+            })
+        }),
+        (req, res, next) => ctrl.encontrarCaminhoVigilancia(req, res, next));
 };

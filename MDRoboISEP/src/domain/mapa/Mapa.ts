@@ -682,4 +682,35 @@ export class Mapa extends AggregateRoot<pisoProps> {
     }
     return false;
   }
+
+  public getCoordenadasVigilancia(): number[]{
+    let coordenadasVigilancia: number[] = [];
+    if (this.props.coordenadasSala === undefined || this.props.coordenadasSala === null || this.props.coordenadasSala.length === 0){
+      var coords = this.posicaoIncicialRobo();
+      return [coords.y, coords.x, coords.y, coords.x];
+    }
+
+    if (this.props.coordenadasSala.length > 1){
+      let salaInicial = this.props.coordenadasSala[0];
+      let salaFinal = this.props.coordenadasSala[this.props.coordenadasSala.length-1];
+      coordenadasVigilancia.push(salaInicial.returnOrdenadaPorta());
+      coordenadasVigilancia.push(salaInicial.returnAbcissaPorta());
+      coordenadasVigilancia.push(salaFinal.returnOrdenadaPorta());
+      coordenadasVigilancia.push(salaFinal.returnAbcissaPorta());
+    }else if (this.props.coordenadasElevador){
+      let salaInicial = this.props.coordenadasSala[0];
+      coordenadasVigilancia.push(salaInicial.returnOrdenadaPorta());
+      coordenadasVigilancia.push(salaInicial.returnAbcissaPorta());
+      coordenadasVigilancia.push(this.props.coordenadasElevador.returnYCoord());
+      coordenadasVigilancia.push(this.props.coordenadasElevador.returnXCoord());
+    }else{
+      let salaInicial = this.props.coordenadasSala[0];
+      coordenadasVigilancia.push(salaInicial.returnOrdenadaPorta());
+      coordenadasVigilancia.push(salaInicial.returnAbcissaPorta());
+      coordenadasVigilancia.push(salaInicial.returnOrdenadaPorta());
+      coordenadasVigilancia.push(salaInicial.returnAbcissaPorta());
+    }
+    return coordenadasVigilancia;
+  }
+
 }

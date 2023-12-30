@@ -303,4 +303,8 @@ export class Piso extends AggregateRoot<pisoProps> {
     this.props.mapa = mapa;
     return Result.ok<boolean>(true);
   }
+
+  public getCoordenadasVigilancia(): number[]{
+    return this.props.mapa.getCoordenadasVigilancia();
+  }
 }

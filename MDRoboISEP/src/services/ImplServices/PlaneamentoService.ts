@@ -86,4 +86,43 @@ export default class PlaneamentoService implements IPlaneamentoService {
         }
 
     }
+
+    public async encontrarCaminhoVigilancia(codEdificio: string, numeroPiso: string): Promise<Result<String>> {
+        const edificio = await this.edificioRepoInstance.findByDomainId(codEdificio);
+
+        if(!edificio){
+            return Result.fail<String>("O edificio com o código " + codEdificio + " não existe");
+        }
+
+        const numeroPisoInt = parseInt(numeroPiso);
+
+        var piso = edificio.returnPisoPeloNumero(numeroPisoInt);
+
+        if (piso == null) {
+            return Result.fail<String>("O piso com o número " + numeroPiso + " não existe");
+        }
+        if(!piso.hasMapa()){
+            return Result.fail<String>("O piso não tem mapa");
+        };
+
+        let coordenadasVigilancia = piso.getCoordenadasVigilancia();
+        if (coordenadasVigilancia == null) {
+            return Result.fail<String>("Não é possível encontrar um caminho para a vigilância neste piso");
+        }
+
+        let ICoordenadasPontosDTO = {
+            x_origem: coordenadasVigilancia[0],
+            y_origem: coordenadasVigilancia[1],
+            piso_origem: edificio.returnEdificioId() + numeroPisoInt,
+            x_destino: coordenadasVigilancia[2],
+            y_destino: coordenadasVigilancia[3],
+            piso_destino: edificio.returnEdificioId() + numeroPisoInt,
+        } as ICoordenadasPontosDTO;
+
+        let answer = await this.edificioServiceInstance.getInformacaoPlaneamento(ICoordenadasPontosDTO);
+        if(answer.isFailure){
+            return Result.fail<String>("Não foi possível encontrar um caminho entre as salas");
+        }
+        return Result.ok<String>(answer.getValue().caminho);
+    }    
 }    
