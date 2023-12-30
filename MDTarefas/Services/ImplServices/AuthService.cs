@@ -69,5 +69,14 @@ namespace MDTarefas.Services.ImplServices
             }
             return null;
         }
+
+        public string? GetToken(HttpRequest req)
+        {
+            if(req.Headers.TryGetValue("Authorization", out var authHeader)){
+                return authHeader.ToString().Split(" ")[1];
+            }
+            return null;
+        }
+
     }
 }

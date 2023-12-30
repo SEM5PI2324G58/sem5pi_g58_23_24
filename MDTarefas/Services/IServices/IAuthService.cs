@@ -5,5 +5,6 @@ namespace MDTarefas.Services.IServices {
         bool IsAuthenticated(HttpRequest req);
         bool IsAuthorized(HttpRequest req, string[] roles);
         string? GetEmail(HttpRequest req);
+        string? GetToken(HttpRequest req);
     }
 }

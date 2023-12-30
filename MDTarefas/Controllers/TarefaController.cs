@@ -57,8 +57,13 @@ public class TarefaController : ControllerBase
                 return Unauthorized("Não foi possível obter o email do utilizador autenticado");
             }
             tarefa.Email = email;
+
+            var token = _authService.GetToken(Request);
+            if (token == null) {
+                return Unauthorized("Não foi possível obter o token do utilizador autenticado");
+            }
             
-            TarefaDTO tarefacriada = await _tarefaService.criarTarefa(tarefa);
+            TarefaDTO tarefacriada = await _tarefaService.criarTarefa(tarefa, token);
             
             return Created(tarefacriada.Id,tarefacriada);  
         

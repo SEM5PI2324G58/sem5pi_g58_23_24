@@ -771,10 +771,13 @@ gerar_pontos_cruzamento1(P1,P2):-
 gerar_pontos_cruzamento1(P1,P2):-
 	gerar_pontos_cruzamento1(P1,P2).
 
+cruzamento(Lista,ListaNova):-
+    random_permutation(Lista,ListaAleatoria), % Faz com que não sejam sempre os pares de tarefas por ordem crescente de valor a serem cruzados
+    cruzamento1(ListaAleatoria,ListaNova).
 
-cruzamento([],[]).
-cruzamento([Ind*_],[Ind]).
-cruzamento([Ind1*_,Ind2*_|Resto],[NInd1,NInd2|Resto1]):-
+cruzamento1([],[]).
+cruzamento1([Ind*_],[Ind]).
+cruzamento1([Ind1*_,Ind2*_|Resto],[NInd1,NInd2|Resto1]):-
 	gerar_pontos_cruzamento(P1,P2),
 	prob_cruzamento(Pcruz),random(0.0,1.0,Pc),
 	((Pc =< Pcruz,!,
@@ -782,7 +785,7 @@ cruzamento([Ind1*_,Ind2*_|Resto],[NInd1,NInd2|Resto1]):-
 	  cruzar(Ind2,Ind1,P1,P2,NInd2))
 	;
 	(NInd1=Ind1,NInd2=Ind2)),
-	cruzamento(Resto,Resto1).
+	cruzamento1(Resto,Resto1).
 
 preencheh([],[]).
 
