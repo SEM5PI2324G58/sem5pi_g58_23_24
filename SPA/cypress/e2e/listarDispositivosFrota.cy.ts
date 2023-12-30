@@ -8,6 +8,13 @@ describe('Listar dispositivos da frota', () => {
         cy.intercept('POST', '/api/tipoDispositivo').as('createTipoDispositivo');
         cy.intercept('POST', '/api/dispositivo').as('createDispositivo');
         
+        cy.intercept('POST', '/api/user/login').as('login');
+        cy.visit('/login');
+        cy.get('[name="email"]').type('gestorfrota@isep.ipp.pt');
+        cy.get('[name="password"]').type('Password10@');
+        cy.get('button').click();
+        cy.wait('@login');
+
         //Criar um tipo de dispositivo
         cy.visit('/criarTipoRobo')
         cy.get('[name="marcaTipoRobo"]').type('Marca1');
@@ -52,6 +59,9 @@ describe('Listar dispositivos da frota', () => {
         cy.get('[name="id"]').type(id);
         cy.get('button').click();
         cy.wait('@apagarTipoRobo');
+
+        cy.get('[class="logout"]').click();
+
     });
     
 });

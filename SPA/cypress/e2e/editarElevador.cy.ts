@@ -10,6 +10,13 @@ describe('Editar elevador', () => {
         cy.intercept('PUT', '/api/elevador').as('editElevador');
         cy.intercept('DELETE', '/api/edificio?codEdificio=T1').as('apagarEdificio');
 
+        cy.intercept('POST', '/api/user/login').as('login');
+        cy.visit('/login');
+        cy.get('[name="email"]').type('gestorcampus@isep.ipp.pt');
+        cy.get('[name="password"]').type('Password10@');
+        cy.get('button').click();
+        cy.wait('@login');
+
         //Criar um edificio
         cy.visit('/criarEdificio')
         cy.get('[name="codigo"]').type('T1');
@@ -89,5 +96,7 @@ describe('Editar elevador', () => {
         cy.get('[name="codigo"]').type('T1');
         cy.get('button').click();
         cy.wait('@apagarEdificio');
+
+        cy.get('[class="logout"]').click();
     });
 })
