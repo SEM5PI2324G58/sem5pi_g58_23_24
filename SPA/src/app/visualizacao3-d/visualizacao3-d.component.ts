@@ -1246,7 +1246,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
       
     } else {
       
-      if (!this.popupOpen) {
+      if (!this.popupOpen && !this.popupPisosElevadorOpen) {
         if(this.tarefaConcluida && this.automaticMode){
           if(this.numeroEdificioAtual !== this.listaPontosEdificio.length - 1){
             this.numeroEdificioAtual++;
