@@ -135,7 +135,7 @@ namespace MDTarefas.mappers
             throw new ArgumentException("Invalid TarefaSchema");
         }
 
-        public static TarefasParaOPlaneamentoDTO toTarefasParaOPlaneamentoDTO(List<Tarefa> list, bool algoritmo)
+        public static TarefasParaOPlaneamentoDTO toTarefasParaOPlaneamentoDTO(List<Tarefa> list, int algoritmo)
         {
             string percurso;
             string dispositivo;

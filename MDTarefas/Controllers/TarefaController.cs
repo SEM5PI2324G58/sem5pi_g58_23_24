@@ -136,7 +136,7 @@ public class TarefaController : ControllerBase
     }
 
     [HttpGet("carregarTarefasNoPlaneamento")]
-    public async Task<ActionResult<TarefaDTO>> CarregarTarefasNoPlaneamento([FromQuery] bool algoritmo)
+    public async Task<ActionResult<TarefaDTO>> CarregarTarefasNoPlaneamento([FromQuery] int algoritmo)
     {
 
         try{

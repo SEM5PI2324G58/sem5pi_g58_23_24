@@ -55,12 +55,14 @@ process_mapa_json(Dict):-
 
 tempo_handler(Request) :-
         http_read_json_dict(Request,Dict,[]),
-        process_json(Dict, Result, RobotResults, TarefaResults),
+        process_json(Dict, RobotResults),
+        retractall(tempo(_,_,_,_)),
         Robot = RobotResults,
+        Algoritmo = Dict.algoritmo,
         iterar_robots(Robot),
-        with_output_to(atom(RobotJ), write(Robot)),
-        with_output_to(atom(ResultJ), write(Result)),
-        R = json{'resultado': ResultJ , 'obtido': RobotJ},
+        escolher_algoritmo(Robot,Algoritmo,Resultado),
+        with_output_to(atom(ResultadoJ), write(Resultado)),
+        R = json{'resultado': ResultadoJ},
         reply_json(R).
 
 
@@ -69,6 +71,15 @@ tempo_handler(Request) :-
 
 caminho_pontos_piso_handler(Request) :-
     http_read_json_dict(Request,Dict,[]),
+    retractall(pisos(_,_)),
+    retractall(elevador(_,_)),
+    retractall(coordElevador(_,_,_)),
+    retractall(corredor(_,_,_,_)),
+    retractall(coordCorredor(_,_,_,_,_,_,_,_,_,_)),
+    retractall(salas(_,_)),
+    retractall(coordPorta(_,_,_)),
+    retractall(m(_,_,_,_)),
+    retractall(dim_ed(_,_,_)),
     ListaPiso = Dict.pisos,
     ListaElev = Dict.elevadores,
     ListaCoordElev = Dict.coordElevadores,
@@ -96,15 +107,7 @@ caminho_pontos_piso_handler(Request) :-
     with_output_to(atom(LLigJ), write(LLig)),
     with_output_to(atom(CustoJ), write(Custo)),
     with_output_to(atom(LCelCamPisosJ), write(LCelCamPisos)),
-    retractall(pisos(_,_)),
-    retractall(elevador(_,_)),
-    retractall(coordElevador(_,_,_)),
-    retractall(corredor(_,_,_,_)),
-    retractall(coordCorredor(_,_,_,_,_,_,_,_,_,_)),
-    retractall(salas(_,_)),
-    retractall(coordPorta(_,_,_)),
-    retractall(m(_,_,_,_)),
-    retractall(dim_ed(_,_,_)),
+
     R = json{'edificios':LEdCamJ, 'ligacoes': LLigJ, 'caminho': LCelCamPisosJ, 'custo': CustoJ},
     reply_json(R).
 
@@ -665,7 +668,7 @@ iterar_robots([robot(Nome, ListaTarefas) | RestoRobots]) :-
     processar_tarefas_e_assert(ListaTarefas,Nome),
     iterar_robots(RestoRobots).
 
-process_json(Dict, Result, RobotResults, TaskResults) :-
+process_json(Dict, RobotResults) :-
     Robots = Dict.get(robot),
     findall(robot(Name, TaskList), 
             (member(RobotStr, Robots),
@@ -675,3 +678,59 @@ process_json(Dict, Result, RobotResults, TaskResults) :-
             (member(robot(_, Tasks), RobotResults),
              member(tarefa(Id, N1, N2, P1, N3, N4, P2), Tasks)), TaskResults),
     Result = {robots: RobotResults, tasks: TaskResults}.
+
+% ==================================================================================================    
+% =================================Algoritmo Permutações============================================
+% ==================================================================================================
+
+melhor_sequencia(Tarefas, MelhorSequencia) :-
+    findall(Sequencia, permutation(Tarefas, Sequencia), Sequencias),
+    avaliar_sequencias(Sequencias, MelhorSequencia, _).
+
+avaliar_sequencias([], [], inf). 
+avaliar_sequencias([Sequencia|RestoSequencias], MelhorSequencia, MelhorTempoSequencia) :-
+    avalia(Sequencia, TempoSequencia),
+    avaliar_sequencias(RestoSequencias, TempSequenciaAtual, TempTempoAtual),
+    (TempTempoAtual == inf -> 
+        MelhorSequencia = Sequencia, MelhorTempoSequencia = TempoSequencia
+    ; TempoSequencia < TempTempoAtual -> 
+        MelhorSequencia = Sequencia, MelhorTempoSequencia = TempoSequencia
+    ;
+        MelhorSequencia = TempSequenciaAtual, MelhorTempoSequencia = TempTempoAtual
+    ).
+
+avalia([_],0).
+
+avalia([Tarefa1,Tarefa2|Resto], TempoIndividuo):-
+    avalia([Tarefa2|Resto], TempoResto),
+    Tarefa1 = tarefa(Nome1,_,_,_,_,_,_),
+    Tarefa2 = tarefa(Nome2,_,_,_,_,_,_),
+    tempo(_,Nome1,Nome2,Custo),
+    TempoIndividuo is TempoResto + Custo.
+
+% ==================================================================================================
+% =================================Algoritmo Genético===============================================
+% ==================================================================================================
+
+genetico(_,0).
+
+% ==================================================================================================
+% =================================Gestão dos algoritmos============================================
+% ==================================================================================================
+
+% Predicado principal que inicia a recursão
+escolher_algoritmo(Robots, Algoritmo, Resultados) :-
+    Algoritmo =:= 1,
+    escolher_algoritmo_robots(Robots, [], Resultados).
+
+escolher_algoritmo(Tarefas, Algoritmo, Resultados) :-
+    Algoritmo =:= 0,
+    genetico(Tarefas, Resultados).
+
+% Caso base: quando não há mais robôs para processar
+escolher_algoritmo_robots([], Resultados, Resultados).
+
+% Caso recursivo
+escolher_algoritmo_robots([robot(Nome,Tarefas)|RestoRobot], Acumulador, Resultados) :-
+    melhor_sequencia(Tarefas, MelhorSequencia),
+    escolher_algoritmo_robots(RestoRobot, [robot(Nome, MelhorSequencia)|Acumulador], Resultados).
