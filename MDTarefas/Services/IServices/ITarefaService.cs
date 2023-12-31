@@ -10,5 +10,7 @@ namespace MDTarefas.Services.IServices {
         Task<TarefaDTO> alterarEstadoDaTarefa(AlterarEstadoDaTarefaDTO tarefaDTO);
         Task<RespostaMDTarefaPlaneamentoDTO> carregarTarefasNoPlaneamento(int algoritmo);
         Task<List<TarefaDTO>> obterTarefasPorCriterio(string criterio, string valor);
+
+        Task<string> obterPercursoTarefa(string idTarefa);
     }
 }
