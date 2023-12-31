@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using MDTarefas.dataSchemas;
 using MDTarefas.dto;
+using MDTarefas.Models.exceptions;
 using MDTarefas.Models.tarefa;
 using MongoDB.Bson.Serialization.Conventions;
 using SharpCompress.Archives.Tar;
@@ -150,7 +151,7 @@ namespace MDTarefas.mappers
             {
                 if (tarefa.getCodDispositivo() != null)
                 {
-                    dispositivo = tarefa.getCodDispositivo();
+                    dispositivo = "\'"+tarefa.getCodDispositivo()+"\'";
                     tarefaNome = tarefa.getId();
                     percurso = tarefa.getPercursoString();
                     Regex regex = new Regex(@"celPiso\(\w+,\d+,\d+\)");
@@ -191,7 +192,7 @@ namespace MDTarefas.mappers
                         string ultimoX = parts[1];
                         string ultimoY = parts[2];
                         
-                        string tarefaString = "tarefa(" + tarefaNome + "," + primeiroX + "," + primeiroY + "," + 
+                        string tarefaString = "tarefa(" +"\'"+tarefaNome+"\'"+ "," + primeiroX + "," + primeiroY + "," + 
                         primeiroPiso +  "," + ultimoX + "," + ultimoY + "," + ultimoPiso+ ")";
 
                         if (robots.ContainsKey(dispositivo))
@@ -218,5 +219,28 @@ namespace MDTarefas.mappers
 
         }
 
+        public static RespostaMDTarefaPlaneamentoDTO toArrayDTO(string? resultado)
+        {
+            if (resultado == null)
+            {
+                throw new BusinessRuleValidationException("Não foi obtido nenhum resultado do planeamento");
+            }
+            List<string> tarefasParaOPlaneamento = new List<string>();; 
+            Regex regex = new Regex(@"robot\(([^()]*\([^)]*\))*[^()]*\)");
+            MatchCollection coincidencias = regex.Matches(resultado);
+            if (coincidencias.Count != 0)
+            {
+                foreach (Match coincidencia in coincidencias)
+                {
+                    string robot = coincidencia.Value;
+                    tarefasParaOPlaneamento.Add(robot);
+                }
+                return new RespostaMDTarefaPlaneamentoDTO(tarefasParaOPlaneamento);
+            }
+            else
+            {
+                throw new BusinessRuleValidationException("Não foi possível transformar o resultado do planeamento em um array de tarefas");
+            }
+        }
     }
 }

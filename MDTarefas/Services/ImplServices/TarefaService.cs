@@ -9,6 +9,7 @@ using MDTarefas.dataSchemas;
 using System.Text.Json;
 using System.Text;
 using System.Net.Http.Headers;
+using Microsoft.Extensions.Options;
 
 namespace MDTarefas.Services.ImplServices
 {
@@ -184,7 +185,7 @@ namespace MDTarefas.Services.ImplServices
         }
 
     
-        public async Task<TarefasParaOPlaneamentoDTO> carregarTarefasNoPlaneamento(int algoritmo) {
+        public async Task<RespostaMDTarefaPlaneamentoDTO> carregarTarefasNoPlaneamento(int algoritmo) {
             if (algoritmo < 0 || algoritmo > 2) {
                 throw new BusinessRuleValidationException("Algoritmo inválido");
             }
@@ -192,11 +193,12 @@ namespace MDTarefas.Services.ImplServices
             if (list.Count == 0) {
                 throw new BusinessRuleValidationException("Não existem tarefas aceites");
             }
-            string response = await comunicacaoComPlaneamentoAsync(TarefaMapper.toTarefasParaOPlaneamentoDTO(list,algoritmo));
-            return TarefaMapper.toTarefasParaOPlaneamentoDTO(list, algoritmo);
+            var response = await comunicacaoComPlaneamentoAsync(TarefaMapper.toTarefasParaOPlaneamentoDTO(list,algoritmo));
+            var resposta = TarefaMapper.toArrayDTO(response.resultado);
+            return resposta;
         }
 
-        public async Task<string> comunicacaoComPlaneamentoAsync(TarefasParaOPlaneamentoDTO list) {
+        public async Task<RespostaPlaneamentoDTO> comunicacaoComPlaneamentoAsync(TarefasParaOPlaneamentoDTO list) {
             string baseUri = utils.Environments.PLANEAMENTO_API_URL + "/tarefa/tempo";
             HttpContent content = new StringContent(JsonSerializer.Serialize(list), Encoding.UTF8, "application/json");
 
@@ -207,7 +209,8 @@ namespace MDTarefas.Services.ImplServices
                 throw new BusinessRuleValidationException($"Pedido ao módulo de planeamento falhou.\nErro: {errorMessage}");
             }
             else{
-                return await response.Content.ReadAsStringAsync();
+                var conteudo = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<RespostaPlaneamentoDTO>(conteudo);
             }
 
         }
