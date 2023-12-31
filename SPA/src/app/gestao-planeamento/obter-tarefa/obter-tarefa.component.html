@@ -49,7 +49,7 @@
         </div>
 
         <div *ngIf="listaTarefas && listaTarefas.length > 0">
-            <p-table [value]="listaTarefas" [tableStyle]="{'border-collapse': 'collapse'}">
+            <p-table [value]="listaTarefas" [tableStyle]="{'border-collapse': 'collapse', 'margin-top':'10px'}">
               <ng-template pTemplate="header">
                 <tr>
                   <th class="table-header">Id Tarefa</th>
@@ -57,6 +57,7 @@
                   <th class="table-header">Sala Inicial - SalaFinal</th>
                   <th class="table-header">Edificio - Piso</th>
                   <th class="table-header">Email do Requisitador</th>
+                  <th class="table-header">Estado</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-tarefa>
@@ -70,6 +71,7 @@
                       {{ tarefa.codEdificio ? tarefa.codEdificio + ' - ' + tarefa.numeroPiso : '-' }}
                     </td>
                     <td class="table-data">{{ tarefa.emailRequisitor || '-' }}</td>
+                    <td class="table-data">{{ tarefa.estadoString || '-' }}</td>
                 </tr>
               </ng-template>
             </p-table>
