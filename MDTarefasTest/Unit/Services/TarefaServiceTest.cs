@@ -203,7 +203,47 @@ public class TarefaServiceTest {
         Assert.Equal(res[0].NumeroDelivery, dto.NumeroDelivery);
         Assert.Equal(res[0].SalaInicial, dto.SalaInicial);
         Assert.Equal(res[0].SalaFinal, dto.SalaFinal);
-    }     
+    }
+        [Fact]
+    public async void obterPercursoTarefaRetornaPercurso() {
+        var tarefaRepo = new Mock<ITarefaRepo>();
+        var tarefaService = new TarefaService(tarefaRepo.Object, new HttpClient());
+        var tarefaId = "id";
+        string percurso = "[cel(a1,1,1),cel(a1,2,2)]";
+        
+        var tarefa = new PickUpDelivery(
+            "12345","DESC",
+            "123456789","NOMEPCIKUP",
+            "987654321","NOMEDELIVERY",
+            "A201","A202",
+            "[cel(a1,1,1),cel(a1,2,2)]","emailplaceholder","id",""
+        );    
+
+        tarefaRepo.Setup(repo => repo.GetAsync(It.IsAny<string>()))
+            .ReturnsAsync(tarefa);
+
+        var answer = await tarefaService.obterPercursoTarefa(tarefaId);
+        
+        Assert.Equal(percurso, answer);
+    }
+
+        public async void obterPercursoTarefaErradaFalha() {
+        var tarefaRepo = new Mock<ITarefaRepo>();
+        var tarefaService = new TarefaService(tarefaRepo.Object, new HttpClient());
+        var tarefaId = "id";
+    
+
+        tarefaRepo.Setup(repo => repo.GetAsync(It.IsAny<string>()))
+            .ReturnsAsync((Tarefa)null);
+
+
+
+        async Task ActAsync() =>  await tarefaService.obterPercursoTarefa(tarefaId);
+
+        var exception = await Assert.ThrowsAsync<BusinessRuleValidationException>(ActAsync);
+
+        Assert.Equal("Tarefa não existe", exception.Message);
+    }
 
     [Fact]
     public async void alterarEstadoDaTarefaTemSucessoParaAceite() {

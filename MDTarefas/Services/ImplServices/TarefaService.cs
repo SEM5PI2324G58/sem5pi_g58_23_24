@@ -237,5 +237,18 @@ namespace MDTarefas.Services.ImplServices
             }
             return listDTO;
         }
+        public async Task<string> obterPercursoTarefa (string idTarefa) {
+            if(idTarefa.isNullEmptyOrBlank()){
+                throw new BusinessRuleValidationException("Id da tarefa é obrigatório");
+            }
+            var tarefa = await _tarefaRepository.GetAsync(idTarefa);
+            if (tarefa == null) {
+                throw new NotFoundException("Tarefa não existe");
+            }else if(tarefa.getPercursoString().isNullEmptyOrBlank()){
+                throw new BusinessRuleValidationException("Tarefa ainda não foi planeada");
+            }else{
+                return tarefa.getPercursoString();
+            }
+        }
     }
 } 
