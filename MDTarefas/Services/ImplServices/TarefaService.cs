@@ -184,7 +184,10 @@ namespace MDTarefas.Services.ImplServices
         }
 
     
-        public async Task<TarefasParaOPlaneamentoDTO> carregarTarefasNoPlaneamento(bool algoritmo) {
+        public async Task<TarefasParaOPlaneamentoDTO> carregarTarefasNoPlaneamento(int algoritmo) {
+            if (algoritmo < 0 || algoritmo > 2) {
+                throw new BusinessRuleValidationException("Algoritmo inválido");
+            }
             List<Tarefa> list =  await _tarefaRepository.GetTarefasAceitesAsync();
             if (list.Count == 0) {
                 throw new BusinessRuleValidationException("Não existem tarefas aceites");
