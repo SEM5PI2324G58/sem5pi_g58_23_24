@@ -225,48 +225,52 @@ export class Visualizacao3DComponent implements AfterViewInit {
         for(let codigo of listaCodigosSide){
           codigosSideLowerCase.push(codigo.toLowerCase());
         }
-        let percurso = "[celPiso(a1,20,4),celPiso(a1,20,5),celPiso(a1,21,5),celPiso(b1,20,5),celPiso(b1,20,6),celPiso(b1,20,5),celPiso(b1,19,5)]";
-        let result = percurso.split('celPiso(');
-        result[result.length - 1] = result[result.length - 1].substring(0,result[result.length - 1].length - 2);
-        result.shift();
-        this.listaPontos = [];
-        for(let i = 0; i < result.length - 1; i++){
-          result[i] = result[i].substring(0,result[i].length - 2);
-        }
-        for(let i = 0; i < result.length; i++){
-          let valoresPonto = result[i].split(',');
-          let pontos = valoresPonto[0].match(/^([a-zA-Z]+)(\d+)$/);
-          let iMatch = 0;
-          if(pontos != null){
-            for(let i = 0; i < codigosSideLowerCase.length; i++){
-              if(codigosSideLowerCase[i] === pontos[1].toLowerCase()){
-                iMatch = i;
-              }
-            }
-            this.listaPontos.push({
-              edificio: listaCodigosSide[iMatch],
-              piso: parseInt(pontos[2]),
-              x: Number(result[i].split(',')[1]),
-              y: Number(result[i].split(',')[2]),
-            })
-            this.setListaPontosPorEdificio();
-          }
-        }
         console.log(this.listaPontos);
         this.tarefaService.obterPercursoTarefa(this.idTarefa).subscribe({
           next: (data) => {
             let percursoString = data;
             if(percursoString === null){
               console.log("Não existe percurso para a tarefa");
+            }else{
+              let percursoFake = "[celPiso(a1,20,4),celPiso(a1,20,5),celPiso(a1,21,5),celPiso(b1,20,5),celPiso(b1,20,6),celPiso(b1,19,6)]";
+              let result = percursoString.split('celPiso(');
+              result[result.length - 1] = result[result.length - 1].substring(0,result[result.length - 1].length - 2);
+              result.shift();
+              this.listaPontos = [];
+              for(let i = 0; i < result.length - 1; i++){
+                result[i] = result[i].substring(0,result[i].length - 2);
+              }
+              for(let i = 0; i < result.length; i++){
+              let valoresPonto = result[i].split(',');
+              let pontos = valoresPonto[0].match(/^([a-zA-Z]+)(\d+)$/);
+              let iMatch = 0;
+              if(pontos != null){
+              for(let i = 0; i < codigosSideLowerCase.length; i++){
+                if(codigosSideLowerCase[i] === pontos[1].toLowerCase()){
+                  iMatch = i;
+                }
+              }
+              console.log("iMatch");
+              console.log(listaCodigosSide[iMatch]);
+              this.listaPontos.push({
+                edificio: listaCodigosSide[iMatch],
+                piso: parseInt(pontos[2]),
+                x: Number(result[i].split(',')[1]),
+                y: Number(result[i].split(',')[2]),
+              })
+              this.setListaPontosPorEdificio();
+              }
             }
           }
-        });
-        console.log(this.listaPontos);
-        this.mapaService.exportarMapa(this.listaPontos[0].edificio, this.listaPontos[0].piso).subscribe((data: ExportarMapa) => {
-          this.mapa = data;
-          this.createScene();
-          this.render();
-          this.setListaPontosCartesian();
+          console.log("LISTAPONTOS");
+          console.log(this.listaPontos);
+          this.mapaService.exportarMapa(this.listaPontos[0].edificio, this.listaPontos[0].piso).subscribe((data: ExportarMapa) => {
+            this.mapa = data;
+            this.createScene();
+            this.render();
+            this.setListaPontosCartesian();
+          });
+        }
         });
       },
     });
@@ -1141,6 +1145,13 @@ export class Visualizacao3DComponent implements AfterViewInit {
       ;
   }
 
+  collisionWithPorta(position: THREE.Vector3) {
+    return this.maze.distanceToWestDoor(position) < this.player.radius
+      || this.maze.distanceToEastDoor(position) < this.player.radius
+      || this.maze.distanceToNorthDoor(position) < this.player.radius
+      || this.maze.distanceToSouthDoor(position) < this.player.radius
+  }
+
   fecharPopup() {
     this.popupPisosElevadorOpen = false;
   }
@@ -1281,6 +1292,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
     } else {
 
       if (!this.popupOpen && !this.popupPisosElevadorOpen) {
+        console.log("Objectieve direction: " + this.objetivoDirecao);
         if(this.tarefaConcluida && this.automaticMode){
           if(this.numeroEdificioAtual !== this.listaPontosEdificio.length - 1){
             this.numeroEdificioAtual++;
@@ -1358,11 +1370,15 @@ export class Visualizacao3DComponent implements AfterViewInit {
                     this.atualMenor = false;
                   }
                 }
-              } 
+              }
+            }else if(this.collision(this.player.object.position)){
+              this.player.keyStates.forward = false;
+              console.log("Tarefa concluída!");
+              alert("Tarefa concluída!")
+              this.tarefaConcluida = true;
           }else{
-            console.log(this.atualMenor);
-            console.log(this.player.object.direction);
-            if((this.atualMenor && this.player.object.direction >= this.objetivoDirecao) || (!this.atualMenor && this.player.object.direction <= this.objetivoDirecao)){
+            console.log(this.collision(this.player.object.position));
+            if((this.atualMenor && this.player.object.direction >= this.objetivoDirecao) || (!this.atualMenor && this.player.object.direction <= this.objetivoDirecao)|| ((!this.atualMenor && this.player.object.direction >= 350 && this.objetivoDirecao === 0) || (this.atualMenor && this.player.object.direction <= 10 && this.objetivoDirecao === 0)) || this.collision(this.player.object.position)){
               if(this.pontoAtualTarefaEdificio === this.listaPontosEdificio[this.numeroEdificioAtual].length - 1){
                 if(this.numeroEdificioAtual === this.listaPontosEdificio.length - 1){
                   console.log("Tarefa concluída!");
@@ -1435,12 +1451,29 @@ export class Visualizacao3DComponent implements AfterViewInit {
           ).add(this.player.object.position);
 
           if (this.collision(newPosition)) {
-
-          } else if (this.collisionWithPassage(newPosition)) {
+          }
+          if (this.collisionWithPassage(newPosition)) {
+            if(this.automaticMode){
+              this.player.keyStates.forward = false;
+              this.tarefaConcluida = true;
+            }else{
               this.idPassagemAtravessar = this.maze.idPassagem(newPosition, this.player.radius);
               this.popupOpen = true;
+            }
           } else if (this.collisionWithPortaElevador(newPosition)){
+            if(this.automaticMode){
+              this.player.keyStates.forward = false;
+              this.tarefaConcluida = true;
+            }else{
               this.popupPisosElevadorOpen = true;
+            }
+          }else if(this.collisionWithPorta(newPosition)){
+            if(this.automaticMode){
+              this.player.keyStates.forward = false;
+              console.log("Tarefa concluída!");
+              alert("Tarefa concluída!")
+              this.tarefaConcluida = true;
+            }
           } else {
             this.player.object.position.set(
               newPosition.x,
@@ -1458,14 +1491,29 @@ export class Visualizacao3DComponent implements AfterViewInit {
           ).add(this.player.object.position);
           
           if (this.collision(newPosition)) {
-
-          } else if (this.collisionWithPassage(newPosition)) {
+          }
+          if (this.collisionWithPassage(newPosition)) {
+            if(this.automaticMode){
+              this.player.keyStates.forward = false;
+              this.tarefaConcluida = true;
+            }else{
               this.idPassagemAtravessar = this.maze.idPassagem(newPosition, this.player.radius);
               this.popupOpen = true;
+            }
           } else if (this.collisionWithPortaElevador(newPosition)){
+            if(this.automaticMode){
+              this.player.keyStates.forward = false;
+              this.tarefaConcluida = true;
+            }else{
               this.popupPisosElevadorOpen = true;
-
-
+            }
+          }else if(this.collisionWithPorta(newPosition)){
+            if(this.automaticMode){
+              this.player.keyStates.forward = false;
+              console.log("Tarefa concluída!");
+              alert("Tarefa concluída!")
+              this.tarefaConcluida = true;
+            }
           } else {
             this.player.object.position.set(
               newPosition.x,
