@@ -16,12 +16,14 @@ import PlayerAnimations from './player_animations';
 import UserInterface from './userInterface';
 import { PisoService } from 'src/serviceInfo/piso.service';
 import { EdificioService } from 'src/serviceInfo/edificio.service';
+import { TarefaService } from 'src/serviceInfo/tarefa.service';
 import ExportarMapa from 'src/dataModel/exportarMapa';
 import { initial, isEqual } from 'lodash';
 import DoorAnimations from './doorAnimations';
 import { MapaService } from 'src/serviceInfo/mapa.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router, NavigationEnd } from '@angular/router';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -32,7 +34,7 @@ import { Router, NavigationEnd } from '@angular/router';
 export class Visualizacao3DComponent implements AfterViewInit {
   virarRelogio: any = false;
   pontoAtualTarefaEdificio: number = 0;
-  idTarefa: number = -1;
+  idTarefa: string = "";
   automaticMode : boolean = false;
   listaPontos : {
     edificio: string,
@@ -87,6 +89,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
   constructor(
     private pisoService: PisoService,
     private edificioService: EdificioService,
+    private tarefaService: TarefaService,
     private mapaService: MapaService,
     private route: ActivatedRoute,
     private router: Router,
@@ -114,47 +117,9 @@ export class Visualizacao3DComponent implements AfterViewInit {
       const idFromUrl = this.route.snapshot.paramMap.get('id');
       if(idFromUrl){
         this.automaticMode = true;
-        this.idTarefa = parseInt(idFromUrl);
+        this.idTarefa = idFromUrl;
       }
     });
-    this.listaPontos = [
-      {
-      edificio: "A",
-      piso: 1,
-      x: 20,
-      y: 4,
-    },{
-      edificio: "A",
-      piso: 1,
-      x: 20,
-      y: 5,
-    },
-    {
-      edificio: "A",
-      piso: 1,
-      x: 21,
-      y: 5,
-    },
-    {
-      edificio: "B",
-      piso: 1,
-      x: 20,
-      y: 5,
-    },
-    {
-      edificio: "B",
-      piso: 1,
-      x: 20,
-      y: 6,
-    },
-    {
-      edificio: "B",
-      piso: 1,
-      x: 19,
-      y: 6,
-    }
-  ]
-  this.setListaPontosPorEdificio();
     if(!this.automaticMode){
       this.edificioService.listarCodEdificios().subscribe({
         next: (data) => {
@@ -252,6 +217,61 @@ export class Visualizacao3DComponent implements AfterViewInit {
     }
   }
 
+  private inicializarPercursoECriaCena(): void {
+    this.edificioService.listarCodEdificios().subscribe({
+      next: (data) => {
+        let listaCodigosSide = data;
+        let codigosSideLowerCase: string[] = [];
+        for(let codigo of listaCodigosSide){
+          codigosSideLowerCase.push(codigo.toLowerCase());
+        }
+        let percurso = "[celPiso(a1,20,4),celPiso(a1,20,5),celPiso(a1,21,5),celPiso(b1,20,5),celPiso(b1,20,6),celPiso(b1,20,5),celPiso(b1,19,5)]";
+        let result = percurso.split('celPiso(');
+        result[result.length - 1] = result[result.length - 1].substring(0,result[result.length - 1].length - 2);
+        result.shift();
+        this.listaPontos = [];
+        for(let i = 0; i < result.length - 1; i++){
+          result[i] = result[i].substring(0,result[i].length - 2);
+        }
+        for(let i = 0; i < result.length; i++){
+          let valoresPonto = result[i].split(',');
+          let pontos = valoresPonto[0].match(/^([a-zA-Z]+)(\d+)$/);
+          let iMatch = 0;
+          if(pontos != null){
+            for(let i = 0; i < codigosSideLowerCase.length; i++){
+              if(codigosSideLowerCase[i] === pontos[1].toLowerCase()){
+                iMatch = i;
+              }
+            }
+            this.listaPontos.push({
+              edificio: listaCodigosSide[iMatch],
+              piso: parseInt(pontos[2]),
+              x: Number(result[i].split(',')[1]),
+              y: Number(result[i].split(',')[2]),
+            })
+            this.setListaPontosPorEdificio();
+          }
+        }
+        console.log(this.listaPontos);
+        this.tarefaService.obterPercursoTarefa(this.idTarefa).subscribe({
+          next: (data) => {
+            let percursoString = data;
+            if(percursoString === null){
+              console.log("Não existe percurso para a tarefa");
+            }
+          }
+        });
+        console.log(this.listaPontos);
+        this.mapaService.exportarMapa(this.listaPontos[0].edificio, this.listaPontos[0].piso).subscribe((data: ExportarMapa) => {
+          this.mapa = data;
+          this.createScene();
+          this.render();
+          this.setListaPontosCartesian();
+        });
+      },
+    });
+  }
+
   @ViewChild('myCanvas') private canvasRef!: ElementRef;
   fixedViewCameraParameters: any;
   firstPersonViewCameraParameters: any;
@@ -290,12 +310,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     if(this.automaticMode){
-      this.mapaService.exportarMapa(this.listaPontos[0].edificio, this.listaPontos[0].piso).subscribe((data: ExportarMapa) => {
-        this.mapa = data;
-        this.createScene();
-        this.render();
-        this.setListaPontosCartesian();
-      });
+      this.inicializarPercursoECriaCena();
     }else{
       this.createScene();
       this.render();
@@ -349,7 +364,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
       let xDiff = 0;
       let yDiff = 0;
       console.log(this.listaPontosEdificio[this.numeroEdificioAtual].length);
-      console.log(this.listaPontosEdificio[this.numeroEdificioAtual][0].edificio);
+      console.log(this.listaPontosEdificio);
       if(this.listaPontosEdificio[this.numeroEdificioAtual].length > 1){
         xDiff = this.listaPontosEdificio[this.numeroEdificioAtual][1].x - this.listaPontosEdificio[this.numeroEdificioAtual][0].x;
         yDiff = this.listaPontosEdificio[this.numeroEdificioAtual][1].y - this.listaPontosEdificio[this.numeroEdificioAtual][0].y;
@@ -473,7 +488,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
     this.light = new Lights(lightParam);
 
     const cameraData = {
-      view: 'fixed', // Fixed view: "fixed"; first-person view: "first-person"; third-person view: "third-person"; top view: "top"; mini-map: "mini-map"
+      view: 'third-person', // Fixed view: "fixed"; first-person view: "first-person"; third-person view: "third-person"; top view: "top"; mini-map: "mini-map"
       multipleViewsViewport: new THREE.Vector4(0.0, 0.0, 1.0, 1.0), // Viewport position and size: fraction of window width and window height; MUST BE REDEFINED when creating an instance of ThumbRaiser() so that each view is assigned a different viewport
       target: new THREE.Vector3(0.0, 0.0, 0.0), // Target position
       initialOrientation: new Orientation(135.0, -45.0), // Horizontal and vertical orientation and associated limits (expressed in degrees)
@@ -1153,7 +1168,9 @@ export class Visualizacao3DComponent implements AfterViewInit {
       this.popupOpen = false;
     }
   }
-
+   delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
   usarElevador(piso: number){
     if(piso == this.maze.numeroPiso){
       alert("Você já está neste piso!");
@@ -1197,9 +1214,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
 
   update() {
     if (!this.gameRunning) {
-      
       if (this.maze.loaded && this.player.loaded) {
-
         // If all resources have been loaded
         // Add the maze, the player and the lights to the scene
         this.scene3D.add(this.maze.object);
@@ -1248,8 +1263,10 @@ export class Visualizacao3DComponent implements AfterViewInit {
             this.chegou = false;
           }
           if(this.automaticMode &&  this.carregouPiso){
+            this.setActiveViewCamera(this.thirdPersonViewCamera);
             if(this.pontoAtualTarefa === this.listaPontos.length - 1){
               this.tarefaConcluida = true;
+              console.log("Tarefa concluída!");
               alert("Tarefa concluída!")
             }else{
               this.player.keyStates.forward = true;
@@ -1262,7 +1279,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
       }
       
     } else {
-      
+
       if (!this.popupOpen && !this.popupPisosElevadorOpen) {
         if(this.tarefaConcluida && this.automaticMode){
           if(this.numeroEdificioAtual !== this.listaPontosEdificio.length - 1){
@@ -1348,6 +1365,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
             if((this.atualMenor && this.player.object.direction >= this.objetivoDirecao) || (!this.atualMenor && this.player.object.direction <= this.objetivoDirecao)){
               if(this.pontoAtualTarefaEdificio === this.listaPontosEdificio[this.numeroEdificioAtual].length - 1){
                 if(this.numeroEdificioAtual === this.listaPontosEdificio.length - 1){
+                  console.log("Tarefa concluída!");
                   alert("Tarefa concluída!")
                 }
                 this.player.keyStates.forward = false;
@@ -1377,13 +1395,19 @@ export class Visualizacao3DComponent implements AfterViewInit {
               }        
               if (this.virarRelogio === true) {
                   console.log("Positivo");
+                  console.log(this.player.object.direction);
                   this.player.object.direction += this.player.turningSpeed * deltaT;
+                  if(this.player.object.direction > 360){
+                    this.player.object.direction -= 360;
+                    this.atualMenor = true;
+                  }
               } else {
                 console.log(this.virarRelogio + " virarRelogio");
                 console.log("Negativo");
                 this.player.object.direction  -= this.player.turningSpeed * deltaT;
                 if(this.player.object.direction < 0){
                   this.player.object.direction += 360;
+                  this.atualMenor = false;
                 }
               }
             }
