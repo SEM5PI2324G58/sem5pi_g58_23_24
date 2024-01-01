@@ -192,4 +192,28 @@ public class TarefaController : ControllerBase
         }
     }
 
+    [HttpGet("obterPercursoTarefa")]
+    public async Task<ActionResult<string>> obterPercursoTarefa([FromQuery] string idTarefa)
+    {
+        try{
+            if (!_authService.IsAuthenticated(Request)) {
+                return Unauthorized("Não está autenticado");
+            }else if (!_authService.IsAuthorized(Request, ["gestor de tarefas"])) {
+                return Forbid("Não tem permissões para aceder a este recurso");
+            }
+        }catch (Exception e){
+            return Unauthorized(e.Message);
+        }
+        try {
+            var res = await _tarefaService.obterPercursoTarefa(idTarefa);
+            return Ok(res);
+        } catch (BusinessRuleValidationException e) {
+            return BadRequest(e.Message);
+        }catch (NotFoundException e) {
+            return NotFound(e.Message);
+        }catch (Exception e) {
+            return BadRequest(e.Message);
+        }
+    }
+
 }

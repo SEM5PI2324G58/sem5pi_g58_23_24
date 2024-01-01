@@ -62,9 +62,23 @@ tempo_handler(Request) :-
         Algoritmo = Dict.algoritmo,
         iterar_robots(Robot),
         escolher_algoritmo(Robot,Algoritmo,Resultado),
+        with_output_to(atom(RobotResultsJ), write(RobotResults)),
         with_output_to(atom(ResultadoJ), write(Resultado)),
         R = json{'resultado': ResultadoJ},
         reply_json(R).
+
+process_json(Dict, RobotResults) :-
+    Robots = Dict.robot,
+    processar_lista_aux(Robots, [], RobotResults).
+
+
+processar_lista_aux([], Acc, Acc).
+processar_lista_aux([H|T], Acc, Termos) :-
+    converter_e_adicionar(H, Termo),
+    processar_lista_aux(T, [Termo|Acc], Termos).
+
+converter_e_adicionar(String, Termo) :-
+    term_string(Termo, String).
 
 
 % Manipulador para caminho entre pontos de um piso
@@ -600,6 +614,8 @@ bfs2(Dest,[LA|Outros],Path):-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Algoritmo de calculo de tempo entre tarefas
+
 tarefa_caminho_tempo(X1, Y1, PisoInicio1, X2, Y2, PisoFim1, X3, Y3, PisoInicio2, X4, Y4, PisoFim2,
                CustoTotal1, CustoTotal2) :- 
 
@@ -676,16 +692,6 @@ iterar_robots([robot(Nome, ListaTarefas) | RestoRobots]) :-
     processar_tarefas_e_assert(ListaTarefas,Nome),
     iterar_robots(RestoRobots).
 
-process_json(Dict, RobotResults) :-
-    Robots = Dict.get(robot),
-    findall(robot(Name, TaskList), 
-            (member(RobotStr, Robots),
-             term_string(Term, RobotStr),
-             Term = robot(Name, TaskList)), RobotResults),
-    findall(tarefa(Id, N1, N2, P1, N3, N4, P2),
-            (member(robot(_, Tasks), RobotResults),
-             member(tarefa(Id, N1, N2, P1, N3, N4, P2), Tasks)), _).
-
 % ==================================================================================================    
 % =================================Algoritmo Permutações============================================
 % ==================================================================================================
@@ -694,26 +700,27 @@ melhor_sequencia(Tarefas, MelhorSequencia) :-
     findall(Sequencia, permutation(Tarefas, Sequencia), Sequencias),
     avaliar_sequencias(Sequencias, MelhorSequencia, _).
 
-avaliar_sequencias([], [], inf). 
+avaliar_sequencias([], [], inf).
+avaliar_sequencias([Sequencia], Sequencia, TempoSequencia) :- 
+    avalia1(Sequencia, TempoSequencia), !.
 avaliar_sequencias([Sequencia|RestoSequencias], MelhorSequencia, MelhorTempoSequencia) :-
     avalia1(Sequencia, TempoSequencia),
-    avaliar_sequencias(RestoSequencias, TempSequenciaAtual, TempTempoAtual),
-    (TempTempoAtual == inf -> 
-        MelhorSequencia = Sequencia, MelhorTempoSequencia = TempoSequencia
-    ; TempoSequencia < TempTempoAtual -> 
-        MelhorSequencia = Sequencia, MelhorTempoSequencia = TempoSequencia
-    ;
-        MelhorSequencia = TempSequenciaAtual, MelhorTempoSequencia = TempTempoAtual
+    avaliar_sequencias(RestoSequencias, TempMelhorSequencia, TempMelhorTempo),
+    (   TempMelhorTempo == inf 
+    ->  MelhorSequencia = Sequencia, MelhorTempoSequencia = TempoSequencia
+    ;   TempoSequencia < TempMelhorTempo 
+    ->  MelhorSequencia = Sequencia, MelhorTempoSequencia = TempoSequencia
+    ;   MelhorSequencia = TempMelhorSequencia, MelhorTempoSequencia = TempMelhorTempo
     ).
 
 avalia1([_],0).
-
 avalia1([Tarefa1,Tarefa2|Resto], TempoIndividuo):-
     avalia1([Tarefa2|Resto], TempoResto),
     Tarefa1 = tarefa(Nome1,_,_,_,_,_,_),
     Tarefa2 = tarefa(Nome2,_,_,_,_,_,_),
-    tempo(_,Nome1,Nome2,Custo),
+    tempo(_,Nome1,Nome2,Custo), % Ensure tempo/4 is correctly defined and instantiates Custo.
     TempoIndividuo is TempoResto + Custo.
+
 
 % ==================================================================================================
 % =================================Algoritmo Genético===============================================
@@ -1045,6 +1052,7 @@ mutacao23(G1,P,[G|Ind],G2,[G|NInd]):-
 % Predicado principal que inicia a recursão
 escolher_algoritmo(Robots, Algoritmo, Resultados) :-
     Algoritmo =:= 1,
+    !,
     escolher_algoritmo_robots(Robots, [], Resultados).
 
 escolher_algoritmo(Tarefas, Algoritmo, Resultados) :-
@@ -1053,6 +1061,7 @@ escolher_algoritmo(Tarefas, Algoritmo, Resultados) :-
 
 % Caso base: quando não há mais robôs para processar
 escolher_algoritmo_robots([], Resultados, Resultados).
+
 
 % Caso recursivo
 escolher_algoritmo_robots([robot(Nome,Tarefas)|RestoRobot], Acumulador, Resultados) :-
