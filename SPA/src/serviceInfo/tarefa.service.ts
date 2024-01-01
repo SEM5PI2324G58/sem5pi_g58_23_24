@@ -232,11 +232,25 @@ export class TarefaService {
 
   }
 
+  public obterPercursoTarefa (idTarefa: string): Observable<string|null>{
+    if(idTarefa == null || idTarefa == undefined || idTarefa == ""){
+      this.log(`ERRO: O id da tarefa é obrigatório`);
+      return of(null);
+    }
+
+    let params = new HttpParams().set('idTarefa', idTarefa);
+    
+    return this.http.get<string>(this.tarefaUrl + "/obterPercursoTarefa", { params: params, responseType: 'text' as 'json'})
+    .pipe(
+      catchError(this.handleError<string>('Obter percurso da tarefa'))
+    );
+  }
+
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       
 
-      this.log(`${operation} falhou: ${error.error}`);
+      this.log(`${operation} falhou: ${error.message}`);
 
       return of(result as T);
     };
