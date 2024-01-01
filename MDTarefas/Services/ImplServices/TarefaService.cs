@@ -192,7 +192,7 @@ namespace MDTarefas.Services.ImplServices
             }
             List<Tarefa> list =  await _tarefaRepository.GetTarefasAceitesAsync();
             if (list.Count == 0) {
-                throw new BusinessRuleValidationException("Não existem tarefas aceites");
+                throw new NotFoundException("Não existem tarefas aceites");
             }
             var response = await comunicacaoComPlaneamentoAsync(TarefaMapper.toTarefasParaOPlaneamentoDTO(list,algoritmo));
             

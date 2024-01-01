@@ -10,6 +10,7 @@ import Tarefa from 'src/dataModel/tarefa';
 import { CriarVigilancia } from 'src/dataModel/criarVigilancia';
 import { CriarPickUpDelivery } from 'src/dataModel/criarPickUPDelivery';
 import { forEach } from 'lodash';
+import { ReturnPlanearTarefas } from 'src/dataModel/returnPlanearTarefas';
 
 @Injectable({
   providedIn: 'root'
@@ -246,11 +247,25 @@ export class TarefaService {
     );
   }
 
+  planearTarefas(algoritmo: number) : Observable<ReturnPlanearTarefas[] | null>{
+    if (algoritmo != 0 && algoritmo != 1){
+      this.log(`ERRO: O algoritmo é obrigatório`);
+      return of(null);
+    }
+   
+    let params = new HttpParams().set('algoritmo', algoritmo);
+
+    return this.http.get<ReturnPlanearTarefas[]>(this.tarefaUrl + "/carregarTarefasNoPlaneamento", { params: params })
+    .pipe(
+      catchError(this.handleError<ReturnPlanearTarefas[]>('Planear Tarefa'))
+    );
+}
+
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       
 
-      this.log(`${operation} falhou: ${error.message}`);
+      this.log(`${operation} falhou: ${error.error}`);
 
       return of(result as T);
     };
