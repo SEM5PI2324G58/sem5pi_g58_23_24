@@ -242,5 +242,29 @@ namespace MDTarefas.mappers
                 throw new BusinessRuleValidationException("Não foi possível transformar o resultado do planeamento em um array de tarefas");
             }
         }
+
+        public static PlanearTarefasDTO toPlanearTarefasDTO(string codDispositivo, List<Tarefa> tarefas)
+        {
+            List<string> tarefasString = new List<string>();
+            foreach (Tarefa tarefa in tarefas)
+            {   
+                if (tarefa is Vigilancia)
+                {
+                    
+
+                    Vigilancia vigilancia = (Vigilancia)tarefa;
+                    tarefasString.Add("Vigilancia---"+tarefa.getId()+"---"+tarefa.getEmailRequisitorString()+"---"+vigilancia.getCodEdificioString()+"---"+vigilancia.getNumeroPisoInt());
+                }
+                else
+                {
+
+                    PickUpDelivery pickUpDelivery = (PickUpDelivery)tarefa;
+                    tarefasString.Add("PickUpDelivery---"+tarefa.getId()+"---"+tarefa.getEmailRequisitorString()+"---"+pickUpDelivery.getNomeSalaInicialString()+"---"+pickUpDelivery.getNomeSalaFinalString());
+                }
+                
+            }
+            return new PlanearTarefasDTO(codDispositivo, tarefasString);
+            
+        }
     }
 }
