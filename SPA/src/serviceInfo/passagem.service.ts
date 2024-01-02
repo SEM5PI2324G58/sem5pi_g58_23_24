@@ -195,11 +195,21 @@ export class PassagemService {
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
-      // Log the full error
-      console.error(`${operation} failed:`, error); // Log the full error object
-  
-      this.log(`${operation} falhou: ${error.error}`); // Display a more informative message
-  
+      
+      if(error.status === 440){
+        this.log("Erro: Sessão expirada.");
+        return of(result as T);
+      }else if(error.status === 401){
+        this.log("Erro: Não está autenticado.");
+        return of(result as T);
+      }else if(error.status === 403){
+        this.log("Erro: Não tem permissões para aceder a este conteúdo.");
+        return of(result as T);
+      }else{
+        console.log("HELLO");
+        this.log(`${operation} falhou: ${error.error}`);
+      }
+
       return of(result as T);
     };
   }
