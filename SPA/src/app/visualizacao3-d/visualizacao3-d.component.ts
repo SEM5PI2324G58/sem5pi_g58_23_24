@@ -1343,12 +1343,10 @@ export class Visualizacao3DComponent implements AfterViewInit {
               if(this.listaPontosEdificio[this.numeroEdificioAtual][0].edificio == this.listaPontosEdificio[this.numeroEdificioAtual+1][0].edificio){
                 // lançar pop-up
                 this.popupAlertElevador = true;
-                await this.sleep(1000);
               }
               else{
                 // lançar pop-up
                 this.popupAlertPassagem = true;
-                await this.sleep(1000);
               }
                
               
@@ -1400,10 +1398,10 @@ export class Visualizacao3DComponent implements AfterViewInit {
         let coveredDistance = this.player.walkingSpeed * deltaT;
         if(this.automaticMode && !this.tarefaConcluida){
           if(this.chegou === false && this.pontoAtualTarefa < this.listaPontos.length - 1 && this.listaPontos[Math.floor(this.pontoAtualTarefa) + 1].edificio === this.listaPontos[Math.floor(this.pontoAtualTarefa)].edificio && this.listaPontos[Math.floor(this.pontoAtualTarefa) + 1].piso === this.listaPontos[Math.floor(this.pontoAtualTarefa)].piso){
-            if(this.player.object.position.x >= this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.x - 0.01&&
-              this.player.object.position.x <= this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.x + 0.01 &&
-              this.player.object.position.z >=this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.z -0.01 &&
-              this.player.object.position.z <= this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.z + 0.01){
+            if(this.player.object.position.x >= this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.x - 0.03&&
+              this.player.object.position.x <= this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.x + 0.03 &&
+              this.player.object.position.z >=this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.z -0.03 &&
+              this.player.object.position.z <= this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.z + 0.03){
                 this.player.keyStates.forward = false;
                 this.player.object.position.x = this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.x;
                 this.player.object.position.z = this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.z;
@@ -1586,6 +1584,8 @@ export class Visualizacao3DComponent implements AfterViewInit {
           } else if (this.collisionWithPortaElevador(newPosition)){
             if(this.automaticMode){
               this.player.keyStates.forward = false;
+              this.pontoAtualTarefa = this.pontoAtualTarefa + 2;
+              this.pontoAtualTarefaEdificio = this.pontoAtualTarefaEdificio + 2;
               this.tarefaConcluida = true;
             }else{
               this.popupPisosElevadorOpen = true;
