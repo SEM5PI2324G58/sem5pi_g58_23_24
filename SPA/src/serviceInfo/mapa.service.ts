@@ -8,6 +8,7 @@ import { devEnvironment } from 'src/environments/environment.development';
 import CarregarMapa from 'src/dataModel/carregarMapa';
 import { MessageService } from './message.service';
 import ExportarMapa from 'src/dataModel/exportarMapa';
+import {PlaneamentoCaminhosDTO} from 'src/dataModel/planeamentoCaminhosDTO';
 
 
 @Injectable({
@@ -45,8 +46,19 @@ export class MapaService {
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       
-
-      this.log(`${operation} falhou: ${error.error}`);
+      if(error.status === 440){
+        this.log("Erro: Sessão expirada.");
+        return of(result as T);
+      }else if(error.status === 401){
+        this.log("Erro: Não está autenticado.");
+        return of(result as T);
+      }else if(error.status === 403){
+        this.log("Erro: Não tem permissões para aceder a este conteúdo.");
+        return of(result as T);
+      }else{
+        console.log("HELLO");
+        this.log(`${operation} falhou: ${error.error}`);
+      }
 
       return of(result as T);
     };
@@ -65,5 +77,20 @@ export class MapaService {
 
   private log(message: string) {
     this.messageService.add(`${message}`);
+  }
+
+
+  exportarMapaParaOPlaneamento(): void{
+    this.log("A carregar mapa para o planeamento, aguarde...");
+    this.http.post<PlaneamentoCaminhosDTO>(this.mapaUrl + "/exportarMapaParaOPlaneamento", null,{ headers: this.httpOptions.headers })
+      .pipe(
+        catchError(this.handleError<PlaneamentoCaminhosDTO>('Exportar mapa para o planeamento'))
+      ).subscribe({
+        next: data=>{
+          if(data != null && data != undefined){
+            this.log("Mapa carregado com sucesso para o planeamento!");
+          }
+      }
+    });;
   }
 }

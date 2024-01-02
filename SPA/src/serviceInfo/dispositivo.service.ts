@@ -133,9 +133,20 @@ export class DispositivoService {
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
-
-
-      this.log(`${operation} falhou: ${error.error}`);
+      
+      if(error.status === 440){
+        this.log("Erro: Sessão expirada.");
+        return of(result as T);
+      }else if(error.status === 401){
+        this.log("Erro: Não está autenticado.");
+        return of(result as T);
+      }else if(error.status === 403){
+        this.log("Erro: Não tem permissões para aceder a este conteúdo.");
+        return of(result as T);
+      }else{
+        console.log("HELLO");
+        this.log(`${operation} falhou: ${error.error}`);
+      }
 
       return of(result as T);
     };

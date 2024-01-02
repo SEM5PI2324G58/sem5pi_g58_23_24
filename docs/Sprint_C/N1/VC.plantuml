@@ -1,116 +1,125 @@
 @startuml
 left to right direction
-actor "Gestor de Frota" as frota
-actor "Gestor de Campus" as campus
 actor "Administrador de Sistema" as admin
+actor "Administrador" as administrador
 actor "Gestor de tarefas" as tarefa
+actor "Utente" as utente
 actor "Ator" as ator
-usecase "Upload mapa do campus" as US130
-usecase "Criar Edificio" as UC150
-usecase "Editar Edifício" as UC160
-usecase "Listar todos os Edifícios" as UC170
-usecase "Listar Edifícios com min e max de pisos" as UC180
-usecase "Criar Piso de um Edificio" as UC190
-usecase "Editar Piso" as UC200
-usecase "Listar todos os Pisos de um Edificio" as UC210
-usecase "Listar Pisos de Edifício com passagens para outros edifícios"  as UC220
-usecase "Carregar Mapa de Piso" as UC230
-usecase "Criar Passagem entre Edifícios" as UC240
-usecase "Editar passagem entre ediifícios" as UC250
-usecase "Listar passagens entre 2 edifícios" as UC260
-usecase "Criar Elevador de um Edifício" as UC270
-usecase "Editar Elevador de um Edifício" as UC280
-usecase "Listar Elevadores de um Edifício" as UC290
-usecase "Listar pisos de edifícios servidos por elevador" as UC300
-usecase "Criar Sala de um Piso" as UC310
+actor "Arquitecto de Solução" as arquiteto
 
-usecase "Adicionar novo tipo de robot" as UC350
-usecase "Adicionar novo robot à frota" as UC360
-usecase "Inibir um robot" as UC370
-usecase "Consultar todos os robots de frota" as UC380
-usecase "Pesquisar todos os robots da frota por designação ou tarefa" as UC390
 
-usecase "Deployment de um dos módulos do RFP" as UC640
-usecase "Apenas os clientes da rede interna do DEI possam aceder" as UC650
-usecase "Apenas os clientes definidos num ficheiro possam aceder" as UC660
-usecase "Identificar e quantificar os riscos envolvidos da solução" as UC670
-usecase "Definir MBCO" as UC800
-usecase "Proposta RPO e WRT" as UC810
-usecase "Definir uma pasta pública" as UC820
-usecase "Obter os utilizadores com mais do que 3 acessos incorretos" as UC830
+usecase "Como administrador da organização quero um plano de recuperação de desastre que satisfaça o MBCO definido no sprint B" as UC680
+usecase "Como administrador da organização quero que me seja apresentada de forma justificada a ou as alterações a realizar na infraestrutura por forma a assegurar um MTD (Maximum Tolerable Downtime) de 20 minutos" as UC690
+usecase "Como administrador de sistemas quero que seja realizada uma cópia de segurança da(s) DB(s) para um ambiente de Cloud através de um script que a renomeie para o formato <nome_da_db>_yyyymmdd sendo <nome_da_db> o nome da base de dados, yyyy o ano de realização da cópia, mm o mês de realização da cópia e dd o dia da realização da cópia" as UC840
+usecase "Como administrador de sistemas quero que utilizando o Backup elaborado na US 840, seja criado um script quer faça a gestão dos ficheiros resultantes desse backup, no seguinte calendário. 1 Backup por mês no último ano, 1 backup por semana no último mês, 1 backup por dia na última semana" as UC850
+usecase "Como administrador de sistemas quero que o processo da US da cópia de segurança da DB seja mantido no log do Linux, num contexto adequado, e alertado o administrador no acesso à consola se ocorrer uma falha grave neste processo" as UC860
+usecase "Como administrador de sistemas quero que a cópia de segurança da US da cópia de segurança da DB tenha um tempo de vida não superior a 7 (sete) dias exceto no indicado na US de retenção das cópias mensais e anuais" as UC870
+usecase "Como administrador da organização quero que me seja apresentado um BIA (Business Impact Analysis) da solução final, adaptando se e onde aplicável o(s) risco(s) identificados no sprint anterior" as UC880
+usecase "Como administrador da organização quero que seja implementada uma gestão de acessos que satisfaça os critérios apropriados de segurança" as UC890
+usecase "Como administrador da organização quero que seja implementado de forma justificada um sistema de clustering entre os sistemas que implementam o SPA" as UC900
+usecase "Como administrador de sistemas quero que o administrador tenha um acesso SSH à maquina virtual, apenas por certificado, sem recurso a password" as UC910
+usecase "Como administrador de sistemas quero que para agilização entre as várias equipas seja criada uma partilha pública de ficheiros, formato SMB/CIFS  ou NFS ." as UC920
+usecase "Como administrador de sistemas temos de garantir que em caso de necessidade os backups foram efetuados corretamente. Para isso devemos automatizar a sua reposição, validando no final o funcionamento do sistema (Ex. Base de Dados - executar uma query SQL com sucesso após reposição)" as UC930
 
-usecase "Obter caminho entre dois edifícios" as UC1220
-usecase "Obter caminho entre dois edifício otimizando um dado critério" as UC510
-usecase "Análise de complexidade" as UC515
+usecase "Como utente do sistema pretendo requisitar uma tarefa indicando os parâmetros necessários à sua execução, nomeadamente o ponto inicial e o término e qual a tarefa pretendida" as UC460
 
-usecase "Relatório RGPD" as UC90
+usecase "Como gestor de tarefas pretendo aprovar ou recusar uma requisição" as UC470
+usecase "Como gestor de tarefas pretendo consultar as requisições de tarefas ainda não aprovadas" as UC480
+usecase "Como gestor de tarefas pretendo pesquisar as requisições de tarefas por estado, por tipo de dispositivo, ou utente" as UC490
+usecase "Como gestor de tarefas pretendo obter a sequencia de execução das tarefas aprovadas" as UC500
 
-usecase "Pipeline de build contínuo" as UC610
-usecase "Deployment automático na cloud" as UC620
-usecase "Deployment num ambiente cloud" as UC630
+usecase "Como administrador pretendo criar um utilizador de sistema indicando as suas permissões" as UC10
 
-usecase "Menu com funcionalidades" as UC535
-usecase "Partilha de informação dos robots entre os módulos" as UC700
-usecase "Partilha de informação dos edificios, pisos, passagens, elevadores e mapas entre os módulos" as UC710
-usecase "Partilha de informação dos percursos entre os módulos" as UC730
+usecase "Como potencial utente do sistema (ex., aluno, docente) pretendo registar-me como utente do sistema" as UC20
+usecase "a.       Dar o meu consentimento ou não à recolha e tratamento dos meus dados pessoais" as UC30
+usecase "b.       Que me seja informada a finalidade para a qual os dados pessoais são recolhidos e tratados" as UC40
+usecase "c.       Conhecer e ter acesso ao responsável pelo tratamento" as UC50
+usecase "d.       Saber o período pelo qual os dados serão conservados" as UC60
+usecase "e.       Conhecer os meus direitos enquanto titular de dados pessoais." as UC70
+usecase "Como administrador do sistema pretendo aprovar ou recusar o registo de um utente" as UC80
+usecase "Como utente do sistema pretendo retificar/alterar os meus dados" as UC100
+usecase "Como utente do sistema pretendo uma cópia dos meus dados pessoais" as UC110
+usecase "Como utente do sistema pretendo cancelar a minha conta garantindo que os meus dados são apagados" as US120
 
-usecase "Informação do mapa do piso complementado com o módulo de gestão de campus" as UC601
-usecase "Informação do mapa do piso complementado com texturas e modelos" as UC602
-usecase "Visualizar em 3D o mapa do piso" as UC603
-usecase "Visualizar uma interface para selecionar o edifício e piso" as UC604
-usecase "Importar um modelo 3D de um robot e visualizar no mapa do piso" as UC605
-usecase "Permitir a navegação 3D interativo no mapa do piso" as UC606
 
-campus --> US130
-campus --> UC150
-campus --> UC160
-campus --> UC170
-campus --> UC180
-campus --> UC190
-campus --> UC200
-campus --> UC210
-campus --> UC220
-campus --> UC230
-campus --> UC240
-campus --> UC250
-campus --> UC260
-campus --> UC270
-campus --> UC280
-campus --> UC290
-campus --> UC300
-campus --> UC310
 
-frota --> UC350
-frota --> UC360
-frota --> UC370
-frota --> UC380
-frota --> UC390
 
-admin --> UC640
-admin --> UC650
-admin --> UC660
-admin --> UC670
-admin --> UC800
-admin --> UC810
-admin --> UC820
-admin --> UC830
+usecase "Como utilizador pretendo que o menu da aplicação se ajuste consoante o meu tipo de utilizador" as UC1300
+usecase "Como arquiteto da solução pretendo que todos os serviços de backend sejam autenticados" as UC1310
+usecase "Como arquiteto da solução pretendo que todos os serviços de backend validem as permissões do utilizador para executar determinada operação" as UC1320
+usecase "como arquiteto da solução pretendo que a informação sobre tarefas seja partilhada entre os módulos de Admnistração de dados e Pleaneamento" as UC720
+usecase "como arquiteto da solução pretendo que a informação sobre percursos de um robot para a execução de tarefas seja partilhada entre os módulos de Planeamento e visualização" as UC740
+usecase "Como arquiteto da solução pretendo a utilização de um módulo de IAM  (ex., Azure, auth0, Google, Linkedin) para gestão de identidades e permissões (role-based)" as UC750
 
-tarefa --> UC1220
-tarefa --> UC510
-tarefa --> UC515
+usecase "seja gerado um plano de atendimento das tarefas indicadas que indique uma sequência de execução das tarefas que seja criada através da geração de todas as sequências e escolha da que durar menos tempo." as UC1410
+usecase "deverá ser feito o estudo da complexidade da solução ao requisito 1410, permitindo concluir até que dimensão de nº de tarefas se pode usar essa abordagem." as UC1420
+usecase "seja gerado um plano de atendimento das tarefas indicadas que indique uma sequência de execução das tarefas que seja criada através de um Algoritmo Genético" as UC1430
+usecase "efetuar um estudo do estado da arte na geração de trajetórias de robots. Poderão combinar pesquisa bibliográfica própria com ferramentas de IA Generativa (por exemplo ChatGPT), indicando os prompts utilizados e deixando bem claro o que foi produzido via ferramentas de IA Generativa." as UC1440
 
-ator --> UC90
+usecase "Ao navegar interactivamente e ao chegar a uma passagem entre edifícios, deve transitar automaticamente para o piso adjacente." as UC607
+usecase "Ao navegar interactivamente e ao entrar num elevador, deve ser possível escolher o piso a que se pretende aceder e transitar para esse piso." as UC608
+usecase "Animar o movimento automático do robot de um dado ponto de partida a um dado ponto de chegada, de acordo com a informação disponibilizada pelo módulo de planeamento de percurso." as UC609
+usecase "Ao navegar de forma automática com base no planeamento de percurso, a passagem entre edifícios deve ter feedback visual adequado" as UC610
+usecase "Ao navegar de forma automática com base no planeamento de percurso, a utilização de elevadores deve ter feedback visual adequado" as UC611
+usecase "Exibir uma tip flutuante que identifique a sala, gabinete ou elevador a que pertence a célula apontada em cada momento pelo cursor do rato" as UC612
+
+
+ator --> UC607
+ator --> UC608
+ator --> UC609
 ator --> UC610
-ator --> UC620
-ator --> UC630
-ator --> UC535
-ator --> UC700
-ator --> UC710
-ator --> UC730
-ator --> UC601
-ator --> UC602
-ator --> UC603
-ator --> UC604
-ator --> UC605
-ator --> UC606
+ator --> UC611
+ator --> UC612
+
+
+ator --> UC1410
+ator --> UC1420
+ator --> UC1430
+ator --> UC1440
+
+
+arquiteto --> UC1310
+arquiteto --> UC1320
+arquiteto --> UC720
+arquiteto --> UC740
+arquiteto --> UC750
+
+ator --> UC1300
+
+utente --> UC20
+utente --> UC30
+utente --> UC40
+utente --> UC50
+utente --> UC60
+utente --> UC70
+utente --> UC460
+utente --> UC100
+utente --> UC110
+utente --> US120
+
+
+administrador --> UC10
+administrador --> UC80
+
+
+admin --> UC680
+admin --> UC690
+admin --> UC840
+admin --> UC850
+admin --> UC860
+admin --> UC870
+admin --> UC880
+admin --> UC890
+admin --> UC900
+admin --> UC910
+admin --> UC920
+admin --> UC930
+
+
+tarefa --> UC470
+tarefa --> UC480
+tarefa --> UC490
+tarefa --> UC500
+
+
 @enduml

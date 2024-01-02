@@ -413,4 +413,39 @@ public class TarefaServiceTest {
         Assert.Equal("Id e estado da tarefa são obrigatórios", exception.Message);
     } 
 
+    [Fact]
+
+    public async void listarTarefasPendentesRetornaAsTarefasExistentes() {
+        var tarefaRepo = new Mock<ITarefaRepo>();
+        var tarefaService = new TarefaService(tarefaRepo.Object, new HttpClient());
+        var tarefa = new PickUpDelivery(
+            "12345","DESC",
+            "123456789","NOMEPCIKUP",
+            "987654321","NOMEDELIVERY","A201","A202",
+            "[cel(a1,1,1),cel(a1,2,2)]","emailplaceholder","id",""
+        );
+
+        var listaTarefas = new List<Tarefa>();
+        listaTarefas.Add(tarefa);
+
+        tarefaRepo.Setup(repo => repo.GetTarefasPendentesAsync())
+            .ReturnsAsync(listaTarefas);
+
+        var res = await tarefaService.listarTarefasPendentes();
+        Assert.True(res.ToArray().Length == 1);
+    }
+
+        public async void listarTarefasPendentesSemTarefasPendentes() {
+        var tarefaRepo = new Mock<ITarefaRepo>();
+        var tarefaService = new TarefaService(tarefaRepo.Object, new HttpClient());
+
+        var listaTarefas = new List<Tarefa>();
+
+        tarefaRepo.Setup(repo => repo.GetTarefasPendentesAsync())
+            .ReturnsAsync(listaTarefas);
+
+        var res = await tarefaService.listarTarefasPendentes();
+        Assert.True(res.ToArray().Length == 0);
+    }
+
 }

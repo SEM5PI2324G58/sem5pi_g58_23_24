@@ -433,5 +433,93 @@ namespace MDTarefasTest.Unit.Controller
             Assert.Equal(returnDTO.CodDispositivo, dtoRes.CodDispositivo);
 
         }
+
+
+        [Fact]
+        public async void GetTarefasPendentesRetornaTarefas(){
+            var serviceMock = new Mock<ITarefaService>();
+            var authMock = new Mock<IAuthService>();
+
+            TarefaDTO tarefaDTO = new TarefaDTO();
+            tarefaDTO.Id = "id";
+            tarefaDTO.TipoTarefa = "PickUpDelivery";
+            tarefaDTO.CodConfirmacao = "12345";
+            tarefaDTO.DescricaoEntrega = "DESC";
+            tarefaDTO.NomePickUp = "NOMEPCIKUP";
+            tarefaDTO.NumeroPickUp = "123456789";
+            tarefaDTO.NomeDelivery = "NOMEDELIVERY";
+            tarefaDTO.NumeroDelivery = "987654321";
+            tarefaDTO.SalaInicial = "A201";
+            tarefaDTO.SalaFinal = "A202";
+            tarefaDTO.PercursoString = "[cel(a1,1,1),cel(a1,2,2)]";
+            tarefaDTO.EstadoString = "Aceite";
+            tarefaDTO.EmailRequisitor = "emailplaceholder";
+            tarefaDTO.CodDispositivo = "Robo1";
+            var tarefaDTOList = new List<TarefaDTO>(){tarefaDTO};
+
+            serviceMock.Setup(service => service.listarTarefasPendentes())
+                .ReturnsAsync(tarefaDTOList);
+            authMock.Setup(auth => auth.IsAuthenticated(It.IsAny<HttpRequest>()))
+                .Returns(true);
+            authMock.Setup(auth => auth.IsAuthorized(It.IsAny<HttpRequest>(), It.IsAny<string[]>()))
+                .Returns(true);
+
+            var controller = new TarefaController(serviceMock.Object, authMock.Object);
+
+            var res = await controller.GetTarefasPendentes();
+
+            var okResult = Assert.IsType<OkObjectResult>(res.Result);
+            Assert.Equal(200, okResult.StatusCode);
+            Assert.Equal(tarefaDTOList, okResult.Value);
+        }
+
+        public async void GetTarefasPendentesControllerServiceRetornaTarefas(){
+            var tarefaRepo = new Mock<ITarefaRepo>();
+            var authMock = new Mock<IAuthService>();
+
+            TarefaDTO tarefaDTO = new TarefaDTO();
+            tarefaDTO.Id = "id";
+            tarefaDTO.TipoTarefa = "PickUpDelivery";
+            tarefaDTO.CodConfirmacao = "12345";
+            tarefaDTO.DescricaoEntrega = "DESC";
+            tarefaDTO.NomePickUp = "NOMEPCIKUP";
+            tarefaDTO.NumeroPickUp = "123456789";
+            tarefaDTO.NomeDelivery = "NOMEDELIVERY";
+            tarefaDTO.NumeroDelivery = "987654321";
+            tarefaDTO.SalaInicial = "A201";
+            tarefaDTO.SalaFinal = "A202";
+            tarefaDTO.PercursoString = "[cel(a1,1,1),cel(a1,2,2)]";
+            tarefaDTO.EstadoString = "Aceite";
+            tarefaDTO.EmailRequisitor = "emailplaceholder";
+            tarefaDTO.CodDispositivo = "Robo1";
+            var tarefaDTOList = new List<TarefaDTO>(){tarefaDTO};
+
+            var tarefa = new PickUpDelivery(
+                tarefaDTO.CodConfirmacao,tarefaDTO.DescricaoEntrega,
+                tarefaDTO.NumeroPickUp,tarefaDTO.NomePickUp,
+                tarefaDTO.NumeroDelivery,tarefaDTO.NomeDelivery,
+                tarefaDTO.SalaInicial,tarefaDTO.SalaFinal,
+                tarefaDTO.PercursoString,tarefaDTO.EmailRequisitor,tarefaDTO.Id,tarefaDTO.CodDispositivo
+            );
+            var listaTarefas = new List<Tarefa>(){tarefa};
+
+            tarefaRepo.Setup(repo => repo.GetTarefasPendentesAsync())
+                .ReturnsAsync(listaTarefas);
+
+            authMock.Setup(auth => auth.IsAuthenticated(It.IsAny<HttpRequest>()))
+                .Returns(true);
+            authMock.Setup(auth => auth.IsAuthorized(It.IsAny<HttpRequest>(), It.IsAny<string[]>()))
+                .Returns(true);
+            var tarefaService = new TarefaService(tarefaRepo.Object, new HttpClient());
+
+            var controller = new TarefaController(tarefaService ,authMock.Object);
+
+            var res = await controller.GetTarefasPendentes();
+
+            var okResult = Assert.IsType<OkObjectResult>(res.Result);
+            Assert.Equal(200, okResult.StatusCode);
+            Assert.Equal(tarefaDTOList, okResult.Value);
+        }
+
     }
 }

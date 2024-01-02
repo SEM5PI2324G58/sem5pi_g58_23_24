@@ -25,6 +25,7 @@
                 <option value="Pendente">Pendente</option>
                 <option value="Aceite">Aceite</option>
                 <option value="Rejeitada">Rejeitada</option>
+                <option value="Planeada">Planeada</option>
             </select>
             <span></span>
         </div>
@@ -48,7 +49,7 @@
                 Utilizador</button>
         </div>
 
-        <div *ngIf="listaTarefas && listaTarefas.length > 0">
+        <div *ngIf="listaTarefas && listaTarefas.length > 0 && !tarefasPlaneadas">
             <p-table [value]="listaTarefas" [tableStyle]="{'border-collapse': 'collapse', 'margin-top':'10px'}">
               <ng-template pTemplate="header">
                 <tr>
@@ -75,7 +76,42 @@
                 </tr>
               </ng-template>
             </p-table>
-          </div>          
+          </div>
+
+          <div *ngIf="listaTarefas && listaTarefas.length > 0 && tarefasPlaneadas">
+            <p-table [value]="listaTarefas" [tableStyle]="{'border-collapse': 'collapse', 'margin-top':'10px'}">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="table-header">Id Tarefa</th>
+                  <th class="table-header">Tipo de Tarefa</th>
+                  <th class="table-header">Sala Inicial - SalaFinal</th>
+                  <th class="table-header">Edificio - Piso</th>
+                  <th class="table-header">Email do Requisitador</th>
+                  <th class="table-header-view3d">Visualização 3D</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-tarefa>
+                <tr>
+                    <td class="table-data">{{ tarefa.id || '-' }}</td>
+                    <td class="table-data">{{ tarefa.tipoTarefa || '-' }}</td>
+                    <td class="table-data">
+                      {{ tarefa.salaInicial ? tarefa.salaInicial + ' - ' + tarefa.salaFinal : '-' }}
+                    </td>
+                    <td class="table-data">
+                      {{ tarefa.codEdificio ? tarefa.codEdificio + ' - ' + tarefa.numeroPiso : '-' }}
+                    </td>
+                    <td class="table-data">{{ tarefa.emailRequisitor || '-' }}</td>
+                    <td class="table-data-view3d">
+                      <button type="button" class="add-button-v3d" (click)="v3D(tarefa.id)">Visualização 3D</button>
+                    </td>
+                    
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+          
+          
+          
 
         <app-message></app-message>
 
