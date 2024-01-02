@@ -89,6 +89,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
   tooltip!: HTMLElement | null;
   popupAlertPassagem: boolean = false;
   popupAlertElevador: boolean = false;
+  carregarPisoBooleano: boolean = false;
 
   constructor(
     private pisoService: PisoService,
@@ -1064,24 +1065,29 @@ export class Visualizacao3DComponent implements AfterViewInit {
             this.listarNumeroPisosServidosPorElevador();
           }
           break;
-        case 'numeroPiso':
-          if(!this.automaticMode){
-            const numeroPiso = this.numeroPiso.options.item(this.numeroPiso.selectedIndex)?.value;
-            this.mapaService.exportarMapa(this.codigo.value, numeroPiso).subscribe((data: ExportarMapa) => {
-              this.mapa = data;
-              if(this.canvas){
-                this.canvas.remove();
-                const elements = document.body.querySelectorAll('.lil-gui');
-                elements.forEach((element) => {
-                  if (element.parentNode) {
-                    element.parentNode.removeChild(element);
+          case 'numeroPiso':
+            if (!this.automaticMode) {
+              if (!this.carregarPisoBooleano) {
+                this.carregarPisoBooleano = true;
+                const numeroPiso = this.numeroPiso.options.item(this.numeroPiso.selectedIndex)?.value;
+                this.mapaService.exportarMapa(this.codigo.value, numeroPiso).subscribe((data: ExportarMapa) => {
+                  this.mapa = data;
+                  if (this.canvas) {
+                    this.canvas.remove();
+                    const elements = document.body.querySelectorAll('.lil-gui');
+                    elements.forEach((element) => {
+                      if (element.parentNode) {
+                        element.parentNode.removeChild(element);
+                      }
+                    });
                   }
+                  this.createScene();
+                  this.carregarPisoBooleano = false;
                 });
               }
-              this.createScene();
-            });
-          }
-          break;
+            }
+  
+            break;
           case "multiple-views":
               this.setViewMode((target as any)['checked']);
               break;
