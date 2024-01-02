@@ -5,6 +5,7 @@ import { MessageService } from 'src/serviceInfo/message.service';
 import { Plane } from 'three';
 import { PlaneamentoService } from 'src/serviceInfo/planeamento.service';
 import { MapaService } from 'src/serviceInfo/mapa.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -17,7 +18,7 @@ export class PlaneamentoTarefasComponent {
   rotas: PlanearTarefas[] = [];
   flag: boolean = false;
 
-  constructor(private tarefasService: TarefaService,private mapaService: MapaService) { }
+  constructor(private tarefasService: TarefaService,private mapaService: MapaService, private router: Router) { }
 
   carregarMapa(): void {
     this.mapaService.exportarMapaParaOPlaneamento();
@@ -67,7 +68,7 @@ export class PlaneamentoTarefasComponent {
   }
 
   v3D(id: string): void {
-    console.log(id);
+    this.router.navigate(['/visualizacao3D/'+id])
   }
   toArray(answers: { [key: string]: any }) {
     return Object.keys(answers).map(key => answers[key]);
