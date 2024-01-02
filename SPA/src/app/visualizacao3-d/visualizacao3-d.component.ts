@@ -1189,6 +1189,15 @@ export class Visualizacao3DComponent implements AfterViewInit {
   atravessarPassagem(resposta: boolean) {
     if(resposta == true){
       this.mapaService.exportarMapaAtravesDeUmaPassagemEPiso(this.idPassagemAtravessar,this.maze.codigoEdificio,this.maze.numeroPiso).subscribe((data: ExportarMapa) => {
+        if(this.canvas){
+          this.canvas.remove();
+          const elements = document.body.querySelectorAll('.lil-gui');
+          elements.forEach((element) => {
+            if (element.parentNode) {
+              element.parentNode.removeChild(element);
+            }
+          });
+        }
         this.mapa = data;
         this.createScene();
         this.popupOpen = false;
@@ -1233,6 +1242,18 @@ export class Visualizacao3DComponent implements AfterViewInit {
           data.posicaoInicialRobo.x = data.elevador.xCoord;
           data.posicaoInicialRobo.y = data.elevador.yCoord - 1;
         }
+
+
+        if(this.canvas){
+          this.canvas.remove();
+          const elements = document.body.querySelectorAll('.lil-gui');
+          elements.forEach((element) => {
+            if (element.parentNode) {
+              element.parentNode.removeChild(element);
+            }
+          });
+        }
+
         this.mapa = data;
         this.createScene();
         this.popupPisosElevadorOpen = false;
@@ -1242,15 +1263,6 @@ export class Visualizacao3DComponent implements AfterViewInit {
           next: (data) => {
             this.listaNumeroPisos = data;
             this.numeroPiso.value = piso.toString();
-            if(this.canvas){
-              this.canvas.remove();
-              const elements = document.body.querySelectorAll('.lil-gui');
-              elements.forEach((element) => {
-                if (element.parentNode) {
-                  element.parentNode.removeChild(element);
-                }
-              });
-            }
           },
           error: (error) => {
             console.error('Error fetching floor numbers:', error);
