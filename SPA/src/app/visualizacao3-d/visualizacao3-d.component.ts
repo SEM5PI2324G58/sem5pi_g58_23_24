@@ -32,6 +32,8 @@ import { Observable } from 'rxjs';
   styleUrls: ['./visualizacao3-d.component.css'],
 })
 export class Visualizacao3DComponent implements AfterViewInit {
+  numeroEntradas = 0;
+  numeroEntradasEdificio = 0;
   virarRelogio: any = false;
   pontoAtualTarefaEdificio: number = 0;
   idTarefa: string = "";
@@ -130,7 +132,6 @@ export class Visualizacao3DComponent implements AfterViewInit {
   }
   listarNumeroPisos(): void {
     const codigo = this.codigo.options.item(this.codigo.selectedIndex)?.value;
-    console.log("olá");
     if (codigo === '') {
       this.listaNumeroPisos = [];
     } else {
@@ -156,7 +157,6 @@ export class Visualizacao3DComponent implements AfterViewInit {
       this.pisoService.listarPisosServidosPorElevador(codigo).subscribe({
         next: (data) => {
           this.listaPisosServidos = data;
-          console.log(this.listaPisosServidos);
         },
         error: (error) => {
           console.error('Error fetching floor numbers:', error);
@@ -181,11 +181,6 @@ export class Visualizacao3DComponent implements AfterViewInit {
         numeroEdificios++;
         this.listaPontosEdificio[numeroEdificios] = [];
         this.listaPontosEdificio[numeroEdificios].push(this.listaPontos[i]);
-      }
-    }
-    for(let i = 0; i < this.listaPontosEdificio.length; i++){
-      for(let j = 0; j < this.listaPontosEdificio[i].length; j++){
-        console.log(i + " " + this.listaPontosEdificio[i][j].edificio);
       }
     }
   }
@@ -225,12 +220,10 @@ export class Visualizacao3DComponent implements AfterViewInit {
         for(let codigo of listaCodigosSide){
           codigosSideLowerCase.push(codigo.toLowerCase());
         }
-        console.log(this.listaPontos);
         this.tarefaService.obterPercursoTarefa(this.idTarefa).subscribe({
           next: (data) => {
             let percursoString = data;
             if(percursoString === null){
-              console.log("Não existe percurso para a tarefa");
             }else{
               let percursoFake = "[celPiso(a1,20,4),celPiso(a1,20,5),celPiso(a1,21,5),celPiso(b1,20,5),celPiso(b1,20,6),celPiso(b1,19,6)]";
               let result = percursoString.split('celPiso(');
@@ -250,22 +243,45 @@ export class Visualizacao3DComponent implements AfterViewInit {
                   iMatch = i;
                 }
               }
-              console.log("iMatch");
-              console.log(listaCodigosSide[iMatch]);
               this.listaPontos.push({
                 edificio: listaCodigosSide[iMatch],
                 piso: parseInt(pontos[2]),
                 x: Number(result[i].split(',')[1]),
                 y: Number(result[i].split(',')[2]),
               })
-              this.setListaPontosPorEdificio();
+
               }
             }
           }
-          console.log("LISTAPONTOS");
-          console.log(this.listaPontos);
+
+          this.listaPontos.shift();
+          let edificioAtual:string = this.listaPontos[0].edificio;
+          let pisoAtual:number = this.listaPontos[0].piso;
+          let indexARetirar:number[] = [];
+          for(let i = 1; i < this.listaPontos.length; i++){
+            if(this.listaPontos[i].edificio === edificioAtual && this.listaPontos[i].piso !== pisoAtual){
+              indexARetirar.push(i);
+            }
+            edificioAtual = this.listaPontos[i].edificio;
+            pisoAtual = this.listaPontos[i].piso;
+          }
+          for(let i = 0; i < indexARetirar.length; i++){
+            this.listaPontos.splice(indexARetirar[i],1);
+          }
+          this.setListaPontosPorEdificio();
+          this.pontoAtualTarefa = 0;
+          this.numeroEdificioAtual = 0;
           this.mapaService.exportarMapa(this.listaPontos[0].edificio, this.listaPontos[0].piso).subscribe((data: ExportarMapa) => {
             this.mapa = data;
+            if(this.canvas){
+              this.canvas.remove();
+              const elements = document.body.querySelectorAll('.lil-gui');
+              elements.forEach((element) => {
+                if (element.parentNode) {
+                  element.parentNode.removeChild(element);
+                }
+              });
+            }
             this.createScene();
             this.render();
             this.setListaPontosCartesian();
@@ -367,8 +383,6 @@ export class Visualizacao3DComponent implements AfterViewInit {
     if(this.automaticMode){
       let xDiff = 0;
       let yDiff = 0;
-      console.log(this.listaPontosEdificio[this.numeroEdificioAtual].length);
-      console.log(this.listaPontosEdificio);
       if(this.listaPontosEdificio[this.numeroEdificioAtual].length > 1){
         xDiff = this.listaPontosEdificio[this.numeroEdificioAtual][1].x - this.listaPontosEdificio[this.numeroEdificioAtual][0].x;
         yDiff = this.listaPontosEdificio[this.numeroEdificioAtual][1].y - this.listaPontosEdificio[this.numeroEdificioAtual][0].y;
@@ -434,7 +448,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
         "Model and related code snippets created by <a href='https://www.patreon.com/quaternius' target='_blank' rel='noopener'>Tomás Laulhé</a>. CC0 1.0. Modified by <a href='https://donmccurdy.com/' target='_blank' rel='noopener'>Don McCurdy</a>.",
       eyeHeight: 0.8, // fraction of character height
       scale: new THREE.Vector3(0.05, 0.05, 0.05),
-      walkingSpeed: 0.85,
+      walkingSpeed: 0.55,
       initialDirection: 0, // Expressed in degrees
       turningSpeed: 100.0, // Expressed in degrees / second
       runningFactor: 2.0, // Affects walking speed and turning speed
@@ -1051,9 +1065,17 @@ export class Visualizacao3DComponent implements AfterViewInit {
         case 'numeroPiso':
           if(!this.automaticMode){
             const numeroPiso = this.numeroPiso.options.item(this.numeroPiso.selectedIndex)?.value;
-            console.log(numeroPiso);
             this.mapaService.exportarMapa(this.codigo.value, numeroPiso).subscribe((data: ExportarMapa) => {
               this.mapa = data;
+              if(this.canvas){
+                this.canvas.remove();
+                const elements = document.body.querySelectorAll('.lil-gui');
+                elements.forEach((element) => {
+                  if (element.parentNode) {
+                    element.parentNode.removeChild(element);
+                  }
+                });
+              }
               this.createScene();
             });
           }
@@ -1145,6 +1167,12 @@ export class Visualizacao3DComponent implements AfterViewInit {
       ;
   }
 
+  collisionWithParedesElevador(position: THREE.Vector3) {
+    return this.maze.distanceToWestElevador(position) < this.player.radius
+    || this.maze.distanceToEastElevador(position) < this.player.radius
+    || this.maze.distanceToNorthElevador(position) < this.player.radius
+    || this.maze.distanceToSouthElevador(position) < this.player.radius
+  }
   collisionWithPorta(position: THREE.Vector3) {
     return this.maze.distanceToWestDoor(position) < this.player.radius
       || this.maze.distanceToEastDoor(position) < this.player.radius
@@ -1208,9 +1236,19 @@ export class Visualizacao3DComponent implements AfterViewInit {
         this.popupPisosElevadorOpen = false;
         this.codigo.value = this.maze.codigoEdificio;
         this.pisoService.listarPisosMapa(this.codigo.value).subscribe({ 
+          
           next: (data) => {
             this.listaNumeroPisos = data;
             this.numeroPiso.value = piso.toString();
+            if(this.canvas){
+              this.canvas.remove();
+              const elements = document.body.querySelectorAll('.lil-gui');
+              elements.forEach((element) => {
+                if (element.parentNode) {
+                  element.parentNode.removeChild(element);
+                }
+              });
+            }
           },
           error: (error) => {
             console.error('Error fetching floor numbers:', error);
@@ -1292,17 +1330,36 @@ export class Visualizacao3DComponent implements AfterViewInit {
     } else {
 
       if (!this.popupOpen && !this.popupPisosElevadorOpen) {
-        console.log("Objectieve direction: " + this.objetivoDirecao);
-        if(this.tarefaConcluida && this.automaticMode){
+        if(this.tarefaConcluida && this.automaticMode && this.numeroEntradas === 0){
+          this.numeroEntradas++;
           if(this.numeroEdificioAtual !== this.listaPontosEdificio.length - 1){
-            this.numeroEdificioAtual++;
-            this.pontoAtualTarefa++;
-            this.pontoAtualTarefaEdificio = 0;
-            this.mapaService.exportarMapa(this.listaPontosEdificio[this.numeroEdificioAtual][0].edificio, (this.listaPontosEdificio[this.numeroEdificioAtual][0].piso)).subscribe(async (data: ExportarMapa) => {
+            this.mapaService.exportarMapa(this.listaPontosEdificio[this.numeroEdificioAtual + 1][0].edificio, (this.listaPontosEdificio[this.numeroEdificioAtual + 1][0].piso)).subscribe(async (data: ExportarMapa) => {
+              this.numeroEntradas = 0;
+              this.numeroEdificioAtual++;
+              this.pontoAtualTarefa++;
+              this.pontoAtualTarefaEdificio = 0.5;
+              this.numeroEntradasEdificio = 0;
+
+
+              if(data.matriz[0].length - 1 === this.listaPontos[this.pontoAtualTarefa].x || data.matriz.length - 1 === this.listaPontos[this.pontoAtualTarefa].y){
+                this.listaPontos.splice(this.pontoAtualTarefa, 1);
+                this.listaPontosEdificio[this.numeroEdificioAtual].splice(0,1);
+                this.listaPontosCartesian.splice(this.pontoAtualTarefa, 1);
+              }
               this.mapa = data;
               this.carregouPiso = false;
               this.renderer.clear();
+              if(this.canvas){
+                this.canvas.remove();
+                const elements = document.body.querySelectorAll('.lil-gui');
+                elements.forEach((element) => {
+                  if (element.parentNode) {
+                    element.parentNode.removeChild(element);
+                  }
+                });
+              }
               this.createScene();
+              this.setListaPontosCartesian();
               this.tarefaConcluida = false;
               this.listaCodigos[0] = this.listaPontosEdificio[this.numeroEdificioAtual][0].edificio;
               this.codigo = this.listaCodigos[0];
@@ -1329,14 +1386,15 @@ export class Visualizacao3DComponent implements AfterViewInit {
               this.player.object.position.x <= this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.x + 0.01 &&
               this.player.object.position.z >=this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.z -0.01 &&
               this.player.object.position.z <= this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.z + 0.01){
-                
+                this.player.keyStates.forward = false;
                 this.player.object.position.x = this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.x;
                 this.player.object.position.z = this.listaPontosCartesian[Math.floor(this.pontoAtualTarefa)+1].cartesian.z;
-                this.player.keyStates.forward = false;
-                this.pontoAtualTarefa = Math.floor(this.pontoAtualTarefa)+1;
-                this.pontoAtualTarefaEdificio = Math.floor(this.pontoAtualTarefaEdificio)+1;
+                if(this.numeroEntradasEdificio !== 0){
+                  this.pontoAtualTarefa = Math.floor(this.pontoAtualTarefa)+1;
+                  this.pontoAtualTarefaEdificio = Math.floor(this.pontoAtualTarefaEdificio)+1;
+                }
+                this.numeroEntradasEdificio++;
                 this.chegou = true;
-
                 if(this.pontoAtualTarefa < this.listaPontos.length - 1 && this.listaPontos[Math.floor(this.pontoAtualTarefa) + 1].edificio === this.listaPontos[Math.floor(this.pontoAtualTarefa)].edificio){
                   let xDiff = this.listaPontos[Math.floor(this.pontoAtualTarefa) + 1].x - this.maze.cartesianToCell(this.player.object.position)[1];
                   let yDiff = this.listaPontos[Math.floor(this.pontoAtualTarefa) + 1].y - this.maze.cartesianToCell(this.player.object.position)[0];
@@ -1371,13 +1429,7 @@ export class Visualizacao3DComponent implements AfterViewInit {
                   }
                 }
               }
-            }else if(this.collision(this.player.object.position)){
-              this.player.keyStates.forward = false;
-              console.log("Tarefa concluída!");
-              alert("Tarefa concluída!")
-              this.tarefaConcluida = true;
-          }else{
-            console.log(this.collision(this.player.object.position));
+            }else{
             if((this.atualMenor && this.player.object.direction >= this.objetivoDirecao) || (!this.atualMenor && this.player.object.direction <= this.objetivoDirecao)|| ((!this.atualMenor && this.player.object.direction >= 350 && this.objetivoDirecao === 0) || (this.atualMenor && this.player.object.direction <= 10 && this.objetivoDirecao === 0)) || this.collision(this.player.object.position)){
               if(this.pontoAtualTarefaEdificio === this.listaPontosEdificio[this.numeroEdificioAtual].length - 1){
                 if(this.numeroEdificioAtual === this.listaPontosEdificio.length - 1){
@@ -1399,10 +1451,6 @@ export class Visualizacao3DComponent implements AfterViewInit {
                 let anguloDestino = this.objetivoDirecao%360;
                 const ponteiros = (anguloDestino - anguloAtual + 360) % 360;
                 const contraponteiros = (anguloAtual - anguloDestino+ 360) % 360;
-                console.log(ponteiros + " ponteiros");
-                console.log(contraponteiros + " contraponteiros");
-                console.log(anguloAtual + " anguloAtual");
-                console.log(anguloDestino + " anguloDestino");
                 if (ponteiros < contraponteiros || (-ponteiros >= contraponteiros - 0.001 && -ponteiros <= contraponteiros + 0.001) || (ponteiros >= contraponteiros - 0.001 && ponteiros <= contraponteiros + 0.001)) {
                   this.virarRelogio = true;
                 } else {
@@ -1410,16 +1458,12 @@ export class Visualizacao3DComponent implements AfterViewInit {
                 }
               }        
               if (this.virarRelogio === true) {
-                  console.log("Positivo");
-                  console.log(this.player.object.direction);
                   this.player.object.direction += this.player.turningSpeed * deltaT;
                   if(this.player.object.direction > 360){
                     this.player.object.direction -= 360;
                     this.atualMenor = true;
                   }
               } else {
-                console.log(this.virarRelogio + " virarRelogio");
-                console.log("Negativo");
                 this.player.object.direction  -= this.player.turningSpeed * deltaT;
                 if(this.player.object.direction < 0){
                   this.player.object.direction += 360;
@@ -1491,8 +1535,22 @@ export class Visualizacao3DComponent implements AfterViewInit {
           ).add(this.player.object.position);
           
           if (this.collision(newPosition)) {
-          }
-          if (this.collisionWithPassage(newPosition)) {
+            if(this.collisionWithPorta(newPosition)){
+              if(this.automaticMode){
+                this.player.keyStates.forward = false;
+                console.log("Tarefa concluída!");
+                alert("Tarefa concluída!")
+                this.tarefaConcluida = true;
+              }
+            }else if (this.collisionWithParedesElevador(newPosition)){
+              if(this.automaticMode){
+                this.player.keyStates.forward = false;
+                this.pontoAtualTarefa = this.pontoAtualTarefa + 2;
+                this.pontoAtualTarefaEdificio = this.pontoAtualTarefaEdificio + 2;
+                this.tarefaConcluida = true;
+              }
+            }
+          }else if (this.collisionWithPassage(newPosition)) {
             if(this.automaticMode){
               this.player.keyStates.forward = false;
               this.tarefaConcluida = true;
@@ -1506,13 +1564,6 @@ export class Visualizacao3DComponent implements AfterViewInit {
               this.tarefaConcluida = true;
             }else{
               this.popupPisosElevadorOpen = true;
-            }
-          }else if(this.collisionWithPorta(newPosition)){
-            if(this.automaticMode){
-              this.player.keyStates.forward = false;
-              console.log("Tarefa concluída!");
-              alert("Tarefa concluída!")
-              this.tarefaConcluida = true;
             }
           } else {
             this.player.object.position.set(
