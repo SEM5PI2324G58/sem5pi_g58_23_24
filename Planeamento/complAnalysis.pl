@@ -2,6 +2,8 @@
 :-dynamic m/3.
 :-dynamic nlin/1.
 :-dynamic melhor_sol_dfs/2.
+:- use_module(library(random)).
+
 
 %linha 1:1,1,1,1,1,1,1,1
 %linha 2:0,0,0,0,0,0,0,1
@@ -113,3 +115,119 @@ bfs2(Dest,[LA|Outros],Cam):-
 		Novos),
 	append(Outros,Novos,Todos),
 	bfs2(Dest,Todos,Cam).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+tarefa(t1,1,1,x1,2,2,x1).
+tarefa(t2,3,3,x1,3,2,x1).
+tarefa(t3,1,1,x1,2,3,x1).
+tarefa(t4,1,1,x1,2,4,x1).
+tarefa(t5, 1, 1, x1, 2, 5, x1).
+tarefa(t6, 1, 1, x1, 2, 6, x1).
+tarefa(t7, 1, 1, x1, 2, 7, x1).
+tarefa(t8, 1, 1, x1, 2, 8, x1).
+tarefa(t9, 1, 1, x1, 2, 9, x1).
+
+tempo(manuel, t9, t1, 6).
+tempo(manuel, t1, t9, 6).
+tempo(manuel, t9, t2, 7).
+tempo(manuel, t2, t9, 7).
+tempo(manuel, t9, t3, 8).
+tempo(manuel, t3, t9, 8).
+tempo(manuel, t9, t4, 9).
+tempo(manuel, t4, t9, 9).
+tempo(manuel, t9, t5, 10).
+tempo(manuel, t5, t9, 10).
+tempo(manuel, t9, t6, 11).
+tempo(manuel, t6, t9, 11).
+tempo(manuel, t9, t7, 12).
+tempo(manuel, t7, t9, 12).
+tempo(manuel, t9, t8, 13).
+tempo(manuel, t8, t9, 13).
+tempo(manuel, t8, t1, 5).
+tempo(manuel, t1, t8, 5).
+tempo(manuel, t8, t2, 6).
+tempo(manuel, t2, t8, 6).
+tempo(manuel, t8, t3, 7).
+tempo(manuel, t3, t8, 7).
+tempo(manuel, t8, t4, 8).
+tempo(manuel, t4, t8, 8).
+tempo(manuel, t8, t5, 9).
+tempo(manuel, t5, t8, 9).
+tempo(manuel, t8, t6, 10).
+tempo(manuel, t6, t8, 10).
+tempo(manuel, t8, t7, 11).
+tempo(manuel, t7, t8, 11).
+tempo(manuel, t7, t1, 4).
+tempo(manuel, t1, t7, 4).
+tempo(manuel, t7, t2, 5).
+tempo(manuel, t2, t7, 5).
+tempo(manuel, t7, t3, 6).
+tempo(manuel, t3, t7, 6).
+tempo(manuel, t7, t4, 7).
+tempo(manuel, t4, t7, 7).
+tempo(manuel, t7, t5, 8).
+tempo(manuel, t5, t7, 8).
+tempo(manuel, t7, t6, 9).
+tempo(manuel, t6, t7, 9).
+tempo(manuel, t6, t1, 2).
+tempo(manuel, t1, t6, 2).
+tempo(manuel, t6, t2, 2).
+tempo(manuel, t2, t6, 2).
+tempo(manuel, t6, t3, 2).
+tempo(manuel, t3, t6, 2).
+tempo(manuel, t6, t4, 2).
+tempo(manuel, t4, t6, 2).
+tempo(manuel, t6, t5, 2).
+tempo(manuel, t5, t6, 2).
+tempo(manuel, t5, t1, 2).
+tempo(manuel, t1, t5, 2).
+tempo(manuel, t5, t2, 2).
+tempo(manuel, t2, t5, 2).
+tempo(manuel, t5, t3, 2).
+tempo(manuel, t3, t5, 2).
+tempo(manuel, t5, t4, 2).
+tempo(manuel, t4, t5, 2).
+tempo(manuel, t1, t2, 2).
+tempo(manuel, t2, t1, 2).
+tempo(manuel, t2, t3, 2).
+tempo(manuel, t3, t2, 2).
+tempo(manuel, t1, t3, 2).
+tempo(manuel, t3, t1, 2).
+tempo(manuel, t4, t1, 2).
+tempo(manuel, t1, t4, 2).
+tempo(manuel, t4, t2, 2).
+tempo(manuel, t2, t4, 2).
+tempo(manuel, t4, t3, 2).
+tempo(manuel, t3, t4, 2).
+
+
+melhor_sequencia(Tarefas, MelhorSequencia) :-
+	get_time(Ti),
+    findall(Sequencia, permutation(Tarefas, Sequencia), Sequencias),
+    avaliar_sequencias(Sequencias, MelhorSequencia, _),
+	get_time(Tf),
+	T is Tf-Ti,
+	write('Tempo de geracao da solucao:'),write(T),nl.
+
+avaliar_sequencias([], [], inf).
+avaliar_sequencias([Sequencia], Sequencia, TempoSequencia) :- 
+    avalia1(Sequencia, TempoSequencia), !.
+avaliar_sequencias([Sequencia|RestoSequencias], MelhorSequencia, MelhorTempoSequencia) :-
+    avalia1(Sequencia, TempoSequencia),
+    avaliar_sequencias(RestoSequencias, TempMelhorSequencia, TempMelhorTempo),
+    (   TempMelhorTempo == inf 
+    ->  MelhorSequencia = Sequencia, MelhorTempoSequencia = TempoSequencia
+    ;   TempoSequencia < TempMelhorTempo 
+    ->  MelhorSequencia = Sequencia, MelhorTempoSequencia = TempoSequencia
+    ;   MelhorSequencia = TempMelhorSequencia, MelhorTempoSequencia = TempMelhorTempo
+    ).
+
+avalia1([_],0).
+avalia1([Tarefa1,Tarefa2|Resto], TempoIndividuo):-
+    avalia1([Tarefa2|Resto], TempoResto),
+    Tarefa1 = tarefa(Nome1,_,_,_,_,_,_),
+    Tarefa2 = tarefa(Nome2,_,_,_,_,_,_),
+    tempo(_,Nome1,Nome2,Custo), % Ensure tempo/4 is correctly defined and instantiates Custo.
+    TempoIndividuo is TempoResto + Custo.
+
