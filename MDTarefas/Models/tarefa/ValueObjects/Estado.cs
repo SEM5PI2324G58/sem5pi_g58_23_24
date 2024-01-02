@@ -7,7 +7,8 @@ namespace MDTarefas.Models.tarefa.ValueObjects
     {
         Pendente,
         Aceite,
-        Rejeitada
+        Rejeitada,
+        Planeada
     }
     public class Estado {
         private EstadoEnum EstadoString;
@@ -22,7 +23,9 @@ namespace MDTarefas.Models.tarefa.ValueObjects
                 this.EstadoString = EstadoEnum.Aceite;
             } else if (estadoString.ToLower() == "rejeitada") {
                 this.EstadoString = EstadoEnum.Rejeitada;
-            } else {
+            } else if (estadoString.ToLower() == "planeada") {
+                this.EstadoString = EstadoEnum.Planeada;
+            } else{
                 throw new BusinessRuleValidationException("Estado inválido");
             }
         }

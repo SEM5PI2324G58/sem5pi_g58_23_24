@@ -117,7 +117,7 @@ caminho_pontos_piso_handler(Request) :-
     atom_number(YDest,YD),
     atom_string(PD,PisoDest),
     obter_dados(ListaPiso, ListaElev, ListaCoordElev, ListaCorr, ListaCoordCorr, ListaSalas, ListaCoordPortas, ListaMatrizMapa, ListaDimensoes),
-    caminho_pontos_piso(XO, YO, PO, XD, YD, PD, LEdCam,LLig,LCelCamPisos,Custo),
+    caminho_pontos_pisoSemDig(XO, YO, PO, XD, YD, PD, LEdCam,LLig,LCelCamPisos,Custo),
     with_output_to(atom(LEdCamJ), write(LEdCam)),
     with_output_to(atom(LLigJ), write(LLig)),
     with_output_to(atom(CustoJ), write(Custo)),
@@ -385,6 +385,14 @@ caminho_pontos_piso(XOrig,YOrig,PisoOrig,XDest,YDest,PisoDest,LEdCam,LLig,LCelCa
     processar_LCelCam(LCelCam,LCelCamPisos1),
     cam_lista_pisos(LCelCamPisos1,LCelCamPisos,Custo).
 
+caminho_pontos_pisoSemDig(XOrig,YOrig,PisoOrig,XDest,YDest,PisoDest,LEdCam,LLig,LCelCamPisos,Custo):-
+    caminho_pisos(PisoOrig,PisoDest,LEdCam,LLig),
+    processar_LLig(LLig,LParPontoMid),
+    append([cel1(PisoOrig,XOrig,YOrig)],LParPontoMid,LParPonto),
+    append(LParPonto,[cel1(PisoDest,XDest,YDest)],LCelCam),
+    processar_LCelCam(LCelCam,LCelCamPisos1),
+    cam_lista_pisosSemDig(LCelCamPisos1,LCelCamPisos,Custo).
+
 
 processar_LLig([],[]).
 %Troca da X e Y para as informações estarem de acordo com o mapa
@@ -472,6 +480,25 @@ cria_grafo_lin1(Col,Lin):-m(Col,Lin,0),!,ColS is Col+1, ColA is Col-1, LinS is L
     cria_grafo_lin1(Col1,Lin).
 cria_grafo_lin1(Col,Lin):-Col1 is Col-1,cria_grafo_lin1(Col1,Lin). %% Se o ponto for parede dá skip
 
+
+
+cria_edges_AuxSemDig(_,0):-!.
+cria_edges_AuxSemDig(Col,Lin):-cria_grafo_lin_SemDig(Col,Lin),Lin1 is Lin-1,cria_edges_AuxSemDig(Col,Lin1).
+
+cria_grafo_lin_SemDig(0,_):-!.
+cria_grafo_lin_SemDig(Col,Lin):-m(Col,Lin,0),!,ColS is Col+1, ColA is Col-1, LinS is Lin+1,LinA is Lin-1, % Se não for parede ve os nodes á volta
+    ((m(ColS,Lin,0),assertz(edge(Col,Lin,ColS,Lin,1));true)),
+    ((m(ColA,Lin,0),assertz(edge(Col,Lin,ColA,Lin,1));true)),
+    ((m(Col,LinS,0),assertz(edge(Col,Lin,Col,LinS,1));true)),
+    ((m(Col,LinA,0),assertz(edge(Col,Lin,Col,LinA,1));true)),
+%    ((m(ColA,LinA,0),assertz(edge(Col,Lin,ColA,LinA,sqrt(2)));true)),
+%    ((m(ColS,LinS,0),assertz(edge(Col,Lin,ColS,LinS,sqrt(2)));true)),
+%    ((m(ColA,LinS,0),assertz(edge(Col,Lin,ColA,LinS,sqrt(2)));true)),
+%    ((m(ColS,LinA,0),assertz(edge(Col,Lin,ColS,LinA,sqrt(2)));true)),
+    Col1 is Col-1,
+    cria_grafo_lin_SemDig(Col1,Lin).
+cria_grafo_lin_SemDig(Col,Lin):-Col1 is Col-1,cria_grafo_lin_SemDig(Col1,Lin). %% Se o ponto for parede dá skip
+
 %%%% Criar edges %%%%
 
 criar_edges_Astar():-
@@ -492,6 +519,13 @@ criar_grafo_Astar(X,Y):-
     cria_edges_Aux(X,Y),
     criar_edges_Astar(),
     retractall(edge(_,_,_,_,_)).
+
+
+criar_grafo_AstarSemDig(X,Y):-
+    criar_nodes(),
+    cria_edges_AuxSemDig(X,Y),
+    criar_edges_Astar(),
+    retractall(edge(_,_,_,_,_)).    
 
 %%%% Eliminar grafo ()%%%%
 
@@ -515,6 +549,14 @@ cam_lista_pisos([cam(Piso,X1,Y1,X2,Y2)|RL],CamCel,Custo):-
     append(CamCel1,CamCel2,CamCel),
     Custo is Custo1+Custo2.
 
+cam_lista_pisosSemDig([],[],0).
+cam_lista_pisosSemDig([cam(Piso,X1,Y1,X2,Y2)|RL],CamCel,Custo):-
+    cam_pisoSemDig(Piso,X1,Y1,X2,Y2,CamCel1,Custo1),
+    cam_lista_pisosSemDig(RL,CamCel2,Custo2),
+    append(CamCel1,CamCel2,CamCel),
+    Custo is Custo1+Custo2.
+
+
 
 
 %%%%% Determina o caminho entre (X1,Y1) e (X2,Y2) no piso Piso e coloca uma lista de celPiso(Piso,X,Y) no CamCel%%%%%
@@ -530,7 +572,16 @@ cam_piso(Piso,X1,Y1,X2,Y2,CamCel,Custo):-
     eliminar_grafo_Astar(),
     eliminar_matriz_piso().
 
-
+cam_pisoSemDig(Piso,X1,Y1,X2,Y2,CamCel,Custo):-
+    dim_piso(Piso,Col,Lin),
+    criar_matriz_piso(Piso),
+    criar_grafo_AstarSemDig(Col,Lin),
+    node(Id1,X1,Y1),
+    node(Id2,X2,Y2),
+    aStar(Id1,Id2,CamIdNodes,Custo),
+    nodes_to_coords(Piso,CamIdNodes,CamCel),
+    eliminar_grafo_Astar(),
+    eliminar_matriz_piso().
 
 nodes_to_coords(_,[],[]).
 nodes_to_coords(Piso,[Id|RL],CamCel):-

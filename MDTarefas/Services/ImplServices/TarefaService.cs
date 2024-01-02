@@ -10,6 +10,7 @@ using System.Text.Json;
 using System.Text;
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Options;
+using System.Text.RegularExpressions;
 
 namespace MDTarefas.Services.ImplServices
 {
@@ -185,16 +186,59 @@ namespace MDTarefas.Services.ImplServices
         }
 
     
-        public async Task<RespostaMDTarefaPlaneamentoDTO> carregarTarefasNoPlaneamento(int algoritmo) {
+        public async Task<List<PlanearTarefasDTO>> carregarTarefasNoPlaneamento(int algoritmo) {
             if (algoritmo < 0 || algoritmo > 2) {
                 throw new BusinessRuleValidationException("Algoritmo inválido");
             }
             List<Tarefa> list =  await _tarefaRepository.GetTarefasAceitesAsync();
             if (list.Count == 0) {
-                throw new BusinessRuleValidationException("Não existem tarefas aceites");
+                throw new NotFoundException("Não existem tarefas aceites");
             }
             var response = await comunicacaoComPlaneamentoAsync(TarefaMapper.toTarefasParaOPlaneamentoDTO(list,algoritmo));
-            var resposta = TarefaMapper.toArrayDTO(response.resultado);
+            
+            
+            if (response.resultado == null)
+            {
+                throw new BusinessRuleValidationException("Não foi obtido nenhum resultado do planeamento");
+            }
+            
+            List<PlanearTarefasDTO> resposta = new List<PlanearTarefasDTO>();
+                        
+            Regex regex = new Regex(@"robot\((\w+),\[([^\]]+)\]\)");
+            MatchCollection coincidencias = regex.Matches(response.resultado);
+            List<Tarefa> totalDeTarefas = new List<Tarefa>();
+
+            coincidencias.Count.ToString();
+            if (coincidencias.Count != 0)
+            {
+                foreach (Match coincidencia in coincidencias)
+                {   
+                    var codDispositivo = coincidencia.Groups[1].Value;
+
+                    List<Tarefa> tarefas = new List<Tarefa>();
+                    Regex regexTarefas = new Regex(@"tarefa\(([^,]+),");
+
+                    MatchCollection coincidenciasTarefas = regexTarefas.Matches(coincidencia.Groups[2].Value);
+                    foreach (Match match in coincidenciasTarefas)
+                        {
+                            string id = match.Groups[1].Value; // Extract the 24-letter ID part
+                            Tarefa tarefa = await _tarefaRepository.GetAsync(id);
+                            tarefas.Add(tarefa);
+                            totalDeTarefas.Add(tarefa);
+                        }
+                    resposta.Add(TarefaMapper.toPlanearTarefasDTO(codDispositivo,tarefas));
+                }
+                foreach (Tarefa tarefa in totalDeTarefas)
+                {
+                    tarefa.updateEstado("Planeada");
+                    await _tarefaRepository.UpdateAsync(tarefa.getId(), tarefa);
+                }
+                return resposta;
+            }
+            else
+            {
+                throw new BusinessRuleValidationException("Não foi possível transformar o resultado do planeamento para o formato certo");
+            }
             return resposta;
         }
 

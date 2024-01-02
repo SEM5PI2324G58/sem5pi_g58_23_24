@@ -10,6 +10,7 @@ import Tarefa from 'src/dataModel/tarefa';
 import { CriarVigilancia } from 'src/dataModel/criarVigilancia';
 import { CriarPickUpDelivery } from 'src/dataModel/criarPickUPDelivery';
 import { forEach } from 'lodash';
+import { ReturnPlanearTarefas } from 'src/dataModel/returnPlanearTarefas';
 
 @Injectable({
   providedIn: 'root'
@@ -231,6 +232,34 @@ export class TarefaService {
     
 
   }
+
+  public obterPercursoTarefa (idTarefa: string): Observable<string|null>{
+    if(idTarefa == null || idTarefa == undefined || idTarefa == ""){
+      this.log(`ERRO: O id da tarefa é obrigatório`);
+      return of(null);
+    }
+
+    let params = new HttpParams().set('idTarefa', idTarefa);
+    
+    return this.http.get<string>(this.tarefaUrl + "/obterPercursoTarefa", { params: params, responseType: 'text' as 'json'})
+    .pipe(
+      catchError(this.handleError<string>('Obter percurso da tarefa'))
+    );
+  }
+
+  planearTarefas(algoritmo: number) : Observable<ReturnPlanearTarefas[] | null>{
+    if (algoritmo != 0 && algoritmo != 1){
+      this.log(`ERRO: O algoritmo é obrigatório`);
+      return of(null);
+    }
+   
+    let params = new HttpParams().set('algoritmo', algoritmo);
+
+    return this.http.get<ReturnPlanearTarefas[]>(this.tarefaUrl + "/carregarTarefasNoPlaneamento", { params: params })
+    .pipe(
+      catchError(this.handleError<ReturnPlanearTarefas[]>('Planear Tarefa'))
+    );
+}
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {

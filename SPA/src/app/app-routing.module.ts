@@ -43,7 +43,7 @@ import { DeleteTarefaComponent } from './gestao-planeamento/delete-tarefa/delete
 import { AlterarDadosUtenteComponent } from './conta/alterar-dados-utente/alterar-dados-utente.component';
 import { DeleteUtenteComponent } from './conta/delete-utente/delete-utente.component';
 import { ObterTarefaComponent } from './gestao-planeamento/obter-tarefa/obter-tarefa.component';
-
+import { PlaneamentoTarefasComponent } from './gestao-planeamento/planeamento-tarefas/planeamento-tarefas.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full'},
@@ -91,6 +91,7 @@ const routes: Routes = [
   {path: 'alterarDadosUtente', component: AlterarDadosUtenteComponent},
   {path: 'deleteUtente', component: DeleteUtenteComponent},
   { path: 'obterTarefa', component: ObterTarefaComponent},
+  { path: 'planeamentoTarefas', component: PlaneamentoTarefasComponent}
 ];
 
 @NgModule({
