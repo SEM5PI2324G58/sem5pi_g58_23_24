@@ -1188,6 +1188,13 @@ export class Visualizacao3DComponent implements AfterViewInit {
       || this.maze.distanceToSouthDoor(position) < this.player.radius
   }
 
+  collisionWithParede(position: THREE.Vector3) {
+    return this.maze.distanceToWestWall(position) < this.player.radius
+      || this.maze.distanceToEastWall(position) < this.player.radius
+      || this.maze.distanceToNorthWall(position) < this.player.radius
+      || this.maze.distanceToSouthWall(position) < this.player.radius
+  }
+
   fecharPopup() {
     this.popupPisosElevadorOpen = false;
   }
@@ -1543,6 +1550,13 @@ export class Visualizacao3DComponent implements AfterViewInit {
                 this.pontoAtualTarefaEdificio = this.pontoAtualTarefaEdificio + 2;
                 this.tarefaConcluida = true;
               }
+            }else if(this.collisionWithParede(newPosition)){
+              if(this.automaticMode){
+                this.player.keyStates.forward = false;
+                console.log("Tarefa concluída!");
+                alert("Tarefa concluída!")
+                this.tarefaConcluida = true;
+              }
             }
           }else if (this.collisionWithPassage(newPosition)) {
             if(this.automaticMode){
@@ -1588,6 +1602,13 @@ export class Visualizacao3DComponent implements AfterViewInit {
                 this.player.keyStates.forward = false;
                 this.pontoAtualTarefa = this.pontoAtualTarefa + 2;
                 this.pontoAtualTarefaEdificio = this.pontoAtualTarefaEdificio + 2;
+                this.tarefaConcluida = true;
+              }
+            }else if(this.collisionWithParede(newPosition)){
+              if(this.automaticMode){
+                this.player.keyStates.forward = false;
+                console.log("Tarefa concluída!");
+                alert("Tarefa concluída!")
                 this.tarefaConcluida = true;
               }
             }
