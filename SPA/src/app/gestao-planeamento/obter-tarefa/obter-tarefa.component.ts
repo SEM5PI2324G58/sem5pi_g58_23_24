@@ -18,19 +18,28 @@ export class ObterTarefaComponent {
   selectedCriteria: string | null = null; 
   selectedValue: string | null = null;
   listaTarefas: Tarefa[] | null = [];
+  tarefasPlaneadas: boolean = false;
 
   changeValue(email: string){
     this.selectedValue = email;
   }
 
   add(): void {
+    this.tarefasPlaneadas = false;
     console.log(this.selectedCriteria);
     console.log(this.selectedValue);
     this.tarefaService.obterTarefa(this.selectedCriteria, this.selectedValue)
     .subscribe(data => {
+      if (this.selectedValue === "Planeada") {
+        this.tarefasPlaneadas = true;
+      }
       this.listaTarefas = data;
       console.log(this.listaTarefas);
     });
+  }
+
+  v3D(id: string): void {
+
   }
 
 }
