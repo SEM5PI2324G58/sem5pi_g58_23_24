@@ -1495,8 +1495,22 @@ export class Visualizacao3DComponent implements AfterViewInit {
           ).add(this.player.object.position);
 
           if (this.collision(newPosition)) {
-          }
-          if (this.collisionWithPassage(newPosition)) {
+            if(this.collisionWithPorta(newPosition)){
+              if(this.automaticMode){
+                this.player.keyStates.forward = false;
+                console.log("Tarefa concluída!");
+                alert("Tarefa concluída!")
+                this.tarefaConcluida = true;
+              }
+            }else if (this.collisionWithParedesElevador(newPosition)){
+              if(this.automaticMode){
+                this.player.keyStates.forward = false;
+                this.pontoAtualTarefa = this.pontoAtualTarefa + 2;
+                this.pontoAtualTarefaEdificio = this.pontoAtualTarefaEdificio + 2;
+                this.tarefaConcluida = true;
+              }
+            }
+          }else if (this.collisionWithPassage(newPosition)) {
             if(this.automaticMode){
               this.player.keyStates.forward = false;
               this.tarefaConcluida = true;
@@ -1510,13 +1524,6 @@ export class Visualizacao3DComponent implements AfterViewInit {
               this.tarefaConcluida = true;
             }else{
               this.popupPisosElevadorOpen = true;
-            }
-          }else if(this.collisionWithPorta(newPosition)){
-            if(this.automaticMode){
-              this.player.keyStates.forward = false;
-              console.log("Tarefa concluída!");
-              alert("Tarefa concluída!")
-              this.tarefaConcluida = true;
             }
           } else {
             this.player.object.position.set(
