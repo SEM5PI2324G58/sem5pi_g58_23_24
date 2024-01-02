@@ -89,6 +89,26 @@
             </div>
         </div>
     </div>
+
+    <div class="cdk-overlay-container">
+        <div *ngIf="popupAlertPassagem" class="dialogoAutomatico"> 
+            <div class="header">
+                <p>O Robot está a entrar numa Passagem <br>
+                Aguarde uns segundos... :D
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="cdk-overlay-container">
+        <div *ngIf="popupAlertElevador" class="dialogoAutomatico"> 
+            <div class="header">
+                <p>O Robot está a entrar num Elevador <br>
+                Aguarde uns segundos... :D
+                </p>
+            </div>
+        </div>
+    </div>
+
     <div class="cdk-overlay-container">
         <div *ngIf="popupPisosElevadorOpen" class="dialogElevador"> 
             <div class="header">

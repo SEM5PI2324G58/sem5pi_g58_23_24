@@ -87,6 +87,8 @@ export class Visualizacao3DComponent implements AfterViewInit {
   mouse = { x: 0, y: 0 }
   INTERSECTED: any;
   tooltip!: HTMLElement | null;
+  popupAlertPassagem: boolean = false;
+  popupAlertElevador: boolean = false;
 
   constructor(
     private pisoService: PisoService,
@@ -1269,6 +1271,8 @@ export class Visualizacao3DComponent implements AfterViewInit {
         this.scene3D.add(this.maze.object);
         this.scene3D.add(this.player.object);
         this.scene3D.add(this.light.object);
+        this.popupAlertElevador = false;
+        this.popupAlertPassagem = false;
 
         // Create the clock
         this.clock = new THREE.Clock();
@@ -1334,6 +1338,20 @@ export class Visualizacao3DComponent implements AfterViewInit {
           this.numeroEntradas++;
           if(this.numeroEdificioAtual !== this.listaPontosEdificio.length - 1){
             this.mapaService.exportarMapa(this.listaPontosEdificio[this.numeroEdificioAtual + 1][0].edificio, (this.listaPontosEdificio[this.numeroEdificioAtual + 1][0].piso)).subscribe(async (data: ExportarMapa) => {
+              
+                                    
+              if(this.listaPontosEdificio[this.numeroEdificioAtual][0].edificio == this.listaPontosEdificio[this.numeroEdificioAtual+1][0].edificio){
+                // lançar pop-up
+                this.popupAlertElevador = true;
+                await this.sleep(1000);
+              }
+              else{
+                // lançar pop-up
+                this.popupAlertPassagem = true;
+                await this.sleep(1000);
+              }
+               
+              
               this.numeroEntradas = 0;
               this.numeroEdificioAtual++;
               this.pontoAtualTarefa++;
