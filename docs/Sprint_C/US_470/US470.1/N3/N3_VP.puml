@@ -9,7 +9,7 @@ participant "Repos" as repo
 
 [o-> ctrl: PUT(json)
 activate ctrl
-ctrl -> service: carregarTarefasNoPlaneamento(algoritmo) 
+ctrl -> service: listarTarefasPendentes() 
 activate service
 service -> repo : GetAsync(id)
 activate repo
