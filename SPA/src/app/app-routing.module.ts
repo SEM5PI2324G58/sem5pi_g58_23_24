@@ -44,7 +44,7 @@ import { AlterarDadosUtenteComponent } from './conta/alterar-dados-utente/altera
 import { DeleteUtenteComponent } from './conta/delete-utente/delete-utente.component';
 import { ObterTarefaComponent } from './gestao-planeamento/obter-tarefa/obter-tarefa.component';
 import { PlaneamentoTarefasComponent } from './gestao-planeamento/planeamento-tarefas/planeamento-tarefas.component';
-
+import { ListarTarefasPendentesComponent } from './gestao-planeamento/listar-tarefas-pendentes/listar-tarefas-pendentes.component';
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full'},
   { path: 'dashboard', component: DashboardComponent },
@@ -85,6 +85,7 @@ const routes: Routes = [
   { path: 'approveOrRejectUtente', component: ApproveOrRejectUtenteComponent},
   { path: 'login', component: LoginComponent},
   { path: 'aprovarTarefas', component: AprovarTarefaComponent},
+  { path: 'listarTarefasPendentes', component: ListarTarefasPendentesComponent},
   { path: 'criarTarefaVigilancia', component: CriarTarefaVigilanciaComponent},
   { path: 'criarTarefaPickUpDelivery', component: CriarTarefaPickUpDeliveryComponent},
   { path: 'apagarTarefa', component: DeleteTarefaComponent},
