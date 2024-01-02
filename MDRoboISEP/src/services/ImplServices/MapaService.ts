@@ -486,7 +486,7 @@ export default class MapaService implements IMapaService{
         try {
           // Dynamic import of 'fetch'
           const { default: fetch } = await import('node-fetch');
-          const url = "http://127.0.0.1.:8000/carregarMapa"
+          const url = "http://10.9.11.58:8000/carregarMapa"
           // Faça a requisição HTTP POST
           const response = await fetch(url, {
             method: 'POST',
